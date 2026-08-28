@@ -373,13 +373,13 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
 
             {/* Skills */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Required Skills</h3>
+            <div className="space-y-2.5">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Required Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {job.skills.map((skill: string, index: number) => (
                   <span
                     key={index}
-                    className="inline-flex items-center rounded-lg bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground border border-border"
+                    className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/80 px-3.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs"
                   >
                     {skill}
                   </span>

@@ -11,7 +11,8 @@ import {
   CheckCircle2, 
   ChevronRight, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Tag
 } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import GuideContentRenderer from '@/components/GuideContentRenderer';
@@ -187,13 +188,22 @@ export default async function GuideArticlePage({ params }: Props) {
           </article>
 
           {/* Tags */}
-          <div className="pt-6 border-t border-border flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-bold text-muted-foreground">Tags:</span>
-            {guide.tags.map((tag) => (
-              <span key={tag} className="rounded-lg bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground border border-border">
-                #{tag}
-              </span>
-            ))}
+          <div className="pt-6 border-t border-border flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-muted-foreground mr-1">
+              <Tag className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span>Tags:</span>
+            </span>
+            {guide.tags.map((tag) => {
+              const cleanTag = tag.replace(/^#+/, '');
+              return (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/80 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50"
+                >
+                  #{cleanTag}
+                </span>
+              );
+            })}
           </div>
 
           {/* Editorial Trust Note */}

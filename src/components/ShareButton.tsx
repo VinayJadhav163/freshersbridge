@@ -124,25 +124,25 @@ export default function ShareButton({
 
       {/* Share Modal Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in duration-200">
           <div
             className="fixed inset-0"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
 
-          <div className="relative w-full max-w-md overflow-hidden rounded-t-3xl sm:rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-5 animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 z-10">
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200 z-10 mx-auto my-auto">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600 shrink-0">
                   <Share2 className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-foreground leading-tight">
+                  <h3 className="text-sm sm:text-base font-bold text-foreground leading-tight">
                     Share this Opportunity
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Help your friends and batchmates apply
                   </p>
                 </div>
@@ -150,7 +150,7 @@ export default function ShareButton({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -158,7 +158,7 @@ export default function ShareButton({
             </div>
 
             {/* Social Share Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               {shareOptions.map((opt) => (
                 <a
                   key={opt.name}
@@ -166,7 +166,7 @@ export default function ShareButton({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 rounded-2xl border p-3.5 text-xs font-bold transition-all active:scale-95 ${opt.color}`}
+                  className={`flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3 rounded-xl sm:rounded-2xl border p-3 sm:p-3.5 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer ${opt.color}`}
                 >
                   {opt.icon}
                   <span>{opt.name}</span>
@@ -189,7 +189,7 @@ export default function ShareButton({
                 <button
                   type="button"
                   onClick={copyToClipboard}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-indigo-500 transition-all active:scale-95 cursor-pointer"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition-all active:scale-95 cursor-pointer"
                 >
                   {copied ? (
                     <>
