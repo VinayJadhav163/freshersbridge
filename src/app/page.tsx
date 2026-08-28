@@ -20,11 +20,6 @@ import { Job, Category } from '@/types';
 // Fast dynamic server-side rendering so each visitor gets fresh rotated listings
 export const dynamic = 'force-dynamic';
 
-function getRandomSample<T>(array: T[], count: number): T[] {
-  const shuffled = [...array].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
-
 // Assign dynamic icons based on category slug
 function getCategoryIcon(slug: string) {
   switch (slug) {
@@ -80,15 +75,15 @@ export default async function Home() {
     }, 60),
   ]);
 
-  // Dynamically rotate listings for each visitor visit (prioritize featured)
+  // Deterministic latest listings (featured first, then most recent)
   const featuredJobs = allJobsPool.filter((j) => j.featured_job);
   const regularJobs = allJobsPool.filter((j) => !j.featured_job);
   const displayJobs = [
     ...featuredJobs.slice(0, 2),
-    ...getRandomSample(regularJobs, 6 - Math.min(featuredJobs.length, 2)),
+    ...regularJobs,
   ].slice(0, 6);
 
-  const displayInternships = getRandomSample(allInternshipsPool, 3);
+  const displayInternships = allInternshipsPool.slice(0, 3);
 
   return (
     <div className="flex flex-col w-full pb-16">
