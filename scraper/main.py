@@ -250,11 +250,14 @@ def run_pipeline(use_ai: bool = False):
         logger.warning("No jobs were verified in this run. Exiting.")
         return
 
-    # Export to single clean CSV
+    # Export to clean CSV with today's date in filename (e.g. 2026-08-29_freshersbridge_jobs.csv)
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
     os.makedirs(output_dir, exist_ok=True)
     
-    latest_filepath = os.path.join(output_dir, "latest_freshersbridge_jobs.csv")
+    today_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    timestamp_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+    dated_filename = f"{today_str}_freshersbridge_jobs.csv"
+    dated_filepath = os.path.join(output_dir, dated_filename)
 
     df = pd.DataFrame(clean_final_jobs)
     
@@ -271,13 +274,13 @@ def run_pipeline(use_ai: bool = False):
             
     df = df[columns_order]
     try:
-        df.to_csv(latest_filepath, index=False, encoding='utf-8-sig')
-        logger.info(f"Successfully generated clean CSV artifact: {latest_filepath}")
+        df.to_csv(dated_filepath, index=False, encoding='utf-8-sig')
+        logger.info(f"Successfully generated clean CSV artifact: {dated_filepath}")
     except PermissionError:
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        alt_filepath = os.path.join(output_dir, f"freshersbridge_jobs_{timestamp}.csv")
+        alt_filename = f"{timestamp_str}_freshersbridge_jobs.csv"
+        alt_filepath = os.path.join(output_dir, alt_filename)
         df.to_csv(alt_filepath, index=False, encoding='utf-8-sig')
-        logger.warning(f"⚠️ 'latest_freshersbridge_jobs.csv' was locked by another app (Excel/VSCode). Saved clean CSV to: {alt_filepath}")
+        logger.warning(f"⚠️ '{dated_filename}' was open/locked by Excel. Saved clean CSV to: {alt_filepath}")
 
 
 
