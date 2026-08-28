@@ -233,6 +233,29 @@ export async function deleteJob(id: string, adminKey: string) {
   }
 }
 
+export async function deleteAllJobsAction(adminKey: string) {
+  if (!verifyAdminKey(adminKey)) {
+    return { success: false, error: 'Unauthorized: Invalid Admin Access Key.' };
+  }
+
+  try {
+    const { error } = await supabase
+      .from('jobs')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows
+
+    if (error) throw error;
+
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/internships');
+    revalidatePath('/nandini');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: handleActionError(err, 'Failed to delete all jobs') };
+  }
+}
+
 /* Subscriber Actions */
 
 export async function addSubscriberAdmin(email: string, name: string, adminKey: string) {

@@ -13,7 +13,8 @@ import {
   deleteSubscriberAdmin,
   sendDigestBroadcastAction,
   logoutAdminAction,
-  resetAllJobViewsAction
+  resetAllJobViewsAction,
+  deleteAllJobsAction
 } from '@/app/admin/actions';
 import { 
   Plus, 
@@ -288,6 +289,30 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
       showNotification('success', 'All job views have been reset to 0.');
     } else {
       showNotification('error', res.error || 'Failed to reset views.');
+    }
+  };
+
+  const handleDeleteAllJobs = async () => {
+    const confirm1 = confirm(`⚠️ WARNING: Are you sure you want to permanently delete ALL ${jobs.length} jobs from the database?`);
+    if (!confirm1) return;
+
+    const confirm2 = prompt('Please type "DELETE ALL" to confirm clearing the entire jobs database:');
+    if (confirm2?.trim() !== 'DELETE ALL') {
+      showNotification('error', 'Action cancelled. Jobs were not deleted.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const key = adminKey || localStorage.getItem('freshersbridge_admin_key') || '';
+    const res = await deleteAllJobsAction(key);
+    setIsSubmitting(false);
+
+    if (res.success) {
+      setJobs([]);
+      showNotification('success', 'All jobs have been permanently removed. Ready for new CSV upload.');
+      router.refresh();
+    } else {
+      showNotification('error', res.error || 'Failed to delete all jobs.');
     }
   };
 
@@ -796,10 +821,23 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                 <h2 className="text-lg font-bold text-foreground">Active Job Postings</h2>
                 
                 <div className="flex flex-wrap items-center gap-2">
+                  {/* Delete All Jobs Button */}
+                  {jobs.length > 0 && (
+                    <button
+                      onClick={handleDeleteAllJobs}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-all cursor-pointer disabled:opacity-50"
+                      title="Clear and delete all jobs in the database"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete All ({jobs.length})</span>
+                    </button>
+                  )}
+
                   {/* Download Template Button */}
                   <button
                     onClick={downloadCSVTemplate}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground transition-all cursor-pointer"
                     title="Download Sample CSV Template"
                   >
                     <Download className="h-4 w-4" />
@@ -822,7 +860,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                   {/* Add New Job */}
                   <button
                     onClick={handleAddJobClick}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors cursor-pointer"
                   >
                     <Plus className="h-4.5 w-4.5" />
                     Add New Job
