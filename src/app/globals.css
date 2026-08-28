@@ -1,44 +1,66 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
 @import "tailwindcss";
 
+/* Lock dark mode variant to class-based toggles instead of auto preferences */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #fafbfe;
-  --foreground: #0f172a;
+  /* Brand Primary & Background Variables */
+  --background: #ffffff;
+  --foreground: #121224;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #4f46e5;
+  --card-foreground: #121224;
+  --primary: #275df5;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #64748b;
-  --muted-foreground: #94a3b8;
-  --accent: #ec4899;
-  --accent-foreground: #ffffff;
-  --border: #e2e8f0;
-  --ring: rgba(79, 70, 229, 0.4);
-  --success: #10b981;
-  --radius: 0.75rem;
+  --secondary: #f7f7f9;
+  --secondary-foreground: #474d6a;
+  --muted: #717b9e;
+  --muted-foreground: #474d6a;
+  --accent: #fdaa29;
+  --accent-foreground: #121224;
+  --border: #e7e7f1;
+  --ring: rgba(39, 93, 245, 0.4);
+  --success: #47b749;
+  --danger: #f04141;
+  --radius: 20px;
+
+  /* Custom Extracted CSS Variables from Design System */
+  --blue2: #4777fe;
+  --orange2: #fc7358;
+  --N101: #f5f5f5;
+  --N175: #f6f7f8;
+  --N201: #eaf1f5;
+  --v100: rgba(236, 245, 255, .502);
+  --box-shadow1: 0px 6px 12px rgba(30, 10, 58, .04);
+  --box-shadow2: 0px 6px 25px rgba(30, 10, 58, .08);
+  --P100: #275df5;
+  --N100: #ffffff;
+  --N300: #f7f7f9;
+  --N400: #e7e7f1;
+  --N500: #979ec2;
+  --N600: #717b9e;
+  --N601: #657095;
+  --N700: #474d6a;
+  --N800: #121224;
+  --I100: #f04141;
+  --I200: #47b749;
+  --I300: #fdaa29;
+  --S100: #f05537;
+  --S101: #de370d;
+  --A100: #ffedf2;
+  --A300: #edf4ff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #090d16;
-    --foreground: #f8fafc;
-    --card: #111827;
-    --card-foreground: #f8fafc;
-    --primary: #6366f1;
-    --primary-foreground: #ffffff;
-    --secondary: #1f2937;
-    --secondary-foreground: #f8fafc;
-    --muted: #94a3b8;
-    --muted-foreground: #64748b;
-    --accent: #f472b6;
-    --accent-foreground: #ffffff;
-    --border: #1f2937;
-    --ring: rgba(99, 102, 241, 0.4);
-  }
-}
+@theme {
+  --font-sans: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-@theme inline {
+  --color-indigo-600: #275df5;
+  --color-indigo-500: #3b6ef6;
+  --color-indigo-700: #1f4ed4;
+  --color-indigo-50: #edf4ff;
+  --color-indigo-100: #e7e7f1;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -50,7 +72,6 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-success: var(--success);
   --radius-lg: var(--radius);
@@ -59,52 +80,152 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar */
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+/* Extracted Component Classes */
+.btn-primary {
+  background: transparent;
+  color: #000000;
+  border-radius: 0px;
+  padding: 0px 0px;
+  font-size: 13.3333px;
+  font-weight: 400;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-filled {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #e7e7f1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filled:hover {
+  background: #f7f7f9;
+}
+
+.btn-filled-2 {
+  background: #ffffff;
+  color: #275df5;
+  border-radius: 40px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid #275df5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filled-2:hover {
+  background: #edf4ff;
+}
+
+.btn-filled-3 {
+  background: #275df5;
+  color: #ffffff;
+  border-radius: 40px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid #275df5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filled-3:hover {
+  background: #1f4ed4;
+}
+
+.card,
+.naukri-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e7e7f1;
+  box-shadow: 0px 6px 12px 0px rgba(30, 10, 58, 0.04);
+  transition: all 0.2s ease;
+}
+
+.card:hover,
+.naukri-card:hover {
+  box-shadow: 0px 6px 25px 0px rgba(30, 10, 58, 0.08);
+}
+
+/* Custom Visible Scrollbar */
+html {
+  scrollbar-width: auto;
+  scrollbar-color: #94a3b8 rgba(241, 245, 249, 0.6);
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 14px;
+  height: 14px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: #f8fafc;
+  border-left: 1px solid #e2e8f0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
+  background: #94a3b8;
+  border-radius: 9999px;
+  border: 3px solid #f8fafc;
+  transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: #64748b;
+  border-width: 2px;
 }
 
-/* Premium Animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
-  }
+::-webkit-scrollbar-thumb:active {
+  background: #475569;
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 3s infinite;
+.dark html {
+  scrollbar-color: #475569 rgba(15, 23, 42, 0.6);
 }
 
-/* Glassmorphism Styles */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-left-color: #1e293b;
 }
 
-.dark .glass-panel {
-  background: rgba(17, 24, 39, 0.65);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-color: #0f172a;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Hide Next.js dev overlay indicator & portal badge at bottom left */
+nextjs-portal,
+[data-nextjs-toast-wrapper],
+[data-nextjs-toast],
+[data-next-badge],
+#next-badge,
+#nextjs__container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }

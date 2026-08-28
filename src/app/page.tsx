@@ -10,9 +10,20 @@ import {
   Cpu, 
   ShieldCheck, 
   BarChart4, 
-  Sparkles,
-  Rocket
+  Sparkles, 
+  Rocket,
+  GraduationCap,
+  Calendar
 } from 'lucide-react';
+import { Job, Category } from '@/types';
+
+// Fast dynamic server-side rendering so each visitor gets fresh rotated listings
+export const dynamic = 'force-dynamic';
+
+function getRandomSample<T>(array: T[], count: number): T[] {
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
 
 // Assign dynamic icons based on category slug
 function getCategoryIcon(slug: string) {
@@ -37,84 +48,119 @@ function getCategoryIcon(slug: string) {
   }
 }
 
-export const revalidate = 60; // Revalidate page every 60 seconds
+import { fetchWithCache } from '@/lib/dataCache';
 
 export default async function Home() {
-  // Safe fetch for categories
-  let categories = [];
-  try {
-    const { data } = await supabase.from('categories').select('*').order('name');
-    categories = data || [];
-  } catch (err) {
-    console.error('Error fetching categories:', err);
-  }
+  // Parallel fetch cached categories & pools of jobs/internships
+  const [categories, allJobsPool, allInternshipsPool] = await Promise.all([
+    fetchWithCache<Category[]>('home:categories', async () => {
+      const { data } = await supabase.from('categories').select('*').order('name');
+      return (data || []) as Category[];
+    }, 180),
+    fetchWithCache<Job[]>('home:jobsPool', async () => {
+      const { data } = await supabase
+        .from('jobs')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
+        .not('title', 'ilike', '%intern%')
+        .not('title', 'ilike', '%internship%')
+        .not('title', 'ilike', '%apprentice%')
+        .not('title', 'ilike', '%fellowship%')
+        .order('created_at', { ascending: false })
+        .limit(30);
+      return (data || []) as unknown as Job[];
+    }, 60),
+    fetchWithCache<Job[]>('home:internshipsPool', async () => {
+      const { data } = await supabase
+        .from('jobs')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
+        .or('title.ilike.%intern%,title.ilike.%internship%,title.ilike.%apprentice%,title.ilike.%fellowship%')
+        .order('created_at', { ascending: false })
+        .limit(20);
+      return (data || []) as unknown as Job[];
+    }, 60),
+  ]);
 
-  // Safe fetch for featured jobs
-  let featuredJobs = [];
-  try {
-    const { data } = await supabase
-      .from('jobs')
-      .select('*, categories(*)')
-      .eq('featured_job', true)
-      .order('created_at', { ascending: false })
-      .limit(3);
-    featuredJobs = data || [];
-  } catch (err) {
-    console.error('Error fetching featured jobs:', err);
-  }
+  // Dynamically rotate listings for each visitor visit (prioritize featured)
+  const featuredJobs = allJobsPool.filter((j) => j.featured_job);
+  const regularJobs = allJobsPool.filter((j) => !j.featured_job);
+  const displayJobs = [
+    ...featuredJobs.slice(0, 2),
+    ...getRandomSample(regularJobs, 6 - Math.min(featuredJobs.length, 2)),
+  ].slice(0, 6);
 
-  // Safe fetch for latest jobs
-  let latestJobs = [];
-  try {
-    const { data } = await supabase
-      .from('jobs')
-      .select('*, categories(*)')
-      .order('created_at', { ascending: false })
-      .limit(6);
-    latestJobs = data || [];
-  } catch (err) {
-    console.error('Error fetching latest jobs:', err);
-  }
+  const displayInternships = getRandomSample(allInternshipsPool, 3);
 
   return (
     <div className="flex flex-col w-full pb-16">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-slate-950 px-6 pt-20 pb-28 text-center sm:px-8 lg:px-12">
+      <section className="relative overflow-hidden bg-slate-50/50 border-b border-slate-100 px-6 pt-12 pb-16 sm:pt-16 sm:pb-20 text-center sm:px-8 lg:px-12">
         {/* Subtle grid background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60" />
 
         {/* Glow blob */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl space-y-8">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold text-indigo-400">
+        <div className="relative mx-auto max-w-4xl space-y-6">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50/60 px-4 py-1.5 text-xs font-bold text-indigo-600 shadow-sm">
             <Rocket className="h-3.5 w-3.5" />
-            Empowering Computer Science & Engineering Freshers
+            Empowering All Freshers & Job Seekers
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
             Your Bridge from College <br />
-            To Your <span className="bg-gradient-to-r from-indigo-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">First Tech Job</span>
+            To Your <span className="text-[#275df5] dark:text-[#3b82f6]">First Tech Job</span>
           </h1>
 
-          <p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-400 font-medium">
+          <p className="mx-auto max-w-2xl text-sm sm:text-base text-slate-600 font-medium">
             Handpicked off-campus job drives, entry-level software roles, and developer internships for{' '}
-            <span className="text-white font-semibold">MCA, BCA, BSc CS & BE/BTech</span> freshers.
+            <span className="text-indigo-600 font-bold">all freshers & college graduates</span>.
           </p>
 
           {/* Search Bar Container */}
-          <div className="pt-4 flex justify-center">
+          <div className="pt-2 flex flex-col items-center gap-3">
             <SearchBar />
+
+            {/* Quick Action Shortcuts */}
+            <div className="flex items-center gap-2 pt-1 flex-wrap justify-center text-xs font-semibold">
+              <span className="text-slate-500">Popular:</span>
+              <Link
+                href="/jobs"
+                className="text-slate-700 hover:text-indigo-600 underline underline-offset-4 decoration-slate-300"
+              >
+                Software Engineer
+              </Link>
+              <span className="text-slate-300">•</span>
+              <Link
+                href="/internships"
+                className="text-slate-700 hover:text-indigo-600 underline underline-offset-4 decoration-slate-300"
+              >
+                Tech Internships
+              </Link>
+              <span className="text-slate-300">•</span>
+              <Link
+                href="/jobs?category=web-development"
+                className="text-slate-700 hover:text-indigo-600 underline underline-offset-4 decoration-slate-300"
+              >
+                Web Development
+              </Link>
+              <span className="text-slate-300">•</span>
+              <Link
+                href="/jobs?category=data-science-analytics"
+                className="text-slate-700 hover:text-indigo-600 underline underline-offset-4 decoration-slate-300"
+              >
+                Data Science
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Categories Grid */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16 w-full">
+      {/* 2. Categories Section */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-12 w-full">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
-            <p className="text-sm text-muted-foreground mt-1">Find opportunities aligned with your technical interest area.</p>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Find opportunities aligned with your technical interest area.</p>
           </div>
         </div>
 
@@ -124,6 +170,7 @@ export default async function Home() {
               <Link
                 key={category.id}
                 href={`/jobs?category=${category.slug}`}
+                prefetch={true}
                 className="group flex flex-col items-center justify-center text-center p-5 rounded-xl border border-border bg-card shadow-sm transition-all hover:border-indigo-500 hover:shadow-md"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary group-hover:bg-indigo-600/10 group-hover:scale-110 transition-all">
@@ -135,7 +182,6 @@ export default async function Home() {
               </Link>
             ))
           ) : (
-            // Mock categories if db is not seeded
             ['Software Dev', 'Frontend', 'Backend', 'Data Analytics', 'QA Testing', 'DevOps'].map((name, i) => (
               <div
                 key={i}
@@ -151,41 +197,31 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 3. Featured Jobs Section */}
-      {featuredJobs.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16 w-full">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-indigo-600 animate-ping" />
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">🔥 Featured Openings</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredJobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Latest Jobs Section */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16 w-full">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">📅 Latest Job Openings</h2>
-            <p className="text-sm text-muted-foreground mt-1">Direct off-campus drives updated recently.</p>
+      {/* 3. Latest Full-Time Jobs Section */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5">
+              <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600 shrink-0" />
+              <span>Featured & Latest Job Openings</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+              Discover fresh off-campus drives updated continuously.
+            </p>
           </div>
           <Link
             href="/jobs"
-            className="group inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-500"
+            prefetch={true}
+            className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-500 w-fit pt-0.5 sm:pt-0"
           >
-            <span>Browse All Jobs</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <span>Browse All Full-Time Jobs</span>
+            <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestJobs.length > 0 ? (
-            latestJobs.map((job) => (
+          {displayJobs.length > 0 ? (
+            displayJobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))
           ) : (
@@ -193,50 +229,53 @@ export default async function Home() {
               <Sparkles className="h-10 w-10 text-indigo-500 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-foreground mb-1">No Jobs Found</h3>
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
-                We are setting up the portal. Admin users can access the Admin Dashboard to post the first jobs!
+                We are refreshing recent listings. Browse all handpicked freshers jobs.
               </p>
               <Link
-                href="/admin"
+                href="/jobs"
+                prefetch={true}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
               >
-                Go to Admin Dashboard
+                Browse All Jobs
               </Link>
             </div>
           )}
         </div>
       </section>
 
-      {/* 5. Call To Action (CTA) */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-20 w-full">
-        <div className="relative overflow-hidden rounded-2xl bg-indigo-600 px-6 py-12 text-center shadow-xl sm:px-12 sm:py-16">
-          {/* Subtle decoration */}
-          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 rounded-full bg-indigo-500/20 blur-2xl" />
-          <div className="absolute bottom-0 left-0 -mb-8 -ml-8 w-40 h-40 rounded-full bg-indigo-500/20 blur-2xl" />
-
-          <div className="relative mx-auto max-w-2xl space-y-6">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Are you hiring tech freshers?
-            </h2>
-            <p className="text-indigo-100 text-sm sm:text-base">
-              Post your jobs, internships, and entry-level off-campus drives on FreshersBridge to connect directly with thousands of computer science graduates.
-            </p>
-            <div className="pt-2 flex justify-center gap-4">
-              <Link
-                href="/admin"
-                className="rounded-lg bg-white px-5 py-2.5 text-sm font-bold text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50"
-              >
-                Post a Job (Free)
-              </Link>
-              <Link
-                href="/jobs"
-                className="rounded-lg border border-indigo-400 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-indigo-500"
-              >
-                Explore Listings
-              </Link>
+      {/* 4. Top Student Internships Section */}
+      {displayInternships.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">
+                <GraduationCap className="h-3.5 w-3.5" />
+                Student & Fresh Graduate Opportunities
+              </div>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground">
+                🎓 Developer & Tech Internships
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                Explore summer/winter internships and apprenticeship roles.
+              </p>
             </div>
+            <Link
+              href="/internships"
+              prefetch={true}
+              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 w-fit pt-0.5 sm:pt-0"
+            >
+              <span>Browse All Internships</span>
+              <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
-        </div>
-      </section>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayInternships.map((internship) => (
+              <JobCard key={internship.id} job={internship} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

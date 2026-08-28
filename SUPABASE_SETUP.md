@@ -35,11 +35,15 @@ CREATE TABLE jobs (
     apply_url TEXT NOT NULL,
     source_name VARCHAR(255) NOT NULL DEFAULT 'FreshersBridge',
     source_url TEXT,
+    company_logo TEXT,
     featured_job BOOLEAN NOT NULL DEFAULT FALSE,
     views_count INT NOT NULL DEFAULT 0,
     application_deadline DATE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration for existing database instances:
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS company_logo TEXT;
 
 -- 3. Create Performance Optimization Indexes
 CREATE INDEX idx_jobs_category_id ON jobs(category_id);

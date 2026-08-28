@@ -3,12 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Category, Job } from '@/types';
+import { Category, Job, Subscriber } from '@/types';
 import { 
   saveJob, 
   deleteJob, 
   addCategory, 
-  deleteCategory 
+  deleteCategory,
+  addSubscriberAdmin,
+  deleteSubscriberAdmin,
+  sendDigestBroadcastAction,
+  logoutAdminAction,
+  resetAllJobViewsAction
 } from '@/app/admin/actions';
 import { 
   Plus, 
@@ -23,20 +28,32 @@ import {
   FolderPlus, 
   BarChart4, 
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Copy,
+  Upload,
+  Download,
+  Search,
+  Mail,
+  Send,
+  UserPlus,
+  LogOut,
+  ShieldCheck,
+  RotateCcw
 } from 'lucide-react';
 
 interface AdminDashboardProps {
   initialJobs: Job[];
   initialCategories: Category[];
+  initialSubscribers?: Subscriber[];
 }
 
-export default function AdminDashboard({ initialJobs, initialCategories }: AdminDashboardProps) {
+export default function AdminDashboard({ initialJobs, initialCategories, initialSubscribers = [] }: AdminDashboardProps) {
   const router = useRouter();
   
   // Lists state
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>(initialSubscribers);
 
   // Sync state with props when they change
   useEffect(() => {
@@ -47,12 +64,16 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
     setCategories(initialCategories);
   }, [initialCategories]);
 
+  useEffect(() => {
+    setSubscribers(initialSubscribers);
+  }, [initialSubscribers]);
+
   // Admin key auth state
   const [adminKey, setAdminKey] = useState<string>('');
   const [isKeySaved, setIsKeySaved] = useState<boolean>(false);
 
   // Tabs & Forms UI state
-  const [activeTab, setActiveTab] = useState<'jobs' | 'categories'>('jobs');
+  const [activeTab, setActiveTab] = useState<'jobs' | 'categories' | 'subscribers'>('jobs');
   const [showJobForm, setShowJobForm] = useState<boolean>(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   
@@ -74,6 +95,8 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
     apply_url: '',
     source_name: 'Company Website',
     source_url: '',
+    company_logo: '',
+    job_type: 'full-time',
     featured_job: false,
     application_deadline: '',
   });
@@ -81,6 +104,143 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
   // Action loading/notification states
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Search & Filter state for admin table
+  const [adminSearchQuery, setAdminSearchQuery] = useState<string>('');
+  const [adminCategoryFilter, setAdminCategoryFilter] = useState<string>('');
+
+  // Subscriber UI state
+  const [adminSubscriberSearch, setAdminSubscriberSearch] = useState<string>('');
+  const [showAddSubscriberModal, setShowAddSubscriberModal] = useState<boolean>(false);
+  const [showBroadcastModal, setShowBroadcastModal] = useState<boolean>(false);
+  const [newSubEmail, setNewSubEmail] = useState<string>('');
+  const [newSubName, setNewSubName] = useState<string>('');
+
+  // Multi-Job Digest Broadcast State
+  const [selectedJobIds, setSelectedJobIds] = useState<string[]>([]);
+  const [customDigestSubject, setCustomDigestSubject] = useState<string>('');
+  const [isSendingDigest, setIsSendingDigest] = useState<boolean>(false);
+
+  const downloadSubscribersCSV = () => {
+    if (subscribers.length === 0) {
+      showNotification('error', 'No subscribers available to export.');
+      return;
+    }
+    const headers = ['Email', 'Name', 'Source', 'Status', 'Subscribed At'];
+    const rows = subscribers.map((sub) => [
+      `"${sub.email.replace(/"/g, '""')}"`,
+      `"${(sub.name || '').replace(/"/g, '""')}"`,
+      `"${(sub.source || 'footer').replace(/"/g, '""')}"`,
+      `"${(sub.status || 'active').replace(/"/g, '""')}"`,
+      `"${new Date(sub.created_at).toLocaleString()}"`,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `freshersbridge_subscribers_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    showNotification('success', `Exported ${subscribers.length} subscribers to CSV!`);
+  };
+
+  const copyAllEmailsToClipboard = () => {
+    if (subscribers.length === 0) {
+      showNotification('error', 'No subscriber emails to copy.');
+      return;
+    }
+    const emailList = subscribers.map((s) => s.email).join(', ');
+    navigator.clipboard.writeText(emailList);
+    showNotification('success', `Copied ${subscribers.length} subscriber emails to clipboard!`);
+  };
+
+  const handleAddSubscriberSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!adminKey) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+    if (!newSubEmail || !newSubEmail.includes('@')) {
+      showNotification('error', 'Please enter a valid email address.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const res = await addSubscriberAdmin(newSubEmail, newSubName, adminKey);
+    setIsSubmitting(false);
+
+    if (res.success && res.subscriber) {
+      setSubscribers((prev) => [res.subscriber, ...prev]);
+      setNewSubEmail('');
+      setNewSubName('');
+      setShowAddSubscriberModal(false);
+      showNotification('success', 'Subscriber added successfully.');
+    } else {
+      showNotification('error', res.error || 'Failed to add subscriber.');
+    }
+  };
+
+  const handleDeleteSubscriberClick = async (id: string) => {
+    if (!adminKey) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+    if (!confirm('Are you sure you want to remove this subscriber?')) return;
+
+    const res = await deleteSubscriberAdmin(id, adminKey);
+    if (res.success) {
+      setSubscribers((prev) => prev.filter((s) => s.id !== id));
+      showNotification('success', 'Subscriber removed.');
+    } else {
+      showNotification('error', res.error || 'Failed to remove subscriber.');
+    }
+  };
+
+  const filteredSubscribers = subscribers.filter((sub) => {
+    const query = adminSubscriberSearch.toLowerCase();
+    return sub.email.toLowerCase().includes(query) || (sub.name && sub.name.toLowerCase().includes(query));
+  });
+
+  const toggleSelectJobForDigest = (jobId: string) => {
+    setSelectedJobIds((prev) =>
+      prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+    );
+  };
+
+  const handleSelectAllTopJobs = () => {
+    const topIds = jobs.slice(0, 10).map((j) => j.id);
+    setSelectedJobIds(topIds);
+  };
+
+  const handleSendDigestBroadcast = async () => {
+    if (!adminKey) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+    if (subscribers.length === 0) {
+      showNotification('error', 'No active subscribers to send broadcast to.');
+      return;
+    }
+
+    setIsSendingDigest(true);
+    const targetIds = selectedJobIds.length > 0 ? selectedJobIds : jobs.slice(0, 10).map((j) => j.id);
+
+    const result = await sendDigestBroadcastAction(
+      targetIds,
+      customDigestSubject,
+      adminKey
+    );
+    setIsSendingDigest(false);
+
+    if (result.success) {
+      showNotification('success', `Multi-Job Digest sent successfully to ${result.count ?? subscribers.length} subscribers!`);
+      setShowBroadcastModal(false);
+      setSelectedJobIds([]);
+      setCustomDigestSubject('');
+    } else {
+      showNotification('error', result.error || 'Failed to send digest broadcast.');
+    }
+  };
 
   // Load admin key from localStorage on mount
   useEffect(() => {
@@ -107,6 +267,30 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
     showNotification('success', 'Admin key removed.');
   };
 
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('freshersbridge_admin_key');
+      await logoutAdminAction();
+      router.refresh();
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
+  const handleResetViews = async () => {
+    if (!confirm('Are you sure you want to reset all job views to 0 for a fresh launch start?')) {
+      return;
+    }
+    const key = adminKey || localStorage.getItem('freshersbridge_admin_key') || '';
+    const res = await resetAllJobViewsAction(key);
+    if (res.success) {
+      setJobs((prev) => prev.map((j) => ({ ...j, views_count: 0 })));
+      showNotification('success', 'All job views have been reset to 0.');
+    } else {
+      showNotification('error', res.error || 'Failed to reset views.');
+    }
+  };
+
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
     setTimeout(() => {
@@ -124,12 +308,14 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
       location: '',
       category_id: categories[0]?.id || '',
       salary: '',
-      eligibility: 'BCA, MCA, BTech',
+      eligibility: 'Any Graduate / Freshers',
       skills: '',
       description: '',
       apply_url: '',
       source_name: 'Company Website',
       source_url: '',
+      company_logo: '',
+      job_type: 'full-time',
       featured_job: false,
       application_deadline: '',
     });
@@ -152,6 +338,8 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
       apply_url: job.apply_url,
       source_name: job.source_name || 'Company Website',
       source_url: job.source_url || '',
+      company_logo: job.company_logo || '',
+      job_type: job.job_type || (job.title.toLowerCase().includes('intern') ? 'internship' : 'full-time'),
       featured_job: job.featured_job,
       application_deadline: job.application_deadline ? job.application_deadline.split('T')[0] : '',
     });
@@ -170,7 +358,22 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
     const result = await saveJob(
       {
         id: editingJob?.id,
-        ...jobForm,
+        title: jobForm.title,
+        slug: jobForm.slug,
+        company: jobForm.company,
+        location: jobForm.location,
+        category_id: jobForm.category_id,
+        salary: jobForm.salary,
+        eligibility: jobForm.eligibility,
+        skills: jobForm.skills,
+        description: jobForm.description,
+        apply_url: jobForm.apply_url,
+        source_name: jobForm.source_name,
+        source_url: jobForm.source_url,
+        company_logo: jobForm.company_logo,
+        job_type: jobForm.job_type,
+        featured_job: jobForm.featured_job,
+        application_deadline: jobForm.application_deadline,
       },
       adminKey
     );
@@ -244,6 +447,175 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
     }
   };
 
+  // Clone/Duplicate Job handler
+  const handleCloneJobClick = (job: Job) => {
+    setEditingJob(null); // Cloning creates a new job
+    setJobForm({
+      title: `${job.title} (Copy)`,
+      slug: '', // Allow dynamic slug auto-generation
+      company: job.company,
+      location: job.location,
+      category_id: job.category_id || '',
+      salary: job.salary || '',
+      eligibility: job.eligibility,
+      skills: job.skills.join(', '),
+      description: job.description,
+      apply_url: job.apply_url,
+      source_name: job.source_name || 'Company Website',
+      source_url: job.source_url || '',
+      company_logo: job.company_logo || '',
+      job_type: job.job_type || (job.title.toLowerCase().includes('intern') ? 'internship' : 'full-time'),
+      featured_job: false, // Don't default clone to featured
+      application_deadline: job.application_deadline ? job.application_deadline.split('T')[0] : '',
+    });
+    setShowJobForm(true);
+    showNotification('success', 'Job details cloned. Modify and save to publish.');
+  };
+
+  // Custom Simple CSV Line Parser
+  const parseCSV = (text: string) => {
+    const lines = text.split('\n');
+    if (lines.length === 0) return [];
+
+    const headers = lines[0].split(',').map((h) => h.trim().replace(/^["']|["']$/g, ''));
+    const rows: any[] = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const values: string[] = [];
+      let currentValue = '';
+      let inQuotes = false;
+
+      for (let j = 0; j < line.length; j++) {
+        const char = line[j];
+        if (char === '"' || char === "'") {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(currentValue.trim().replace(/^["']|["']$/g, ''));
+          currentValue = '';
+        } else {
+          currentValue += char;
+        }
+      }
+      values.push(currentValue.trim().replace(/^["']|["']$/g, ''));
+
+      const row: any = {};
+      headers.forEach((header, index) => {
+        row[header] = values[index] || '';
+      });
+      rows.push(row);
+    }
+    return rows;
+  };
+
+  // Download Job CSV Template
+  const downloadCSVTemplate = () => {
+    const headers = ['title', 'company', 'location', 'eligibility', 'skills', 'description', 'apply_url', 'salary', 'category_slug'];
+    const sampleData = [
+      ['Software Engineer Intern', 'Microsoft', 'Bangalore', 'BTech, MCA', 'React, TypeScript, Node.js', 'We are looking for developer interns...', 'https://careers.microsoft.com', '₹50,000/month', 'software-development'],
+      ['Associate Web Developer', 'FreshersBridge', 'Remote', 'BCA, BSc CS', 'HTML, CSS, JavaScript', 'Build premium user interfaces...', 'https://freshersbridge.in/apply', '3.6 LPA', 'web-development']
+    ];
+    
+    const csvContent = [
+      headers.join(','),
+      ...sampleData.map(row => row.map(val => `"${val.replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'freshersbridge_jobs_template.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // CSV Import File handler
+  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!adminKey) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      if (!text) return;
+
+      try {
+        const rows = parseCSV(text);
+        if (rows.length === 0) {
+          showNotification('error', 'No valid rows found in the CSV.');
+          return;
+        }
+
+        setIsSubmitting(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          
+          if (!row.title || !row.company || !row.location || !row.eligibility || !row.description || !row.apply_url) {
+            failCount++;
+            continue;
+          }
+
+          let catId = categories[0]?.id || '';
+          if (row.category_slug) {
+            const matchedCat = categories.find(
+              (c) => c.slug === row.category_slug.trim().toLowerCase()
+            );
+            if (matchedCat) {
+              catId = matchedCat.id;
+            }
+          }
+
+          const jobData = {
+            title: row.title,
+            company: row.company,
+            location: row.location,
+            category_id: catId,
+            salary: row.salary || '',
+            eligibility: row.eligibility,
+            skills: row.skills || '',
+            description: row.description,
+            apply_url: row.apply_url,
+            source_name: row.source_name || 'Company Website',
+            source_url: row.source_url || '',
+            featured_job: row.featured_job?.toLowerCase() === 'true',
+            application_deadline: row.application_deadline || '',
+          };
+
+          const result = await saveJob(jobData, adminKey);
+          if (result.success) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        }
+
+        setIsSubmitting(false);
+        router.refresh();
+        showNotification(
+          'success',
+          `CSV import complete. Successfully imported ${successCount} jobs. Failed: ${failCount}`
+        );
+      } catch (err) {
+        setIsSubmitting(false);
+        showNotification('error', 'Failed to parse CSV file. Ensure valid formatting.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
   // Calculate statistics
   const totalViews = jobs.reduce((sum, job) => sum + (job.views_count || 0), 0);
   const featuredCount = jobs.filter((job) => job.featured_job).length;
@@ -257,58 +629,56 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
           <p className="text-sm text-muted-foreground mt-1">Manage job postings, categories, and view analytics.</p>
         </div>
 
-        {/* Admin Key authentication checker */}
-        <form onSubmit={handleSaveKey} className="flex items-center gap-2">
-          <div className="relative">
-            <Key className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input
-              type="password"
-              placeholder="Enter Admin Access Key"
-              value={adminKey}
-              onChange={(e) => setAdminKey(e.target.value)}
-              disabled={isKeySaved}
-              className="rounded-lg border border-border bg-card pl-9 pr-3 py-2 text-sm outline-none focus:border-indigo-600 disabled:opacity-75"
-            />
+        {/* Authenticated Admin Controls */}
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 px-3.5 py-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-2xs">
+            <ShieldCheck className="h-4 w-4" />
+            <span>Admin Authenticated</span>
           </div>
-          {isKeySaved ? (
-            <button
-              type="button"
-              onClick={handleClearKey}
-              className="rounded-lg border border-border bg-card hover:bg-secondary px-3.5 py-2 text-xs font-semibold text-rose-500 transition-colors"
-            >
-              Clear Key
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="rounded-lg bg-indigo-600 hover:bg-indigo-500 px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors"
-            >
-              Save Key
-            </button>
-          )}
-        </form>
+
+          <button
+            onClick={handleLogout}
+            className="rounded-xl border border-rose-200 dark:border-rose-800/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 px-4 py-2 text-xs font-bold transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
-      {/* Notification Toast */}
+      {/* Premium Floating Notification Toast */}
       {notification && (
         <div
-          className={`flex items-center gap-2.5 rounded-lg border p-4 text-sm animate-pulse-glow ${
+          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-border bg-card/90 backdrop-blur-md p-4 shadow-xl transition-all duration-300 animate-in slide-in-from-bottom-5 max-w-sm ${
             notification.type === 'success'
-              ? 'border-emerald-500/20 bg-emerald-550/10 text-emerald-600 dark:text-emerald-400'
-              : 'border-rose-500/20 bg-rose-550/10 text-rose-600 dark:text-rose-400'
+              ? 'border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-emerald-500/5'
+              : 'border-rose-500/30 text-rose-600 dark:text-rose-400 shadow-rose-500/5'
           }`}
         >
-          {notification.type === 'success' ? (
-            <CheckCircle className="h-5 w-5 shrink-0" />
-          ) : (
-            <AlertCircle className="h-5 w-5 shrink-0" />
-          )}
-          <span>{notification.message}</span>
+          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+            notification.type === 'success' ? 'bg-emerald-500/10' : 'bg-rose-500/10'
+          }`}>
+            {notification.type === 'success' ? (
+              <CheckCircle className="h-5 w-5" />
+            ) : (
+              <AlertCircle className="h-5 w-5" />
+            )}
+          </div>
+          <div className="flex-1 text-sm font-semibold text-foreground pr-2 leading-snug">
+            {notification.message}
+          </div>
+          <button
+            type="button"
+            onClick={() => setNotification(null)}
+            className="rounded-lg p-1 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="rounded-xl border border-border bg-card p-5 shadow-sm flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600">
             <Briefcase className="h-6 w-6" />
@@ -329,14 +699,24 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-5 shadow-sm flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-500">
-            <BarChart4 className="h-6 w-6" />
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm flex items-center justify-between gap-3">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-500 shrink-0">
+              <BarChart4 className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Views</p>
+              <p className="text-2xl font-black text-foreground">{totalViews}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Job Views</p>
-            <p className="text-2xl font-black text-foreground">{totalViews}</p>
-          </div>
+          <button
+            type="button"
+            onClick={handleResetViews}
+            title="Reset all job views to 0 for a clean launch start"
+            className="p-1.5 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+          </button>
         </div>
 
         <div className="rounded-xl border border-border bg-card p-5 shadow-sm flex items-center gap-4">
@@ -348,35 +728,61 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
             <p className="text-2xl font-black text-foreground">{categories.length}</p>
           </div>
         </div>
+
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm flex items-center gap-4 col-span-2 lg:col-span-1">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 text-teal-500">
+            <Mail className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Subscribers</p>
+            <p className="text-2xl font-black text-foreground">{subscribers.length}</p>
+          </div>
+        </div>
       </div>
 
       {/* Tabs list */}
-      <div className="flex items-center border-b border-border">
+      <div className="flex items-center border-b border-border gap-2">
         <button
           onClick={() => {
             setActiveTab('jobs');
             setShowJobForm(false);
           }}
-          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px ${
+          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px flex items-center gap-2 ${
             activeTab === 'jobs'
               ? 'border-indigo-600 text-indigo-600'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          Manage Jobs
+          <Briefcase className="h-4 w-4" />
+          <span>Manage Jobs</span>
         </button>
         <button
           onClick={() => {
             setActiveTab('categories');
             setShowJobForm(false);
           }}
-          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px ${
+          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px flex items-center gap-2 ${
             activeTab === 'categories'
               ? 'border-indigo-600 text-indigo-600'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          Manage Categories
+          <FolderPlus className="h-4 w-4" />
+          <span>Manage Categories</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('subscribers');
+            setShowJobForm(false);
+          }}
+          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px flex items-center gap-2 ${
+            activeTab === 'subscribers'
+              ? 'border-emerald-600 text-emerald-600'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Mail className="h-4 w-4" />
+          <span>Subscribers ({subscribers.length})</span>
         </button>
       </div>
 
@@ -385,15 +791,69 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
         <div className="space-y-6">
           {!showJobForm ? (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              {/* Header and Controls */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <h2 className="text-lg font-bold text-foreground">Active Job Postings</h2>
-                <button
-                  onClick={handleAddJobClick}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors"
+                
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Download Template Button */}
+                  <button
+                    onClick={downloadCSVTemplate}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
+                    title="Download Sample CSV Template"
+                  >
+                    <Download className="h-4 w-4" />
+                    CSV Template
+                  </button>
+
+                  {/* CSV File Upload Trigger */}
+                  <label className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-all">
+                    <Upload className="h-4 w-4" />
+                    Upload CSV
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={handleCSVUpload}
+                      disabled={isSubmitting}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {/* Add New Job */}
+                  <button
+                    onClick={handleAddJobClick}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors"
+                  >
+                    <Plus className="h-4.5 w-4.5" />
+                    Add New Job
+                  </button>
+                </div>
+              </div>
+
+              {/* Table search & category filter bars */}
+              <div className="flex flex-col sm:flex-row gap-3 items-center border border-border bg-card p-3 rounded-xl">
+                <div className="relative flex-1 w-full">
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search active jobs by title or company..."
+                    value={adminSearchQuery}
+                    onChange={(e) => setAdminSearchQuery(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background pl-9 pr-3 py-2 text-xs outline-none focus:border-indigo-600"
+                  />
+                </div>
+                <select
+                  value={adminCategoryFilter}
+                  onChange={(e) => setAdminCategoryFilter(e.target.value)}
+                  className="w-full sm:w-48 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-indigo-600"
                 >
-                  <Plus className="h-4.5 w-4.5" />
-                  Add New Job
-                </button>
+                  <option value="">All Categories</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Jobs Table */}
@@ -410,57 +870,74 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {jobs.length > 0 ? (
-                      jobs.map((job) => (
-                        <tr key={job.id} className="hover:bg-secondary/25 transition-colors">
-                          <td className="p-4 font-semibold text-foreground">
-                            <Link href={`/jobs/${job.slug}`} target="_blank" className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1">
-                              {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                            </Link>
-                          </td>
-                          <td className="p-4 text-muted-foreground">{job.company}</td>
-                          <td className="p-4">
-                            <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
-                              {job.categories?.name || 'Uncategorized'}
-                            </span>
-                          </td>
-                          <td className="p-4 text-center">
-                            {job.featured_job ? (
-                              <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-600">
-                                Yes
+                    {(() => {
+                      const filteredJobs = jobs.filter((job) => {
+                        const matchesSearch =
+                          job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                          job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
+                        const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
+                        return matchesSearch && matchesCategory;
+                      });
+
+                      return filteredJobs.length > 0 ? (
+                        filteredJobs.map((job) => (
+                          <tr key={job.id} className="hover:bg-secondary/25 transition-colors">
+                            <td className="p-4 font-semibold text-foreground">
+                              <Link href={`/jobs/${job.slug}`} target="_blank" className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1">
+                                {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                              </Link>
+                            </td>
+                            <td className="p-4 text-muted-foreground">{job.company}</td>
+                            <td className="p-4">
+                              <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
+                                {job.categories?.name || 'Uncategorized'}
                               </span>
-                            ) : (
-                              <span className="text-xs text-muted-foreground">No</span>
-                            )}
-                          </td>
-                          <td className="p-4 text-center font-medium text-foreground/80 flex items-center justify-center gap-1 py-5">
-                            <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
-                          </td>
-                          <td className="p-4 text-right space-x-2">
-                            <button
-                              onClick={() => handleEditJobClick(job)}
-                              className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
-                              title="Edit Job"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteJob(job.id)}
-                              className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
-                              title="Delete Job"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            </td>
+                            <td className="p-4 text-center">
+                              {job.featured_job ? (
+                                <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-600">
+                                  Yes
+                                </span>
+                              ) : (
+                                <span className="text-xs text-muted-foreground">No</span>
+                              )}
+                            </td>
+                            <td className="p-4 text-center font-medium text-foreground/80 flex items-center justify-center gap-1 py-5">
+                              <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                            </td>
+                            <td className="p-4 text-right space-x-2">
+                              <button
+                                onClick={() => handleCloneJobClick(job)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                title="Duplicate/Clone Job"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleEditJobClick(job)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                title="Edit Job"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteJob(job.id)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
+                                title="Delete Job"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="p-12 text-center text-muted-foreground">
+                            No matching jobs found. Try adjusting your filters.
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={6} className="p-12 text-center text-muted-foreground">
-                          No jobs posted yet. Click &quot;Add New Job&quot; to get started.
-                        </td>
-                      </tr>
-                    )}
+                      );
+                    })()}
                   </tbody>
                 </table>
               </div>
@@ -550,6 +1027,20 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
                     </select>
                   </div>
 
+                  {/* Job / Internship Type */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-semibold text-foreground">Opportunity Type *</label>
+                    <select
+                      required
+                      value={jobForm.job_type}
+                      onChange={(e) => setJobForm({ ...jobForm, job_type: e.target.value })}
+                      className="rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-indigo-600 font-medium text-foreground"
+                    >
+                      <option value="full-time">Full-Time Job</option>
+                      <option value="internship">Internship</option>
+                    </select>
+                  </div>
+
                   {/* Salary */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-foreground">Salary / Stipend</label>
@@ -595,6 +1086,21 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
                       value={jobForm.apply_url}
                       onChange={(e) => setJobForm({ ...jobForm, apply_url: e.target.value })}
                       placeholder="https://careers.company.com/job-apply-page"
+                      className="rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-indigo-600"
+                    />
+                  </div>
+
+                  {/* Company Logo URL */}
+                  <div className="flex flex-col gap-1.5 md:col-span-2">
+                    <label className="text-sm font-semibold text-foreground flex items-center justify-between">
+                      <span>Company Logo Image URL (Optional)</span>
+                      <span className="text-xs text-muted-foreground font-normal">Displays custom logo on job card</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={jobForm.company_logo}
+                      onChange={(e) => setJobForm({ ...jobForm, company_logo: e.target.value.trim() })}
+                      placeholder="https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg"
                       className="rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-indigo-600"
                     />
                   </div>
@@ -764,6 +1270,335 @@ export default function AdminDashboard({ initialJobs, initialCategories }: Admin
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subscribers Tab */}
+      {activeTab === 'subscribers' && (
+        <div className="space-y-6">
+          {/* Header Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Mail className="h-5 w-5 text-emerald-500" />
+                <span>Newsletter Subscribers ({subscribers.length})</span>
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Manage, export, or send job updates to all registered email subscribers.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Export CSV */}
+              <button
+                onClick={downloadSubscribersCSV}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-secondary transition-all shadow-sm"
+              >
+                <Download className="h-4 w-4 text-emerald-500" />
+                <span>Export CSV</span>
+              </button>
+
+              {/* Copy Email List */}
+              <button
+                onClick={copyAllEmailsToClipboard}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-secondary transition-all shadow-sm"
+              >
+                <Copy className="h-4 w-4 text-indigo-500" />
+                <span>Copy All Emails</span>
+              </button>
+
+              {/* Broadcast Modal Trigger */}
+              <button
+                onClick={() => setShowBroadcastModal(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 text-xs font-bold transition-all shadow-sm"
+              >
+                <Send className="h-4 w-4" />
+                <span>Send Job Update</span>
+              </button>
+
+              {/* Add Subscriber */}
+              <button
+                onClick={() => setShowAddSubscriberModal(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-xs font-bold transition-all shadow-sm"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Subscriber</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Search Filter */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search subscribers by email or name..."
+              value={adminSubscriberSearch}
+              onChange={(e) => setAdminSubscriberSearch(e.target.value)}
+              className="w-full rounded-xl border border-border bg-card pl-9 pr-4 py-2 text-xs font-medium outline-none focus:border-emerald-500"
+            />
+          </div>
+
+          {/* Table */}
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-border bg-secondary/50 text-muted-foreground font-semibold">
+                    <th className="p-3.5">#</th>
+                    <th className="p-3.5">Subscriber Email</th>
+                    <th className="p-3.5">Name</th>
+                    <th className="p-3.5">Source</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5">Subscribed Date</th>
+                    <th className="p-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredSubscribers.length > 0 ? (
+                    filteredSubscribers.map((sub, index) => (
+                      <tr key={sub.id || index} className="hover:bg-secondary/25 transition-colors">
+                        <td className="p-3.5 text-muted-foreground font-mono">{index + 1}</td>
+                        <td className="p-3.5 font-bold text-foreground">{sub.email}</td>
+                        <td className="p-3.5 text-muted-foreground">{sub.name || '—'}</td>
+                        <td className="p-3.5">
+                          <span className="inline-block rounded-md bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground uppercase">
+                            {sub.source || 'Footer'}
+                          </span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 text-[10px] font-bold">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            {sub.status || 'Active'}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-muted-foreground">
+                          {sub.created_at ? new Date(sub.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button
+                            onClick={() => handleDeleteSubscriberClick(sub.id)}
+                            className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-200 transition-colors"
+                            title="Remove Subscriber"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={7} className="p-12 text-center space-y-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary mx-auto text-muted-foreground">
+                          <Mail className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm font-semibold text-foreground">No subscribers found</p>
+                        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                          {adminSubscriberSearch
+                            ? 'No subscriber email matches your search query.'
+                            : 'Subscribers will appear here once visitors subscribe on your site. If your database table is not created yet, make sure to execute the SQL snippet in Supabase SQL Editor!'}
+                        </p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Subscriber Modal */}
+      {showAddSubscriberModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                <Mail className="h-5 w-5 text-indigo-600" />
+                <span>Add Subscriber Manually</span>
+              </h3>
+              <button
+                onClick={() => setShowAddSubscriberModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubscriberSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="subscriber@example.com"
+                  value={newSubEmail}
+                  onChange={(e) => setNewSubEmail(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-xs outline-none focus:border-indigo-600"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Subscriber Name (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Rahul Sharma"
+                  value={newSubName}
+                  onChange={(e) => setNewSubName(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-xs outline-none focus:border-indigo-600"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddSubscriberModal(false)}
+                  className="rounded-xl border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-bold shadow-sm disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Adding...' : 'Add Subscriber'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast / Send Job Updates Modal */}
+      {showBroadcastModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div>
+                <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <Send className="h-5 w-5 text-emerald-500" />
+                  <span>Send Multi-Job Digest Email</span>
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Curated Unstop-style email broadcast for your subscribers.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowBroadcastModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 p-3.5 text-xs text-foreground space-y-1">
+                <p className="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                  <Sparkles className="h-4 w-4" />
+                  Broadcast Information
+                </p>
+                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                  This will dispatch a beautifully formatted <strong>Recommended Opportunities Digest</strong> email directly to all <strong>{subscribers.length} active subscribers</strong> via Resend API.
+                </p>
+              </div>
+
+              {/* Custom Subject Line */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Email Subject Line (Optional)</label>
+                <input
+                  type="text"
+                  placeholder={`🔥 ${selectedJobIds.length || Math.min(jobs.length, 10)} New Opportunities Curated for You | FreshersBridge`}
+                  value={customDigestSubject}
+                  onChange={(e) => setCustomDigestSubject(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-xs outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              {/* Job Selection Header */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-foreground">
+                    Select Jobs for Digest ({selectedJobIds.length > 0 ? selectedJobIds.length : Math.min(jobs.length, 10)} selected)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleSelectAllTopJobs}
+                    className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                  >
+                    Select Top 10
+                  </button>
+                </div>
+
+                <div className="max-h-48 overflow-y-auto space-y-2 rounded-xl border border-border bg-secondary/20 p-2.5">
+                  {jobs.map((job) => {
+                    const isSelected = selectedJobIds.includes(job.id);
+                    return (
+                      <div
+                        key={job.id}
+                        onClick={() => toggleSelectJobForDigest(job.id)}
+                        className={`p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex items-center justify-between ${
+                          isSelected
+                            ? 'bg-emerald-500/10 border-emerald-500/50 text-foreground'
+                            : 'bg-card border-border hover:border-border/80 text-muted-foreground'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {}}
+                            className="rounded border-border text-emerald-600 focus:ring-emerald-500 h-4 w-4"
+                          />
+                          <div>
+                            <p className="font-bold text-foreground">{job.title}</p>
+                            <p className="text-[11px] text-muted-foreground">{job.company} • {job.location}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] bg-secondary border border-border px-2 py-0.5 rounded-full font-bold text-foreground">
+                          {job.salary || 'Best in Industry'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2 pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={handleSendDigestBroadcast}
+                  disabled={isSendingDigest}
+                  className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white py-3 text-xs font-extrabold shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>
+                    {isSendingDigest
+                      ? `Sending Multi-Job Digest to ${subscribers.length} subscribers...`
+                      : `🚀 Send Multi-Job Digest to ${subscribers.length} Subscribers`}
+                  </span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    onClick={downloadSubscribersCSV}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card py-2 text-xs font-semibold hover:bg-secondary text-foreground"
+                  >
+                    <Download className="h-3.5 w-3.5 text-emerald-500" />
+                    Download CSV
+                  </button>
+                  <button
+                    onClick={copyAllEmailsToClipboard}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card py-2 text-xs font-semibold hover:bg-secondary text-foreground"
+                  >
+                    <Copy className="h-3.5 w-3.5 text-indigo-500" />
+                    Copy Emails
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

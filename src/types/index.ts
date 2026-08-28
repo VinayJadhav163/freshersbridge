@@ -21,8 +21,20 @@ export interface Job {
   source_url: string | null;
   featured_job: boolean;
   views_count: number;
+  company_logo?: string | null;
+  job_type?: string | null; // "full-time" | "internship"
   application_deadline: string | null;
   created_at: string;
   // Relational details populated via Supabase joins
   categories?: Category | null;
 }
+
+export interface Subscriber {
+  id: string;
+  email: string;
+  name?: string | null;
+  source?: string | null;
+  status?: string | null;
+  created_at: string;
+}
+

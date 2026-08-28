@@ -1,9 +1,12 @@
+import { cache } from 'react';
 import { supabase } from '@/lib/supabase';
 import JobCard from '@/components/JobCard';
 import JobFilters from '@/components/JobFilters';
 import SearchBar from '@/components/SearchBar';
+import Pagination from '@/components/Pagination';
 import Link from 'next/link';
-import { Sparkles, Briefcase } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
+import { Job, Category } from '@/types';
 
 interface SearchParams {
   q?: string;
@@ -18,7 +21,17 @@ interface JobsPageProps {
   searchParams: Promise<SearchParams>;
 }
 
-export const revalidate = 0; // Disable caching for search results to ensure freshness
+export const revalidate = 60; // 60s background ISR cache for sub-100ms loading
+
+import { fetchWithCache } from '@/lib/dataCache';
+
+// Cached category lookup
+const getCachedCategories = cache(async (): Promise<Category[]> => {
+  return fetchWithCache<Category[]>('all_categories', async () => {
+    const { data } = await supabase.from('categories').select('*').order('name');
+    return (data || []) as Category[];
+  }, 300);
+});
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {
   const resolvedSearchParams = await searchParams;
@@ -29,61 +42,67 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const featured = resolvedSearchParams.featured || '';
   const page = resolvedSearchParams.page || '1';
 
-  // 1. Fetch categories for filters sidebar
-  let categories = [];
-  try {
-    const { data } = await supabase.from('categories').select('*').order('name');
-    categories = data || [];
-  } catch (err) {
-    console.error('Error fetching categories:', err);
-  }
-
-  // 2. Resolve Category Slug to ID
+  // 1. Fetch cached categories
+  const categories = await getCachedCategories();
   let categoryId = '';
   if (categorySlug) {
     const activeCat = categories.find((c) => c.slug === categorySlug);
     if (activeCat) categoryId = activeCat.id;
   }
 
-  // 3. Build Jobs Query
-  let queryBuilder = supabase.from('jobs').select('*, categories(*)', { count: 'exact' });
-
-  if (q) {
-    queryBuilder = queryBuilder.or(`title.ilike.%${q}%,company.ilike.%${q}%,eligibility.ilike.%${q}%`);
-  }
-  if (location) {
-    queryBuilder = queryBuilder.ilike('location', `%${location}%`);
-  }
-  if (categoryId) {
-    queryBuilder = queryBuilder.eq('category_id', categoryId);
-  }
-  if (eligibility) {
-    queryBuilder = queryBuilder.ilike('eligibility', `%${eligibility}%`);
-  }
-  if (featured === 'true') {
-    queryBuilder = queryBuilder.eq('featured_job', true);
-  }
-
-  // Pagination logic
-  const itemsPerPage = 9;
+  // 2. Pagination indices (10 jobs per page)
+  const itemsPerPage = 10;
   const currentPage = parseInt(page) || 1;
   const from = (currentPage - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
-  let jobs = [];
-  let totalCount = 0;
+  // 3. High-speed cached query execution
+  const cacheKey = `jobs:${q}:${location}:${categoryId}:${eligibility}:${featured}:${page}`;
+  const { jobs, totalCount } = await fetchWithCache<{ jobs: Job[]; totalCount: number }>(
+    cacheKey,
+    async () => {
+      let queryBuilder = supabase
+        .from('jobs')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)', { count: 'exact' })
+        .not('title', 'ilike', '%intern%')
+        .not('title', 'ilike', '%internship%')
+        .not('title', 'ilike', '%apprentice%')
+        .not('title', 'ilike', '%fellowship%');
 
-  try {
-    const { data, count, error } = await queryBuilder
-      .order('created_at', { ascending: false })
-      .range(from, to);
+      if (q) {
+        queryBuilder = queryBuilder.or(`title.ilike.%${q}%,company.ilike.%${q}%,eligibility.ilike.%${q}%`);
+      }
+      if (location) {
+        queryBuilder = queryBuilder.ilike('location', `%${location}%`);
+      }
+      if (categoryId) {
+        queryBuilder = queryBuilder.eq('category_id', categoryId);
+      }
+      if (eligibility) {
+        queryBuilder = queryBuilder.ilike('eligibility', `%${eligibility}%`);
+      }
+      if (featured === 'true') {
+        queryBuilder = queryBuilder.eq('featured_job', true);
+      }
 
-    if (error) throw error;
-    jobs = data || [];
-    totalCount = count || 0;
-  } catch (err) {
-    console.error('Error fetching jobs:', err);
-  }
+      try {
+        const { data, count, error } = await queryBuilder
+          .order('created_at', { ascending: false })
+          .range(from, to);
+
+        if (error) throw error;
+        return {
+          jobs: (data || []) as unknown as Job[],
+          totalCount: count || 0,
+        };
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+        return { jobs: [], totalCount: 0 };
+      }
+    },
+    120
+  );
+
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -99,70 +118,61 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
+    <div className="mx-auto max-w-6xl px-4 py-4 sm:py-5 sm:px-6 lg:px-8 w-full space-y-5">
       {/* Search Bar Section */}
-      <div className="flex flex-col gap-4 items-center md:items-start">
-        <h1 className="text-3xl font-extrabold text-foreground">
+      <div className="flex flex-col gap-2 items-center md:items-start">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
           Browse Freshers Jobs
         </h1>
-        <p className="text-sm text-muted-foreground -mt-3">
-          Showing {totalCount} handpicked job drives and internships.
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          Showing {totalCount} handpicked job drives and opportunities.
         </p>
-        <div className="w-full flex justify-start">
+        <div className="w-full flex justify-start pt-1">
           <SearchBar initialQuery={q} initialLocation={location} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar */}
-        <aside className="lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Filters Sidebar (Sticky on Scroll) */}
+        <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start h-fit space-y-4">
           <JobFilters categories={categories} />
         </aside>
 
         {/* Jobs List Area */}
-        <main className="lg:col-span-3 space-y-6">
+        <main className="lg:col-span-3 space-y-4">
           {jobs.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {jobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
 
-              {/* Pagination controls */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-6 border-t border-border">
-                  <Link
-                    href={getPaginationUrl(currentPage - 1)}
-                    className={`rounded-lg px-4 py-2 text-sm font-semibold border border-border bg-card shadow-sm transition-all hover:bg-secondary ${
-                      currentPage <= 1 ? 'pointer-events-none opacity-50' : ''
-                    }`}
-                  >
-                    Previous
-                  </Link>
-                  <span className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <Link
-                    href={getPaginationUrl(currentPage + 1)}
-                    className={`rounded-lg px-4 py-2 text-sm font-semibold border border-border bg-card shadow-sm transition-all hover:bg-secondary ${
-                      currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''
-                    }`}
-                  >
-                    Next
-                  </Link>
-                </div>
-              )}
+              {/* Smart Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalCount={totalCount}
+                from={from}
+                to={to}
+                itemLabel="jobs"
+                baseUrl={getPaginationUrl}
+              />
             </>
           ) : (
-            <div className="border-2 border-dashed border-border rounded-xl p-16 text-center space-y-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/10 mx-auto text-indigo-600">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground">No matches found</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                We couldn&apos;t find any job openings matching your search criteria. Try modifying your filters or search keywords.
+            <div className="rounded-xl border border-dashed border-border p-12 text-center space-y-3 bg-card">
+              <Briefcase className="mx-auto h-12 w-12 text-muted-foreground/50" />
+              <h3 className="text-lg font-bold text-foreground">No jobs found</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                We couldn't find any job openings matching your criteria. Try adjusting your search filters or browse other categories.
               </p>
+              <Link
+                href="/jobs"
+                prefetch={true}
+                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-500 transition-all"
+              >
+                Reset Filters
+              </Link>
             </div>
           )}
         </main>

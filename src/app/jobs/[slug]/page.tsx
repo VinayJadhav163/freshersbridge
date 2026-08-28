@@ -1,34 +1,88 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { supabase } from '@/lib/supabase';
-import { formatDate, formatDeadline } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import { 
   MapPin, 
   Calendar, 
-  DollarSign, 
-  Eye, 
-  GraduationCap, 
-  ArrowLeft, 
-  ExternalLink,
-  Info,
-  Clock
+  IndianRupee, 
+  Briefcase, 
+  ArrowLeft,
+  GraduationCap
 } from 'lucide-react';
+import ShareButton from '@/components/ShareButton';
+import ApplyButton from '@/components/ApplyButton';
+import JobCard from '@/components/JobCard';
+import JobViewTracker from '@/components/JobViewTracker';
+import { Job } from '@/types';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 0; // Disable cache for details page to track views accurately
+// 5 minutes background ISR revalidation
+export const revalidate = 300;
+export const dynamicParams = true;
 
-// Generate dynamic SEO Metadata for each job posting
+// Pre-render top active job pages at build/runtime for instant 0-20ms page loads
+export async function generateStaticParams() {
+  try {
+    const { data: jobs } = await supabase
+      .from('jobs')
+      .select('slug')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    return (jobs || []).map((j) => ({ slug: j.slug }));
+  } catch {
+    return [];
+  }
+}
+
+import { fetchWithCache } from '@/lib/dataCache';
+
+// React cache + In-memory TTL cache to eliminate remote HTTPS roundtrips
+const getJob = cache(async (slug: string) => {
+  return fetchWithCache(`job:${slug}`, async () => {
+    const { data: job } = await supabase
+      .from('jobs')
+      .select('*, categories(id, name, slug)')
+      .eq('slug', slug)
+      .single();
+    return job as unknown as Job | null;
+  }, 180);
+});
+
+// Fast cached related jobs query
+const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: string) => {
+  return fetchWithCache(`related:${categoryId}:${currentJobId}`, async () => {
+    try {
+      let query = supabase
+        .from('jobs')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
+        .neq('id', currentJobId)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+
+      if (categoryId) {
+        query = query.eq('category_id', categoryId);
+      }
+
+      const { data } = await query;
+      return (data || []) as unknown as Job[];
+    } catch {
+      return [] as Job[];
+    }
+  }, 180);
+});
+
+
+// Generate dynamic SEO Metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const { data: job } = await supabase
-    .from('jobs')
-    .select('*, categories(*)')
-    .eq('slug', resolvedParams.slug)
-    .single();
+  const job = await getJob(resolvedParams.slug);
 
   if (!job) {
     return {
@@ -40,6 +94,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `Apply for ${job.title} vacancy at ${job.company} in ${job.location}. Eligibility: ${
     job.eligibility
   }. Required skills: ${job.skills.join(', ')}. Find more entry-level tech opportunities on FreshersBridge.in.`;
+  const ogImageUrl = `https://freshersbridge.in/api/og/job?slug=${job.slug}`;
 
   return {
     title,
@@ -49,35 +104,158 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'article',
       url: `https://freshersbridge.in/jobs/${job.slug}`,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImageUrl],
     },
   };
+}
+
+function FormattedJobDescription({ content }: { content: string }) {
+  if (!content) return null;
+
+  // Auto-heal single-character newline splits if present in scraped text
+  const rawLines = content.split('\n');
+  const healedLines: string[] = [];
+  let charBuf: string[] = [];
+
+  for (const rLine of rawLines) {
+    const sLine = rLine.trim();
+    if (sLine.length === 1 && /[A-Za-z0-9]/.test(sLine)) {
+      charBuf.push(sLine);
+    } else {
+      if (charBuf.length > 0) {
+        healedLines.push(charBuf.join(''));
+        charBuf = [];
+      }
+      healedLines.push(rLine);
+    }
+  }
+  if (charBuf.length > 0) {
+    healedLines.push(charBuf.join(''));
+  }
+
+  const lines = healedLines;
+  const sections: { title?: string; items: string[]; type: 'list' | 'paragraph' }[] = [];
+  
+  let currentTitle = '';
+  let currentItems: string[] = [];
+  let currentType: 'list' | 'paragraph' = 'paragraph';
+
+  const isHeading = (line: string) => {
+    const trimmed = line.trim();
+    if (trimmed.length > 60) return false;
+    return /^(?:(?:Key\s+|Primary\s+)?Responsibilities|(?:Required\s+|Preferred\s+)?Qualifications|(?:Required\s+|Key\s+|Technical\s+)?Skills(?:\s+Required)?|Requirements|Eligibility(?:\s*&.*)?|What\s+You(?:'ll|\s+Will)\s+Do|Role\s+(?:Overview|Description|Summary)|Must\s+Have|Key\s+(?:Objectives|Deliverables)|Success\s+Measures|Perks(?:\s*&.*)?|Benefits|What\s+We(?:'re|\s+Are)\s+Looking\s+For|About\s+(?:Us|the\s+Role|[A-Z][a-zA-Z0-9\s]+)|Your\s+Impact|Education|Experience)\s*:?$/i.test(trimmed);
+  };
+
+  const isBullet = (line: string) => {
+    return /^[\s]*[•\*\-\+]\s+/.test(line) || /^\s*\d+[\.\)]\s+/.test(line);
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    if (isHeading(line)) {
+      if (currentItems.length > 0) {
+        sections.push({ title: currentTitle, items: [...currentItems], type: currentType });
+        currentItems = [];
+      }
+      currentTitle = line.replace(/[:]+$/, '').trim();
+      currentType = 'paragraph';
+    } else if (isBullet(line)) {
+      const cleanBullet = line.replace(/^[\s]*[•\*\-\+]\s+/, '').replace(/^\s*\d+[\.\)]\s+/, '').trim();
+      if (currentType !== 'list' && currentItems.length > 0) {
+        sections.push({ title: currentTitle, items: [...currentItems], type: currentType });
+        currentTitle = '';
+        currentItems = [];
+      }
+      currentType = 'list';
+      currentItems.push(cleanBullet);
+    } else {
+      if (currentType === 'list' && currentItems.length > 0) {
+        sections.push({ title: currentTitle, items: [...currentItems], type: currentType });
+        currentTitle = '';
+        currentItems = [];
+      }
+      currentType = 'paragraph';
+      currentItems.push(line);
+    }
+  }
+
+  if (currentItems.length > 0) {
+    sections.push({ title: currentTitle, items: [...currentItems], type: currentType });
+  }
+
+  if (sections.length === 0) {
+    return (
+      <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-wrap font-sans">
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 text-foreground/90 text-sm leading-relaxed font-sans">
+      {sections.map((sec, idx) => (
+        <div key={idx} className="space-y-2.5">
+          {sec.title && (
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2 pt-2 border-t border-border/40 first:border-t-0 first:pt-0">
+              <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0" />
+              {sec.title}
+            </h3>
+          )}
+
+          {sec.type === 'list' ? (
+            <ul className="list-disc list-outside ml-5 space-y-2 text-foreground/90 leading-relaxed marker:text-foreground">
+              {sec.items.map((item, iIdx) => (
+                <li key={iIdx} className="pl-1">
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            sec.items.map((para, pIdx) => (
+              <p key={pIdx} className="text-foreground/80 leading-relaxed">
+                {para}
+              </p>
+            ))
+          )}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default async function JobDetailsPage({ params }: Props) {
   const resolvedParams = await params;
   
-  // 1. Fetch Job details
-  const { data: job, error } = await supabase
-    .from('jobs')
-    .select('*, categories(*)')
-    .eq('slug', resolvedParams.slug)
-    .single();
+  // 1. Fetch Job details (Instant deduplicated cached query)
+  const job = await getJob(resolvedParams.slug);
 
-  if (error || !job) {
+  if (!job) {
     notFound();
   }
 
-  // 2. Increment view count (run on server side upon page hit)
-  try {
-    await supabase
-      .from('jobs')
-      .update({ views_count: (job.views_count || 0) + 1 })
-      .eq('id', job.id);
-  } catch (err) {
-    console.error('Failed to increment job view:', err);
-  }
+  const isInternship =
+    job.job_type === 'internship' ||
+    /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title);
 
-  // 3. Prepare structured JSON-LD data for Google Jobs
+  // 2. Fast parallel related jobs query
+  const relatedJobs = await getRelatedJobs(job.category_id, job.id);
+
+  // 4. Prepare structured JSON-LD data for Google Jobs
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
@@ -85,7 +263,7 @@ export default async function JobDetailsPage({ params }: Props) {
     'description': job.description,
     'datePosted': job.created_at,
     'validThrough': job.application_deadline || undefined,
-    'employmentType': 'FULL_TIME',
+    'employmentType': isInternship ? 'INTERN' : 'FULL_TIME',
     'hiringOrganization': {
       '@type': 'Organization',
       'name': job.company,
@@ -119,14 +297,18 @@ export default async function JobDetailsPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Back to Jobs Link */}
+      {/* Real User View Tracker (Only fires in browser, not during next build) */}
+      <JobViewTracker jobId={job.id} />
+
+      {/* Back to Jobs / Internships Link */}
       <div className="flex items-center">
         <Link
-          href="/jobs"
+          href={isInternship ? "/internships" : "/jobs"}
+          prefetch={true}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-indigo-600 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to all jobs
+          {isInternship ? 'Back to Internships' : 'Back to All Jobs'}
         </Link>
       </div>
 
@@ -139,9 +321,22 @@ export default async function JobDetailsPage({ params }: Props) {
           {/* Header Card */}
           <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
             <div>
-              <span className="inline-flex items-center rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                {job.categories?.name || 'Job Opportunity'}
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                  {job.categories?.name || 'Job Opportunity'}
+                </span>
+                {isInternship ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 border border-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    Internship
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-600/10 border border-blue-500/20 px-3 py-1 text-xs font-bold text-blue-600 dark:text-blue-400">
+                    <Briefcase className="h-3.5 w-3.5" />
+                    Full-Time Job
+                  </span>
+                )}
+              </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                 {job.title}
               </h1>
@@ -151,28 +346,28 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
 
             {/* Badges block */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 py-4 border-y border-border text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="h-4 w-4 text-indigo-500 shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold text-foreground">Location</p>
-                  <p className="truncate text-xs">{job.location}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-[#e7e7f1] text-sm w-full overflow-hidden">
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+                <Briefcase className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
+                  <p className="text-xs font-bold text-[#121224] truncate">Experience / Eligibility</p>
+                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.eligibility}>{job.eligibility}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <GraduationCap className="h-4 w-4 text-indigo-500 shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold text-foreground">Eligibility</p>
-                  <p className="truncate text-xs">{job.eligibility}</p>
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+                <IndianRupee className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
+                  <p className="text-xs font-bold text-[#121224] truncate">Salary</p>
+                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.salary || 'Not Disclosed'}>{job.salary || 'Not Disclosed'}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-muted-foreground col-span-2 sm:col-span-1">
-                <DollarSign className="h-4 w-4 text-indigo-500 shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold text-foreground">Salary</p>
-                  <p className="truncate text-xs">{job.salary || 'Not Disclosed'}</p>
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+                <MapPin className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
+                  <p className="text-xs font-bold text-[#121224] truncate">Location</p>
+                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.location}>{job.location}</p>
                 </div>
               </div>
             </div>
@@ -195,13 +390,13 @@ export default async function JobDetailsPage({ params }: Props) {
 
           {/* Job Description Card */}
           <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">
-              Job Description
+            <h2 className="text-lg font-bold text-foreground border-b border-border pb-2 flex items-center justify-between">
+              <span>Job Description</span>
+              <span className="text-xs font-semibold text-muted-foreground">Detailed Role Overview</span>
             </h2>
-            <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-wrap font-sans">
-              {job.description}
-            </div>
+            <FormattedJobDescription content={job.description} />
           </div>
+
         </main>
 
         {/* Right Column: Quick Stats Sidebar */}
@@ -218,60 +413,35 @@ export default async function JobDetailsPage({ params }: Props) {
                 </span>
                 <span className="font-semibold">{formatDate(job.created_at)}</span>
               </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground flex items-center gap-2">
-                  <Clock className="h-4 w-4" /> Deadline
-                </span>
-                <span className="font-semibold text-rose-500">
-                  {job.application_deadline ? formatDeadline(job.application_deadline) : 'Apply ASAP'}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground flex items-center gap-2">
-                  <Eye className="h-4 w-4" /> Views
-                </span>
-                <span className="font-semibold">{job.views_count + 1} views</span>
-              </div>
-
-              {job.source_name && (
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Source</span>
-                  {job.source_url ? (
-                    <a
-                      href={job.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
-                    >
-                      {job.source_name} <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ) : (
-                    <span className="font-semibold">{job.source_name}</span>
-                  )}
-                </div>
-              )}
             </div>
 
             <hr className="border-border" />
 
             {/* Apply Action */}
             <div className="space-y-3">
-              <a
-                href={job.apply_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-indigo-500 hover:shadow-indigo-600/10"
-              >
-                Apply Now <ExternalLink className="h-4 w-4" />
-              </a>
-              <p className="text-[11px] text-muted-foreground text-center flex items-center gap-1.5 justify-center">
-                <Info className="h-3.5 w-3.5 shrink-0" />
-                This will redirect you to the application portal.
-              </p>
+              <ApplyButton applyUrl={job.apply_url} company={job.company} title={job.title} />
+              <ShareButton title={job.title} company={job.company} slug={job.slug} />
             </div>
           </div>
+
+          {/* 3 Related Jobs from Same Category */}
+          {relatedJobs.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
+                  Similar {job.categories?.name ? `${job.categories.name}` : ''} Jobs
+                </h3>
+                <Link href="/jobs" prefetch={true} className="text-xs font-semibold text-indigo-600 hover:underline">
+                  View all
+                </Link>
+              </div>
+              <div className="space-y-4">
+                {relatedJobs.map((relatedJob) => (
+                  <JobCard key={relatedJob.id} job={relatedJob} />
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
     </div>
