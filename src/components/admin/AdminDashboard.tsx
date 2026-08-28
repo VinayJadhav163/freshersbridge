@@ -14,7 +14,8 @@ import {
   sendDigestBroadcastAction,
   logoutAdminAction,
   resetAllJobViewsAction,
-  deleteAllJobsAction
+  deleteAllJobsAction,
+  bulkUploadJobsAction
 } from '@/app/admin/actions';
 import { 
   Plus, 
@@ -497,42 +498,65 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     showNotification('success', 'Job details cloned. Modify and save to publish.');
   };
 
-  // Custom Simple CSV Line Parser
+  // Robust CSV Parser supporting multi-line strings, quoted newlines, and escaped quotes
   const parseCSV = (text: string) => {
-    const lines = text.split('\n');
-    if (lines.length === 0) return [];
+    const cleanText = text.replace(/^\uFEFF/, '');
+    const rows: string[][] = [];
+    let currentRow: string[] = [];
+    let currentVal = '';
+    let inQuotes = false;
 
-    const headers = lines[0].split(',').map((h) => h.trim().replace(/^["']|["']$/g, ''));
-    const rows: any[] = [];
+    for (let i = 0; i < cleanText.length; i++) {
+      const char = cleanText[i];
+      const nextChar = cleanText[i + 1];
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-
-      const values: string[] = [];
-      let currentValue = '';
-      let inQuotes = false;
-
-      for (let j = 0; j < line.length; j++) {
-        const char = line[j];
-        if (char === '"' || char === "'") {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          values.push(currentValue.trim().replace(/^["']|["']$/g, ''));
-          currentValue = '';
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          currentVal += '"';
+          i++; // skip escaped quote
         } else {
-          currentValue += char;
+          inQuotes = !inQuotes;
         }
+      } else if (char === ',' && !inQuotes) {
+        currentRow.push(currentVal.trim());
+        currentVal = '';
+      } else if ((char === '\r' || char === '\n') && !inQuotes) {
+        if (char === '\r' && nextChar === '\n') {
+          i++; // skip \n in CRLF
+        }
+        currentRow.push(currentVal.trim());
+        currentVal = '';
+        if (currentRow.some(val => val.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+      } else {
+        currentVal += char;
       }
-      values.push(currentValue.trim().replace(/^["']|["']$/g, ''));
-
-      const row: any = {};
-      headers.forEach((header, index) => {
-        row[header] = values[index] || '';
-      });
-      rows.push(row);
     }
-    return rows;
+
+    if (currentVal.length > 0 || currentRow.length > 0) {
+      currentRow.push(currentVal.trim());
+      if (currentRow.some(val => val.length > 0)) {
+        rows.push(currentRow);
+      }
+    }
+
+    if (rows.length < 2) return [];
+
+    const headers = rows[0].map(h => h.toLowerCase().replace(/^["']|["']$/g, '').trim());
+    const result: any[] = [];
+
+    for (let i = 1; i < rows.length; i++) {
+      const rowValues = rows[i];
+      const rowObj: any = {};
+      headers.forEach((header, idx) => {
+        rowObj[header] = rowValues[idx] || '';
+      });
+      result.push(rowObj);
+    }
+
+    return result;
   };
 
   // Download Job CSV Template
@@ -563,7 +587,8 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!adminKey) {
+    const key = adminKey || localStorage.getItem('freshersbridge_admin_key') || '';
+    if (!key) {
       showNotification('error', 'Please enter your Admin Access Key.');
       return;
     }
@@ -576,68 +601,32 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
       try {
         const rows = parseCSV(text);
         if (rows.length === 0) {
-          showNotification('error', 'No valid rows found in the CSV.');
+          showNotification('error', 'No valid rows found in the CSV. Please check formatting.');
           return;
         }
 
         setIsSubmitting(true);
-        let successCount = 0;
-        let failCount = 0;
+        showNotification('success', `Parsing ${rows.length} jobs. Uploading to database...`);
 
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
-          
-          if (!row.title || !row.company || !row.location || !row.eligibility || !row.description || !row.apply_url) {
-            failCount++;
-            continue;
-          }
+        const res = await bulkUploadJobsAction(rows, key);
+        setIsSubmitting(false);
 
-          let catId = categories[0]?.id || '';
-          if (row.category_slug) {
-            const matchedCat = categories.find(
-              (c) => c.slug === row.category_slug.trim().toLowerCase()
-            );
-            if (matchedCat) {
-              catId = matchedCat.id;
-            }
-          }
-
-          const jobData = {
-            title: row.title,
-            company: row.company,
-            location: row.location,
-            category_id: catId,
-            salary: row.salary || '',
-            eligibility: row.eligibility,
-            skills: row.skills || '',
-            description: row.description,
-            apply_url: row.apply_url,
-            source_name: row.source_name || 'Company Website',
-            source_url: row.source_url || '',
-            featured_job: row.featured_job?.toLowerCase() === 'true',
-            application_deadline: row.application_deadline || '',
-          };
-
-          const result = await saveJob(jobData, adminKey);
-          if (result.success) {
-            successCount++;
-          } else {
-            failCount++;
-          }
+        if (res.success) {
+          showNotification(
+            'success',
+            `🎉 Successfully uploaded and published ${res.count} jobs out of ${rows.length} rows!`
+          );
+          router.refresh();
+        } else {
+          showNotification('error', res.error || 'Failed to bulk upload jobs.');
         }
-
+      } catch (err: any) {
         setIsSubmitting(false);
-        router.refresh();
-        showNotification(
-          'success',
-          `CSV import complete. Successfully imported ${successCount} jobs. Failed: ${failCount}`
-        );
-      } catch (err) {
-        setIsSubmitting(false);
-        showNotification('error', 'Failed to parse CSV file. Ensure valid formatting.');
+        showNotification('error', 'Failed to parse CSV file: ' + (err?.message || 'Invalid format'));
       }
     };
     reader.readAsText(file);
+    // Reset file input so user can re-upload if needed
     e.target.value = '';
   };
 

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { notifySubscribersNewJob } from '@/lib/emailNotifier';
 import { getAdminAuthToken, verifyAdminKey } from '@/lib/adminAuth';
+import { clearDataCache } from '@/lib/dataCache';
 
 export async function loginAdminAction(password: string) {
   const serverKey = process.env.ADMIN_ACCESS_KEY;
@@ -226,6 +227,10 @@ export async function deleteJob(id: string, adminKey: string) {
     revalidatePath('/');
     revalidatePath('/jobs');
     revalidatePath('/internships');
+    clearDataCache();
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/internships');
     revalidatePath('/nandini');
     return { success: true };
   } catch (err: any) {
@@ -246,6 +251,7 @@ export async function deleteAllJobsAction(adminKey: string) {
 
     if (error) throw error;
 
+    clearDataCache();
     revalidatePath('/');
     revalidatePath('/jobs');
     revalidatePath('/internships');
@@ -253,6 +259,118 @@ export async function deleteAllJobsAction(adminKey: string) {
     return { success: true };
   } catch (err: any) {
     return { success: false, error: handleActionError(err, 'Failed to delete all jobs') };
+  }
+}
+
+export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
+  if (!verifyAdminKey(adminKey)) {
+    return { success: false, error: 'Unauthorized: Invalid Admin Access Key.' };
+  }
+
+  if (!Array.isArray(rawJobs) || rawJobs.length === 0) {
+    return { success: false, error: 'No jobs found in uploaded CSV.' };
+  }
+
+  try {
+    // 1. Fetch categories to map slugs
+    const { data: categories } = await supabase.from('categories').select('id, slug');
+    const catMap = new Map<string, string>();
+    if (categories) {
+      categories.forEach((c) => catMap.set(c.slug.toLowerCase(), c.id));
+    }
+    const defaultCatId = categories && categories.length > 0 ? categories[0].id : null;
+
+    // 2. Prepare normalized job payloads
+    const payloads: any[] = [];
+    const usedSlugs = new Set<string>();
+
+    for (const item of rawJobs) {
+      const title = (item.title || '').trim();
+      const company = (item.company || '').trim();
+      const location = (item.location || '').trim();
+      const applyUrl = (item.apply_url || item.url || item.link || '').trim();
+
+      if (!title || !company || !applyUrl) {
+        continue;
+      }
+
+      let baseSlug = slugify(`${title}-${company}`);
+      let slug = baseSlug;
+      let counter = 1;
+      while (usedSlugs.has(slug)) {
+        slug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+      usedSlugs.add(slug);
+
+      let catId = defaultCatId;
+      if (item.category_slug && catMap.has(item.category_slug.trim().toLowerCase())) {
+        catId = catMap.get(item.category_slug.trim().toLowerCase())!;
+      }
+
+      const skillsArray = typeof item.skills === 'string'
+        ? item.skills.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
+        : Array.isArray(item.skills)
+        ? item.skills
+        : ['Freshers', 'Graduate'];
+
+      payloads.push({
+        title,
+        slug,
+        company,
+        location: location || 'India / Remote',
+        category_id: catId,
+        salary: item.salary?.trim() || 'Best in Industry',
+        eligibility: item.eligibility?.trim() || 'Any Graduate (2024, 2025, 2026 Batch)',
+        skills: skillsArray.length > 0 ? skillsArray : ['Engineering', 'Fresher'],
+        description: item.description?.trim() || `${title} opening at ${company}. Apply online.`,
+        apply_url: applyUrl,
+        source_name: item.source_name?.trim() || 'Campus Drive',
+        source_url: item.source_url?.trim() || applyUrl,
+        job_type: item.job_type || (title.toLowerCase().includes('intern') ? 'internship' : 'full-time'),
+        featured_job: String(item.featured_job).toLowerCase() === 'true',
+        views_count: 0,
+      });
+    }
+
+    if (payloads.length === 0) {
+      return { success: false, error: 'No valid job records could be parsed from the CSV.' };
+    }
+
+    // 3. Batch insert in chunks of 50
+    const chunkSize = 50;
+    let insertedCount = 0;
+
+    for (let i = 0; i < payloads.length; i += chunkSize) {
+      const chunk = payloads.slice(i, i + chunkSize);
+      const { data, error } = await supabase.from('jobs').insert(chunk).select('id');
+      if (error) {
+        // Retry without job_type if column doesn't exist in Supabase
+        const sanitizedChunk = chunk.map(p => {
+          const clone = { ...p };
+          delete clone.job_type;
+          return clone;
+        });
+        const retry = await supabase.from('jobs').insert(sanitizedChunk).select('id');
+        if (retry.error) {
+          console.error('Supabase chunk insert error:', retry.error);
+        } else {
+          insertedCount += retry.data?.length || 0;
+        }
+      } else {
+        insertedCount += data?.length || 0;
+      }
+    }
+
+    clearDataCache();
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/internships');
+    revalidatePath('/nandini');
+
+    return { success: true, count: insertedCount, total: payloads.length };
+  } catch (err: any) {
+    return { success: false, error: handleActionError(err, 'Failed to bulk upload jobs') };
   }
 }
 
