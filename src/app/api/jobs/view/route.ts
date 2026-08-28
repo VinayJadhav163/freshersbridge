@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { clearDataCache } from '@/lib/dataCache';
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Missing jobId' }, { status: 400 });
     }
 
-    // Increment views_count safely using RPC or fetch+update
+    // Increment views_count safely in Supabase
     const { data: job } = await supabase
       .from('jobs')
       .select('views_count')
@@ -16,10 +17,14 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (job) {
+      const nextViews = (job.views_count || 0) + 1;
       await supabase
         .from('jobs')
-        .update({ views_count: (job.views_count || 0) + 1 })
+        .update({ views_count: nextViews })
         .eq('id', jobId);
+
+      // Invalidate memory cache so SSR queries immediately reflect new view count
+      clearDataCache('job:');
     }
 
     return NextResponse.json({ success: true });

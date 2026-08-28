@@ -270,8 +270,14 @@ def run_pipeline(use_ai: bool = False):
             df[col] = ''
             
     df = df[columns_order]
-    df.to_csv(latest_filepath, index=False, encoding='utf-8-sig')
-    logger.info(f"Successfully generated clean CSV artifact: {latest_filepath}")
+    try:
+        df.to_csv(latest_filepath, index=False, encoding='utf-8-sig')
+        logger.info(f"Successfully generated clean CSV artifact: {latest_filepath}")
+    except PermissionError:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        alt_filepath = os.path.join(output_dir, f"freshersbridge_jobs_{timestamp}.csv")
+        df.to_csv(alt_filepath, index=False, encoding='utf-8-sig')
+        logger.warning(f"⚠️ 'latest_freshersbridge_jobs.csv' was locked by another app (Excel/VSCode). Saved clean CSV to: {alt_filepath}")
 
 
 
