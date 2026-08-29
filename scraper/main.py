@@ -78,24 +78,28 @@ def is_fresher_job(job: dict) -> bool:
     - Internships, Apprenticeships, Trainees (GET/MT)
     
     Strictly rejects:
-    - Any mention of 2+ / 3+ / 4+ / 5+ / 2-4 / 3-5 / 5-8 years of experience
+    - Any mention of 2+ / 3+ / 4+ / 5+ / 2-4 / 3-5 / 4-6 / 5-8 years of experience
     - Senior / Lead / Principal / Staff / Architect / Manager / Director / AVP / Consultant
-    - Level II / 2 / SDE-2 / SDE II / L2 / Intermediate
+    - Level II / 2 / SDE-2 / SDE II / SDET II / SDET-2 / L2 / Intermediate / II / III / IV
     """
     raw_title = str(job.get('title') or '').strip()
     raw_desc = str(job.get('description') or '').strip()
     raw_elig = str(job.get('eligibility') or '').strip()
+    raw_exp = str(job.get('experience') or job.get('years_of_experience') or job.get('exp') or job.get('min_exp') or job.get('experience_level') or '').strip()
     
     title_lower = raw_title.lower()
-    full_text = f"{raw_title}\n{raw_elig}\n{raw_desc}"
+    full_text = f"{raw_title}\n{raw_elig}\n{raw_exp}\n{raw_desc}"
     
     # 1. STRICT TITLE REJECTIONS (Immediate Disqualification)
     senior_title_patterns = [
         r'\b(senior|sr\.?|principal|staff|lead|architect|manager|director|vp|vice president|avp|head of)\b',
         r'\b(consultant|specialist|expert)\b',
-        r'\b(sde[- ]?(?:2|3|ii|iii)|software engineer[- ]?(?:2|3|ii|iii)|engineer[- ]?(?:2|3|ii|iii)|developer[- ]?(?:2|3|ii|iii))\b',
-        r'\b(level[- ]?[23]|l[23])\b',
-        r'\b(intermediate|mid[- ]?level|experienced)\b'
+        # SDE, SDET, QA, Engineer, Developer Level 2, 3, 4, II, III, IV
+        r'\b(sde|sdet|qa|swe|engineer|developer|tester|mts|member technical staff)[- ]*(?:2|3|4|5|ii|iii|iv|v)\b',
+        # Standalone Roman Numerals in titles like "SDET II", "Software Engineer III", "QA II"
+        r'\b(ii|iii|iv|v)\b',
+        r'\b(level[- ]?[2345]|l[2345]|ic[2345]|e[2345]|grade[- ]?[2345])\b',
+        r'\b(intermediate|mid[- ]?level|experienced|sse)\b'
     ]
     for p in senior_title_patterns:
         if re.search(p, title_lower, re.I):
@@ -103,11 +107,13 @@ def is_fresher_job(job: dict) -> bool:
 
     # 2. STRICT EXPERIENCE REJECTIONS (Unicode dashes, plus signs, word variations)
     high_exp_regexes = [
-        r'\b(?:[2-9]|1[0-9])\s*(?:\+|\bplus\b)\s*(?:years?|yrs?)\b',
-        r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[2-9]|1[0-9])\s*(?:years?|yrs?)\b',
+        # Explicit ranges like 4-6, 3-5, 2-4, 4 to 6, 2-3 years / yrs
+        r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
+        # 2+, 3+, 4+, 5+ years / yrs
+        r'\b(?:[2-9]|1[0-9])\s*(?:\+|\bplus\b)\s*(?:years?|yrs?|yr)\b',
         r'\b(?:minimum|min|at least|require[s]?|mandat(?:e|ory)|with|having)\s*(?:of\s+)?([2-9]|1[0-9])\s*(?:years?|yrs?)\b',
         r'\b(?:[2-9]|1[0-9])\s*(?:years?|yrs?)\s+(?:of\s+)?(?:hands-on\s+|relevant\s+|professional\s+|work\s+|industry\s+|software\s+|coding\s+|development\s+|technical\s+)?(?:experience|exp)\b',
-        r'\bexperience\s*(?:required|needed|must have|of)\s*:\s*([2-9]|1[0-9])\s*(?:[\+\-\–\—\~/]|\bto\b)\s*[0-9]*\s*(?:years?|yrs?)\b',
+        r'\bexperience\s*(?:required|needed|must have|of)?\s*[:\-]?\s*([2-9]|1[0-9])\s*(?:[\+\-\–\—\~/]|\bto\b)\s*[0-9]*\s*(?:years?|yrs?)\b',
         r'\b([2-9]|1[0-9])\s*(?:years?|yrs?)\s+post[- ](?:qualification|graduation)\s+experience\b'
     ]
     
