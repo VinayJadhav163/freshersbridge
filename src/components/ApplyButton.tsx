@@ -30,13 +30,6 @@ export default function ApplyButton({
     setIsOpen(true);
   };
 
-  const handleRedirectNow = () => {
-    setIsOpen(false);
-    if (typeof window !== 'undefined' && safeUrl !== '#') {
-      window.open(safeUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   useEffect(() => {
     if (!isOpen) return;
 
@@ -46,9 +39,14 @@ export default function ApplyButton({
       }, 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      handleRedirectNow();
+      // Try opening in new window or redirect
+      try {
+        window.open(safeUrl, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        console.warn('Auto window.open was blocked, user can click the button.');
+      }
     }
-  }, [isOpen, countdown]);
+  }, [isOpen, countdown, safeUrl]);
 
   const defaultClasses =
     'w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-indigo-500 hover:shadow-indigo-600/25 active:scale-[0.99] cursor-pointer';
@@ -94,7 +92,7 @@ export default function ApplyButton({
               </div>
               <p className="mt-2.5 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
-                {countdown > 0 ? `Redirecting in ${countdown} seconds...` : 'Opening Application...'}
+                {countdown > 0 ? `Redirecting in ${countdown} seconds...` : 'Link Ready! Opening application...'}
               </p>
             </div>
 
@@ -136,14 +134,16 @@ export default function ApplyButton({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              <button
-                type="button"
-                onClick={handleRedirectNow}
+              <a
+                href={safeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
                 className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 py-3 text-xs font-bold text-white shadow-xs transition-all active:scale-[0.99] cursor-pointer"
               >
-                <span>Proceed to Apply Now</span>
+                <span>{countdown > 0 ? 'Proceed to Apply Now' : '🚀 Open Application Portal'}</span>
                 <ArrowRight className="h-4 w-4" />
-              </button>
+              </a>
 
               <button
                 type="button"
