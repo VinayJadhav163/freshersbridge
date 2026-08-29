@@ -395,6 +395,20 @@ def run_pipeline(use_ai: bool = False):
     else:
         logger.warning("⚠️ ADMIN_ACCESS_KEY not found in environment. Direct DB auto-publish skipped. CSV saved locally.")
 
+    # Step 7: Generate 10-Job WhatsApp/Telegram Broadcast Messages & Dispatch to Pabbly Connect
+    try:
+        from broadcast_formatter import generate_broadcast_messages, save_broadcasts_file, dispatch_to_pabbly
+        broadcast_messages = generate_broadcast_messages(clean_final_jobs, chunk_size=10)
+        if broadcast_messages:
+            logger.info(f"📢 Generated {len(broadcast_messages)} structured 10-job WhatsApp/Telegram broadcast blocks.")
+            save_broadcasts_file(broadcast_messages, output_dir=output_dir)
+            
+            pabbly_url = os.getenv("PABBLY_WEBHOOK_URL")
+            if pabbly_url:
+                dispatch_to_pabbly(broadcast_messages, webhook_url=pabbly_url)
+    except Exception as e:
+        logger.error(f"⚠️ Broadcast formatting / Pabbly dispatch error: {e}")
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="FreshersBridge Master Job Scraper & AI Ingestion Pipeline")
