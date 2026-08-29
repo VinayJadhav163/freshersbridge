@@ -190,8 +190,12 @@ def is_fresher_job(job: dict) -> bool:
         r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
         # 2+, 3+, 4+, 5+ years / yrs
         r'\b(?:[2-9]|1[0-9])\s*(?:\+|\bplus\b)\s*(?:years?|yrs?|yr)\b',
-        r'\b(?:minimum|min|at least|require[s]?|mandat(?:e|ory)|with|having)\s*(?:of\s+)?([2-9]|1[0-9])\s*(?:years?|yrs?)\b',
-        r'\b(?:[2-9]|1[0-9])\s*(?:years?|yrs?)\s+(?:of\s+)?(?:hands-on\s+|relevant\s+|professional\s+|work\s+|industry\s+|software\s+|coding\s+|development\s+|technical\s+)?(?:experience|exp)\b',
+        # "2 years minimum", "2 yrs min", "3 years required"
+        r'\b(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\s*(?:minimum|min|mandatory|required|desired|needed)',
+        # "minimum 2 years", "at least 3 yrs", "min of 2 years"
+        r'\b(?:minimum|min|at least|require[s]?|mandat(?:e|ory)|with|having)\s*(?:of\s+)?([2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
+        # "2 years of experience / development / hands-on"
+        r'\b([2-9]|1[0-9])\s*(?:years?|yrs?|yr)\s+(?:of\s+)?(?:hands-on\s+|relevant\s+|professional\s+|work\s+|industry\s+|software\s+|coding\s+|development\s+|technical\s+|application\s+)?(?:experience|exp|development|coding)\b',
         r'\bexperience\s*(?:required|needed|must have|of)?\s*[:\-]?\s*([2-9]|1[0-9])\s*(?:[\+\-\–\—\~/]|\bto\b)\s*[0-9]*\s*(?:years?|yrs?)\b',
         r'\b([2-9]|1[0-9])\s*(?:years?|yrs?)\s+post[- ](?:qualification|graduation)\s+experience\b'
     ]
