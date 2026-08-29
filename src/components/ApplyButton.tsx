@@ -39,11 +39,9 @@ export default function ApplyButton({
       }, 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      // Try opening in new window or redirect
-      try {
-        window.open(safeUrl, '_blank', 'noopener,noreferrer');
-      } catch (err) {
-        console.warn('Auto window.open was blocked, user can click the button.');
+      // Direct navigation on timer completion (NEVER blocked by browser popup blockers)
+      if (typeof window !== 'undefined' && safeUrl !== '#') {
+        window.location.href = safeUrl;
       }
     }
   }, [isOpen, countdown, safeUrl]);
