@@ -32,7 +32,7 @@ def fetch_jobspy_jobs(search_terms: List[str], locations: List[str], results_wan
                     results_wanted=results_wanted,
                     country_indeed='india' if any(c in loc.lower() for c in ['india', 'bangalore', 'bengaluru', 'mumbai', 'pune', 'hyderabad', 'delhi', 'noida', 'gurgaon', 'chennai', 'kolkata']) else 'usa',
                     linkedin_fetch_description=True,
-                    hours_old=72,  # Fresh jobs in last 72 hours
+                    hours_old=24,  # Strictly fresh jobs posted within the last 24 hours
                 )
                 
                 if scraped_df is not None and not scraped_df.empty:

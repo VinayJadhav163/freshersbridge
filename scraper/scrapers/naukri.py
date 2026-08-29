@@ -24,10 +24,10 @@ def fetch_naukri_jobs(search_terms: List[str], locations: List[str], results_wan
     for term in search_terms:
         for loc in locations:
             try:
-                # Naukri Search API (Filtered to 1-3 days fresh jobs)
+                # Naukri Search API (Filtered to 24 hours fresh jobs)
                 clean_term = term.replace(' ', '-').lower()
-                url = f"https://www.naukri.com/jobapi/v3/search?noOfResults={results_wanted}&keyword={requests.utils.quote(term)}&location={requests.utils.quote(loc)}&jobAge=3&sort=date"
-                logger.info(f"[Naukri] Querying '{term}' in '{loc}' (1-3 days fresh)...")
+                url = f"https://www.naukri.com/jobapi/v3/search?noOfResults={results_wanted}&keyword={requests.utils.quote(term)}&location={requests.utils.quote(loc)}&jobAge=1&sort=date"
+                logger.info(f"[Naukri] Querying '{term}' in '{loc}' (last 24 hours)...")
                 
                 resp = requests.get(url, headers=HEADERS, timeout=8)
                 if resp.status_code == 200:

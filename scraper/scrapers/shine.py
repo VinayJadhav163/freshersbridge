@@ -36,7 +36,7 @@ def fetch_shine_jobs(search_terms: List[str], locations: List[str], results_want
                             if not title:
                                 continue
 
-                            # Strict Freshness filter: Skip jobs older than 3 days (1-3 days freshness rule)
+                            # Strict Freshness filter: Skip jobs older than 1 day (last 24 hours freshness rule)
                             from datetime import datetime
                             post_date_str = str(item.get('jPDate') or item.get('jCDate') or item.get('posted_date') or '').strip()
                             if post_date_str:
@@ -44,8 +44,8 @@ def fetch_shine_jobs(search_terms: List[str], locations: List[str], results_want
                                     clean_date_str = post_date_str.split('.')[0].replace('Z', '')
                                     post_dt = datetime.fromisoformat(clean_date_str)
                                     age_days = (datetime.now() - post_dt).days
-                                    if age_days > 3:
-                                        logger.info(f"[Shine] Skipping stale job ({age_days} days old > 3 days): {title}")
+                                    if age_days > 1:
+                                        logger.info(f"[Shine] Skipping job older than 24 hours ({age_days} days old): {title}")
                                         continue
                                 except Exception:
                                     pass
