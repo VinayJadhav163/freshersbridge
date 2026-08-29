@@ -9,31 +9,45 @@ from typing import Dict, List, Any
 # Category slug mapping based on title/description keywords
 CATEGORY_MAPPING = {
     'web-development': [
-        'frontend', 'front-end', 'react', 'next.js', 'angular', 'vue', 'html', 'css', 
-        'web developer', 'web development', 'full stack', 'fullstack', 'node.js', 
-        'javascript', 'typescript', 'ui/ux', 'mern', 'mean', 'tailwind', 'bootstrap'
+        'frontend', 'front-end', 'front end', 'junior frontend', 'react', 'next.js', 'angular', 'vue', 'html', 'css', 
+        'web developer', 'junior web developer', 'web development', 'full stack', 'fullstack', 'junior full stack',
+        'node.js', 'javascript', 'typescript', 'ui/ux', 'ui developer', 'junior ui', 'mern', 'mean', 'tailwind', 
+        'bootstrap', 'php developer', 'laravel', 'wordpress developer', 'web application developer'
     ],
     'software-development': [
-        'software engineer', 'software developer', 'sde', 'java developer', 'python developer', 
-        'c++', 'backend', 'back-end', 'golang', 'rust', 'dot net', '.net', 'c#', 'ios', 
-        'android', 'mobile developer', 'flutter', 'react native', 'software engineering', 
-        'associate engineer', 'graduate engineer trainee', 'get', 'trainee software'
+        'software engineer', 'junior software engineer', 'software developer', 'junior software developer', 
+        'software development intern', 'software engineer trainee', 'sde', 'associate software engineer', 
+        'graduate software engineer', 'application developer', 'junior application', 'backend developer', 
+        'junior backend', 'java developer', 'junior java', 'python developer', 'junior python', 'c++', 
+        'junior c++', 'c#', 'junior c#', '.net', 'asp.net', 'golang', 'rust', 'api developer', 'mobile developer', 
+        'android developer', 'junior android', 'ios developer', 'junior ios', 'flutter developer', 'junior flutter', 
+        'react native', 'game developer', 'junior game'
     ],
     'data-analytics': [
-        'data analyst', 'data scientist', 'data engineer', 'machine learning', 'ai', 
-        'analytics', 'business analyst', 'power bi', 'tableau', 'python data', 'nlp', 
-        'deep learning', 'genai', 'generative ai', 'llm', 'computer vision', 'data science'
+        'data analyst', 'junior data analyst', 'business intelligence analyst', 'bi analyst', 'business analyst', 
+        'data visualization', 'tableau developer', 'power bi', 'reporting analyst', 'mis analyst', 'data quality', 
+        'data scientist', 'junior data scientist', 'data scientist trainee', 'data science intern', 
+        'machine learning', 'junior machine learning', 'ml intern', 'ai engineer', 'junior ai', 'ai prompt', 
+        'ai/ml analyst', 'analytics associate', 'data analytics associate', 'research data analyst', 'nlp', 'llm'
     ],
     'devops-cloud': [
-        'devops', 'cloud engineer', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 
-        'site reliability', 'sre', 'ci/cd', 'infrastructure', 'sysadmin', 'cloud practitioner'
+        'cloud support', 'cloud operations', 'devops', 'junior devops', 'devops trainee', 'devops intern', 
+        'cloud engineer', 'junior cloud engineer', 'cloud administrator', 'junior cloud administrator', 
+        'systems administrator', 'linux system administrator', 'linux administrator', 'infrastructure support', 
+        'site reliability', 'sre', 'platform support', 'cloud security', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'ci/cd'
     ],
     'qa-testing': [
-        'qa', 'quality assurance', 'test engineer', 'testing', 'automation tester', 
-        'selenium', 'cypress', 'manual tester', 'sdet', 'software test', 'playwright'
+        'qa manual tester', 'manual tester', 'manual test engineer', 'test engineer', 'junior test engineer', 
+        'qa engineer', 'qa engineer trainee', 'software tester', 'quality analyst', 'qa analyst', 'test analyst', 
+        'automation qa', 'automation test engineer', 'junior automation', 'selenium tester', 'selenium automation', 
+        'playwright tester', 'playwright automation', 'qa automation intern', 'software testing intern', 
+        'mobile app tester', 'game tester', 'api tester', 'performance testing', 'test automation engineer'
     ],
     'database-administration': [
-        'database', 'dba', 'sql developer', 'oracle', 'postgres', 'mongodb', 'mysql', 'database administrator'
+        'database administrator', 'junior database administrator', 'dba', 'database operations', 'database support', 
+        'database analyst', 'sql developer', 'junior sql developer', 'sql support', 'database developer', 
+        'junior database developer', 'database engineer', 'mysql developer', 'postgresql developer', 
+        'oracle database', 'oracle dba', 'database support engineer', 'database operations analyst', 'mongodb'
     ]
 }
 

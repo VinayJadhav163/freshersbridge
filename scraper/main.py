@@ -41,19 +41,86 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(root_dir, ".env.local"))
 load_dotenv(os.path.join(root_dir, ".env"))
 
-# Search terms targeted strictly for Tech, Software, Data & IT Freshers
+# Master Entry-Level Job Roles Taxonomy (Strictly 0-1 / 0-2 yrs & Trainee/Intern Roles)
+ENTRY_LEVEL_ROLES_TAXONOMY = {
+    'data-analytics': [
+        "Data Analyst", "Junior Data Analyst", "Business Intelligence Analyst", "Business Analyst",
+        "Data Visualization Analyst", "Tableau Developer", "Power BI Developer", "Reporting Analyst",
+        "MIS Analyst", "Data Quality Analyst", "Junior Data Scientist", "Data Scientist Trainee",
+        "Data Science Intern", "Machine Learning Engineer", "Junior Machine Learning Engineer",
+        "Machine Learning Intern", "AI Engineer", "Junior AI Engineer", "AI Prompt Engineer",
+        "AI/ML Analyst", "Analytics Associate", "Data Analytics Associate", "Research Data Analyst"
+    ],
+    'database-administration': [
+        "Junior Database Administrator", "Database Administrator Trainee", "Database Operations Assistant",
+        "Database Support Associate", "Database Analyst", "SQL Developer", "Junior SQL Developer",
+        "SQL Support Analyst", "Database Developer", "Junior Database Developer", "Database Engineer",
+        "MySQL Developer", "PostgreSQL Developer", "Oracle Database Administrator", "Database Support Engineer",
+        "Database Operations Analyst"
+    ],
+    'devops-cloud': [
+        "Cloud Support Associate", "Cloud Support Engineer", "Cloud Operations Technician",
+        "Cloud Operations Associate", "Junior DevOps Engineer", "DevOps Engineer Trainee",
+        "DevOps Intern", "Cloud Engineer", "Junior Cloud Engineer", "Cloud Engineer Trainee",
+        "Cloud Administrator", "Junior Cloud Administrator", "Cloud Operations Engineer",
+        "Cloud Support Analyst", "Junior Systems Administrator", "Linux System Administrator",
+        "Infrastructure Support Engineer", "Junior Site Reliability Engineer", "Platform Support Engineer",
+        "Cloud Security Analyst"
+    ],
+    'qa-testing': [
+        "QA Manual Tester", "Manual Test Engineer", "Junior Test Engineer", "QA Engineer",
+        "QA Engineer Trainee", "Software Tester", "Quality Analyst", "QA Analyst", "Test Analyst",
+        "Automation QA Engineer", "Automation Test Engineer", "Junior Automation Test Engineer",
+        "Selenium Tester", "Selenium Automation Tester", "Playwright Tester", "Playwright Automation Tester",
+        "QA Automation Intern", "Software Testing Intern", "Mobile App Tester", "Mobile Application Tester",
+        "Game Tester", "API Tester", "API Testing Engineer", "Performance Testing Engineer",
+        "Test Automation Engineer"
+    ],
+    'software-development': [
+        "Junior Software Engineer", "Software Engineer Trainee", "Software Developer",
+        "Junior Software Developer", "Software Development Intern", "Associate Software Engineer",
+        "Graduate Software Engineer Trainee", "Application Developer", "Junior Application Developer",
+        "Backend Developer", "Junior Backend Developer", "Node.js Developer", "Junior Node.js Developer",
+        "Python Developer", "Junior Python Developer", "Java Developer", "Junior Java Developer",
+        "C++ Developer", "Junior C++ Developer", "C# Developer", "Junior C# Developer",
+        ".NET Developer", "Junior .NET Developer", "ASP.NET Developer", "Junior ASP.NET Developer",
+        "API Developer", "Junior API Developer", "Mobile App Developer", "Android Developer",
+        "Junior Android Developer", "iOS Developer", "Junior iOS Developer", "Flutter Developer",
+        "Junior Flutter Developer", "React Native Developer", "Junior React Native Developer",
+        "Game Developer", "Junior Game Developer"
+    ],
+    'web-development': [
+        "Frontend Developer", "Junior Frontend Developer", "Frontend Developer Trainee",
+        "Web Developer", "Junior Web Developer", "Web Development Intern",
+        "Full Stack Developer", "Junior Full Stack Developer", "Full Stack Developer Trainee",
+        "MERN Stack Developer", "Junior MERN Stack Developer", "MEAN Stack Developer",
+        "Junior MEAN Stack Developer", "React Developer", "Junior React Developer",
+        "Angular Developer", "Junior Angular Developer", "Vue.js Developer", "Junior Vue.js Developer",
+        "JavaScript Developer", "Junior JavaScript Developer", "HTML/CSS Developer",
+        "PHP Developer", "Junior PHP Developer", "Laravel Developer", "Junior Laravel Developer",
+        "WordPress Developer", "Junior WordPress Developer", "UI Developer", "Junior UI Developer",
+        "Web Application Developer", "Junior Web Application Developer"
+    ]
+}
+
+# High-yield search terms for portal scraping
 SEARCH_TERMS = [
-    "Software Engineer Intern",
-    "Associate Software Engineer",
-    "Graduate Software Engineer Trainee",
-    "Frontend Developer Intern",
-    "Full Stack Developer Intern",
+    "Junior Software Engineer",
+    "Software Engineer Trainee",
+    "Junior Frontend Developer",
+    "Junior Full Stack Developer",
+    "Junior Backend Developer",
+    "Junior Python Developer",
+    "Junior Java Developer",
+    "Junior Data Analyst",
+    "Junior Machine Learning Engineer",
+    "Junior DevOps Engineer",
+    "Cloud Support Associate",
+    "Automation Test Engineer",
+    "Junior Test Engineer",
+    "Junior SQL Developer",
     "React Developer Fresher",
-    "Java Developer Fresher",
-    "Python Developer Fresher",
-    "Data Analyst Intern",
-    "QA Automation Engineer Intern",
-    "Junior Backend Developer"
+    "Software Development Intern"
 ]
 
 # Targeted Indian Locations
