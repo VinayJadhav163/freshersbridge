@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ATSResumeMatcher from '@/components/ATSResumeMatcher';
 import SalaryCalculator from '@/components/SalaryCalculator';
 import HREmailTemplates from '@/components/HREmailTemplates';
@@ -15,16 +15,42 @@ import Link from 'next/link';
 
 export default function CareerToolsHub() {
   const [activeTab, setActiveTab] = useState<'ats' | 'salary' | 'emails'>('ats');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const atsRef = useRef<HTMLButtonElement>(null);
+  const salaryRef = useRef<HTMLButtonElement>(null);
+  const emailsRef = useRef<HTMLButtonElement>(null);
+
+  const handleTabClick = (tab: 'ats' | 'salary' | 'emails') => {
+    setActiveTab(tab);
+
+    if (containerRef.current) {
+      if (tab === 'ats') {
+        containerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+      } else if (tab === 'emails') {
+        containerRef.current.scrollTo({ left: containerRef.current.scrollWidth, behavior: 'smooth' });
+      } else if (tab === 'salary' && salaryRef.current) {
+        // Shift left to reveal both salary and full 12 HR Email Scripts tab
+        const container = containerRef.current;
+        const btn = salaryRef.current;
+        const targetScroll = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2);
+        container.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <div className="space-y-8">
-      {/* Tool Selection Tabs Bar */}
-      <div className="w-full overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+      {/* Tool Selection Tabs Bar with Auto Shift on Mobile */}
+      <div
+        ref={containerRef}
+        className="w-full overflow-x-auto pb-2 scroll-smooth scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0"
+      >
         <div className="flex items-center justify-start sm:justify-center min-w-max mx-auto">
           <div className="inline-flex p-1.5 rounded-2xl bg-secondary/80 border border-border gap-2 shadow-xs">
             <button
+              ref={atsRef}
               type="button"
-              onClick={() => setActiveTab('ats')}
+              onClick={() => handleTabClick('ats')}
               className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
                 activeTab === 'ats'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
@@ -36,8 +62,9 @@ export default function CareerToolsHub() {
             </button>
 
             <button
+              ref={salaryRef}
               type="button"
-              onClick={() => setActiveTab('salary')}
+              onClick={() => handleTabClick('salary')}
               className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
                 activeTab === 'salary'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
@@ -49,8 +76,9 @@ export default function CareerToolsHub() {
             </button>
 
             <button
+              ref={emailsRef}
               type="button"
-              onClick={() => setActiveTab('emails')}
+              onClick={() => handleTabClick('emails')}
               className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
                 activeTab === 'emails'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
