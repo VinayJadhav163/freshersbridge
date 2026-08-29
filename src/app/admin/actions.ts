@@ -280,9 +280,29 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
     }
     const defaultCatId = categories && categories.length > 0 ? categories[0].id : null;
 
-    // 2. Prepare normalized job payloads
+    // 2. Fetch existing jobs to avoid duplicate insertions
+    const { data: existingJobs } = await supabase.from('jobs').select('slug, title, company, apply_url');
+    const existingSlugs = new Set<string>();
+    const existingCompanyTitles = new Set<string>();
+    const existingUrls = new Set<string>();
+
+    if (existingJobs) {
+      existingJobs.forEach((j) => {
+        if (j.slug) existingSlugs.add(j.slug.toLowerCase());
+        if (j.company && j.title) {
+          const compClean = j.company.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const titleClean = j.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+          existingCompanyTitles.add(`${compClean}:${titleClean}`);
+        }
+        if (j.apply_url) {
+          existingUrls.add(j.apply_url.trim().toLowerCase());
+        }
+      });
+    }
+
+    // 3. Prepare normalized & deduplicated job payloads
     const payloads: any[] = [];
-    const usedSlugs = new Set<string>();
+    const usedSlugs = new Set<string>(existingSlugs);
 
     for (const item of rawJobs) {
       const title = (item.title || '').trim();
@@ -293,6 +313,18 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
       if (!title || !company || !applyUrl) {
         continue;
       }
+
+      // Check for duplicates against existing DB and current batch
+      const compClean = company.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const titleClean = title.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const compTitleKey = `${compClean}:${titleClean}`;
+      const urlClean = applyUrl.toLowerCase();
+
+      if (existingCompanyTitles.has(compTitleKey) || existingUrls.has(urlClean)) {
+        continue; // Skip duplicate listing
+      }
+      existingCompanyTitles.add(compTitleKey);
+      existingUrls.add(urlClean);
 
       let baseSlug = slugify(`${title}-${company}`);
       let slug = baseSlug;
@@ -334,7 +366,7 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
     }
 
     if (payloads.length === 0) {
-      return { success: false, error: 'No valid job records could be parsed from the CSV.' };
+      return { success: true, count: 0, message: 'All scraped jobs are already up-to-date in the database. 0 duplicates added.' };
     }
 
     // 3. Batch insert in chunks of 50

@@ -25,6 +25,32 @@ const CATEGORIES: { name: string; value: 'All' | TemplateCategory }[] = [
 
 const TEMPLATES: TemplateItem[] = [
   {
+    id: 'request-schedule-interview',
+    category: 'Interview',
+    icon: '🎯',
+    title: 'Request to Schedule Interview (Matching Skills Follow-up)',
+    timing: 'Send 2–4 days after applying to stand out directly to HR',
+    subject: 'Application & Interview Request: [role] — [Your Name]',
+    body: `Dear [Hiring Manager / HR Team Name],
+
+I hope this email finds you well.
+
+I recently went through the Job Description for the [role] opening at [Company] and have submitted my official application through your portal.
+
+Upon thoroughly reviewing the required qualifications, I found that my technical skill set in [mention 2-3 key skills from JD, e.g. React, Node.js, Python, or Problem Solving] strongly matches what you are looking for. I have also built practical projects around [mention 1 relevant project/achievement] that align directly with your requirements.
+
+Given how closely my background lines up with the role, I would welcome the opportunity to discuss how I can contribute to your team. Could we please schedule a brief introductory interview or technical conversation at your convenience?
+
+I have attached my resume for your ready reference, and I am available for a conversation at any time that suits your schedule.
+
+Thank you very much for your time and consideration.
+
+Warm regards,
+[Your Name]
+[Your Phone Number]
+[Your LinkedIn / Portfolio Link]`,
+  },
+  {
     id: 'follow-up-applying',
     category: 'Follow-up',
     icon: '✉️',
@@ -99,25 +125,6 @@ Our conversation confirmed my enthusiasm for joining [Company]. I am confident t
 Please let me know if you need any additional information from me. Looking forward to hearing about the next steps.
 
 Best regards,
-[Your Name]
-[Your Phone Number]`,
-  },
-  {
-    id: 'reschedule-interview',
-    category: 'Interview',
-    icon: '📅',
-    title: 'Requesting an interview reschedule',
-    timing: 'As early as you possibly can — never same-day',
-    subject: 'Reschedule Request — [role] interview',
-    body: `Dear [Interviewer Name / Hiring Team],
-
-Thank you for inviting me to interview for the [role] position at [Company].
-
-Due to an unavoidable conflict ([brief reason, e.g., an upcoming university exam / prior commitment]), I am respectfully requesting to reschedule our conversation originally planned for [Original Date and Time].
-
-I am available on [Option 1: Date & Time] or [Option 2: Date & Time]. I sincerely apologize for any inconvenience this may cause and appreciate your flexibility.
-
-Warm regards,
 [Your Name]
 [Your Phone Number]`,
   },

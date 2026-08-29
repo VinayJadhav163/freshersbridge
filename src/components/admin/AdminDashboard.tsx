@@ -107,9 +107,10 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Search & Filter state for admin table
+  // Search & Filter & Sort state for admin table
   const [adminSearchQuery, setAdminSearchQuery] = useState<string>('');
   const [adminCategoryFilter, setAdminCategoryFilter] = useState<string>('');
+  const [adminSortBy, setAdminSortBy] = useState<'newest' | 'oldest' | 'most-views' | 'title-asc' | 'deadline'>('newest');
 
   // Subscriber UI state
   const [adminSubscriberSearch, setAdminSubscriberSearch] = useState<string>('');
@@ -857,7 +858,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                 </div>
               </div>
 
-              {/* Table search & category filter bars */}
+              {/* Table search, category filter & date sorting bars */}
               <div className="flex flex-col sm:flex-row gap-3 items-center border border-border bg-card p-3 rounded-xl">
                 <div className="relative flex-1 w-full">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -872,7 +873,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                 <select
                   value={adminCategoryFilter}
                   onChange={(e) => setAdminCategoryFilter(e.target.value)}
-                  className="w-full sm:w-48 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-indigo-600"
+                  className="w-full sm:w-44 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-indigo-600 cursor-pointer"
                 >
                   <option value="">All Categories</option>
                   {categories.map((c) => (
@@ -880,6 +881,18 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                       {c.name}
                     </option>
                   ))}
+                </select>
+
+                <select
+                  value={adminSortBy}
+                  onChange={(e) => setAdminSortBy(e.target.value as any)}
+                  className="w-full sm:w-48 rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold outline-none focus:border-indigo-600 cursor-pointer"
+                >
+                  <option value="newest">📅 Newest Date First ↓</option>
+                  <option value="oldest">📅 Oldest Date First ↑</option>
+                  <option value="most-views">🔥 Most Viewed First ↓</option>
+                  <option value="title-asc">🔤 Title (A to Z)</option>
+                  <option value="deadline">⏰ Application Deadline</option>
                 </select>
               </div>
 
@@ -890,6 +903,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                     <tr className="border-b border-border bg-secondary/50 text-muted-foreground font-semibold">
                       <th className="p-4">Job Title</th>
                       <th className="p-4">Company</th>
+                      <th className="p-4">Posted Date</th>
                       <th className="p-4">Category</th>
                       <th className="p-4 text-center">Featured?</th>
                       <th className="p-4 text-center">Views</th>
@@ -898,13 +912,34 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                   </thead>
                   <tbody className="divide-y divide-border">
                     {(() => {
-                      const filteredJobs = jobs.filter((job) => {
-                        const matchesSearch =
-                          job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
-                          job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                        const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
-                        return matchesSearch && matchesCategory;
-                      });
+                      const filteredJobs = jobs
+                        .filter((job) => {
+                          const matchesSearch =
+                            job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                            job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
+                          const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
+                          return matchesSearch && matchesCategory;
+                        })
+                        .sort((a, b) => {
+                          if (adminSortBy === 'newest') {
+                            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                          }
+                          if (adminSortBy === 'oldest') {
+                            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+                          }
+                          if (adminSortBy === 'most-views') {
+                            return (b.views_count || 0) - (a.views_count || 0);
+                          }
+                          if (adminSortBy === 'title-asc') {
+                            return a.title.localeCompare(b.title);
+                          }
+                          if (adminSortBy === 'deadline') {
+                            if (!a.application_deadline) return 1;
+                            if (!b.application_deadline) return -1;
+                            return new Date(a.application_deadline).getTime() - new Date(b.application_deadline).getTime();
+                          }
+                          return 0;
+                        });
 
                       return filteredJobs.length > 0 ? (
                         filteredJobs.map((job) => (
@@ -915,6 +950,9 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                               </Link>
                             </td>
                             <td className="p-4 text-muted-foreground">{job.company}</td>
+                            <td className="p-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                              {new Date(job.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </td>
                             <td className="p-4">
                               <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
                                 {job.categories?.name || 'Uncategorized'}
@@ -929,8 +967,10 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                                 <span className="text-xs text-muted-foreground">No</span>
                               )}
                             </td>
-                            <td className="p-4 text-center font-medium text-foreground/80 flex items-center justify-center gap-1 py-5">
-                              <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                            <td className="p-4 text-center font-medium text-foreground/80">
+                              <span className="inline-flex items-center gap-1">
+                                <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                              </span>
                             </td>
                             <td className="p-4 text-right space-x-2">
                               <button

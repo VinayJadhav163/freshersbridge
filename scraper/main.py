@@ -293,12 +293,12 @@ def run_pipeline(use_ai: bool = False):
         try:
             resp = requests.post(
                 api_url,
-                json={'jobs': final_jobs, 'admin_key': admin_key},
+                json={'jobs': clean_final_jobs, 'admin_key': admin_key},
                 headers={'Content-Type': 'application/json', 'x-admin-key': admin_key},
-                timeout=30
+                timeout=60
             )
             if resp.status_code == 200:
-                logger.info("Direct API Sync succeeded! Jobs inserted into database.")
+                logger.info(f"Direct API Sync succeeded! Response: {resp.json().get('message', 'OK')}")
             else:
                 logger.error(f"Direct API Sync failed with status code {resp.status_code}: {resp.text}")
         except Exception as e:

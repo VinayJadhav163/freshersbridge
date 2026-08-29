@@ -19,46 +19,48 @@ export default function CareerToolsHub() {
   return (
     <div className="space-y-8">
       {/* Tool Selection Tabs Bar */}
-      <div className="flex items-center justify-center">
-        <div className="inline-flex p-1.5 rounded-2xl bg-secondary/80 border border-border gap-2 max-w-full overflow-x-auto shadow-xs">
-          <button
-            type="button"
-            onClick={() => setActiveTab('ats')}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
-              activeTab === 'ats'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
-                : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
-            }`}
-          >
-            <FileCheck2 className="h-4 w-4 shrink-0" />
-            <span>ATS Resume Scanner</span>
-          </button>
+      <div className="w-full overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex items-center justify-start sm:justify-center min-w-max mx-auto">
+          <div className="inline-flex p-1.5 rounded-2xl bg-secondary/80 border border-border gap-2 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab('ats')}
+              className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
+                activeTab === 'ats'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
+              }`}
+            >
+              <FileCheck2 className="h-4 w-4 shrink-0" />
+              <span>ATS Resume Scanner</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('salary')}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
-              activeTab === 'salary'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
-                : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
-            }`}
-          >
-            <IndianRupee className="h-4 w-4 shrink-0" />
-            <span>In-Hand Salary Calculator</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('salary')}
+              className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
+                activeTab === 'salary'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
+              }`}
+            >
+              <IndianRupee className="h-4 w-4 shrink-0" />
+              <span>In-Hand Salary Calculator</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('emails')}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
-              activeTab === 'emails'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
-                : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
-            }`}
-          >
-            <MailCheck className="h-4 w-4 shrink-0" />
-            <span>12 HR Email Scripts</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('emails')}
+              className={`inline-flex items-center gap-2 rounded-xl px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 ease-out shrink-0 cursor-pointer select-none active:scale-95 ${
+                activeTab === 'emails'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/80'
+              }`}
+            >
+              <MailCheck className="h-4 w-4 shrink-0" />
+              <span>12 HR Email Scripts</span>
+            </button>
+          </div>
         </div>
       </div>
 
