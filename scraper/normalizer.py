@@ -689,8 +689,11 @@ def clean_and_extract_core_jd(raw_desc: str, company: str = "", title: str = "")
     # 1. Remove HTML tags
     text = re.sub(r'<[^>]+>', ' ', text)
     
-    # 2. Fix mojibake and single-character newline splits
+    # 2. Fix mojibake, escaped backslashes and single-character newline splits
     text = text.replace('\ufffd', ' ').replace('\u200b', '')
+    # Unescape markdown backslashes added by html2text/markdownify (e.g. \- -> -, \# -> #, \_ -> _)
+    text = re.sub(r'\\([-_*#+\[\]().`~>!&|/\\])', r'\1', text)
+    
     raw_lines = text.splitlines()
     healed_lines = []
     char_buf = []
@@ -707,8 +710,8 @@ def clean_and_extract_core_jd(raw_desc: str, company: str = "", title: str = "")
         healed_lines.append(''.join(char_buf))
     text = "\n".join(healed_lines)
     
-    # 3. Strip markdown asterisks and hashes
-    text = re.sub(r'#+\s*', '', text)
+    # 3. Strip markdown headers at line start (preserve C# in text)
+    text = re.sub(r'^\s*#{1,6}\s*', '', text, flags=re.MULTILINE)
     text = re.sub(r'\*{1,3}([^*]+)\*{1,3}', r'\1', text)
     text = re.sub(r'\*{1,3}', '', text)
     text = re.sub(r'_{2,3}([^_]+)_{2,3}', r'\1', text)

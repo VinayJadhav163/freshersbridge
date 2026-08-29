@@ -124,8 +124,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function cleanSquishedText(text: string): string {
   if (!text) return '';
+  // Unescape backslash-escaped characters (e.g. \- -> -, \# -> #, \_ -> _)
+  let clean = text.replace(/\\([-_*#+\[\]().`~>!&|/\\])/g, '$1');
   // Split squished concatenated words (e.g. "AdvancedconceptualunderstandingofatleastoneProgrammingLanguage")
-  return text.replace(/\S{25,}/g, (match) => {
+  return clean.replace(/\S{25,}/g, (match) => {
     return match
       .replace(/([a-z])([A-Z])/g, '$1 $2')
       .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
