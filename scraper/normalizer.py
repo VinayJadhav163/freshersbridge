@@ -691,8 +691,13 @@ def clean_and_extract_core_jd(raw_desc: str, company: str = "", title: str = "")
     
     # 2. Fix mojibake, escaped backslashes and single-character newline splits
     text = text.replace('\ufffd', ' ').replace('\u200b', '')
+    # Auto-heal corrupted C# / F# symbols (e.g. "C\programming" -> "C# programming", "C\ developer" -> "C# developer")
+    text = re.sub(r'\bC\\([a-zA-Z])', r'C# \1', text)
+    text = re.sub(r'\bC\\([.,;:/ \t]|$)', r'C#\1', text)
+    text = re.sub(r'\bF\\([a-zA-Z])', r'F# \1', text)
+    text = re.sub(r'\bF\\([.,;:/ \t]|$)', r'F#\1', text)
     # Unescape markdown backslashes added by html2text/markdownify (e.g. \- -> -, \# -> #, \_ -> _)
-    text = re.sub(r'\\([-_*#+\[\]().`~>!&|/\\])', r'\1', text)
+    text = re.sub(r'\\([*#+\[\]().`~>!&|/\\_\-])', r'\1', text)
     
     raw_lines = text.splitlines()
     healed_lines = []

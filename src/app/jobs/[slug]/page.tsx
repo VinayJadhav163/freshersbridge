@@ -124,8 +124,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function cleanSquishedText(text: string): string {
   if (!text) return '';
+  // Auto-heal corrupted C# / F# symbols (e.g. "C\programming" -> "C# programming", "C\ developer" -> "C# developer")
+  let clean = text
+    .replace(/\bC\\([a-zA-Z])/g, 'C# $1')
+    .replace(/\bC\\([.,;:/ \t]|$)/g, 'C#$1')
+    .replace(/\bF\\([a-zA-Z])/g, 'F# $1')
+    .replace(/\bF\\([.,;:/ \t]|$)/g, 'F#$1');
+
   // Unescape backslash-escaped characters (e.g. \- -> -, \# -> #, \_ -> _)
-  let clean = text.replace(/\\([*#+\[\]().`~>!&|/\\_\-])/g, '$1');
+  clean = clean.replace(/\\([*#+\[\]().`~>!&|/\\_\-])/g, '$1');
+
   // Split squished concatenated words (e.g. "AdvancedconceptualunderstandingofatleastoneProgrammingLanguage")
   return clean.replace(/\S{25,}/g, (match) => {
     return match
