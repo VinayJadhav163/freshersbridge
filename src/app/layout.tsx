@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -7,13 +7,6 @@ import JobAlertsBanner from '@/components/JobAlertsBanner';
 import PageNavigationLoader from '@/components/PageNavigationLoader';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  minimumScale: 0.5,
-  userScalable: true,
-};
 
 export const metadata: Metadata = {
   title: 'FreshersBridge | Handpicked Off-Campus Jobs & Internships for Freshers',

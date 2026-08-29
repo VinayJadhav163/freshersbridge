@@ -740,6 +740,13 @@ def clean_and_extract_core_jd(raw_desc: str, company: str = "", title: str = "")
             clean_lines.append(l_strip)
         text = "\n".join(clean_lines)
 
+    # 5.5 Split concatenated/squished words (e.g. from HTML stripping)
+    def split_squished(match):
+        w = match.group(0)
+        return re.sub(r'([a-z])([A-Z])', r'\1 \2', re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', w))
+
+    text = re.sub(r'\S{25,}', split_squished, text)
+
     # 6. Clean line-by-line metadata and bullets
     final_lines = []
     for l in text.splitlines():

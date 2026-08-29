@@ -122,10 +122,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function cleanSquishedText(text: string): string {
+  if (!text) return '';
+  // Split squished concatenated words (e.g. "AdvancedconceptualunderstandingofatleastoneProgrammingLanguage")
+  return text.replace(/\S{25,}/g, (match) => {
+    return match
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+  });
+}
+
 function FormattedJobDescription({ content }: { content: string }) {
   if (!content) return null;
 
-  // Auto-heal single-character newline splits if present in scraped text
+  // Auto-heal single-character newline splits & clean squished tokens
   const rawLines = content.split('\n');
   const healedLines: string[] = [];
   let charBuf: string[] = [];
@@ -136,14 +146,14 @@ function FormattedJobDescription({ content }: { content: string }) {
       charBuf.push(sLine);
     } else {
       if (charBuf.length > 0) {
-        healedLines.push(charBuf.join(''));
+        healedLines.push(cleanSquishedText(charBuf.join('')));
         charBuf = [];
       }
-      healedLines.push(rLine);
+      healedLines.push(cleanSquishedText(rLine));
     }
   }
   if (charBuf.length > 0) {
-    healedLines.push(charBuf.join(''));
+    healedLines.push(cleanSquishedText(charBuf.join('')));
   }
 
   const lines = healedLines;
@@ -200,34 +210,34 @@ function FormattedJobDescription({ content }: { content: string }) {
 
   if (sections.length === 0) {
     return (
-      <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-wrap font-sans">
-        {content}
+      <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-wrap font-sans break-words [overflow-wrap:anywhere] max-w-full overflow-hidden">
+        {cleanSquishedText(content)}
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 text-foreground/90 text-sm leading-relaxed font-sans">
+    <div className="space-y-6 text-foreground/90 text-sm leading-relaxed font-sans break-words [overflow-wrap:anywhere] max-w-full overflow-hidden">
       {sections.map((sec, idx) => (
-        <div key={idx} className="space-y-2.5">
+        <div key={idx} className="space-y-2.5 max-w-full overflow-hidden">
           {sec.title && (
-            <h3 className="text-base font-bold text-foreground flex items-center gap-2 pt-2 border-t border-border/40 first:border-t-0 first:pt-0">
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2 pt-2 border-t border-border/40 first:border-t-0 first:pt-0 break-words [overflow-wrap:anywhere]">
               <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0" />
               {sec.title}
             </h3>
           )}
 
           {sec.type === 'list' ? (
-            <ul className="list-disc list-outside ml-5 space-y-2 text-foreground/90 leading-relaxed marker:text-foreground">
+            <ul className="list-disc list-outside ml-5 space-y-2 text-foreground/90 leading-relaxed marker:text-foreground max-w-full overflow-hidden">
               {sec.items.map((item, iIdx) => (
-                <li key={iIdx} className="pl-1">
+                <li key={iIdx} className="pl-1 break-words [overflow-wrap:anywhere]">
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           ) : (
             sec.items.map((para, pIdx) => (
-              <p key={pIdx} className="text-foreground/80 leading-relaxed">
+              <p key={pIdx} className="text-foreground/80 leading-relaxed break-words [overflow-wrap:anywhere]">
                 {para}
               </p>
             ))
