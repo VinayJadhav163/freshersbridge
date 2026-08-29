@@ -15,6 +15,8 @@ import {
   logoutAdminAction,
   resetAllJobViewsAction,
   deleteAllJobsAction,
+  deleteSelectedJobsAction,
+  deleteJobsByDateAction,
   bulkUploadJobsAction
 } from '@/app/admin/actions';
 import { 
@@ -40,7 +42,10 @@ import {
   UserPlus,
   LogOut,
   ShieldCheck,
-  RotateCcw
+  RotateCcw,
+  Calendar,
+  CheckSquare,
+  Filter
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -110,7 +115,15 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   // Search & Filter & Sort state for admin table
   const [adminSearchQuery, setAdminSearchQuery] = useState<string>('');
   const [adminCategoryFilter, setAdminCategoryFilter] = useState<string>('');
+  const [adminTypeFilter, setAdminTypeFilter] = useState<'all' | 'job' | 'internship'>('all');
   const [adminSortBy, setAdminSortBy] = useState<'newest' | 'oldest' | 'most-views' | 'title-asc' | 'deadline'>('newest');
+
+  // Multi-select & Batch Delete States
+  const [selectedJobRowIds, setSelectedJobRowIds] = useState<string[]>([]);
+  const [showDeleteByDateModal, setShowDeleteByDateModal] = useState<boolean>(false);
+  const [deleteDateTarget, setDeleteDateTarget] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [deleteDateMode, setDeleteDateMode] = useState<'exact' | 'before'>('exact');
+  const [deleteDateJobType, setDeleteDateJobType] = useState<'all' | 'job' | 'internship'>('all');
 
   // Subscriber UI state
   const [adminSubscriberSearch, setAdminSubscriberSearch] = useState<string>('');
@@ -311,10 +324,88 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
 
     if (res.success) {
       setJobs([]);
+      setSelectedJobRowIds([]);
       showNotification('success', 'All jobs have been permanently removed. Ready for new CSV upload.');
       router.refresh();
     } else {
       showNotification('error', res.error || 'Failed to delete all jobs.');
+    }
+  };
+
+  const toggleSelectJobRow = (id: string) => {
+    setSelectedJobRowIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllFiltered = (filteredIds: string[]) => {
+    const allSelected = filteredIds.length > 0 && filteredIds.every((id) => selectedJobRowIds.includes(id));
+    if (allSelected) {
+      setSelectedJobRowIds((prev) => prev.filter((id) => !filteredIds.includes(id)));
+    } else {
+      setSelectedJobRowIds((prev) => Array.from(new Set([...prev, ...filteredIds])));
+    }
+  };
+
+  const handleDeleteSelectedJobs = async () => {
+    if (selectedJobRowIds.length === 0) return;
+    const key = adminKey || localStorage.getItem('freshersbridge_admin_key') || '';
+    if (!key) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedJobRowIds.length} selected postings? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    const result = await deleteSelectedJobsAction(selectedJobRowIds, key);
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setJobs((prev) => prev.filter((j) => !selectedJobRowIds.includes(j.id)));
+      showNotification('success', `Deleted ${selectedJobRowIds.length} selected postings successfully.`);
+      setSelectedJobRowIds([]);
+      router.refresh();
+    } else {
+      showNotification('error', result.error || 'Failed to delete selected jobs.');
+    }
+  };
+
+  const handleDeleteByDateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const key = adminKey || localStorage.getItem('freshersbridge_admin_key') || '';
+    if (!key) {
+      showNotification('error', 'Please enter your Admin Access Key.');
+      return;
+    }
+    if (!deleteDateTarget) {
+      showNotification('error', 'Please select a date.');
+      return;
+    }
+
+    const modeText = deleteDateMode === 'exact' ? `posted exactly on ${deleteDateTarget}` : `posted on or before ${deleteDateTarget}`;
+    const typeText = deleteDateJobType === 'all' ? 'All Jobs & Internships' : deleteDateJobType === 'internship' ? 'Only Internships' : 'Only Full-Time Jobs';
+
+    if (!confirm(`⚠️ Are you sure you want to delete ${typeText} ${modeText}? This action cannot be reversed.`)) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    const result = await deleteJobsByDateAction(
+      { targetDate: deleteDateTarget, mode: deleteDateMode, jobType: deleteDateJobType },
+      key
+    );
+    setIsSubmitting(false);
+
+    if (result.success) {
+      showNotification('success', `Successfully cleaned up postings by date criteria.`);
+      setShowDeleteByDateModal(false);
+      setSelectedJobRowIds([]);
+      router.refresh();
+    } else {
+      showNotification('error', result.error || 'Failed to delete postings by date.');
     }
   };
 
@@ -808,9 +899,27 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
             <div className="space-y-4">
               {/* Header and Controls */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h2 className="text-lg font-bold text-foreground">Active Job Postings</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-foreground">Active Postings</h2>
+                  <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
+                    {jobs.length} total
+                  </span>
+                </div>
                 
                 <div className="flex flex-wrap items-center gap-2">
+                  {/* Delete by Date Button */}
+                  {jobs.length > 0 && (
+                    <button
+                      onClick={() => setShowDeleteByDateModal(true)}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 px-3 py-2 text-xs font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-all cursor-pointer disabled:opacity-50"
+                      title="Clean up jobs or internships by specific date"
+                    >
+                      <Calendar className="h-4 w-4" />
+                      <span>Delete by Date</span>
+                    </button>
+                  )}
+
                   {/* Delete All Jobs Button */}
                   {jobs.length > 0 && (
                     <button
@@ -820,7 +929,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                       title="Clear and delete all jobs in the database"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span>Delete All ({jobs.length})</span>
+                      <span>Delete All</span>
                     </button>
                   )}
 
@@ -858,54 +967,141 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                 </div>
               </div>
 
-              {/* Table search, category filter & date sorting bars */}
-              <div className="flex flex-col sm:flex-row gap-3 items-center border border-border bg-card p-3 rounded-xl">
+              {/* Table search, category filter, job type filter & date sorting bars */}
+              <div className="flex flex-col lg:flex-row gap-3 items-center border border-border bg-card p-3 rounded-xl">
                 <div className="relative flex-1 w-full">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
-                    placeholder="Search active jobs by title or company..."
+                    placeholder="Search by title, company..."
                     value={adminSearchQuery}
                     onChange={(e) => setAdminSearchQuery(e.target.value)}
                     className="w-full rounded-lg border border-border bg-background pl-9 pr-3 py-2 text-xs outline-none focus:border-indigo-600"
                   />
                 </div>
-                <select
-                  value={adminCategoryFilter}
-                  onChange={(e) => setAdminCategoryFilter(e.target.value)}
-                  className="w-full sm:w-44 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-indigo-600 cursor-pointer"
-                >
-                  <option value="">All Categories</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
 
-                <select
-                  value={adminSortBy}
-                  onChange={(e) => setAdminSortBy(e.target.value as any)}
-                  className="w-full sm:w-48 rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold outline-none focus:border-indigo-600 cursor-pointer"
-                >
-                  <option value="newest">📅 Newest Date First ↓</option>
-                  <option value="oldest">📅 Oldest Date First ↑</option>
-                  <option value="most-views">🔥 Most Viewed First ↓</option>
-                  <option value="title-asc">🔤 Title (A to Z)</option>
-                  <option value="deadline">⏰ Application Deadline</option>
-                </select>
+                <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full lg:w-auto">
+                  {/* Job Type Selector */}
+                  <select
+                    value={adminTypeFilter}
+                    onChange={(e) => setAdminTypeFilter(e.target.value as any)}
+                    className="w-full sm:w-36 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium outline-none focus:border-indigo-600 cursor-pointer"
+                  >
+                    <option value="all">All Types</option>
+                    <option value="job">💼 Jobs Only</option>
+                    <option value="internship">🎓 Internships</option>
+                  </select>
+
+                  {/* Category Selector */}
+                  <select
+                    value={adminCategoryFilter}
+                    onChange={(e) => setAdminCategoryFilter(e.target.value)}
+                    className="w-full sm:w-40 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-indigo-600 cursor-pointer"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Sort Selector */}
+                  <select
+                    value={adminSortBy}
+                    onChange={(e) => setAdminSortBy(e.target.value as any)}
+                    className="w-full sm:w-44 rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold outline-none focus:border-indigo-600 cursor-pointer"
+                  >
+                    <option value="newest">📅 Newest First ↓</option>
+                    <option value="oldest">📅 Oldest First ↑</option>
+                    <option value="most-views">🔥 Most Viewed ↓</option>
+                    <option value="title-asc">🔤 Title (A to Z)</option>
+                    <option value="deadline">⏰ Deadline</option>
+                  </select>
+                </div>
               </div>
+
+              {/* Multi-Selection Batch Action Bar */}
+              {selectedJobRowIds.length > 0 && (
+                <div className="flex items-center justify-between p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 animate-in fade-in slide-in-from-top-1">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-bold">
+                    <CheckSquare className="h-4 w-4 shrink-0" />
+                    <span>
+                      {selectedJobRowIds.length} item{selectedJobRowIds.length > 1 ? 's' : ''} selected
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedJobRowIds([])}
+                      className="text-xs font-semibold text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded-lg border border-border bg-card cursor-pointer"
+                    >
+                      Deselect All
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteSelectedJobs}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 text-xs font-bold shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span>Delete Selected ({selectedJobRowIds.length})</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Jobs Table */}
               <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
                     <tr className="border-b border-border bg-secondary/50 text-muted-foreground font-semibold">
+                      <th className="p-4 w-10 text-center">
+                        <input
+                          type="checkbox"
+                          checked={(() => {
+                            const filtered = jobs.filter((job) => {
+                              const matchesSearch =
+                                job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                                job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
+                              const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
+                              const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
+                              const matchesType =
+                                adminTypeFilter === 'all'
+                                  ? true
+                                  : adminTypeFilter === 'internship'
+                                  ? isIntern
+                                  : !isIntern;
+                              return matchesSearch && matchesCategory && matchesType;
+                            });
+                            return filtered.length > 0 && filtered.every((j) => selectedJobRowIds.includes(j.id));
+                          })()}
+                          onChange={() => {
+                            const filtered = jobs.filter((job) => {
+                              const matchesSearch =
+                                job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                                job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
+                              const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
+                              const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
+                              const matchesType =
+                                adminTypeFilter === 'all'
+                                  ? true
+                                  : adminTypeFilter === 'internship'
+                                  ? isIntern
+                                  : !isIntern;
+                              return matchesSearch && matchesCategory && matchesType;
+                            });
+                            handleSelectAllFiltered(filtered.map((j) => j.id));
+                          }}
+                          className="rounded border-border text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
+                          title="Select all visible postings"
+                        />
+                      </th>
                       <th className="p-4">Job Title</th>
                       <th className="p-4">Company</th>
                       <th className="p-4">Posted Date</th>
                       <th className="p-4">Category</th>
-                      <th className="p-4 text-center">Featured?</th>
+                      <th className="p-4 text-center">Type</th>
                       <th className="p-4 text-center">Views</th>
                       <th className="p-4 text-right">Actions</th>
                     </tr>
@@ -918,7 +1114,14 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                             job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
                             job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
                           const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
-                          return matchesSearch && matchesCategory;
+                          const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
+                          const matchesType =
+                            adminTypeFilter === 'all'
+                              ? true
+                              : adminTypeFilter === 'internship'
+                              ? isIntern
+                              : !isIntern;
+                          return matchesSearch && matchesCategory && matchesType;
                         })
                         .sort((a, b) => {
                           if (adminSortBy === 'newest') {
@@ -942,65 +1145,93 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                         });
 
                       return filteredJobs.length > 0 ? (
-                        filteredJobs.map((job) => (
-                          <tr key={job.id} className="hover:bg-secondary/25 transition-colors">
-                            <td className="p-4 font-semibold text-foreground">
-                              <Link href={`/jobs/${job.slug}`} target="_blank" className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1">
-                                {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                              </Link>
-                            </td>
-                            <td className="p-4 text-muted-foreground">{job.company}</td>
-                            <td className="p-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
-                              {new Date(job.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                            </td>
-                            <td className="p-4">
-                              <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
-                                {job.categories?.name || 'Uncategorized'}
-                              </span>
-                            </td>
-                            <td className="p-4 text-center">
-                              {job.featured_job ? (
-                                <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-600">
-                                  Yes
+                        filteredJobs.map((job) => {
+                          const isSelected = selectedJobRowIds.includes(job.id);
+                          const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
+
+                          return (
+                            <tr
+                              key={job.id}
+                              className={`transition-colors ${
+                                isSelected ? 'bg-indigo-50/60 dark:bg-indigo-950/30' : 'hover:bg-secondary/25'
+                              }`}
+                            >
+                              <td className="p-4 text-center">
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => toggleSelectJobRow(job.id)}
+                                  className="rounded border-border text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
+                                />
+                              </td>
+                              <td className="p-4 font-semibold text-foreground">
+                                <Link
+                                  href={`/jobs/${job.slug}`}
+                                  target="_blank"
+                                  className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1"
+                                >
+                                  {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                </Link>
+                              </td>
+                              <td className="p-4 text-muted-foreground">{job.company}</td>
+                              <td className="p-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                                {new Date(job.created_at).toLocaleDateString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric',
+                                })}
+                              </td>
+                              <td className="p-4">
+                                <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
+                                  {job.categories?.name || 'Uncategorized'}
                                 </span>
-                              ) : (
-                                <span className="text-xs text-muted-foreground">No</span>
-                              )}
-                            </td>
-                            <td className="p-4 text-center font-medium text-foreground/80">
-                              <span className="inline-flex items-center gap-1">
-                                <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
-                              </span>
-                            </td>
-                            <td className="p-4 text-right space-x-2">
-                              <button
-                                onClick={() => handleCloneJobClick(job)}
-                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
-                                title="Duplicate/Clone Job"
-                              >
-                                <Copy className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => handleEditJobClick(job)}
-                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
-                                title="Edit Job"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteJob(job.id)}
-                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
-                                title="Delete Job"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))
+                              </td>
+                              <td className="p-4 text-center">
+                                {isIntern ? (
+                                  <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                    Internship
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                                    Full-Time
+                                  </span>
+                                )}
+                              </td>
+                              <td className="p-4 text-center font-medium text-foreground/80">
+                                <span className="inline-flex items-center gap-1">
+                                  <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                                </span>
+                              </td>
+                              <td className="p-4 text-right space-x-2">
+                                <button
+                                  onClick={() => handleCloneJobClick(job)}
+                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                  title="Duplicate/Clone Job"
+                                >
+                                  <Copy className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleEditJobClick(job)}
+                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                  title="Edit Job"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteJob(job.id)}
+                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
+                                  title="Delete Job"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         <tr>
-                          <td colSpan={6} className="p-12 text-center text-muted-foreground">
-                            No matching jobs found. Try adjusting your filters.
+                          <td colSpan={8} className="p-12 text-center text-muted-foreground">
+                            No matching postings found. Try adjusting your filters.
                           </td>
                         </tr>
                       );
@@ -1667,6 +1898,113 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete by Date Modal */}
+      {showDeleteByDateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-amber-500/10 p-2 text-amber-600 dark:text-amber-400">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-foreground">Delete Postings by Date</h3>
+                  <p className="text-xs text-muted-foreground">Clean up jobs or internships matching date criteria.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowDeleteByDateModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleDeleteByDateSubmit} className="space-y-4">
+              {/* Date Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground">Select Target Date</label>
+                <input
+                  type="date"
+                  required
+                  value={deleteDateTarget}
+                  onChange={(e) => setDeleteDateTarget(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-indigo-600 cursor-pointer"
+                />
+              </div>
+
+              {/* Date Scope / Mode */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground">Date Criteria Scope</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDeleteDateMode('exact')}
+                    className={`rounded-xl border p-2.5 text-xs font-semibold transition-all text-left cursor-pointer ${
+                      deleteDateMode === 'exact'
+                        ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-bold'
+                        : 'border-border bg-card text-muted-foreground hover:bg-secondary'
+                    }`}
+                  >
+                    <p className="font-bold">Exact Date</p>
+                    <p className="text-[10px] opacity-80">Only posted on this date</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setDeleteDateMode('before')}
+                    className={`rounded-xl border p-2.5 text-xs font-semibold transition-all text-left cursor-pointer ${
+                      deleteDateMode === 'before'
+                        ? 'border-amber-600 bg-amber-50/60 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 font-bold'
+                        : 'border-border bg-card text-muted-foreground hover:bg-secondary'
+                    }`}
+                  >
+                    <p className="font-bold">On or Before</p>
+                    <p className="text-[10px] opacity-80">All entries up to this date</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Type Selection */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground">Posting Type</label>
+                <select
+                  value={deleteDateJobType}
+                  onChange={(e) => setDeleteDateJobType(e.target.value as any)}
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs font-medium outline-none focus:border-indigo-600 cursor-pointer"
+                >
+                  <option value="all">🌟 All (Jobs & Internships)</option>
+                  <option value="job">💼 Only Full-Time Jobs</option>
+                  <option value="internship">🎓 Only Internships</option>
+                </select>
+              </div>
+
+              <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-3 text-[11px] text-muted-foreground leading-relaxed">
+                ⚠️ This will permanently remove matched entries from the database and refresh all public search pages.
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteByDateModal(false)}
+                  className="rounded-xl border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white px-4 py-2 text-xs font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>{isSubmitting ? 'Deleting...' : 'Delete Matching Postings'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

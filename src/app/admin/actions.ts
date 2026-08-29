@@ -262,6 +262,78 @@ export async function deleteAllJobsAction(adminKey: string) {
   }
 }
 
+export async function deleteSelectedJobsAction(jobIds: string[], adminKey: string) {
+  if (!verifyAdminKey(adminKey)) {
+    return { success: false, error: 'Unauthorized: Invalid Admin Access Key.' };
+  }
+
+  if (!Array.isArray(jobIds) || jobIds.length === 0) {
+    return { success: false, error: 'No job IDs provided to delete.' };
+  }
+
+  try {
+    const { error } = await supabase
+      .from('jobs')
+      .delete()
+      .in('id', jobIds);
+
+    if (error) throw error;
+
+    clearDataCache();
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/internships');
+    revalidatePath('/nandini');
+    return { success: true, count: jobIds.length };
+  } catch (err: any) {
+    return { success: false, error: handleActionError(err, 'Failed to delete selected jobs') };
+  }
+}
+
+export async function deleteJobsByDateAction(
+  options: { targetDate: string; mode: 'exact' | 'before'; jobType?: 'all' | 'job' | 'internship' },
+  adminKey: string
+) {
+  if (!verifyAdminKey(adminKey)) {
+    return { success: false, error: 'Unauthorized: Invalid Admin Access Key.' };
+  }
+
+  if (!options.targetDate) {
+    return { success: false, error: 'Please specify a target date.' };
+  }
+
+  try {
+    const startOfDay = new Date(`${options.targetDate}T00:00:00.000Z`).toISOString();
+    const endOfDay = new Date(`${options.targetDate}T23:59:59.999Z`).toISOString();
+
+    let query = supabase.from('jobs').delete();
+
+    if (options.mode === 'exact') {
+      query = query.gte('created_at', startOfDay).lte('created_at', endOfDay);
+    } else {
+      query = query.lte('created_at', endOfDay);
+    }
+
+    if (options.jobType === 'internship') {
+      query = query.ilike('title', '%intern%');
+    } else if (options.jobType === 'job') {
+      query = query.not('title', 'ilike', '%intern%');
+    }
+
+    const { error } = await query;
+    if (error) throw error;
+
+    clearDataCache();
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/internships');
+    revalidatePath('/nandini');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: handleActionError(err, 'Failed to delete jobs by date') };
+  }
+}
+
 export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
   if (!verifyAdminKey(adminKey)) {
     return { success: false, error: 'Unauthorized: Invalid Admin Access Key.' };
