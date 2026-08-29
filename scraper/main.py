@@ -290,12 +290,12 @@ def run_pipeline(use_ai: bool = False):
 
 
 
-    # Step 6: Direct API Upload to FreshersBridge (if configured)
-    api_url = os.getenv("FRESHERSBRIDGE_API_URL")
-    admin_key = os.getenv("ADMIN_ACCESS_KEY")
+    # Step 6: Direct Automatic Publishing to FreshersBridge Database
+    api_url = os.getenv("FRESHERSBRIDGE_API_URL") or "https://freshersbridge.in/api/admin/jobs/bulk"
+    admin_key = os.getenv("ADMIN_ACCESS_KEY") or os.getenv("NEXT_PUBLIC_ADMIN_ACCESS_KEY")
     
-    if api_url and admin_key:
-        logger.info(f"Posting {len(clean_final_jobs)} jobs directly to FreshersBridge API endpoint: {api_url}")
+    if admin_key:
+        logger.info(f"🚀 Auto-Publishing {len(clean_final_jobs)} verified non-duplicate jobs directly to: {api_url}")
         try:
             resp = requests.post(
                 api_url,
@@ -304,11 +304,13 @@ def run_pipeline(use_ai: bool = False):
                 timeout=60
             )
             if resp.status_code == 200:
-                logger.info(f"Direct API Sync succeeded! Response: {resp.json().get('message', 'OK')}")
+                logger.info(f"🎉 Direct Auto-Publish succeeded! Response: {resp.json().get('message', 'OK')}")
             else:
-                logger.error(f"Direct API Sync failed with status code {resp.status_code}: {resp.text}")
+                logger.error(f"❌ Direct Auto-Publish failed with status code {resp.status_code}: {resp.text}")
         except Exception as e:
-            logger.error(f"Direct API Sync request error: {e}")
+            logger.error(f"❌ Direct Auto-Publish request error: {e}")
+    else:
+        logger.warning("⚠️ ADMIN_ACCESS_KEY not found in environment. Direct DB auto-publish skipped. CSV saved locally.")
 
 if __name__ == "__main__":
     import argparse
