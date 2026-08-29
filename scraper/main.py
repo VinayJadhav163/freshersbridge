@@ -41,14 +41,14 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(root_dir, ".env.local"))
 load_dotenv(os.path.join(root_dir, ".env"))
 
-# Search terms targeted for Indian Freshers, Entry-Level & Remote roles
+# Search terms targeted strictly for Tech, Software, Data & IT Freshers
 SEARCH_TERMS = [
     "Software Engineer Intern",
     "Associate Software Engineer",
-    "Graduate Engineer Trainee",
+    "Graduate Software Engineer Trainee",
     "Frontend Developer Intern",
     "Full Stack Developer Intern",
-    "React Developer",
+    "React Developer Fresher",
     "Java Developer Fresher",
     "Python Developer Fresher",
     "Data Analyst Intern",
@@ -75,9 +75,10 @@ def is_fresher_job(job: dict) -> bool:
     - 0-1 years of experience
     - 0-2 years maximum (entry level)
     - 2024, 2025, 2026 Batch Graduates
-    - Internships, Apprenticeships, Trainees (GET/MT)
+    - Internships, Apprenticeships, Trainees (GET/MT in Tech)
     
     Strictly rejects:
+    - Non-tech / Civil / Electrical Substation / Mechanical / Factory / Sales roles
     - Any mention of 2+ / 3+ / 4+ / 5+ / 2-4 / 3-5 / 4-6 / 5-8 years of experience
     - Senior / Lead / Principal / Staff / Architect / Manager / Director / AVP / Consultant
     - Level II / 2 / SDE-2 / SDE II / SDET II / SDET-2 / L2 / Intermediate / II / III / IV
@@ -105,7 +106,18 @@ def is_fresher_job(job: dict) -> bool:
         if re.search(p, title_lower, re.I):
             return False
 
-    # 2. STRICT EXPERIENCE REJECTIONS (Unicode dashes, plus signs, word variations)
+    # 2. STRICT NON-TECH / HEAVY INDUSTRIAL / SALES / CIVIL / ELECTRICAL SUBSTATION REJECTIONS
+    non_tech_patterns = [
+        r'\b(substation|switchgear|busbar\s+protection|transformer\s+(?:differential|protection|main)|siprotec|reyrolle|omicron\s+test|iec\s*61850)\b',
+        r'\b(hvac|piping\s+design|civil\s+site|construction\s+site|structural\s+drafting|autocad\s+civil|mechanical\s+maintenance|cnc\s+machine|factory\s+loading|foundry|boiler)\b',
+        r'\b(sales[- ]acquisition|purchase\s+order\s+amendment|claim\s+management|vendor\s+sourcing|procurement\s+executive)\b',
+        r'\b(nurse|bpo|telesales|telecaller|tele-sales|data\s+entry\s+operator|back\s+office\s+executive|medical\s+billing)\b'
+    ]
+    for p in non_tech_patterns:
+        if re.search(p, full_text, re.I):
+            return False
+
+    # 3. STRICT EXPERIENCE REJECTIONS (Unicode dashes, plus signs, word variations)
     high_exp_regexes = [
         # Explicit ranges like 4-6, 3-5, 2-4, 4 to 6, 2-3 years / yrs
         r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
@@ -126,7 +138,7 @@ def is_fresher_job(job: dict) -> bool:
                 continue
             return False
 
-    # 3. Explicit non-fresher statements
+    # 4. Explicit non-fresher statements
     if re.search(r'\b(freshers?\s+need\s+not\s+apply|not\s+(?:suitable\s+)?for\s+freshers?|no\s+freshers?)\b', full_text, re.I):
         return False
 
