@@ -34,7 +34,7 @@ https://freshersbridge.in/career-tools
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
 
 📢 Get daily job alerts on Telegram:
-https://t.me/+uy56IKeSQt9jNzI1
+https://t.me/freshersbridge
 
 📩 Want job alerts directly in your inbox?
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:

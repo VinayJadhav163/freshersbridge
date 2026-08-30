@@ -38,7 +38,7 @@ export default function Footer() {
               </a>
 
               <a 
-                href="https://t.me/+uy56IKeSQt9jNzI1" 
+                href="https://t.me/freshersbridge" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-sky-600 dark:text-sky-400 hover:text-sky-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"

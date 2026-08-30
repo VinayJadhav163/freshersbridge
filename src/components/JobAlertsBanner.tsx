@@ -7,7 +7,7 @@ export interface JobAlertsBannerProps {
 
 export default function JobAlertsBanner({
   whatsappUrl = 'https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1',
-  telegramUrl = 'https://t.me/+uy56IKeSQt9jNzI1',
+  telegramUrl = 'https://t.me/freshersbridge',
 }: JobAlertsBannerProps) {
   return (
     <section className="w-full bg-[#0b132b] text-white py-12 sm:py-16 border-t border-slate-800/80 relative overflow-hidden">
