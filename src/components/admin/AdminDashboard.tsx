@@ -88,16 +88,26 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   
   // Community Broadcasts State
+  const [broadcastPlatform, setBroadcastPlatform] = useState<'whatsapp' | 'telegram'>('whatsapp');
   const [pabblyWebhookInput, setPabblyWebhookInput] = useState<string>('');
+  const [telegramBotToken, setTelegramBotToken] = useState<string>('');
+  const [telegramChannelId, setTelegramChannelId] = useState<string>('');
   const [copiedBatchIndex, setCopiedBatchIndex] = useState<number | null>(null);
   const [isDispatchingPabbly, setIsDispatchingPabbly] = useState<boolean>(false);
+  const [isDispatchingTelegram, setIsDispatchingTelegram] = useState<boolean>(false);
   const [pabblyBatchStatus, setPabblyBatchStatus] = useState<{ [key: number]: 'idle' | 'sending' | 'success' | 'error' }>({});
+  const [telegramBatchStatus, setTelegramBatchStatus] = useState<{ [key: number]: 'idle' | 'sending' | 'success' | 'error' }>({});
   const [pabblyStatusMessage, setPabblyStatusMessage] = useState<string>('');
+  const [telegramStatusMessage, setTelegramStatusMessage] = useState<string>('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedWebhook = localStorage.getItem('fb_pabbly_webhook');
       if (savedWebhook) setPabblyWebhookInput(savedWebhook);
+      const savedTgToken = localStorage.getItem('fb_tg_token');
+      if (savedTgToken) setTelegramBotToken(savedTgToken);
+      const savedTgChannel = localStorage.getItem('fb_tg_channel');
+      if (savedTgChannel) setTelegramChannelId(savedTgChannel);
     }
   }, []);
   
@@ -739,16 +749,61 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     e.target.value = '';
   };
 
-  // Helper to generate 10-job structured WhatsApp/Telegram broadcast message chunks
-  const generateBroadcastChunks = () => {
+  // Helper to generate 10-job structured WhatsApp & Telegram broadcast message chunks
+  const generateBroadcastChunks = (platform: 'whatsapp' | 'telegram' = broadcastPlatform) => {
     if (!jobs || jobs.length === 0) return [];
     // Sort newest created jobs first
     const sortedJobs = [...jobs].sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
     const chunkSize = 10;
     const chunks: { index: number; text: string; jobCount: number; jobs: Job[] }[] = [];
 
-    const header = `*📌 Top Tech & Internship Opportunities Open for Freshers (2024, 2025, 2026 Batch)*\n\n*📌 Score & Fix your Resume with ATS Resume Scanner:*\nhttps://freshersbridge.in/career-tools\n\n*📌 12 HR Email Scripts & In-Hand Salary Calculator:*\nhttps://freshersbridge.in/career-tools`;
-    const footer = `━━━━━━━━━━━━━━━━━━━━━━━━━━\n👉 Follow FreshersBridge for daily alerts: https://freshersbridge.in\n💬 Share with your batchmates & college groups!`;
+    const commonHeader = `📢 FRESHERSBRIDGE | DAILY FRESHER JOB ALERTS
+📢 Entry-Level Jobs & Internships
+❌ Applying everywhere but not getting shortlisted?
+📄 Your resume might not be ATS-friendly.
+🎯 Tailor your resume. Improve your chances.
+👉 Check your resume with our ATS Resume Scanner:
+https://freshersbridge.in/career-tools
+
+🔥 Today's Fresh Opportunities:`;
+
+    const whatsappFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌐 MORE JOBS & INTERNSHIPS:
+https://freshersbridge.in
+🧮 HR Email Scripts + In-Hand Salary Calculator:
+https://freshersbridge.in/career-tools
+📸 Follow FreshersBridge on Instagram:
+https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+📢 Get daily job alerts on Telegram:
+https://t.me/+uy56IKeSQt9jNzI1
+📩 Want job alerts directly in your inbox?
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+👉 https://freshersbridge.in
+━━━━━━━━━━━━━━━━━━━━
+🔥 New jobs & internships added regularly.
+👉 Visit FreshersBridge and apply before opportunities close.
+📤 Share with your friends, batchmates & college groups!
+FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
+
+    const telegramFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌐 MORE JOBS & INTERNSHIPS:
+https://freshersbridge.in
+🧮 HR Email Scripts + In-Hand Salary Calculator:
+https://freshersbridge.in/career-tools
+📸 Follow FreshersBridge on Instagram:
+https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+💬 Join our WhatsApp Community:
+https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
+📩 Want job alerts directly in your inbox?
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+👉 https://freshersbridge.in
+━━━━━━━━━━━━━━━━━━━━
+🔥 New jobs & internships added regularly.
+👉 Visit FreshersBridge and apply before opportunities close.
+📤 Share with your batchmates & college groups!
+FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
+
+    const footer = platform === 'telegram' ? telegramFooter : whatsappFooter;
 
     for (let i = 0; i < sortedJobs.length; i += chunkSize) {
       const batchJobs = sortedJobs.slice(i, i + chunkSize);
@@ -762,14 +817,14 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
         const salary = j.salary || 'Competitive / Best in Industry';
         const link = `https://freshersbridge.in/jobs/${j.slug}`;
 
-        let passingYear = '2026 | 2025 | 2024 (Freshers & Students)';
+        let passingYear = '2026 | 2025 | 2024';
         const years = ['2028', '2027', '2026', '2025', '2024'].filter(y => eligibility.includes(y));
         if (years.length > 0) passingYear = years.join(' | ');
 
         return `🔗 Company : ${company}\nRole : ${title}\nQualification : ${eligibility}\nPassing Year : ${passingYear}\nLocation : ${location}\nSalary : ${salary}\n📌 Apply Link : ${link}`;
       }).join('\n\n');
 
-      const fullMessage = `${header}\n\n${jobCards}\n\n${footer}`;
+      const fullMessage = `${commonHeader}\n\n${jobCards}\n\n${footer}`;
       chunks.push({
         index: batchNum,
         text: fullMessage,
@@ -792,9 +847,21 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
   };
 
+  const handleOpenTelegram = (text: string) => {
+    const encoded = encodeURIComponent(text);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent('https://freshersbridge.in')}&text=${encoded}`, '_blank');
+  };
+
   const handleSavePabblyWebhook = (url: string) => {
     setPabblyWebhookInput(url.trim());
     localStorage.setItem('fb_pabbly_webhook', url.trim());
+  };
+
+  const handleSaveTelegramConfig = (token: string, channel: string) => {
+    setTelegramBotToken(token.trim());
+    setTelegramChannelId(channel.trim());
+    localStorage.setItem('fb_tg_token', token.trim());
+    localStorage.setItem('fb_tg_channel', channel.trim());
   };
 
   const handleSendSingleBatchToPabbly = async (chunk: { index: number; text: string; jobCount: number }) => {
@@ -806,11 +873,14 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
 
     setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
     try {
+      const tgText = generateBroadcastChunks('telegram').find(c => c.index === chunk.index)?.text || chunk.text;
       const payload = {
         batch_index: chunk.index,
         job_count: chunk.jobCount,
         message_title: `FreshersBridge Batch #${chunk.index} (${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })})`,
         message_text: chunk.text,
+        whatsapp_message: chunk.text,
+        telegram_message: tgText,
         timestamp: new Date().toISOString()
       };
 
@@ -834,7 +904,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
       return;
     }
 
-    const chunks = generateBroadcastChunks();
+    const chunks = generateBroadcastChunks(broadcastPlatform);
     if (chunks.length === 0) {
       alert('No jobs available to broadcast.');
       return;
@@ -847,12 +917,15 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     for (const chunk of chunks) {
       setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
       try {
+        const tgText = generateBroadcastChunks('telegram').find(c => c.index === chunk.index)?.text || chunk.text;
         const payload = {
           batch_index: chunk.index,
           total_batches: chunks.length,
           job_count: chunk.jobCount,
           message_title: `FreshersBridge Batch #${chunk.index} of ${chunks.length} (${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })})`,
           message_text: chunk.text,
+          whatsapp_message: chunk.text,
+          telegram_message: tgText,
           timestamp: new Date().toISOString()
         };
 
@@ -873,6 +946,86 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     setIsDispatchingPabbly(false);
     setPabblyStatusMessage(`🎉 Successfully sent ${sent}/${chunks.length} batches to Pabbly!`);
     setTimeout(() => setPabblyStatusMessage(''), 5000);
+  };
+
+  const handleSendSingleBatchToTelegram = async (chunk: { index: number; text: string; jobCount: number }) => {
+    const token = telegramBotToken.trim();
+    const channel = telegramChannelId.trim();
+    if (!token || !channel) {
+      alert('Please enter your Telegram Bot Token and Channel ID first!');
+      return;
+    }
+
+    setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
+    try {
+      const tgText = generateBroadcastChunks('telegram').find(c => c.index === chunk.index)?.text || chunk.text;
+      const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: channel,
+          text: tgText,
+          disable_web_page_preview: false
+        })
+      });
+
+      if (resp.ok) {
+        setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
+      } else {
+        setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+      }
+    } catch {
+      setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+    }
+  };
+
+  const handleSendAllBatchesToTelegram = async () => {
+    const token = telegramBotToken.trim();
+    const channel = telegramChannelId.trim();
+    if (!token || !channel) {
+      alert('Please enter your Telegram Bot Token and Channel ID first!');
+      return;
+    }
+
+    const chunks = generateBroadcastChunks('telegram');
+    if (chunks.length === 0) {
+      alert('No jobs available to broadcast.');
+      return;
+    }
+
+    setIsDispatchingTelegram(true);
+    setTelegramStatusMessage(`Dispatching ${chunks.length} batches to Telegram Channel...`);
+
+    let sent = 0;
+    for (const chunk of chunks) {
+      setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
+      try {
+        const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: channel,
+            text: chunk.text,
+            disable_web_page_preview: false
+          })
+        });
+
+        if (resp.ok) {
+          setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
+          sent++;
+        } else {
+          setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+        }
+      } catch {
+        setTelegramBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+      }
+      // Small pause to prevent TG rate limits
+      await new Promise(r => setTimeout(r, 1500));
+    }
+
+    setIsDispatchingTelegram(false);
+    setTelegramStatusMessage(`🎉 Successfully sent ${sent}/${chunks.length} batches to Telegram!`);
+    setTimeout(() => setTelegramStatusMessage(''), 5000);
   };
 
   // Calculate statistics
@@ -1940,7 +2093,7 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
       {/* Community Broadcasts Tab */}
       {activeTab === 'broadcasts' && (
         <div className="space-y-6">
-          {/* Header & Pabbly Config */}
+          {/* Header & Automation Config */}
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -1949,67 +2102,153 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                   <span>WhatsApp & Telegram Community Broadcasts</span>
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Auto-formatted 10-job message blocks with your career tools and direct application links. Copy, share to WhatsApp, or automate via Pabbly Connect.
+                  10-job message blocks tailored for WhatsApp & Telegram. 1-click share, automated Telegram Channel posting, or Pabbly Connect Webhook.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Platform Selector Tabs */}
+              <div className="inline-flex rounded-xl border border-border bg-secondary/50 p-1">
                 <button
                   type="button"
-                  onClick={handleSendAllBatchesToPabbly}
-                  disabled={isDispatchingPabbly || generateBroadcastChunks().length === 0}
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-md disabled:opacity-50"
+                  onClick={() => setBroadcastPlatform('whatsapp')}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    broadcastPlatform === 'whatsapp'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
                 >
-                  <SendHorizontal className="h-4 w-4" />
-                  <span>{isDispatchingPabbly ? 'Sending Batches...' : `🚀 Send All ${generateBroadcastChunks().length} Batches to Pabbly`}</span>
+                  <Share2 className="h-3.5 w-3.5" />
+                  <span>WhatsApp Format</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBroadcastPlatform('telegram')}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    broadcastPlatform === 'telegram'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Send className="h-3.5 w-3.5" />
+                  <span>Telegram Format</span>
                 </button>
               </div>
             </div>
 
-            {/* Pabbly Webhook URL Input */}
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                  <Share2 className="h-4 w-4 text-emerald-500" />
-                  <span>Pabbly Connect Webhook URL (For Automated WhatsApp/Telegram Delivery)</span>
-                </label>
-                <span className="text-[11px] text-muted-foreground">Saved locally in browser</span>
+            {/* Automation Tools: Pabbly & Telegram Bot */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Telegram Bot Automation Box */}
+              <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Send className="h-4 w-4 text-sky-500" />
+                    <span>✈️ Telegram Channel Bot Automation</span>
+                  </label>
+                  <span className="text-[10px] text-muted-foreground">Official Bot API</span>
+                </div>
+                <div className="space-y-2">
+                  <input
+                    type="password"
+                    placeholder="Telegram Bot Token (e.g., 789123456:AAH...)"
+                    value={telegramBotToken}
+                    onChange={(e) => setTelegramBotToken(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono outline-none focus:border-sky-500"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Channel ID / Username (e.g., @freshersbridge or -100123456)"
+                    value={telegramChannelId}
+                    onChange={(e) => setTelegramChannelId(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono outline-none focus:border-sky-500"
+                  />
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleSaveTelegramConfig(telegramBotToken, telegramChannelId);
+                        alert('Telegram configuration saved in browser!');
+                      }}
+                      className="rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-1.5 text-xs font-semibold"
+                    >
+                      Save Credentials
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendAllBatchesToTelegram}
+                      disabled={isDispatchingTelegram || !telegramBotToken || !telegramChannelId}
+                      className="rounded-lg bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 text-xs font-bold disabled:opacity-50 flex items-center gap-1"
+                    >
+                      <Send className="h-3 w-3" />
+                      <span>{isDispatchingTelegram ? 'Posting...' : '✈️ Post All to Telegram'}</span>
+                    </button>
+                  </div>
+                </div>
+                {telegramStatusMessage && (
+                  <p className="text-xs font-bold text-sky-600 dark:text-sky-400">
+                    {telegramStatusMessage}
+                  </p>
+                )}
               </div>
-              <div className="flex flex-col sm:flex-row items-center gap-2">
-                <input
-                  type="url"
-                  placeholder="https://connect.pabbly.com/workflow/sendwebhookdata/XXXXXXXXXXXX"
-                  value={pabblyWebhookInput}
-                  onChange={(e) => handleSavePabblyWebhook(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => alert('Pabbly Webhook URL saved successfully!')}
-                  className="w-full sm:w-auto shrink-0 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2 text-xs font-semibold"
-                >
-                  Save Webhook
-                </button>
+
+              {/* Pabbly Webhook Box */}
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Share2 className="h-4 w-4 text-emerald-500" />
+                    <span>🟢 Pabbly Connect Webhook (WhatsApp / Multi-Channel)</span>
+                  </label>
+                  <span className="text-[10px] text-muted-foreground">Automated Flow</span>
+                </div>
+                <div className="space-y-2">
+                  <input
+                    type="url"
+                    placeholder="https://connect.pabbly.com/workflow/sendwebhookdata/XXXXXXXXXXXX"
+                    value={pabblyWebhookInput}
+                    onChange={(e) => handleSavePabblyWebhook(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono outline-none focus:border-emerald-500"
+                  />
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => alert('Pabbly Webhook URL saved successfully!')}
+                      className="rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-1.5 text-xs font-semibold"
+                    >
+                      Save Webhook
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendAllBatchesToPabbly}
+                      disabled={isDispatchingPabbly || !pabblyWebhookInput}
+                      className="rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 text-xs font-bold disabled:opacity-50 flex items-center gap-1"
+                    >
+                      <SendHorizontal className="h-3 w-3" />
+                      <span>{isDispatchingPabbly ? 'Sending...' : '🚀 Send All to Pabbly'}</span>
+                    </button>
+                  </div>
+                </div>
+                {pabblyStatusMessage && (
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                    {pabblyStatusMessage}
+                  </p>
+                )}
               </div>
-              {pabblyStatusMessage && (
-                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-                  {pabblyStatusMessage}
-                </p>
-              )}
             </div>
           </div>
 
           {/* Batches List */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-foreground">
-                Generated Message Batches ({generateBroadcastChunks().length} Total Batches • {jobs.length} Jobs)
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <span>Generated {broadcastPlatform === 'telegram' ? 'Telegram' : 'WhatsApp'} Batches</span>
+                <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground border border-border">
+                  {generateBroadcastChunks(broadcastPlatform).length} Batches • {jobs.length} Jobs
+                </span>
               </h3>
             </div>
 
-            {generateBroadcastChunks().length > 0 ? (
+            {generateBroadcastChunks(broadcastPlatform).length > 0 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {generateBroadcastChunks().map((chunk) => (
+                {generateBroadcastChunks(broadcastPlatform).map((chunk) => (
                   <div
                     key={chunk.index}
                     className="rounded-2xl border border-border bg-card p-5 shadow-sm space-y-4 flex flex-col justify-between"
@@ -2017,32 +2256,33 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                     <div className="space-y-3">
                       <div className="flex items-center justify-between border-b border-border pb-3">
                         <div className="flex items-center gap-2">
-                          <span className="rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-xs font-bold">
-                            Batch #{chunk.index}
+                          <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${
+                            broadcastPlatform === 'telegram'
+                              ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400'
+                              : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                          }`}>
+                            Batch #{chunk.index} ({broadcastPlatform === 'telegram' ? 'Telegram' : 'WhatsApp'})
                           </span>
                           <span className="text-xs font-semibold text-muted-foreground">
                             {chunk.jobCount} Opportunities
                           </span>
                         </div>
 
-                        {pabblyBatchStatus[chunk.index] === 'sending' && (
-                          <span className="text-xs text-amber-500 font-semibold animate-pulse">
-                            Sending to Pabbly...
-                          </span>
-                        )}
-                        {pabblyBatchStatus[chunk.index] === 'success' && (
-                          <span className="text-xs text-emerald-500 font-semibold flex items-center gap-1">
-                            <CheckCircle className="h-3.5 w-3.5" /> Sent to Pabbly
-                          </span>
-                        )}
-                        {pabblyBatchStatus[chunk.index] === 'error' && (
-                          <span className="text-xs text-rose-500 font-semibold flex items-center gap-1">
-                            <AlertCircle className="h-3.5 w-3.5" /> Failed
-                          </span>
-                        )}
+                        <div className="flex items-center gap-2 text-xs font-semibold">
+                          {telegramBatchStatus[chunk.index] === 'success' && (
+                            <span className="text-sky-500 flex items-center gap-1">
+                              <CheckCircle className="h-3.5 w-3.5" /> Telegram
+                            </span>
+                          )}
+                          {pabblyBatchStatus[chunk.index] === 'success' && (
+                            <span className="text-emerald-500 flex items-center gap-1">
+                              <CheckCircle className="h-3.5 w-3.5" /> Pabbly
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Monospace Message Preview */}
+                      {/* Message Preview */}
                       <pre className="w-full max-h-56 overflow-y-auto rounded-xl border border-border bg-secondary/30 p-3 text-[11px] font-sans text-foreground whitespace-pre-wrap leading-relaxed select-all">
                         {chunk.text}
                       </pre>
@@ -2077,12 +2317,36 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                       <button
                         type="button"
                         onClick={() => handleOpenWhatsApp(chunk.text)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 text-xs font-bold transition-all shadow-sm"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 text-xs font-bold transition-all shadow-sm"
                         title="Open pre-filled in WhatsApp"
                       >
                         <Share2 className="h-3.5 w-3.5" />
-                        <span>Share on WhatsApp</span>
+                        <span>WhatsApp</span>
                       </button>
+
+                      {/* Telegram Share Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenTelegram(chunk.text)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white px-3 py-2 text-xs font-bold transition-all shadow-sm"
+                        title="Share on Telegram"
+                      >
+                        <Send className="h-3.5 w-3.5" />
+                        <span>Telegram</span>
+                      </button>
+
+                      {/* Direct Telegram Bot Button */}
+                      {telegramBotToken && telegramChannelId && (
+                        <button
+                          type="button"
+                          onClick={() => handleSendSingleBatchToTelegram(chunk)}
+                          disabled={telegramBatchStatus[chunk.index] === 'sending'}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-500/30 bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 px-3 py-2 text-xs font-bold transition-all disabled:opacity-50"
+                          title="Post to Telegram Channel via Bot"
+                        >
+                          <span>Bot Post</span>
+                        </button>
+                      )}
 
                       {/* Send to Pabbly Button */}
                       <button
@@ -2092,7 +2356,6 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
                         className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-2 text-xs font-semibold transition-all disabled:opacity-50"
                         title="Send this single batch to Pabbly webhook"
                       >
-                        <Send className="h-3.5 w-3.5 text-emerald-500" />
                         <span>Pabbly</span>
                       </button>
                     </div>

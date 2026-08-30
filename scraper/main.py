@@ -395,19 +395,29 @@ def run_pipeline(use_ai: bool = False):
     else:
         logger.warning("⚠️ ADMIN_ACCESS_KEY not found in environment. Direct DB auto-publish skipped. CSV saved locally.")
 
-    # Step 7: Generate 10-Job WhatsApp/Telegram Broadcast Messages & Dispatch to Pabbly Connect
+    # Step 7: Generate 10-Job WhatsApp & Telegram Broadcast Messages & Automated Dispatch
     try:
-        from broadcast_formatter import generate_broadcast_messages, save_broadcasts_file, dispatch_to_pabbly
-        broadcast_messages = generate_broadcast_messages(clean_final_jobs, chunk_size=10)
-        if broadcast_messages:
-            logger.info(f"📢 Generated {len(broadcast_messages)} structured 10-job WhatsApp/Telegram broadcast blocks.")
-            save_broadcasts_file(broadcast_messages, output_dir=output_dir)
+        from broadcast_formatter import generate_broadcast_messages, save_broadcasts_file, dispatch_to_pabbly, dispatch_to_telegram
+        wa_messages = generate_broadcast_messages(clean_final_jobs, platform='whatsapp', chunk_size=10)
+        tg_messages = generate_broadcast_messages(clean_final_jobs, platform='telegram', chunk_size=10)
+        
+        if wa_messages:
+            logger.info(f"📢 Generated {len(wa_messages)} structured 10-job broadcast blocks for WhatsApp & Telegram.")
+            save_broadcasts_file(wa_messages, filename="whatsapp_broadcasts.txt", output_dir=output_dir)
+            save_broadcasts_file(tg_messages, filename="telegram_broadcasts.txt", output_dir=output_dir)
             
+            # 1. Automated Telegram Channel Dispatch (if bot token & channel id configured)
+            tg_token = os.getenv("TELEGRAM_BOT_TOKEN")
+            tg_channel = os.getenv("TELEGRAM_CHANNEL_ID") or os.getenv("TELEGRAM_CHAT_ID")
+            if tg_token and tg_channel:
+                dispatch_to_telegram(tg_messages, bot_token=tg_token, channel_id=tg_channel)
+                
+            # 2. Automated Pabbly Connect Webhook Dispatch
             pabbly_url = os.getenv("PABBLY_WEBHOOK_URL")
             if pabbly_url:
-                dispatch_to_pabbly(broadcast_messages, webhook_url=pabbly_url)
+                dispatch_to_pabbly(whatsapp_messages=wa_messages, telegram_messages=tg_messages, webhook_url=pabbly_url)
     except Exception as e:
-        logger.error(f"⚠️ Broadcast formatting / Pabbly dispatch error: {e}")
+        logger.error(f"⚠️ Broadcast formatting / Dispatch error: {e}")
 
 if __name__ == "__main__":
     import argparse
