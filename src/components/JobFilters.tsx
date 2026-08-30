@@ -25,16 +25,24 @@ export default function JobFilters({ categories }: JobFiltersProps) {
 
   const targetBasePath = pathname.startsWith('/internships') ? '/internships' : '/jobs';
 
-  const updateFilters = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
+  const handleCategorySelect = (categorySlug: string) => {
+    const isCurrentlySelected = activeCategory === categorySlug;
+    const params = new URLSearchParams();
+
+    if (!isCurrentlySelected) {
+      // Switching/selecting a category should clear previous search keyword to show all jobs in that category
+      params.set('category', categorySlug);
     }
-    params.delete('page');
+
+    // Preserve location or featured if active
+    const location = searchParams.get('location');
+    if (location) params.set('location', location);
+    const featured = searchParams.get('featured');
+    if (featured) params.set('featured', featured);
+
     startTransition(() => {
-      router.push(`${targetBasePath}?${params.toString()}`);
+      const queryString = params.toString();
+      router.push(queryString ? `${targetBasePath}?${queryString}` : targetBasePath);
     });
   };
 
@@ -53,7 +61,7 @@ export default function JobFilters({ categories }: JobFiltersProps) {
             handleReset();
             setIsMobileOpen(false);
           }}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-500 transition-colors cursor-pointer"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Reset All
@@ -72,11 +80,10 @@ export default function JobFilters({ categories }: JobFiltersProps) {
               <button
                 key={category.id}
                 onClick={() => {
-                  updateFilters('category', isSelected ? null : category.slug);
-                  // Auto close drawer on category select for mobile
+                  handleCategorySelect(category.slug);
                   setIsMobileOpen(false);
                 }}
-                className={`w-full text-left rounded-lg px-3 py-2 text-sm transition-all flex items-center justify-between ${isSelected
+                className={`w-full text-left rounded-lg px-3 py-2 text-sm transition-all flex items-center justify-between cursor-pointer ${isSelected
                   ? 'bg-indigo-600/10 text-indigo-600 font-semibold'
                   : 'text-foreground/90 hover:bg-secondary'
                   }`}

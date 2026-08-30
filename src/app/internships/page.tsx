@@ -5,7 +5,7 @@ import JobFilters from '@/components/JobFilters';
 import SearchBar from '@/components/SearchBar';
 import Pagination from '@/components/Pagination';
 import Link from 'next/link';
-import { GraduationCap, Briefcase, X, RotateCcw, Sparkles, Filter } from 'lucide-react';
+import { GraduationCap, Briefcase } from 'lucide-react';
 import { Metadata } from 'next';
 import { Job, Category } from '@/types';
 import { resolveCategory } from '@/lib/categoryResolver';
@@ -116,18 +116,6 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
     return `/internships?${params.toString()}`;
   };
 
-  const getFilterRemoveUrl = (removeKey: 'q' | 'location' | 'category' | 'featured') => {
-    const params = new URLSearchParams();
-    if (removeKey !== 'q' && q) params.set('q', q);
-    if (removeKey !== 'location' && location) params.set('location', location);
-    if (removeKey !== 'category' && activeCat) params.set('category', activeCat.slug);
-    if (removeKey !== 'featured' && featured) params.set('featured', featured);
-    const queryString = params.toString();
-    return queryString ? `/internships?${queryString}` : '/internships';
-  };
-
-  const hasActiveFilters = !!(q || location || activeCat || featured);
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-4 sm:py-5 sm:px-6 lg:px-8 w-full space-y-5">
       {/* Header & Search Bar Section */}
@@ -161,68 +149,6 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
 
         {/* Internships List Area */}
         <main className="lg:col-span-3 space-y-4">
-          {/* Active Filter Pills Bar */}
-          {hasActiveFilters && (
-            <div className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-border bg-card shadow-2xs">
-              <span className="text-xs font-bold text-muted-foreground flex items-center gap-1 mr-1">
-                <Filter className="h-3.5 w-3.5 text-emerald-500" />
-                <span>Filters:</span>
-              </span>
-
-              {q && (
-                <Link
-                  href={getFilterRemoveUrl('q')}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-all group"
-                  title="Remove search filter"
-                >
-                  <span>Search: &quot;{q}&quot;</span>
-                  <X className="h-3 w-3 group-hover:scale-125 transition-transform" />
-                </Link>
-              )}
-
-              {activeCat && (
-                <Link
-                  href={getFilterRemoveUrl('category')}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 transition-all group"
-                  title="Remove category filter"
-                >
-                  <span>Category: {activeCat.name}</span>
-                  <X className="h-3 w-3 group-hover:scale-125 transition-transform" />
-                </Link>
-              )}
-
-              {location && (
-                <Link
-                  href={getFilterRemoveUrl('location')}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/20 transition-all group"
-                  title="Remove location filter"
-                >
-                  <span>Location: &quot;{location}&quot;</span>
-                  <X className="h-3 w-3 group-hover:scale-125 transition-transform" />
-                </Link>
-              )}
-
-              {featured === 'true' && (
-                <Link
-                  href={getFilterRemoveUrl('featured')}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all group"
-                  title="Remove featured filter"
-                >
-                  <span>Featured Only</span>
-                  <X className="h-3 w-3 group-hover:scale-125 transition-transform" />
-                </Link>
-              )}
-
-              <Link
-                href="/internships"
-                className="ml-auto text-[11px] font-bold text-muted-foreground hover:text-foreground flex items-center gap-1 hover:underline pl-2"
-              >
-                <RotateCcw className="h-3 w-3" />
-                <span>Clear All</span>
-              </Link>
-            </div>
-          )}
-
           {internships.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -243,77 +169,19 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
               />
             </>
           ) : (
-            <div className="rounded-2xl border border-dashed border-border p-10 sm:p-12 text-center space-y-4 bg-card shadow-sm animate-in fade-in duration-200">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 mx-auto">
-                <Briefcase className="h-7 w-7" />
-              </div>
-
-              <div className="space-y-1.5 max-w-md mx-auto">
-                <h3 className="text-lg font-extrabold text-foreground">No internships match your specific search</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  {q && activeCat ? (
-                    <>
-                      We couldn&apos;t find any internship openings containing <span className="font-semibold text-foreground">&quot;{q}&quot;</span> within <span className="font-semibold text-foreground">{activeCat.name}</span>.
-                    </>
-                  ) : activeCat ? (
-                    <>
-                      No current internship roles under <span className="font-semibold text-foreground">{activeCat.name}</span>. Try exploring full-time jobs or other domains.
-                    </>
-                  ) : q ? (
-                    <>
-                      No internships found matching <span className="font-semibold text-foreground">&quot;{q}&quot;</span>.
-                    </>
-                  ) : (
-                    <>We couldn&apos;t find any internship openings matching your criteria.</>
-                  )}
-                </p>
-              </div>
-
-              {/* Intelligent 1-Click Recovery Actions */}
-              <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-                {q && activeCat && (
-                  <>
-                    <Link
-                      href={`/internships?category=${activeCat.slug}`}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm"
-                    >
-                      <Sparkles className="h-3.5 w-3.5" />
-                      <span>View all in {activeCat.name}</span>
-                    </Link>
-                    <Link
-                      href={`/internships?q=${encodeURIComponent(q)}`}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2.5 text-xs font-bold transition-all"
-                    >
-                      <span>Search &quot;{q}&quot; across all categories</span>
-                    </Link>
-                  </>
-                )}
-
-                {activeCat && !q && (
-                  <Link
-                    href="/internships"
-                    className="inline-flex items-center justify-center rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm"
-                  >
-                    Explore all Internships
-                  </Link>
-                )}
-
-                {q && !activeCat && (
-                  <Link
-                    href="/internships"
-                    className="inline-flex items-center justify-center rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm"
-                  >
-                    Clear Search
-                  </Link>
-                )}
-
-                <Link
-                  href="/jobs"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary text-muted-foreground hover:text-foreground px-4 py-2.5 text-xs font-semibold transition-all"
-                >
-                  <span>Browse Full-Time Jobs</span>
-                </Link>
-              </div>
+            <div className="rounded-xl border border-dashed border-border p-12 text-center space-y-3 bg-card">
+              <Briefcase className="mx-auto h-12 w-12 text-muted-foreground/50" />
+              <h3 className="text-lg font-bold text-foreground">No internships found</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                We couldn&apos;t find any internship openings matching your criteria. Try adjusting your search filters or browse other categories.
+              </p>
+              <Link
+                href="/internships"
+                prefetch={true}
+                className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition-all"
+              >
+                Reset Filters
+              </Link>
             </div>
           )}
         </main>
