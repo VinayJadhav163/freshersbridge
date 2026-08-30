@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Category } from '@/types';
-import { Check, RotateCcw, X, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { Check, RotateCcw, X, SlidersHorizontal } from 'lucide-react';
 
 interface JobFiltersProps {
   categories: Category[];
@@ -14,7 +15,6 @@ export default function JobFilters({ categories }: JobFiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   const activeCategory = searchParams.get('category') || '';
   const activeFeatured = searchParams.get('featured') === 'true';
@@ -25,72 +25,71 @@ export default function JobFilters({ categories }: JobFiltersProps) {
 
   const targetBasePath = pathname.startsWith('/internships') ? '/internships' : '/jobs';
 
-  const handleCategorySelect = (categorySlug: string) => {
+  // 🚀 Pre-warm Next.js browser router cache for all category filters on load for 0ms instant shifts
+  useEffect(() => {
+    categories.forEach((cat) => {
+      router.prefetch(`${targetBasePath}?category=${cat.slug}`);
+    });
+    router.prefetch(targetBasePath);
+  }, [categories, targetBasePath, router]);
+
+  const getCategoryUrl = (categorySlug: string) => {
     const isCurrentlySelected = activeCategory === categorySlug;
     const params = new URLSearchParams();
 
     if (!isCurrentlySelected) {
-      // Switching/selecting a category should clear previous search keyword to show all jobs in that category
       params.set('category', categorySlug);
     }
 
-    // Preserve location or featured if active
     const location = searchParams.get('location');
     if (location) params.set('location', location);
     const featured = searchParams.get('featured');
     if (featured) params.set('featured', featured);
 
-    startTransition(() => {
-      const queryString = params.toString();
-      router.push(queryString ? `${targetBasePath}?${queryString}` : targetBasePath);
-    });
-  };
-
-  const handleReset = () => {
-    startTransition(() => {
-      router.push(targetBasePath);
-    });
+    const queryString = params.toString();
+    return queryString ? `${targetBasePath}?${queryString}` : targetBasePath;
   };
 
   const renderFilterContent = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">Filters</h3>
-        <button
-          onClick={() => {
-            handleReset();
-            setIsMobileOpen(false);
-          }}
+        <Link
+          href={targetBasePath}
+          prefetch={true}
+          onClick={() => setIsMobileOpen(false)}
           className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-500 transition-colors cursor-pointer"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Reset All
-        </button>
+        </Link>
       </div>
 
       <hr className="border-border" />
 
-      {/* Categories Filter */}
+      {/* Categories Filter with Instant Prefetching */}
       <div>
         <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Category</h4>
-        <div className="space-y-2.5">
+        <div className="space-y-1.5">
           {categories.map((category) => {
             const isSelected = activeCategory === category.slug;
+            const href = getCategoryUrl(category.slug);
+
             return (
-              <button
+              <Link
                 key={category.id}
-                onClick={() => {
-                  handleCategorySelect(category.slug);
-                  setIsMobileOpen(false);
-                }}
-                className={`w-full text-left rounded-lg px-3 py-2 text-sm transition-all flex items-center justify-between cursor-pointer ${isSelected
-                  ? 'bg-indigo-600/10 text-indigo-600 font-semibold'
-                  : 'text-foreground/90 hover:bg-secondary'
-                  }`}
+                href={href}
+                prefetch={true}
+                onClick={() => setIsMobileOpen(false)}
+                className={`w-full text-left rounded-lg px-3 py-2.5 text-sm transition-all flex items-center justify-between cursor-pointer ${
+                  isSelected
+                    ? 'bg-indigo-600/10 text-indigo-600 font-bold'
+                    : 'text-foreground/90 hover:bg-secondary'
+                }`}
               >
                 <span>{category.name}</span>
-                {isSelected && <Check className="h-4 w-4" />}
-              </button>
+                {isSelected && <Check className="h-4 w-4 shrink-0" />}
+              </Link>
             );
           })}
         </div>
