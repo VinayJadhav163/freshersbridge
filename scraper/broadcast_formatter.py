@@ -26,37 +26,51 @@ https://freshersbridge.in/career-tools
 WHATSAPP_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 MORE JOBS & INTERNSHIPS:
 https://freshersbridge.in
+
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
+
 📸 Follow FreshersBridge on Instagram:
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+
 📢 Get daily job alerts on Telegram:
 https://t.me/+uy56IKeSQt9jNzI1
+
 📩 Want job alerts directly in your inbox?
-Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
-━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔥 New jobs & internships added regularly.
 👉 Visit FreshersBridge and apply before opportunities close.
+
 📤 Share with your friends, batchmates & college groups!
+
 FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
 
 TELEGRAM_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 MORE JOBS & INTERNSHIPS:
 https://freshersbridge.in
+
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
+
 📸 Follow FreshersBridge on Instagram:
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+
 💬 Join our WhatsApp Community:
 https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
+
 📩 Want job alerts directly in your inbox?
-Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
-━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔥 New jobs & internships added regularly.
 👉 Visit FreshersBridge and apply before opportunities close.
+
 📤 Share with your batchmates & college groups!
+
 FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
 
 def format_single_job_block(job: Dict[str, Any]) -> str:

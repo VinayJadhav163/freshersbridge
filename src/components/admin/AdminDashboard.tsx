@@ -770,37 +770,51 @@ https://freshersbridge.in/career-tools
     const whatsappFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 MORE JOBS & INTERNSHIPS:
 https://freshersbridge.in
+
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
+
 📸 Follow FreshersBridge on Instagram:
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+
 📢 Get daily job alerts on Telegram:
 https://t.me/+uy56IKeSQt9jNzI1
+
 📩 Want job alerts directly in your inbox?
-Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
-━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔥 New jobs & internships added regularly.
 👉 Visit FreshersBridge and apply before opportunities close.
+
 📤 Share with your friends, batchmates & college groups!
+
 FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
     const telegramFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 MORE JOBS & INTERNSHIPS:
 https://freshersbridge.in
+
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
+
 📸 Follow FreshersBridge on Instagram:
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
+
 💬 Join our WhatsApp Community:
 https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
+
 📩 Want job alerts directly in your inbox?
-Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email.
+Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
-━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔥 New jobs & internships added regularly.
 👉 Visit FreshersBridge and apply before opportunities close.
+
 📤 Share with your batchmates & college groups!
+
 FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
     const footer = platform === 'telegram' ? telegramFooter : whatsappFooter;
@@ -2283,7 +2297,7 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                       </div>
 
                       {/* Message Preview */}
-                      <pre className="w-full max-h-56 overflow-y-auto rounded-xl border border-border bg-secondary/30 p-3 text-[11px] font-sans text-foreground whitespace-pre-wrap leading-relaxed select-all">
+                      <pre className="w-full max-h-72 overflow-y-auto rounded-xl border border-border bg-secondary/30 p-4 text-xs font-mono text-foreground whitespace-pre-wrap leading-6 select-all">
                         {chunk.text}
                       </pre>
                     </div>
