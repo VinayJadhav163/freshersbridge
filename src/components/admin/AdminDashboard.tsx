@@ -749,12 +749,12 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     e.target.value = '';
   };
 
-  // Helper to generate 10-job structured WhatsApp & Telegram broadcast message chunks
+  // Helper to generate 8-job structured WhatsApp & Telegram broadcast message chunks
   const generateBroadcastChunks = (platform: 'whatsapp' | 'telegram' = broadcastPlatform) => {
     if (!jobs || jobs.length === 0) return [];
     // Sort newest created jobs first
     const sortedJobs = [...jobs].sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
-    const chunkSize = 10;
+    const chunkSize = 8;
     const chunks: { index: number; text: string; jobCount: number; jobs: Job[] }[] = [];
 
     const commonHeader = `📢 FRESHERSBRIDGE | DAILY FRESHER JOB ALERTS
@@ -768,7 +768,7 @@ https://freshersbridge.in/career-tools
 🔥 Today's Fresh Opportunities:`;
 
     const whatsappFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 MORE JOBS & INTERNSHIPS:
+🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
 https://freshersbridge.in
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
@@ -793,7 +793,7 @@ Subscribe to the FreshersBridge Newsletter and get new job & internship updates 
 FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
     const telegramFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 MORE JOBS & INTERNSHIPS:
+🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
 https://freshersbridge.in
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
@@ -2116,7 +2116,7 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                   <span>WhatsApp & Telegram Community Broadcasts</span>
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
-                  10-job message blocks tailored for WhatsApp & Telegram. 1-click share, automated Telegram Channel posting, or Pabbly Connect Webhook.
+                  8-job curated digest blocks tailored for WhatsApp & Telegram (Morning, Afternoon & Evening drops). 1-click share, automated Telegram Channel posting, or Pabbly Connect Webhook.
                 </p>
               </div>
 

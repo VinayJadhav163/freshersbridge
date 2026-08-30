@@ -1,8 +1,10 @@
-name: FreshersBridge 12-Hour Job Scraper & Auto-Publisher
+name: FreshersBridge 3x Daily Job Scraper & Broadcast Automation
 
 on:
   schedule:
-    - cron: '0 0,12 * * *' # Runs automatically every 12 hours (00:00 & 12:00 UTC)
+    - cron: '30 3 * * *'  # 09:00 AM IST (Morning Curated Digest)
+    - cron: '30 8 * * *'  # 02:00 PM IST (Afternoon Curated Digest)
+    - cron: '0 14 * * *'  # 07:30 PM IST (Evening Curated Digest)
   workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
 
 jobs:
