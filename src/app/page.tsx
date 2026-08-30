@@ -140,7 +140,7 @@ export default async function Home() {
               </Link>
               <span className="text-slate-300">•</span>
               <Link
-                href="/jobs?category=data-science-analytics"
+                href="/jobs?category=data-analytics"
                 className="text-slate-700 hover:text-indigo-600 underline underline-offset-4 decoration-slate-300"
               >
                 Data Science
