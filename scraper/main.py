@@ -160,14 +160,15 @@ def is_fresher_job(job: dict) -> bool:
     
     # 1. STRICT TITLE REJECTIONS (Immediate Disqualification)
     senior_title_patterns = [
-        r'\b(senior|sr\.?|principal|staff|lead|architect|manager|director|vp|vice president|avp|head of)\b',
-        r'\b(consultant|specialist|expert)\b',
+        r'\b(senior|sr\.?|principal|staff|lead|leader|architect|manager|director|vp|vice president|avp|head of|head|founding)\b',
+        r'\b(consultant|specialist|expert|strategist)\b',
         # SDE, SDET, QA, Engineer, Developer Level 2, 3, 4, II, III, IV
         r'\b(sde|sdet|qa|swe|engineer|developer|tester|mts|member technical staff)[- ]*(?:2|3|4|5|ii|iii|iv|v)\b',
         # Standalone Roman Numerals in titles like "SDET II", "Software Engineer III", "QA II"
         r'\b(ii|iii|iv|v)\b',
         r'\b(level[- ]?[2345]|l[2345]|ic[2345]|e[2345]|grade[- ]?[2345])\b',
-        r'\b(intermediate|mid[- ]?level|experienced|sse)\b'
+        r'\b(intermediate|mid[- ]?level|experienced|sse)\b',
+        r'\b(marketer|marketing|publisher|recruiter|talent acquisition|scrum master|people manager|business development|bde|bda)\b'
     ]
     for p in senior_title_patterns:
         if re.search(p, title_lower, re.I):
@@ -177,7 +178,7 @@ def is_fresher_job(job: dict) -> bool:
     non_tech_patterns = [
         r'\b(substation|switchgear|busbar\s+protection|transformer\s+(?:differential|protection|main)|siprotec|reyrolle|omicron\s+test|iec\s*61850)\b',
         r'\b(hvac|piping\s+design|civil\s+site|construction\s+site|structural\s+drafting|autocad\s+civil|mechanical\s+maintenance|cnc\s+machine|factory\s+loading|foundry|boiler)\b',
-        r'\b(sales[- ]acquisition|purchase\s+order\s+amendment|claim\s+management|vendor\s+sourcing|procurement\s+executive)\b',
+        r'\b(sales[- ]acquisition|purchase\s+order\s+amendment|claim\s+management|vendor\s+sourcing|procurement\s+executive|programmatic\s+sales)\b',
         r'\b(nurse|bpo|telesales|telecaller|tele-sales|data\s+entry\s+operator|back\s+office\s+executive|medical\s+billing)\b'
     ]
     for p in non_tech_patterns:
