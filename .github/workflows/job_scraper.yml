@@ -33,6 +33,9 @@ jobs:
           PABBLY_WEBHOOK_URL: ${{ secrets.PABBLY_WEBHOOK_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          EVOLUTION_API_URL: ${{ secrets.EVOLUTION_API_URL || 'http://65.0.170.65:8080' }}
+          EVOLUTION_API_KEY: ${{ secrets.EVOLUTION_API_KEY || 'FreshersBridgeSecret2026' }}
+          WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID || '120363410671332403@g.us' }}
         run: |
           python scraper/main.py
 

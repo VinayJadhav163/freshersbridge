@@ -216,6 +216,44 @@ def dispatch_to_pabbly(whatsapp_messages: List[str], telegram_messages: List[str
     logger.info(f"🎉 Pabbly Dispatch Complete: {success_count}/{len(to_send_wa)} batch(es) sent successfully.")
     return success_count > 0
 
+def dispatch_to_evolution_whatsapp(messages: List[str], api_url: str = None, api_key: str = None, instance_name: str = None, recipient: str = None, send_all: bool = False) -> bool:
+    """Dispatches curated 8-job message block to WhatsApp Group/Community via Evolution-Go API on AWS."""
+    base_url = api_url or os.getenv("EVOLUTION_API_URL") or "http://65.0.170.65:8080"
+    key = api_key or os.getenv("EVOLUTION_API_KEY") or "FreshersBridgeSecret2026"
+    inst = instance_name or os.getenv("EVOLUTION_INSTANCE_NAME") or "freshersbridge"
+    target = recipient or os.getenv("WHATSAPP_GROUP_ID") or "120363410671332403@g.us"
+
+    if not base_url or not target:
+        logger.info("ℹ️ EVOLUTION_API_URL or WHATSAPP_GROUP_ID not configured. Skipping automated WhatsApp dispatch.")
+        return False
+
+    to_send = messages if send_all else messages[:1]
+    logger.info(f"💬 Dispatching {len(to_send)} curated message batch(es) to WhatsApp Group: {target}")
+    success_count = 0
+    endpoint = f"{base_url.rstrip('/')}/send/text"
+
+    for idx, msg in enumerate(to_send, 1):
+        try:
+            payload = {
+                "name": inst,
+                "number": target,
+                "text": msg
+            }
+            resp = requests.post(endpoint, json=payload, headers={"apikey": key, "Content-Type": "application/json"}, timeout=20)
+            if resp.status_code in [200, 201]:
+                logger.info(f"✅ WhatsApp Batch #{idx} delivered successfully to {target}.")
+                success_count += 1
+            else:
+                logger.warning(f"⚠️ WhatsApp Batch #{idx} failed: {resp.status_code} - {resp.text}")
+        except Exception as e:
+            logger.error(f"❌ Error sending Batch #{idx} to WhatsApp: {e}")
+
+        if idx < len(to_send):
+            time.sleep(2.0)
+
+    logger.info(f"🎉 WhatsApp Automation Complete: {success_count}/{len(to_send)} batch(es) delivered.")
+    return success_count > 0
+
 def save_broadcasts_file(messages: List[str], filename: str = "whatsapp_broadcasts.txt", output_dir: str = None) -> str:
     """Saves all generated broadcast chunks to a clean text file for easy copy-pasting."""
     if not messages:
