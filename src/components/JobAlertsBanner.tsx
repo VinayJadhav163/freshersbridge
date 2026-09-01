@@ -1,4 +1,5 @@
 import React from 'react';
+import { Smartphone } from 'lucide-react';
 
 export interface JobAlertsBannerProps {
   whatsappUrl?: string;
@@ -17,7 +18,7 @@ export default function JobAlertsBanner({
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center gap-3 drop-shadow-[0_4px_16px_rgba(255,255,255,0.2)]">
-          <span className="inline-block transform hover:scale-110 transition-transform duration-200">📲</span>
+          <Smartphone className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-indigo-400 shrink-0 inline-block" />
           <span className="bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
             Get Instant Job Alerts
           </span>

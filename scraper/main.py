@@ -22,7 +22,6 @@ from ai_normalizer import process_batch_with_ai, GEMINI_API_KEY
 from scrapers.jobspy_wrapper import fetch_jobspy_jobs
 from scrapers.naukri import fetch_naukri_jobs
 from scrapers.foundit import fetch_foundit_jobs
-from scrapers.instahyre import fetch_instahyre_jobs
 from scrapers.hirist import fetch_hirist_jobs
 from scrapers.wellfound import fetch_wellfound_jobs
 from scrapers.shine import fetch_shine_jobs
@@ -229,23 +228,15 @@ def run_pipeline(use_ai: bool = False):
 
     # 1. Fetch JobSpy (LinkedIn, Indeed India, Glassdoor, Google Jobs)
     try:
-        jobspy_jobs = fetch_jobspy_jobs(SEARCH_TERMS[:4], LOCATIONS[:4], results_wanted=12)
+        jobspy_jobs = fetch_jobspy_jobs(SEARCH_TERMS[:4], LOCATIONS[:4], results_wanted=15)
         logger.info(f"Collected {len(jobspy_jobs)} jobs from JobSpy providers (LinkedIn, Indeed).")
         all_raw_jobs.extend(jobspy_jobs)
     except Exception as e:
         logger.error(f"JobSpy execution failed: {e}")
 
-    # 2. Fetch Instahyre
+    # 2. Fetch Shine
     try:
-        instahyre_jobs = fetch_instahyre_jobs(SEARCH_TERMS[:4], LOCATIONS[:3], results_wanted=12)
-        logger.info(f"Collected {len(instahyre_jobs)} jobs from Instahyre.")
-        all_raw_jobs.extend(instahyre_jobs)
-    except Exception as e:
-        logger.error(f"Instahyre execution failed: {e}")
-
-    # 3. Fetch Shine
-    try:
-        shine_jobs = fetch_shine_jobs(SEARCH_TERMS[:3], LOCATIONS[:3], results_wanted=10)
+        shine_jobs = fetch_shine_jobs(SEARCH_TERMS[:3], LOCATIONS[:3], results_wanted=12)
         logger.info(f"Collected {len(shine_jobs)} jobs from Shine.")
         all_raw_jobs.extend(shine_jobs)
     except Exception as e:
