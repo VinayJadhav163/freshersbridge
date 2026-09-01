@@ -20,6 +20,8 @@ from normalizer import normalize_job_dict
 from deduplicator import deduplicate_jobs
 from ai_normalizer import process_batch_with_ai, GEMINI_API_KEY
 from scrapers.jobspy_wrapper import fetch_jobspy_jobs
+from scrapers.unstop import fetch_unstop_jobs
+from scrapers.internshala import fetch_internshala_jobs
 from scrapers.naukri import fetch_naukri_jobs
 from scrapers.foundit import fetch_foundit_jobs
 from scrapers.hirist import fetch_hirist_jobs
@@ -234,7 +236,23 @@ def run_pipeline(use_ai: bool = False):
     except Exception as e:
         logger.error(f"JobSpy execution failed: {e}")
 
-    # 2. Fetch Shine
+    # 2. Fetch Unstop (India's Top Campus & Fresher Drive Portal)
+    try:
+        unstop_jobs = fetch_unstop_jobs(SEARCH_TERMS[:4], results_wanted=15)
+        logger.info(f"Collected {len(unstop_jobs)} jobs from Unstop.")
+        all_raw_jobs.extend(unstop_jobs)
+    except Exception as e:
+        logger.error(f"Unstop execution failed: {e}")
+
+    # 3. Fetch Internshala (Top Verified Tech Internships & Fresher Jobs)
+    try:
+        internshala_jobs = fetch_internshala_jobs(max_items_per_category=15)
+        logger.info(f"Collected {len(internshala_jobs)} jobs from Internshala.")
+        all_raw_jobs.extend(internshala_jobs)
+    except Exception as e:
+        logger.error(f"Internshala execution failed: {e}")
+
+    # 4. Fetch Shine
     try:
         shine_jobs = fetch_shine_jobs(SEARCH_TERMS[:3], LOCATIONS[:3], results_wanted=12)
         logger.info(f"Collected {len(shine_jobs)} jobs from Shine.")
