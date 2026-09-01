@@ -24,8 +24,9 @@ def fetch_foundit_jobs(search_terms: List[str], locations: List[str], results_wa
             try:
                 query_str = term.replace(' ', '-').lower()
                 loc_str = loc.split(',')[0].strip().replace(' ', '-').lower()
-                url = f"https://www.foundit.in/srp/results?query={requests.utils.quote(term)}&locations={requests.utils.quote(loc)}"
-                logger.info(f"[Foundit] Searching '{term}' in '{loc}'...")
+                # Filter strictly to fresh jobs posted in the last 24 hours (posted=1) sorted by date
+                url = f"https://www.foundit.in/srp/results?query={requests.utils.quote(term)}&locations={requests.utils.quote(loc)}&posted=1&sort=1"
+                logger.info(f"[Foundit] Searching '{term}' in '{loc}' (last 24 hours)...")
                 
                 resp = requests.get(url, headers=HEADERS, timeout=8)
                 if resp.status_code == 200:

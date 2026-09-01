@@ -19,8 +19,8 @@ def fetch_hirist_jobs(search_terms: List[str], locations: List[str], results_wan
     
     for term in search_terms:
         try:
-            url = f"https://www.hirist.tech/api/v2/search?keywords={requests.utils.quote(term)}&exp=0-2&page=1"
-            logger.info(f"[Hirist] Querying '{term}'...")
+            url = f"https://www.hirist.tech/api/v2/search?keywords={requests.utils.quote(term)}&exp=0-2&sort=date&page=1"
+            logger.info(f"[Hirist] Querying '{term}' (newest 24 hours)...")
             
             resp = requests.get(url, headers=HEADERS, timeout=10)
             if resp.status_code == 200:
