@@ -87,8 +87,13 @@ Subscribe to the FreshersBridge Newsletter and get new job & internship updates 
 
 FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
 
+def slugify(text: str) -> str:
+    """Generates a clean URL slug matching FreshersBridge database standard."""
+    text = re.sub(r'[^\w\s-]', '', text.lower())
+    return re.sub(r'[-\s]+', '-', text).strip('-')
+
 def format_single_job_block(job: Dict[str, Any]) -> str:
-    """Formats a single job into structured WhatsApp/Telegram card."""
+    """Formats a single job into structured WhatsApp/Telegram card strictly pointing to FreshersBridge portal."""
     company = str(job.get('company') or 'Top Tech Company').strip()
     title = str(job.get('title') or 'Software Engineer').strip()
     eligibility = str(job.get('eligibility') or 'B.E / B.Tech / BCA / MCA / Any Graduate').strip()
@@ -96,17 +101,20 @@ def format_single_job_block(job: Dict[str, Any]) -> str:
     salary = str(job.get('salary') or 'Competitive / Best in Industry').strip()
     slug = str(job.get('slug') or '').strip()
     
+    # Always generate FreshersBridge portal URL - never expose third party links in broadcasts
+    if not slug:
+        slug = slugify(f"{title}-{company}")
+        
+    is_internship = job.get('job_type') == 'internship' or any(k in title.lower() for k in ['intern', 'internship', 'trainee'])
+    section = 'internships' if is_internship else 'jobs'
+    apply_link = f"https://freshersbridge.in/{section}/{slug}"
+    
     # Determine passing year / batch text
     if any(yr in eligibility for yr in ['2024', '2025', '2026', '2027', '2028']):
         batches = [yr for yr in ['2028', '2027', '2026', '2025', '2024'] if yr in eligibility]
         passing_year = " | ".join(batches) if batches else "2026 | 2025 | 2024"
     else:
         passing_year = "2026 | 2025 | 2024"
-        
-    if slug:
-        apply_link = f"https://freshersbridge.in/jobs/{slug}"
-    else:
-        apply_link = str(job.get('apply_url') or 'https://freshersbridge.in/jobs').strip()
 
     return f"""🔗 Company : {company}
 Role : {title}
@@ -116,18 +124,38 @@ Location : {location}
 Salary : {salary}
 📌 Apply Link : {apply_link}"""
 
+def balance_jobs_by_source(jobs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Interleaves jobs across different sources (Unstop, Internshala, LinkedIn, Shine, Naukri) for balanced broadcast diversity."""
+    if not jobs:
+        return []
+    from collections import defaultdict
+    source_buckets = defaultdict(list)
+    for j in jobs:
+        src = str(j.get('source_name') or 'Portal').title()
+        source_buckets[src].append(j)
+        
+    balanced = []
+    max_len = max(len(v) for v in source_buckets.values()) if source_buckets else 0
+    for i in range(max_len):
+        for src, bucket in sorted(source_buckets.items()):
+            if i < len(bucket):
+                balanced.append(bucket[i])
+    return balanced
+
 def generate_broadcast_messages(jobs: List[Dict[str, Any]], platform: str = 'whatsapp', chunk_size: int = 8) -> List[str]:
     """Splits jobs into batches of 8 and generates structured broadcast messages for WhatsApp or Telegram."""
     if not jobs:
         return []
         
+    # Balance sources so Batch #1 has diverse mix (Unstop, Internshala, LinkedIn, Shine, etc.)
+    balanced_jobs = balance_jobs_by_source(jobs)
     messages = []
-    total_jobs = len(jobs)
+    total_jobs = len(balanced_jobs)
     footer = TELEGRAM_FOOTER if platform.lower() == 'telegram' else WHATSAPP_FOOTER
     slot_label = get_slot_title()
     
     for i in range(0, total_jobs, chunk_size):
-        chunk = jobs[i:i + chunk_size]
+        chunk = balanced_jobs[i:i + chunk_size]
         batch_num = (i // chunk_size) + 1
         job_blocks = "\n\n".join([format_single_job_block(j) for j in chunk])
         
