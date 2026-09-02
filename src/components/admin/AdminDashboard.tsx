@@ -89,21 +89,24 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   
   // Community Broadcasts State
   const [broadcastPlatform, setBroadcastPlatform] = useState<'whatsapp' | 'telegram'>('whatsapp');
-  const [pabblyWebhookInput, setPabblyWebhookInput] = useState<string>('');
+  const [whatsappServerUrl, setWhatsappServerUrl] = useState<string>('http://65.0.170.65:8080');
+  const [whatsappGroupId, setWhatsappGroupId] = useState<string>('120363410671332403@g.us');
   const [telegramBotToken, setTelegramBotToken] = useState<string>('');
   const [telegramChannelId, setTelegramChannelId] = useState<string>('');
   const [copiedBatchIndex, setCopiedBatchIndex] = useState<number | null>(null);
-  const [isDispatchingPabbly, setIsDispatchingPabbly] = useState<boolean>(false);
+  const [isDispatchingWhatsApp, setIsDispatchingWhatsApp] = useState<boolean>(false);
   const [isDispatchingTelegram, setIsDispatchingTelegram] = useState<boolean>(false);
-  const [pabblyBatchStatus, setPabblyBatchStatus] = useState<{ [key: number]: 'idle' | 'sending' | 'success' | 'error' }>({});
+  const [whatsappBatchStatus, setWhatsappBatchStatus] = useState<{ [key: number]: 'idle' | 'sending' | 'success' | 'error' }>({});
   const [telegramBatchStatus, setTelegramBatchStatus] = useState<{ [key: number]: 'idle' | 'sending' | 'success' | 'error' }>({});
-  const [pabblyStatusMessage, setPabblyStatusMessage] = useState<string>('');
+  const [whatsappStatusMessage, setWhatsappStatusMessage] = useState<string>('');
   const [telegramStatusMessage, setTelegramStatusMessage] = useState<string>('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedWebhook = localStorage.getItem('fb_pabbly_webhook');
-      if (savedWebhook) setPabblyWebhookInput(savedWebhook);
+      const savedWaUrl = localStorage.getItem('fb_wa_url');
+      if (savedWaUrl) setWhatsappServerUrl(savedWaUrl);
+      const savedWaGroup = localStorage.getItem('fb_wa_group');
+      if (savedWaGroup) setWhatsappGroupId(savedWaGroup);
       const savedTgToken = localStorage.getItem('fb_tg_token');
       if (savedTgToken) setTelegramBotToken(savedTgToken);
       const savedTgChannel = localStorage.getItem('fb_tg_channel');
@@ -866,9 +869,11 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
     window.open(`https://t.me/share/url?url=${encodeURIComponent('https://freshersbridge.in')}&text=${encoded}`, '_blank');
   };
 
-  const handleSavePabblyWebhook = (url: string) => {
-    setPabblyWebhookInput(url.trim());
-    localStorage.setItem('fb_pabbly_webhook', url.trim());
+  const handleSaveWhatsAppConfig = (url: string, group: string) => {
+    setWhatsappServerUrl(url.trim());
+    setWhatsappGroupId(group.trim());
+    localStorage.setItem('fb_wa_url', url.trim());
+    localStorage.setItem('fb_wa_group', group.trim());
   };
 
   const handleSaveTelegramConfig = (token: string, channel: string) => {
@@ -878,88 +883,82 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
     localStorage.setItem('fb_tg_channel', channel.trim());
   };
 
-  const handleSendSingleBatchToPabbly = async (chunk: { index: number; text: string; jobCount: number }) => {
-    const targetUrl = pabblyWebhookInput.trim();
-    if (!targetUrl) {
-      alert('Please enter your Pabbly Webhook URL first!');
+  const handleSendSingleBatchToWhatsApp = async (chunk: { index: number; text: string; jobCount: number }) => {
+    const targetUrl = whatsappServerUrl.trim();
+    const groupJid = whatsappGroupId.trim();
+    if (!targetUrl || !groupJid) {
+      alert('Please enter your Evolution WhatsApp Server URL and Group ID first!');
       return;
     }
 
-    setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
+    setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
     try {
-      const tgText = generateBroadcastChunks('telegram').find(c => c.index === chunk.index)?.text || chunk.text;
-      const payload = {
-        batch_index: chunk.index,
-        job_count: chunk.jobCount,
-        message_title: `FreshersBridge Batch #${chunk.index} (${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })})`,
-        message_text: chunk.text,
-        whatsapp_message: chunk.text,
-        telegram_message: tgText,
-        timestamp: new Date().toISOString()
-      };
-
-      await fetch(targetUrl, {
+      const endpoint = `${targetUrl.replace(/\/+$/, '')}/send/text`;
+      await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        mode: 'no-cors' // Allows Pabbly webhooks without CORS blocking
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'FreshersBridgeSecret2026'
+        },
+        body: JSON.stringify({
+          name: 'freshersbridge',
+          number: groupJid,
+          text: chunk.text
+        })
       });
 
-      setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
-    } catch (err: any) {
-      setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+      setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
+    } catch {
+      setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
     }
   };
 
-  const handleSendAllBatchesToPabbly = async () => {
-    const targetUrl = pabblyWebhookInput.trim();
-    if (!targetUrl) {
-      alert('Please enter your Pabbly Webhook URL first!');
+  const handleSendAllBatchesToWhatsApp = async () => {
+    const targetUrl = whatsappServerUrl.trim();
+    const groupJid = whatsappGroupId.trim();
+    if (!targetUrl || !groupJid) {
+      alert('Please enter your Evolution WhatsApp Server URL and Group ID first!');
       return;
     }
 
-    const chunks = generateBroadcastChunks(broadcastPlatform);
+    const chunks = generateBroadcastChunks('whatsapp');
     if (chunks.length === 0) {
       alert('No jobs available to broadcast.');
       return;
     }
 
-    setIsDispatchingPabbly(true);
-    setPabblyStatusMessage(`Dispatching ${chunks.length} batches to Pabbly...`);
+    setIsDispatchingWhatsApp(true);
+    setWhatsappStatusMessage(`Dispatching ${chunks.length} batches to WhatsApp...`);
 
     let sent = 0;
-    for (const chunk of chunks) {
-      setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
-      try {
-        const tgText = generateBroadcastChunks('telegram').find(c => c.index === chunk.index)?.text || chunk.text;
-        const payload = {
-          batch_index: chunk.index,
-          total_batches: chunks.length,
-          job_count: chunk.jobCount,
-          message_title: `FreshersBridge Batch #${chunk.index} of ${chunks.length} (${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })})`,
-          message_text: chunk.text,
-          whatsapp_message: chunk.text,
-          telegram_message: tgText,
-          timestamp: new Date().toISOString()
-        };
+    const endpoint = `${targetUrl.replace(/\/+$/, '')}/send/text`;
 
-        await fetch(targetUrl, {
+    for (const chunk of chunks) {
+      setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'sending' }));
+      try {
+        await fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          mode: 'no-cors'
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'FreshersBridgeSecret2026'
+          },
+          body: JSON.stringify({
+            name: 'freshersbridge',
+            number: groupJid,
+            text: chunk.text
+          })
         });
 
-        setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
+        setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'success' }));
         sent++;
       } catch {
-        setPabblyBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
+        setWhatsappBatchStatus(prev => ({ ...prev, [chunk.index]: 'error' }));
       }
     }
 
-    setIsDispatchingPabbly(false);
-    setPabblyStatusMessage(`🎉 Successfully sent ${sent}/${chunks.length} batches to Pabbly!`);
-    setTimeout(() => setPabblyStatusMessage(''), 5000);
+    setIsDispatchingWhatsApp(false);
+    setWhatsappStatusMessage(`🎉 Successfully sent ${sent}/${chunks.length} batches to WhatsApp!`);
+    setTimeout(() => setWhatsappStatusMessage(''), 5000);
   };
 
   const handleSendSingleBatchToTelegram = async (chunk: { index: number; text: string; jobCount: number }) => {
@@ -2204,45 +2203,55 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                 )}
               </div>
 
-              {/* Pabbly Webhook Box */}
+              {/* AWS Evolution WhatsApp Cloud Box */}
               <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
                     <Share2 className="h-4 w-4 text-emerald-500" />
-                    <span>🟢 Pabbly Connect Webhook (WhatsApp / Multi-Channel)</span>
+                    <span>🟢 AWS WhatsApp Cloud Engine (Evolution-Go)</span>
                   </label>
-                  <span className="text-[10px] text-muted-foreground">Automated Flow</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">24/7 Automated</span>
                 </div>
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input
                     type="url"
-                    placeholder="https://connect.pabbly.com/workflow/sendwebhookdata/XXXXXXXXXXXX"
-                    value={pabblyWebhookInput}
-                    onChange={(e) => handleSavePabblyWebhook(e.target.value)}
+                    placeholder="http://65.0.170.65:8080"
+                    value={whatsappServerUrl}
+                    onChange={(e) => setWhatsappServerUrl(e.target.value)}
                     className="w-full rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono outline-none focus:border-emerald-500"
                   />
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => alert('Pabbly Webhook URL saved successfully!')}
-                      className="rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-1.5 text-xs font-semibold"
-                    >
-                      Save Webhook
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleSendAllBatchesToPabbly}
-                      disabled={isDispatchingPabbly || !pabblyWebhookInput}
-                      className="rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 text-xs font-bold disabled:opacity-50 flex items-center gap-1"
-                    >
-                      <SendHorizontal className="h-3 w-3" />
-                      <span>{isDispatchingPabbly ? 'Sending...' : '🚀 Send All to Pabbly'}</span>
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    placeholder="120363410671332403@g.us"
+                    value={whatsappGroupId}
+                    onChange={(e) => setWhatsappGroupId(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono outline-none focus:border-emerald-500"
+                  />
                 </div>
-                {pabblyStatusMessage && (
+                <div className="flex items-center justify-between gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleSaveWhatsAppConfig(whatsappServerUrl, whatsappGroupId);
+                      alert('WhatsApp Server & Group settings saved successfully!');
+                    }}
+                    className="rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-1.5 text-xs font-semibold"
+                  >
+                    Save Config
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSendAllBatchesToWhatsApp}
+                    disabled={isDispatchingWhatsApp || !whatsappServerUrl || !whatsappGroupId}
+                    className="rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 text-xs font-bold disabled:opacity-50 flex items-center gap-1"
+                  >
+                    <SendHorizontal className="h-3 w-3" />
+                    <span>{isDispatchingWhatsApp ? 'Sending...' : '🚀 Send All to WhatsApp'}</span>
+                  </button>
+                </div>
+                {whatsappStatusMessage && (
                   <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                    {pabblyStatusMessage}
+                    {whatsappStatusMessage}
                   </p>
                 )}
               </div>
@@ -2288,9 +2297,9 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                               <CheckCircle className="h-3.5 w-3.5" /> Telegram
                             </span>
                           )}
-                          {pabblyBatchStatus[chunk.index] === 'success' && (
+                          {whatsappBatchStatus[chunk.index] === 'success' && (
                             <span className="text-emerald-500 flex items-center gap-1">
-                              <CheckCircle className="h-3.5 w-3.5" /> Pabbly
+                              <CheckCircle className="h-3.5 w-3.5" /> WhatsApp (Cloud)
                             </span>
                           )}
                         </div>
@@ -2362,15 +2371,16 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                         </button>
                       )}
 
-                      {/* Send to Pabbly Button */}
+                      {/* Direct WhatsApp Cloud Button */}
                       <button
                         type="button"
-                        onClick={() => handleSendSingleBatchToPabbly(chunk)}
-                        disabled={pabblyBatchStatus[chunk.index] === 'sending'}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-secondary hover:bg-secondary/80 text-foreground px-3 py-2 text-xs font-semibold transition-all disabled:opacity-50"
-                        title="Send this single batch to Pabbly webhook"
+                        onClick={() => handleSendSingleBatchToWhatsApp(chunk)}
+                        disabled={whatsappBatchStatus[chunk.index] === 'sending'}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-3 py-2 text-xs font-bold transition-all disabled:opacity-50"
+                        title="Post directly to WhatsApp Group via Evolution-Go"
                       >
-                        <span>Pabbly</span>
+                        <SendHorizontal className="h-3.5 w-3.5" />
+                        <span>Cloud Post</span>
                       </button>
                     </div>
                   </div>

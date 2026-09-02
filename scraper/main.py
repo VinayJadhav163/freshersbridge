@@ -407,7 +407,7 @@ def run_pipeline(use_ai: bool = False):
 
     # Step 7: Generate 8-Job Curated WhatsApp & Telegram Broadcast Messages & Automated Dispatch
     try:
-        from broadcast_formatter import generate_broadcast_messages, save_broadcasts_file, dispatch_to_pabbly, dispatch_to_telegram, dispatch_to_evolution_whatsapp, get_slot_title
+        from broadcast_formatter import generate_broadcast_messages, save_broadcasts_file, dispatch_to_telegram, dispatch_to_evolution_whatsapp, get_slot_title
         wa_messages = generate_broadcast_messages(clean_final_jobs, platform='whatsapp', chunk_size=8)
         tg_messages = generate_broadcast_messages(clean_final_jobs, platform='telegram', chunk_size=8)
         
@@ -429,11 +429,6 @@ def run_pipeline(use_ai: bool = False):
             wa_api_key = os.getenv("EVOLUTION_API_KEY") or "FreshersBridgeSecret2026"
             if wa_group_id and wa_api_url:
                 dispatch_to_evolution_whatsapp(wa_messages, api_url=wa_api_url, api_key=wa_api_key, recipient=wa_group_id, send_all=False)
-
-            # 3. Automated Pabbly Connect Webhook Dispatch (Optional fallback)
-            pabbly_url = os.getenv("PABBLY_WEBHOOK_URL")
-            if pabbly_url:
-                dispatch_to_pabbly(whatsapp_messages=wa_messages, telegram_messages=tg_messages, webhook_url=pabbly_url, send_all=False)
     except Exception as e:
         logger.error(f"⚠️ Broadcast formatting / Dispatch error: {e}")
 

@@ -30,7 +30,6 @@ jobs:
           FRESHERSBRIDGE_API_URL: ${{ secrets.FRESHERSBRIDGE_API_URL || 'https://freshersbridge.in/api/admin/jobs/bulk' }}
           ADMIN_ACCESS_KEY: ${{ secrets.ADMIN_ACCESS_KEY || 'freshersbridgeadmin2026' }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PABBLY_WEBHOOK_URL: ${{ secrets.PABBLY_WEBHOOK_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
           EVOLUTION_API_URL: ${{ secrets.EVOLUTION_API_URL || 'http://65.0.170.65:8080' }}

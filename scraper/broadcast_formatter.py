@@ -208,42 +208,6 @@ def dispatch_to_telegram(messages: List[str], bot_token: str = None, channel_id:
     logger.info(f"🎉 Telegram Automation Complete: {success_count}/{len(to_send)} batch(es) delivered.")
     return success_count > 0
 
-def dispatch_to_pabbly(whatsapp_messages: List[str], telegram_messages: List[str] = None, webhook_url: str = None, send_all: bool = False) -> bool:
-    """Dispatches 8-job curated message block to Pabbly Connect Webhook."""
-    target_url = webhook_url or os.getenv("PABBLY_WEBHOOK_URL")
-    if not target_url or not target_url.strip():
-        logger.info("ℹ️ PABBLY_WEBHOOK_URL not configured. Skipping automated Pabbly webhook dispatch.")
-        return False
-        
-    # In automated 3x daily runs, send the top curated batch (Batch #1) to preserve Pabbly credits and prevent group spam
-    to_send_wa = whatsapp_messages if send_all else whatsapp_messages[:1]
-    logger.info(f"🚀 Dispatching {len(to_send_wa)} curated message batch(es) to Pabbly Webhook: {target_url}")
-    success_count = 0
-    
-    for idx, wa_msg in enumerate(to_send_wa, 1):
-        tg_msg = telegram_messages[idx - 1] if telegram_messages and len(telegram_messages) >= idx else wa_msg
-        try:
-            payload = {
-                "batch_index": idx,
-                "total_batches": len(to_send_wa),
-                "message_title": f"FreshersBridge {get_slot_title()} ({datetime.now().strftime('%d %b %Y')})",
-                "message_text": wa_msg,
-                "whatsapp_message": wa_msg,
-                "telegram_message": tg_msg,
-                "timestamp": datetime.now().isoformat()
-            }
-            resp = requests.post(target_url, json=payload, headers={"Content-Type": "application/json"}, timeout=15)
-            if resp.status_code in [200, 201, 202]:
-                logger.info(f"✅ Pabbly Batch #{idx} dispatched successfully.")
-                success_count += 1
-            else:
-                logger.warning(f"⚠️ Pabbly Batch #{idx} failed with status {resp.status_code}: {resp.text}")
-        except Exception as e:
-            logger.error(f"❌ Error sending Batch #{idx} to Pabbly: {e}")
-            
-    logger.info(f"🎉 Pabbly Dispatch Complete: {success_count}/{len(to_send_wa)} batch(es) sent successfully.")
-    return success_count > 0
-
 def dispatch_to_evolution_whatsapp(messages: List[str], api_url: str = None, api_key: str = None, instance_name: str = None, recipient: str = None, send_all: bool = False) -> bool:
     """Dispatches curated 8-job message block to WhatsApp Group/Community via Evolution-Go API on AWS."""
     base_url = api_url or os.getenv("EVOLUTION_API_URL") or "http://65.0.170.65:8080"
