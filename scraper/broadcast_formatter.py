@@ -132,19 +132,30 @@ def generate_broadcast_messages(jobs: List[Dict[str, Any]], platform: str = 'wha
     balanced_jobs = balance_jobs_by_source(jobs)
     messages = []
     total_jobs = len(balanced_jobs)
-    footer = TELEGRAM_FOOTER if platform.lower() == 'telegram' else WHATSAPP_FOOTER
+    is_telegram = platform.lower() == 'telegram'
+    footer = TELEGRAM_FOOTER if is_telegram else WHATSAPP_FOOTER
     slot_label = get_slot_title()
+
+    # Telegram uses ** for markdown bolding, WhatsApp uses *
+    b = "**" if is_telegram else "*"
+
+    header_top = f"""{b}📌Great Opportunities open for freshers candidates{b}
+{b}Tailor your resume. Improve your chances.{b}
+{b}👉 Check your resume with our ATS Resume Scanner:{b}
+https://freshersbridge.in/career-tools"""
+
+    opps_header = f"{b}🔥 Today's Fresh Opportunities:{b}"
     
     for i in range(0, total_jobs, chunk_size):
         chunk = balanced_jobs[i:i + chunk_size]
         batch_num = (i // chunk_size) + 1
         job_blocks = "\n\n".join([format_single_job_block(j) for j in chunk])
         
-        # Batch #1 gets the dynamic session label (Morning/Afternoon/Evening)
+        # Batch #1 gets the dynamic session label (Morning/Afternoon/Evening) without ✨ emoji
         batch_header = (
-            f"{COMMON_HEADER_TOP}\n\n{OPPORTUNITIES_HEADER}\n*✨ {slot_label}*"
+            f"{header_top}\n\n{opps_header}\n{b}{slot_label}{b}"
             if batch_num == 1
-            else f"{COMMON_HEADER_TOP}\n\n{OPPORTUNITIES_HEADER} *(Batch #{batch_num})*"
+            else f"{header_top}\n\n{opps_header} {b}(Batch #{batch_num}){b}"
         )
         
         msg = f"""{batch_header}
@@ -176,6 +187,7 @@ def dispatch_to_telegram(messages: List[str], bot_token: str = None, channel_id:
             payload = {
                 "chat_id": chat,
                 "text": msg,
+                "parse_mode": "Markdown",
                 "disable_web_page_preview": False
             }
             resp = requests.post(tg_url, json=payload, timeout=20)

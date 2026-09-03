@@ -760,6 +760,8 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     const chunkSize = 8;
     const chunks: { index: number; text: string; jobCount: number; jobs: Job[] }[] = [];
 
+    const b = platform === 'telegram' ? '**' : '*';
+
     const getSlotLabel = () => {
       const now = new Date();
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -770,12 +772,12 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
       return "🌙 EVENING FRESHERS DIGEST (Top 8 Curated Drop)";
     };
 
-    const commonHeaderTop = `*📌Great Opportunities open for freshers candidates*
-*Tailor your resume. Improve your chances.*
-*👉 Check your resume with our ATS Resume Scanner:*
+    const commonHeaderTop = `${b}📌Great Opportunities open for freshers candidates${b}
+${b}Tailor your resume. Improve your chances.${b}
+${b}👉 Check your resume with our ATS Resume Scanner:${b}
 https://freshersbridge.in/career-tools`;
 
-    const opportunitiesHeader = `*🔥 Today's Fresh Opportunities:*`;
+    const opportunitiesHeader = `${b}🔥 Today's Fresh Opportunities:${b}`;
     const slotLabel = getSlotLabel();
 
     const whatsappFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -838,8 +840,8 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
       }).join('\n\n');
 
       const batchHeader = batchNum === 1
-        ? `${commonHeaderTop}\n\n${opportunitiesHeader}\n*✨ ${slotLabel}*`
-        : `${commonHeaderTop}\n\n${opportunitiesHeader} *(Batch #${batchNum})*`;
+        ? `${commonHeaderTop}\n\n${opportunitiesHeader}\n${b}${slotLabel}${b}`
+        : `${commonHeaderTop}\n\n${opportunitiesHeader} ${b}(Batch #${batchNum})${b}`;
 
       const fullMessage = `${batchHeader}\n\n${jobCards}\n\n${footer}`;
       chunks.push({
@@ -978,6 +980,7 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
         body: JSON.stringify({
           chat_id: channel,
           text: tgText,
+          parse_mode: 'Markdown',
           disable_web_page_preview: false
         })
       });
@@ -1019,6 +1022,7 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
           body: JSON.stringify({
             chat_id: channel,
             text: chunk.text,
+            parse_mode: 'Markdown',
             disable_web_page_preview: false
           })
         });
