@@ -213,7 +213,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               <Link
                 href="/jobs"
                 prefetch={true}
-                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-500 transition-all"
+                className="inline-flex items-center justify-center rounded-lg bg-[#275df5] px-4 py-2 text-xs font-bold text-white hover:bg-[#1f4cd0] transition-all"
               >
                 Reset Filters
               </Link>
