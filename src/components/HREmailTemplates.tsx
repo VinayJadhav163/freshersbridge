@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Copy, Check, Sparkles, X, ArrowUpRight } from 'lucide-react';
+import { 
+  Copy, 
+  Check, 
+  Sparkles, 
+  X, 
+  ArrowUpRight,
+  User,
+  Building2,
+  Briefcase,
+  Phone,
+  RotateCcw,
+  SlidersHorizontal,
+  CheckCircle2
+} from 'lucide-react';
 
 export type TemplateCategory = 'Follow-up' | 'Interview' | 'Offer' | 'Networking';
 
@@ -273,6 +286,64 @@ export default function HREmailTemplates() {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateItem | null>(null);
   const [copiedStatus, setCopiedStatus] = useState<'email' | 'subject' | 'both' | null>(null);
 
+  // User details for real-time script auto-filling
+  const [userInputs, setUserInputs] = useState({
+    name: '',
+    company: '',
+    role: '',
+    phone: '',
+  });
+
+  // Load saved inputs from localStorage on client mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('freshersbridge_hr_inputs');
+      if (saved) {
+        setUserInputs(JSON.parse(saved));
+      }
+    } catch {}
+  }, []);
+
+  const handleInputChange = (field: keyof typeof userInputs, value: string) => {
+    setUserInputs((prev) => {
+      const updated = { ...prev, [field]: value };
+      try {
+        localStorage.setItem('freshersbridge_hr_inputs', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const handleResetInputs = () => {
+    const empty = { name: '', company: '', role: '', phone: '' };
+    setUserInputs(empty);
+    try {
+      localStorage.removeItem('freshersbridge_hr_inputs');
+    } catch {}
+  };
+
+  const hasAnyInput = Boolean(
+    userInputs.name.trim() || userInputs.company.trim() || userInputs.role.trim() || userInputs.phone.trim()
+  );
+
+  // Helper to dynamically substitute placeholders
+  const getFilledText = (text: string) => {
+    let result = text;
+    if (userInputs.name.trim()) {
+      result = result.replace(/\[Your Name\]/g, userInputs.name.trim());
+    }
+    if (userInputs.company.trim()) {
+      result = result.replace(/\[(?:Company|Company Name|company)\]/gi, userInputs.company.trim());
+    }
+    if (userInputs.role.trim()) {
+      result = result.replace(/\[(?:role|Role|role, Job ID if available|Position\/Role)\]/g, userInputs.role.trim());
+    }
+    if (userInputs.phone.trim()) {
+      result = result.replace(/\[Your Phone Number\]/g, userInputs.phone.trim());
+    }
+    return result;
+  };
+
   // Close modal on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -298,12 +369,15 @@ export default function HREmailTemplates() {
 
   const handleCopy = (template: TemplateItem, type: 'email' | 'subject' | 'both') => {
     let textToCopy = '';
+    const filledSubject = getFilledText(template.subject);
+    const filledBody = getFilledText(template.body);
+
     if (type === 'subject') {
-      textToCopy = template.subject;
+      textToCopy = filledSubject;
     } else if (type === 'email') {
-      textToCopy = template.body;
+      textToCopy = filledBody;
     } else {
-      textToCopy = `Subject: ${template.subject}\n\n${template.body}`;
+      textToCopy = `Subject: ${filledSubject}\n\n${filledBody}`;
     }
 
     navigator.clipboard.writeText(textToCopy);
@@ -366,6 +440,100 @@ export default function HREmailTemplates() {
         </div>
       </div>
 
+      {/* Interactive Auto-Fill Personalization Box */}
+      <div className="mb-8 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 bg-gradient-to-br from-indigo-50/70 via-card to-card dark:from-indigo-950/30 p-5 sm:p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-xl bg-indigo-600/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+              <SlidersHorizontal className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                <span>Personalize & Auto-Fill All 12 Scripts</span>
+                {hasAnyInput && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 border border-emerald-500/20">
+                    <CheckCircle2 className="h-3 w-3" /> Auto-Fill Active
+                  </span>
+                )}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Enter your details once below. When you copy any HR script, placeholders like [Your Name], [Company], and [Role] are filled automatically!
+              </p>
+            </div>
+          </div>
+
+          {hasAnyInput && (
+            <button
+              type="button"
+              onClick={handleResetInputs}
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-rose-600 transition-colors cursor-pointer self-start sm:self-auto"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>Reset Defaults</span>
+            </button>
+          )}
+        </div>
+
+        {/* 4 Interactive Input Fields */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+          {/* Your Name */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <User className="h-3 w-3 text-indigo-600 dark:text-indigo-400" /> Your Name
+            </label>
+            <input
+              type="text"
+              value={userInputs.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="e.g. Rahul Sharma"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
+            />
+          </div>
+
+          {/* Company */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Building2 className="h-3 w-3 text-indigo-600 dark:text-indigo-400" /> Target Company
+            </label>
+            <input
+              type="text"
+              value={userInputs.company}
+              onChange={(e) => handleInputChange('company', e.target.value)}
+              placeholder="e.g. TCS / Infosys / Google"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
+            />
+          </div>
+
+          {/* Role */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Briefcase className="h-3 w-3 text-indigo-600 dark:text-indigo-400" /> Target Role
+            </label>
+            <input
+              type="text"
+              value={userInputs.role}
+              onChange={(e) => handleInputChange('role', e.target.value)}
+              placeholder="e.g. Software Engineer"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Phone className="h-3 w-3 text-indigo-600 dark:text-indigo-400" /> Phone Number (Optional)
+            </label>
+            <input
+              type="text"
+              value={userInputs.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+              placeholder="e.g. +91 9876543210"
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* 12 Templates Grid (Compact, Sleek, Perfectly Proportioned Cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5">
         {filteredTemplates.map((item) => (
@@ -401,7 +569,7 @@ export default function HREmailTemplates() {
             </div>
 
             <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400 font-bold group-hover:underline">
-              <span>View & Copy Template</span>
+              <span>{hasAnyInput ? 'Auto-Filled • View & Copy' : 'View & Copy Template'}</span>
               <span>→</span>
             </div>
           </div>
@@ -414,7 +582,7 @@ export default function HREmailTemplates() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
           onClick={() => setSelectedTemplate(null)}
         >
-          {/* Modal Container (Stop Propagation so clicking inside doesn't close) */}
+          {/* Modal Container */}
           <div
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl border border-border bg-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
@@ -430,6 +598,11 @@ export default function HREmailTemplates() {
                     <span className={`inline-block rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${getCategoryBadgeClass(selectedTemplate.category)}`}>
                       {selectedTemplate.category}
                     </span>
+                    {hasAnyInput && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2 py-0.5 border border-emerald-500/20">
+                        <CheckCircle2 className="h-3 w-3" /> Auto-Filled
+                      </span>
+                    )}
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
                     {selectedTemplate.title}
@@ -453,6 +626,47 @@ export default function HREmailTemplates() {
 
             {/* Modal Scrollable Body */}
             <div className="p-5 sm:p-6 overflow-y-auto space-y-4 max-h-[60vh]">
+              {/* Quick in-modal live tweak toolbar */}
+              <div className="p-3.5 rounded-xl border border-border/80 bg-secondary/20 space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-bold text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <SlidersHorizontal className="h-3 w-3 text-indigo-600" /> Tweak Auto-Fill Values
+                  </span>
+                  {hasAnyInput && (
+                    <button
+                      type="button"
+                      onClick={handleResetInputs}
+                      className="text-muted-foreground hover:text-rose-600 transition-colors"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <input
+                    type="text"
+                    value={userInputs.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    placeholder="Your Name"
+                    className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                  <input
+                    type="text"
+                    value={userInputs.company}
+                    onChange={(e) => handleInputChange('company', e.target.value)}
+                    placeholder="Target Company"
+                    className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                  <input
+                    type="text"
+                    value={userInputs.role}
+                    onChange={(e) => handleInputChange('role', e.target.value)}
+                    placeholder="Target Role"
+                    className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
               {/* Subject Line Box */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-bold text-muted-foreground">
@@ -476,7 +690,7 @@ export default function HREmailTemplates() {
                   </button>
                 </div>
                 <div className="rounded-xl border border-border bg-secondary/50 p-3 text-xs sm:text-sm font-semibold text-foreground select-all">
-                  {selectedTemplate.subject}
+                  {getFilledText(selectedTemplate.subject)}
                 </div>
               </div>
 
@@ -503,7 +717,7 @@ export default function HREmailTemplates() {
                   </button>
                 </div>
                 <div className="rounded-xl border border-border bg-secondary/30 p-4 text-xs sm:text-sm text-foreground/90 font-sans leading-relaxed whitespace-pre-wrap select-all font-normal shadow-inner">
-                  {selectedTemplate.body}
+                  {getFilledText(selectedTemplate.body)}
                 </div>
               </div>
             </div>
@@ -519,12 +733,12 @@ export default function HREmailTemplates() {
                 {copiedStatus === 'email' ? (
                   <>
                     <Check className="h-4 w-4" />
-                    <span>Email Copied to Clipboard!</span>
+                    <span>Personalized Email Copied!</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-4 w-4" />
-                    <span>Copy Email Body</span>
+                    <span>Copy Auto-Filled Email</span>
                   </>
                 )}
               </button>
@@ -567,3 +781,4 @@ export default function HREmailTemplates() {
     </section>
   );
 }
+
