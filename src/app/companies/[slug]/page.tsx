@@ -9,6 +9,7 @@ import {
 } from '@/lib/companiesData';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import JobCard from '@/components/JobCard';
+import FAQAccordion from '@/components/FAQAccordion';
 import { Job } from '@/types';
 import { 
   Building2, 
@@ -327,17 +328,16 @@ export default async function CompanyDetailPage({ params }: Props) {
 
           {/* Frequently Asked Questions */}
           <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-5">
-            <h2 className="text-lg font-bold text-foreground">
-              Frequently Asked Questions about {company.shortName} Hiring
-            </h2>
-            <div className="space-y-4">
-              {company.frequentlyAsked.map((faq, idx) => (
-                <div key={idx} className="space-y-1.5 pb-3 border-b border-border/50 last:border-b-0 last:pb-0">
-                  <h3 className="text-sm font-bold text-foreground">{faq.question}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-foreground">
+                Frequently Asked Questions about {company.shortName} Hiring
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                Common doubts, eligibility rules, and interview advice for freshers applying to {company.shortName}.
+              </p>
             </div>
+            
+            <FAQAccordion items={company.frequentlyAsked} />
           </div>
 
         </div>

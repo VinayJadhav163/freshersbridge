@@ -1,13 +1,15 @@
 import React from 'react';
 import { Metadata } from 'next';
 import CareerToolsHub from '@/components/CareerToolsHub';
+import FAQAccordion, { FAQItem } from '@/components/FAQAccordion';
 import { 
   Sparkles, 
   ShieldCheck, 
   FileCheck, 
   Send,
-  IndianRupee,
-  Layers
+  IndianRupee, 
+  Layers,
+  HelpCircle
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -22,9 +24,47 @@ export const metadata: Metadata = {
   },
 };
 
+const CAREER_TOOLS_FAQS: FAQItem[] = [
+  {
+    question: 'What is an ATS Resume Scanner and why is it important for freshers?',
+    answer: 'An Applicant Tracking System (ATS) is automated software used by recruiters to parse, filter, and rank resumes before a human reads them. Our scanner tests your resume against target job roles to detect missing technical keywords, skill gaps, and ATS readability issues.',
+  },
+  {
+    question: 'How is monthly in-hand take-home salary calculated from annual CTC in India?',
+    answer: 'Annual CTC includes non-cash benefits such as Employer Provident Fund (EPF), gratuity, and performance incentives. Our salary calculator deducts Employee PF (12% of basic), standard professional tax, and income tax under the new tax regime to give your actual monthly bank credit.',
+  },
+  {
+    question: 'How do I customize and copy the HR Email scripts?',
+    answer: 'Enter your name, role, target company, and university in the Quick Input Customizer at the top of the templates. Every email script automatically updates in real-time. Then simply click "Copy Script" to paste directly into your email client or LinkedIn message.',
+  },
+  {
+    question: 'Is my resume data stored or shared with external servers?',
+    answer: 'No! All resume parsing and keyword extraction occurs 100% client-side inside your own browser session. We do not store, log, or transmit your resume to any server.',
+  },
+];
+
 export default function CareerToolsPage() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': CAREER_TOOLS_FAQS.map((faq) => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer,
+      },
+    })),
+  };
+
   return (
     <div className="flex flex-col w-full pb-16">
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       {/* Hero Banner for Career Tools with Minimal Modern Gradient */}
       <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
         {/* Minimal soft ambient glow */}
@@ -68,6 +108,24 @@ export default function CareerToolsPage() {
       {/* Interactive Tools Hub */}
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-12 w-full space-y-12">
         <CareerToolsHub />
+
+        {/* Frequently Asked Questions on Career Tools */}
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-10 shadow-sm space-y-6 max-w-4xl mx-auto">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900/50 px-3 py-1 text-xs font-bold text-[#275df5] dark:text-blue-400">
+              <HelpCircle className="h-3.5 w-3.5" />
+              <span>Career Tools FAQ</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+              Frequently Asked Questions About Freshers Career Tools
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
+              Everything you need to know about testing ATS resume match, calculating take-home CTC, and reaching out to recruiters.
+            </p>
+          </div>
+
+          <FAQAccordion items={CAREER_TOOLS_FAQS} />
+        </section>
       </main>
     </div>
   );
