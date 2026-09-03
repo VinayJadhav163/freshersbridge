@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { 
   getCompanyBySlug, 
-  getAllCompanySlugs 
+  getAllCompanySlugs,
+  CompanyProfile
 } from '@/lib/companiesData';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import JobCard from '@/components/JobCard';
@@ -70,13 +71,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // Fetch active & recent jobs for this company
-async function getCompanyJobs(companyShortName: string): Promise<Job[]> {
-  return fetchWithCache(`company_jobs:${companyShortName}`, async () => {
+async function getCompanyJobs(company: CompanyProfile): Promise<Job[]> {
+  return fetchWithCache(`company_jobs:${company.slug}`, async () => {
     try {
+      const searchTerms = Array.from(
+        new Set([company.shortName, company.name.split(' ')[0], company.slug])
+      );
+      const filters = searchTerms
+        .map((t) => `company.ilike.%${t}%,title.ilike.%${t}%`)
+        .join(',');
+
       const { data } = await supabase
         .from('jobs')
         .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
-        .or(`company.ilike.%${companyShortName}%,title.ilike.%${companyShortName}%`)
+        .or(filters)
         .order('created_at', { ascending: false })
         .limit(6);
       return (data || []) as unknown as Job[];
@@ -94,7 +102,7 @@ export default async function CompanyDetailPage({ params }: Props) {
     notFound();
   }
 
-  const jobs = await getCompanyJobs(company.shortName);
+  const jobs = await getCompanyJobs(company);
   const relatedGuide = company.relatedGuideSlug
     ? GUIDE_ARTICLES.find((g) => g.slug === company.relatedGuideSlug)
     : null;
