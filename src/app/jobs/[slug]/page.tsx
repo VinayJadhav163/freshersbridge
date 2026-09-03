@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   Building2,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  ArrowRight
 } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import ApplyButton from '@/components/ApplyButton';
@@ -83,6 +84,8 @@ const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: str
     }
   }, 180);
 });
+
+import { COMPANIES_DATA } from '@/lib/companiesData';
 
 // Generate dynamic SEO Metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -309,9 +312,40 @@ export default async function JobDetailsPage({ params }: Props) {
     );
   }).slice(0, 2);
 
-  // 4. Prepare structured JSON-LD data for Google Jobs
-  const jsonLd = {
-    '@context': 'https://schema.org',
+  // 4. Match company for bidirectional internal linking
+  const matchedCompany = COMPANIES_DATA.find((c) => {
+    const cName = c.name.toLowerCase();
+    const cShort = c.shortName.toLowerCase();
+    const jComp = job.company.toLowerCase();
+    return jComp.includes(cShort) || jComp.includes(cName) || cName.includes(jComp);
+  });
+
+  // 5. Prepare structured JSON-LD data for Google Jobs & Breadcrumbs
+  const breadcrumbJsonLd = {
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': 'https://freshersbridge.in',
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': isInternship ? 'Internships' : 'Jobs',
+        'item': `https://freshersbridge.in/${isInternship ? 'internships' : 'jobs'}`,
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': `${job.title} at ${job.company}`,
+        'item': `https://freshersbridge.in/${isInternship ? 'internships' : 'jobs'}/${job.slug}`,
+      },
+    ],
+  };
+
+  const jobPostingJsonLd = {
     '@type': 'JobPosting',
     'title': job.title,
     'description': job.description,
@@ -343,12 +377,17 @@ export default async function JobDetailsPage({ params }: Props) {
     } : undefined,
   };
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [breadcrumbJsonLd, jobPostingJsonLd],
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
-      {/* JSON-LD Script for Google Jobs */}
+      {/* JSON-LD Script for Google Jobs & Breadcrumbs */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
       {/* Real User View Tracker (Only fires in browser, not during next build) */}
@@ -556,6 +595,40 @@ export default async function JobDetailsPage({ params }: Props) {
 
         {/* Right Column: Quick Stats Sidebar */}
         <aside className="space-y-6">
+          {/* Internal Authority Link: Company Blueprint & Drives */}
+          {matchedCompany && (
+            <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/30 p-4 shadow-xs space-y-2.5">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 shrink-0 rounded-lg bg-white border border-slate-200 dark:border-slate-800 p-1 flex items-center justify-center">
+                  <img
+                    src={matchedCompany.logo}
+                    alt={matchedCompany.name}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#275df5]">
+                    Official Hiring Blueprint
+                  </span>
+                  <h4 className="text-xs font-bold text-foreground truncate">
+                    {matchedCompany.shortName} Placement Guide
+                  </h4>
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Exam patterns, selection rounds &amp; syllabus for {matchedCompany.shortName} off-campus drives.
+              </p>
+              <Link
+                href={`/companies/${matchedCompany.slug}`}
+                prefetch={true}
+                className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#275df5] hover:bg-[#1f4cd0] text-white font-bold text-xs transition-all shadow-2xs"
+              >
+                <span>View {matchedCompany.shortName} Guide &amp; Jobs</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          )}
+
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
             <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
               Quick Details

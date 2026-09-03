@@ -85,8 +85,47 @@ export default async function Home() {
 
   const displayInternships = allInternshipsPool.slice(0, 3);
 
+  // Structured Data for Google Sitelinks Searchbox & Organization
+  const homepageJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': 'https://freshersbridge.in/#website',
+        'url': 'https://freshersbridge.in',
+        'name': 'FreshersBridge',
+        'description': 'Handpicked off-campus job drives, software engineering roles, and developer internships for freshers and college graduates.',
+        'potentialAction': {
+          '@type': 'SearchAction',
+          'target': {
+            '@type': 'EntryPoint',
+            'urlTemplate': 'https://freshersbridge.in/jobs?q={search_term_string}',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'Organization',
+        '@id': 'https://freshersbridge.in/#organization',
+        'name': 'FreshersBridge',
+        'url': 'https://freshersbridge.in',
+        'logo': 'https://freshersbridge.in/icon.png',
+        'sameAs': [
+          'https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1',
+          'https://t.me/freshersbridge',
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="flex flex-col w-full pb-16">
+      {/* Google Sitelinks Searchbox & Organization Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
+      />
+
       {/* 1. Hero Section with Minimal Modern Gradient */}
       <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
         {/* Minimal soft ambient glow */}
