@@ -33,12 +33,15 @@ export default function CompaniesPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 w-full space-y-10">
       {/* Header Section */}
       <div className="text-center max-w-3xl mx-auto space-y-4 pt-4">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600/10 px-3.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">
-          <Sparkles className="h-3.5 w-3.5" />
-          MNC Off-Campus Hiring Directory
+        <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 dark:border-blue-900/50 bg-white/90 dark:bg-slate-900/90 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs backdrop-blur-xs">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+          <span>MNC Off-Campus Hiring Directory</span>
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
-          Top Companies Hiring Freshers & Graduates 2026
+          Top Companies Hiring{' '}
+          <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
+            Freshers & Graduates 2026
+          </span>
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
           Comprehensive hiring guides, packages, eligibility, and active off-campus job drives for India&apos;s leading tech employers.
