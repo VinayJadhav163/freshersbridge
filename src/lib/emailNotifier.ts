@@ -2,6 +2,104 @@ import { supabase } from '@/lib/supabase';
 import { Job } from '@/types';
 
 /**
+ * Clean up salary badges so that vague placeholders ("Not Disclosed" / "As per Industry Standards")
+ * are replaced with clean "Apply" badge.
+ */
+export function cleanSalaryBadge(salary?: string | null): string {
+  if (!salary) return 'Apply';
+  const s = salary.trim();
+  const lower = s.toLowerCase();
+  if (
+    lower.includes('not disclosed') ||
+    lower.includes('as per industry') ||
+    lower.includes('industry standard') ||
+    lower.includes('industry standards') ||
+    lower.includes('best in industry') ||
+    lower.includes('competitive') ||
+    lower === 'n/a' ||
+    lower === 'na' ||
+    lower === 'tbd' ||
+    lower === 'undisclosed'
+  ) {
+    return 'Apply';
+  }
+  return s;
+}
+
+/**
+ * Trending female recruiter / community lead names at FreshersBridge
+ * Cycles randomly across broadcasts for higher email open & response rates
+ */
+export const TRENDING_GIRLS_SENDERS = [
+  'Priya Gupta from FreshersBridge',
+  'Ananya Sharma from FreshersBridge',
+  'Sneha Reddy from FreshersBridge',
+  'Riya Sen from FreshersBridge',
+  'Tanvi Verma from FreshersBridge',
+  'Pooja Nair from FreshersBridge',
+  'Aarohi Joshi from FreshersBridge',
+  'Kavya Patel from FreshersBridge',
+  'Shreya Kulkarni from FreshersBridge',
+  'Isha Malhotra from FreshersBridge',
+  'Neha Choudhary from FreshersBridge',
+  'Diya Saxena from FreshersBridge',
+  'Aditi Deshmukh from FreshersBridge',
+  'Meera Iyer from FreshersBridge',
+  'Simran Kaur from FreshersBridge',
+];
+
+export function getRandomSenderFromEmail(): string {
+  const randomGirl = TRENDING_GIRLS_SENDERS[Math.floor(Math.random() * TRENDING_GIRLS_SENDERS.length)];
+  const envFrom = process.env.RESEND_FROM_EMAIL || 'FreshersBridge Job Alerts <alerts@freshersbridge.in>';
+  
+  const match = envFrom.match(/<([^>]+)>/);
+  const emailAddr = match ? match[1].trim() : (envFrom.includes('@') ? envFrom.trim() : 'alerts@freshersbridge.in');
+  
+  return `${randomGirl} <${emailAddr}>`;
+}
+
+/**
+ * High-converting, short, punchy subject lines for tech freshers
+ */
+export const CATCHY_SUBJECT_LINES = [
+  "🚀 Urgent: New Off-Campus Drives Just Dropped!",
+  "⚡ 8 Fresh Opportunities You Shouldn't Miss Today",
+  "🎯 Handpicked Freshers Drives Just for You",
+  "💼 Top MNCs are Hiring Freshers (Apply Before Deadline)",
+  "🔥 Fresh Entry-Level Roles Dropped: Open Today",
+  "✨ New Tech & Graduate Openings Matching Your Profile",
+  "⏰ Applications Closing Soon: Today's Curated Jobs",
+  "📩 Your Daily Freshers Placement Digest is Here",
+  "🌟 Top High-Growth Fresher Roles Open Today",
+  "💡 Quick Apply: Fresh Engineering & Graduate Drives",
+  "🚀 Don't Miss Out: High-Priority Fresher Drives Open Today",
+  "🎯 Freshers Hiring Alert: High Shortlist Chances Today",
+  "🔥 TCS, Infosys & Top Tech Drives Open for Freshers",
+  "💼 Immediate Openings: Apply to Today's Fresher Shortlist",
+  "⚡ Quick Review: New Off-Campus Roles with High Packages"
+];
+
+export function getRandomCatchySubject(jobCount?: number): string {
+  const count = jobCount || 8;
+  const list = [
+    `🚀 Urgent: ${count} New Off-Campus Drives Just Dropped!`,
+    `⚡ ${count} Fresh Opportunities You Shouldn't Miss Today`,
+    `🎯 Handpicked ${count} Freshers Drives Just for You`,
+    `💼 Top MNCs are Hiring Freshers (Apply Before Deadline)`,
+    `🔥 Fresh Entry-Level Roles: ${count} Curated Jobs Open`,
+    `✨ New Tech Openings Matching Your Profile (${count} Jobs)`,
+    `⏰ Applications Closing Soon: ${count} Curated Jobs`,
+    `📩 Your Daily Freshers Placement Digest is Here (${count} Roles)`,
+    `🌟 Top ${count} High-Growth Fresher Roles Open Today`,
+    `💡 Quick Apply: ${count} Fresh Engineering & Tech Jobs`,
+    `🚀 Don't Miss Out: High-Priority Fresher Drives Open`,
+    `🎯 Freshers Hiring Alert: High Shortlist Chances Today`,
+    `🔥 TCS, Infosys & Top Tech Drives Open for Freshers`,
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+/**
  * Generates standard HTML email content for single job/internship notification
  */
 export function generateJobNotificationHTML(job: Job): { subject: string; html: string; text: string } {
@@ -23,7 +121,7 @@ export function generateJobNotificationHTML(job: Job): { subject: string; html: 
     ? job.skills.slice(0, 6).map(skill => `<span style="display: inline-block; background-color: #edf4ff; color: #275df5; border: 1px solid #c7d8fe; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-right: 5px; margin-bottom: 6px;">${skill}</span>`).join('')
     : '<span style="color: #717b9e; font-size: 12px;">Freshers & Experienced</span>';
 
-  const text = `New Opportunity Alert!\n\nTitle: ${job.title}\nCompany: ${job.company}\nLocation: ${job.location}\nSalary: ${job.salary || 'Best in Industry'}\nEligibility: ${job.eligibility}\n\nApply here: ${jobUrl}\n\nFreshersBridge - Your Bridge to First Career Step`;
+  const text = `New Opportunity Alert!\n\nTitle: ${job.title}\nCompany: ${job.company}\nLocation: ${job.location}\nSalary: ${cleanSalaryBadge(job.salary)}\nEligibility: ${job.eligibility}\n\nApply here: ${jobUrl}\n\nFreshersBridge - Your Bridge to First Career Step`;
 
   const html = `
 <!DOCTYPE html>
@@ -88,7 +186,7 @@ export function generateJobNotificationHTML(job: Job): { subject: string; html: 
                 </tr>
                 <tr>
                   <td style="padding-bottom: 10px; font-size: 13.5px; color: #474d6a; font-weight: 500;">
-                    💰 <strong style="color: #121224;">Salary / Stipend:</strong> ${job.salary || 'Best in Industry'}
+                    💰 <strong style="color: #121224;">Salary / Stipend:</strong> ${cleanSalaryBadge(job.salary)}
                   </td>
                 </tr>
                 <tr>
@@ -173,7 +271,7 @@ export async function notifySubscribersNewJob(job: Job): Promise<{ success: bool
 
     if (resendApiKey) {
       try {
-        const fromEmail = process.env.RESEND_FROM_EMAIL || 'FreshersBridge Job Alerts <onboarding@resend.dev>';
+        const fromEmail = getRandomSenderFromEmail();
 
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -193,7 +291,7 @@ export async function notifySubscribersNewJob(job: Job): Promise<{ success: bool
         });
 
         if (res.ok) {
-          console.log(`Successfully sent email notification via Resend to ${emails.length} subscribers.`);
+          console.log(`Successfully sent email notification via Resend to ${emails.length} subscribers from ${fromEmail}.`);
           return { success: true, count: emails.length };
         } else {
           const errData = await res.json();
@@ -221,13 +319,11 @@ export function generateMultipleJobsDigestHTML(
 ): { subject: string; html: string; text: string } {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshersbridge.in';
   const cleanSiteUrl = siteUrl.replace(/\/+$/, '');
-  const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const subject = `🔥 ${jobs.length} New Opportunities Curated for You | FreshersBridge Digest (${dateStr})`;
+  const subject = getRandomCatchySubject(jobs.length);
 
   const jobRowsHtml = jobs.map((job) => {
     const jobUrl = `${cleanSiteUrl}/jobs/${job.slug}`;
-    const salaryBadge = job.salary || 'Best in Industry';
-    const isIntern = job.job_type === 'internship' || job.title.toLowerCase().includes('intern');
+    const salaryBadge = cleanSalaryBadge(job.salary);
     const badgeBg = '#edf4ff';
     const badgeColor = '#275df5';
     const badgeBorder = '#c7d8fe';
@@ -259,7 +355,7 @@ export function generateMultipleJobsDigestHTML(
   }).join('');
 
   const text = `Hi ${subscriberName},\n\nHere are ${jobs.length} new opportunities curated for you:\n\n` +
-    jobs.map(j => `- ${j.title} at ${j.company} (${j.salary || 'Best in Industry'}): ${cleanSiteUrl}/jobs/${j.slug}`).join('\n') +
+    jobs.map(j => `- ${j.title} at ${j.company} (${cleanSalaryBadge(j.salary)}): ${cleanSiteUrl}/jobs/${j.slug}`).join('\n') +
     `\n\nView all jobs at ${cleanSiteUrl}/jobs\n\nFreshersBridge`;
 
   const html = `
@@ -383,13 +479,13 @@ export async function sendMultipleJobsDigest(
     }
 
     const emails = subscribers.map(s => s.email).filter(Boolean);
-    const { subject: defaultSubject, html, text } = generateMultipleJobsDigestHTML(jobs, 'Job Seeker');
-    const finalSubject = customSubject?.trim() || defaultSubject;
+    const finalSubject = customSubject?.trim() || getRandomCatchySubject(jobs.length);
+    const { html, text } = generateMultipleJobsDigestHTML(jobs, 'Job Seeker');
 
     const resendApiKey = process.env.RESEND_API_KEY;
 
     if (resendApiKey) {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'FreshersBridge Job Alerts <onboarding@resend.dev>';
+      const fromEmail = getRandomSenderFromEmail();
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -408,7 +504,7 @@ export async function sendMultipleJobsDigest(
       });
 
       if (res.ok) {
-        console.log(`Sent Multi-Job Digest broadcast via Resend to ${emails.length} subscribers.`);
+        console.log(`Sent Multi-Job Digest broadcast via Resend to ${emails.length} subscribers from ${fromEmail}.`);
         return { success: true, count: emails.length };
       } else {
         const errData = await res.json();

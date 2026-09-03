@@ -43,6 +43,7 @@ import {
   LogOut,
   ShieldCheck,
   RotateCcw,
+  Shuffle,
   Calendar,
   CheckSquare,
   Filter,
@@ -166,6 +167,49 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
   const [selectedJobIds, setSelectedJobIds] = useState<string[]>([]);
   const [customDigestSubject, setCustomDigestSubject] = useState<string>('');
   const [isSendingDigest, setIsSendingDigest] = useState<boolean>(false);
+
+  const CATCHY_SUBJECTS_LIST = [
+    '🚀 Urgent: Top MNCs are Hiring Freshers Right Now!',
+    '⚡ 8 Fresh Opportunities You Shouldn’t Miss Today',
+    '🎯 Handpicked Freshers Drives Just for You',
+    '💼 Freshers Hiring Alert: High Shortlist Chances',
+    '🔥 Fresh Entry-Level Roles Dropped: Apply Before Deadline',
+    '✨ New Tech & Graduate Openings Matching Your Profile',
+    '⏰ Applications Closing Soon: Today’s Curated Jobs',
+    '📩 Your Daily Freshers Placement Digest is Here',
+    '🌟 Top High-Growth Fresher Roles Open Today',
+    '💡 Quick Apply: Fresh Engineering & Graduate Drives',
+    '🚀 Don’t Miss Out: High-Priority Fresher Drives Open Today',
+    '🎯 Freshers Hiring Alert: High Shortlist Chances Today',
+    '🔥 TCS, Infosys & Top Tech Drives Open for Freshers',
+    '💼 Immediate Openings: Apply to Today’s Fresher Shortlist',
+    '⚡ Quick Review: New Off-Campus Roles with High Packages',
+  ];
+
+  const TRENDING_GIRLS_LIST = [
+    'Priya Gupta from FreshersBridge',
+    'Ananya Sharma from FreshersBridge',
+    'Sneha Reddy from FreshersBridge',
+    'Riya Sen from FreshersBridge',
+    'Tanvi Verma from FreshersBridge',
+    'Pooja Nair from FreshersBridge',
+    'Aarohi Joshi from FreshersBridge',
+    'Kavya Patel from FreshersBridge',
+    'Shreya Kulkarni from FreshersBridge',
+    'Isha Malhotra from FreshersBridge',
+    'Neha Choudhary from FreshersBridge',
+    'Diya Saxena from FreshersBridge',
+    'Aditi Deshmukh from FreshersBridge',
+  ];
+
+  const [currentSenderPreview, setCurrentSenderPreview] = useState<string>('Priya Gupta from FreshersBridge');
+
+  const handleShuffleSubject = () => {
+    const randomSub = CATCHY_SUBJECTS_LIST[Math.floor(Math.random() * CATCHY_SUBJECTS_LIST.length)];
+    setCustomDigestSubject(randomSub);
+    const randomGirl = TRENDING_GIRLS_LIST[Math.floor(Math.random() * TRENDING_GIRLS_LIST.length)];
+    setCurrentSenderPreview(randomGirl);
+  };
 
   const downloadSubscribersCSV = () => {
     if (subscribers.length === 0) {
@@ -833,7 +877,11 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
         const title = j.title || 'Software Engineer';
         const eligibility = j.eligibility || 'B.E / B.Tech / BCA / MCA / Any Graduate';
         const location = j.location || 'Pan-India / Remote';
-        const salary = j.salary || 'Competitive / Best in Industry';
+        const rawSalary = (j.salary || '').trim();
+        const lowerSal = rawSalary.toLowerCase();
+        const salary = (!rawSalary || lowerSal.includes('not disclosed') || lowerSal.includes('as per industry') || lowerSal.includes('industry standard') || lowerSal.includes('best in industry') || lowerSal.includes('competitive') || lowerSal === 'n/a')
+          ? 'Apply'
+          : rawSalary;
         const link = `https://freshersbridge.in/jobs/${j.slug}`;
 
         return `🔗 Company : ${company}\nRole : ${title}\nQualification : ${eligibility}\nLocation : ${location}\nSalary : ${salary}\n📌 Apply Link : ${link}`;
@@ -1946,7 +1994,10 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
               {/* Broadcast Modal Trigger */}
               <button
-                onClick={() => setShowBroadcastModal(true)}
+                onClick={() => {
+                  handleShuffleSubject();
+                  setShowBroadcastModal(true);
+                }}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 text-xs font-bold transition-all shadow-sm"
               >
                 <Send className="h-4 w-4" />
@@ -2424,26 +2475,65 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 p-3.5 text-xs text-foreground space-y-1">
-                <p className="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
-                  <Sparkles className="h-4 w-4" />
-                  Broadcast Information
-                </p>
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 p-3.5 text-xs text-foreground space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                    <Sparkles className="h-4 w-4" />
+                    <span>Broadcast Information</span>
+                  </p>
+                  <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full">
+                    Resend Verified
+                  </span>
+                </div>
                 <p className="text-muted-foreground text-[11px] leading-relaxed">
-                  This will dispatch a beautifully formatted <strong>Recommended Opportunities Digest</strong> email directly to all <strong>{subscribers.length} active subscribers</strong> via Resend API.
+                  Dispatches an Unstop-style <strong>Recommended Opportunities Digest</strong> email directly to all <strong>{subscribers.length} active subscribers</strong>.
                 </p>
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-200/70 dark:border-emerald-800/50 text-[11px]">
+                  <span className="font-semibold text-emerald-800 dark:text-emerald-300">Sending as:</span>
+                  <span className="font-bold text-foreground bg-white dark:bg-black/40 px-2.5 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700 shadow-2xs">
+                    👩‍💼 {currentSenderPreview}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">(Auto-rotates randomly across top Indian HRs)</span>
+                </div>
               </div>
 
               {/* Custom Subject Line */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Email Subject Line (Optional)</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <span>Email Subject Line (Optional)</span>
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      Auto-Rotating 🎲
+                    </span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleShuffleSubject}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+                  >
+                    <Shuffle className="h-3 w-3" />
+                    <span>Roll Catchy Subject 🎲</span>
+                  </button>
+                </div>
                 <input
                   type="text"
-                  placeholder={`🔥 ${selectedJobIds.length || Math.min(jobs.length, 10)} New Opportunities Curated for You | FreshersBridge`}
+                  placeholder="e.g. 🚀 Urgent: Top MNCs are Hiring Freshers Right Now!"
                   value={customDigestSubject}
                   onChange={(e) => setCustomDigestSubject(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-xs outline-none focus:border-emerald-500"
                 />
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1">
+                  {CATCHY_SUBJECTS_LIST.slice(0, 5).map((line, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setCustomDigestSubject(line)}
+                      className="shrink-0 text-[10px] font-medium rounded-lg bg-secondary/80 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/60 dark:hover:text-emerald-400 border border-border px-2.5 py-1 transition-colors cursor-pointer text-muted-foreground line-clamp-1 max-w-[280px]"
+                    >
+                      {line}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Job Selection Header */}
