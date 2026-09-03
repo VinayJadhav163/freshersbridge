@@ -29,10 +29,8 @@ export default function Footer() {
                 rel="noopener noreferrer" 
                 className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
               >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform">
-                  <svg className="h-3.5 w-3.5 shrink-0 fill-current text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 001.333 4.993L2 22l5.233-1.237a9.96 9.96 0 004.779 1.221h.004c5.505 0 9.988-4.478 9.989-9.984 0-2.669-1.038-5.176-2.925-7.062A9.927 9.927 0 0012.012 2zm5.835 14.195c-.247.693-1.442 1.334-1.996 1.396-.519.058-1.196.082-3.87-1.025-3.424-1.417-5.632-4.9-5.803-5.127-.17-.228-1.39-1.844-1.39-3.52 0-1.676.883-2.502 1.196-2.842.312-.34.68-.425.907-.425.227 0 .454.002.651.011.208.01.488-.079.764.582.283.679.963 2.348 1.048 2.518.085.17.142.368.028.595-.113.226-.17.368-.34.566-.17.198-.358.444-.51.595-.17.17-.348.354-.149.694.198.34.882 1.455 1.892 2.355 1.3 1.157 2.395 1.516 2.735 1.686.34.17.538.142.736-.085.198-.227.85-0.99.1.077-1.246.227-.255.454-.2.68.085.227.283 1.445 2.124 1.7 2.502.255.378.255.65.17.933-.085.283-1.275.693-1.968z" />
-                  </svg>
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform overflow-hidden p-0.5">
+                  <img src="/whatsapp.png" alt="WhatsApp" className="h-full w-full object-contain" />
                 </div>
                 <span>Join WhatsApp Group →</span>
               </a>
