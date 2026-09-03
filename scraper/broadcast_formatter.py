@@ -86,6 +86,7 @@ def format_single_job_block(job: Dict[str, Any]) -> str:
     company = str(job.get('company') or 'Top Tech Company').strip()
     title = str(job.get('title') or 'Software Engineer').strip()
     eligibility = str(job.get('eligibility') or 'B.E / B.Tech / BCA / MCA / Any Graduate').strip()
+    location = str(job.get('location') or 'Pan-India / Remote').strip()
     raw_sal = str(job.get('salary') or '').strip()
     lower_sal = raw_sal.lower()
     if (not raw_sal or 'not disclosed' in lower_sal or 'as per industry' in lower_sal or 
