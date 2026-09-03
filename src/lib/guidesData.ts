@@ -1017,6 +1017,37 @@ The online assessment is hosted on the AMCAT / CoCubes platform and spans **128 
 * Maintain an essay length between **200 and 350 words**.
 * Do not use conversational slang, contractions (use *do not* instead of *don't*), or repetitive points.
 * Follow the 3-paragraph structure: Introduction $\rightarrow$ Key Supporting Arguments $\rightarrow$ Balanced Conclusion.
+
+---
+
+### 4. Coding Section: Top Tested Topics
+The Wipro programming round allocates **60 minutes for 2 coding questions**. The platform supports C, C++, Java, and Python.
+
+1. **Question 1 (Easy):** Basic array or string operations such as counting vowels, checking prime numbers, matrix transposition, or finding the second maximum number in an array.
+2. **Question 2 (Medium):** Involves hashing, string manipulation, or two-pointer logic such as checking anagrams, removing duplicate elements in $O(n)$ time, or merging sorted arrays.
+
+\`\`\`python
+# Classic Wipro Pattern: Finding element with highest frequency
+def most_frequent_element(arr):
+    freq = {}
+    max_count = 0
+    res = arr[0]
+    for num in arr:
+        freq[num] = freq.get(num, 0) + 1
+        if freq[num] > max_count:
+            max_count = freq[num]
+            res = num
+    return res
+\`\`\`
+
+---
+
+### 5. Technical & HR Interview Questions
+Candidates clearing the online assessment advance to the combined Technical + HR interview:
+* **Core CS & OOP:** Explain the four pillars of Object-Oriented Programming with real-world examples. What is the difference between Method Overloading and Method Overriding?
+* **DBMS & SQL:** Write an SQL query to fetch the 2nd highest salary from an Employee table. Explain Primary Key vs Unique Key.
+* **Project Discussion:** Be prepared to draw your college major project architecture on screen and justify your tech stack choices.
+* **HR Essentials:** Are you willing to relocate to any Wipro development center in India? Are you comfortable working in rotating shift patterns?
     `,
   },
   {
@@ -1057,6 +1088,43 @@ The assessment consists of **3 intense algorithmic problems** with a duration of
 * **Question 3 (Hard):** Advanced Dynamic Programming (Bitmask / Trees), Segment Trees, or Game Theory.
 
 To secure an interview for SP (₹9.5 LPA), candidates typically need to solve at least **2 full questions with 100% test cases passing**.
+
+---
+
+### 3. Advanced Algorithmic Patterns
+For the Specialist Programmer and DSE tracks, simple brute force solutions will result in **Time Limit Exceeded (TLE)** errors due to constraints up to $N = 10^5$. Focus on:
+1. **Dynamic Programming:** 0/1 Knapsack variations, Longest Increasing Subsequence (LIS in $O(n \log n)$), and Matrix Chain Multiplication.
+2. **Graph Algorithms:** Shortest path algorithms (Dijkstra, Bellman-Ford), Disjoint Set Union (DSU / Kruskal's for Minimum Spanning Trees).
+3. **Prefix Sums & Sliding Window:** Subarray sum equals $K$, longest substring with unique characters.
+
+\`\`\`java
+// Typical Infosys DSE problem: Subarray Sum Equals K (O(n) with HashMap)
+import java.util.HashMap;
+
+public class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0, sum = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for (int num : nums) {
+            sum += num;
+            if (map.containsKey(sum - k)) {
+                count += map.get(sum - k);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return count;
+    }
+}
+\`\`\`
+
+---
+
+### 4. System Design & Technical Interview
+The interview for DSE and SP cadres is significantly more rigorous than the standard Systems Engineer round:
+* **Live Coding on Editor:** The interviewer will give you an unsolved algorithmic challenge and ask you to explain your thought process while coding in real time.
+* **System Design Fundamentals:** Basic high-level architecture questions such as designing a URL Shortener (TinyURL) or an in-memory Key-Value cache.
+* **Database & Concurrency:** Explain indexing structures (B-Trees), ACID transactions, thread safety, and REST API idempotency.
     `,
   },
   {
@@ -1095,6 +1163,32 @@ Cognizant recruits through three progressive bands:
 * **Analytical Reasoning (25 questions, 25 mins):** Coding-decoding, blood relations, seating arrangement, syllogisms.
 * **English Comprehension (20 questions, 20 mins):** Reading comprehension, sentence correction, and contextual vocabulary.
 * **Pseudocode & Technical MCQ:** 30 questions on nested loops, recursion tree outputs, and bitwise operators.
+
+---
+
+### 3. Cracking the Pseudocode Round
+The Pseudocode round is the primary elimination gate for Cognizant GenC. Candidates must predict the exact output of code snippets in C/C++/Java syntax:
+* **Bitwise Operators:** Questions heavily test XOR (\`^\`), left shift (\`<<\`), and right shift (\`>>\`).
+* **Recursion Stack:** Trace recursive function calls by drawing a call tree on paper to avoid off-by-one errors.
+* **Nested Loops & Scoping:** Watch out for local variable shadowing inside nested \`for\` and \`while\` loops.
+
+\`\`\`c
+// Classic Cognizant Pseudocode Pattern: Bitwise & Loop
+int a = 12, b = 25;
+a = a ^ b;
+b = a ^ b;
+a = a ^ b;
+// a and b values are swapped: a = 25, b = 12
+\`\`\`
+
+---
+
+### 4. Technical & HR Interview Questions
+Once shortlisted, candidates face a 30-45 minute technical interview:
+* **Data Structures:** Explain Singly Linked List vs Doubly Linked List. How does a Stack differ from a Queue?
+* **Web Basics:** What happens under the hood when you type a URL into a browser? Difference between GET and POST HTTP methods.
+* **Database Queries:** Write an SQL query to count the number of employees in each department using \`GROUP BY\` and \`HAVING\`.
+* **Behavioral & HR:** Describe a challenge you overcame in your final year project. How do you handle tight deadlines?
     `,
   },
   {
