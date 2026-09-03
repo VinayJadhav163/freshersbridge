@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Accenture Purple Chevron > -->
+  <path d="M 52 35 L 68 49 L 52 63 L 45 56 L 54 49 L 45 42 Z" fill="#A100FF"/>
+  <text x="60" y="86" fill="#000000" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="16" letter-spacing="-0.5" text-anchor="middle">accenture</text>
+</svg>

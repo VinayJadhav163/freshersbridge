@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { MapPin, Briefcase } from 'lucide-react';
 import { Job } from '@/types';
 import { formatDate } from '@/lib/utils';
+import { getCompanyLogo } from '@/lib/companiesData';
 
 interface JobCardProps {
   job: Job;
@@ -36,6 +37,7 @@ export default function JobCard({ job }: JobCardProps) {
 
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
   const salaryText = formatSalary(job.salary);
+  const resolvedLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
 
   return (
     <div
@@ -68,10 +70,10 @@ export default function JobCard({ job }: JobCardProps) {
           </div>
 
           {/* Right Logo Avatar */}
-          {job.company_logo && job.company_logo.trim() ? (
+          {resolvedLogo ? (
             <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e7e7f1] dark:border-slate-700 bg-white p-1 shadow-xs">
               <img
-                src={job.company_logo.trim()}
+                src={resolvedLogo}
                 alt={job.company}
                 loading="lazy"
                 decoding="async"

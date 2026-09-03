@@ -53,14 +53,24 @@ export default function CompaniesPage() {
             className="group flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-sm hover:border-indigo-500 hover:shadow-md transition-all space-y-5"
           >
             <div className="space-y-4">
-              {/* Header Badge */}
+              {/* Header Badge with Original Logo */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-black text-lg">
-                    {company.shortName.charAt(0)}
-                  </div>
+                  {company.logo ? (
+                    <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 dark:border-slate-800 p-1.5 shadow-2xs flex items-center justify-center shrink-0">
+                      <img
+                        src={company.logo}
+                        alt={`${company.name} Logo`}
+                        className="h-full w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 font-black text-lg shrink-0">
+                      {company.shortName.charAt(0)}
+                    </div>
+                  )}
                   <div>
-                    <h2 className="text-lg font-bold text-foreground group-hover:text-indigo-600 transition-colors">
+                    <h2 className="text-base sm:text-lg font-bold text-foreground group-hover:text-[#275df5] transition-colors">
                       {company.name}
                     </h2>
                     <p className="text-xs text-muted-foreground">{company.category}</p>
@@ -73,14 +83,14 @@ export default function CompaniesPage() {
                 <div>
                   <span className="text-muted-foreground block text-[11px] font-medium">Salary Range</span>
                   <span className="font-bold text-foreground flex items-center gap-1 mt-0.5">
-                    <IndianRupee className="h-3.5 w-3.5 text-indigo-600" />
+                    <IndianRupee className="h-3.5 w-3.5 text-[#275df5]" />
                     {company.salaryRange.split('-')[0].trim()} - {company.salaryRange.split('-')[1]?.trim() || ''}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px] font-medium">HQ Location</span>
                   <span className="font-medium text-foreground flex items-center gap-1 mt-0.5 truncate">
-                    <MapPin className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
+                    <MapPin className="h-3.5 w-3.5 text-[#275df5] shrink-0" />
                     {company.headquarters.split(',')[0]}
                   </span>
                 </div>
@@ -109,7 +119,7 @@ export default function CompaniesPage() {
               <Link
                 href={`/companies/${company.slug}`}
                 prefetch={true}
-                className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-500 transition-all shadow-xs group-hover:gap-2"
+                className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg bg-[#275df5] text-white font-bold text-xs hover:bg-[#1f4cd0] transition-all shadow-xs group-hover:gap-2"
               >
                 <span>View {company.shortName} Jobs & Syllabus</span>
                 <ArrowRight className="h-3.5 w-3.5" />

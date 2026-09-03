@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <g fill="#052FAD" transform="translate(18, 42)">
+    <!-- IBM classic 8-bar inspired lettering -->
+    <path d="M 5 0 L 25 0 L 25 6 L 5 6 Z M 5 10 L 25 10 L 25 16 L 5 16 Z M 5 20 L 25 20 L 25 26 L 5 26 Z M 5 30 L 25 30 L 25 36 L 5 36 Z"/>
+    <path d="M 32 0 L 52 0 L 52 6 L 32 6 Z M 32 10 L 52 10 L 52 16 L 32 16 Z M 32 20 L 52 20 L 52 26 L 32 26 Z M 32 30 L 52 30 L 52 36 L 32 36 Z"/>
+    <path d="M 59 0 L 79 0 L 79 6 L 59 6 Z M 59 10 L 79 10 L 79 16 L 59 16 Z M 59 20 L 79 20 L 79 26 L 59 26 Z M 59 30 L 79 30 L 79 36 L 59 36 Z"/>
+  </g>
+  <text x="60" y="96" fill="#052FAD" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="16" letter-spacing="3" text-anchor="middle">IBM</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Multi-color concentric ring of dots -->
+  <g transform="translate(60, 48)">
+    <circle cx="0" cy="-18" r="4.5" fill="#E03C31"/>
+    <circle cx="13" cy="-13" r="4.5" fill="#FFB81C"/>
+    <circle cx="18" cy="0" r="4.5" fill="#009E49"/>
+    <circle cx="13" cy="13" r="4.5" fill="#0072CE"/>
+    <circle cx="0" cy="18" r="4.5" fill="#582C83"/>
+    <circle cx="-13" cy="13" r="4.5" fill="#0072CE"/>
+    <circle cx="-18" cy="0" r="4.5" fill="#009E49"/>
+    <circle cx="-13" cy="-13" r="4.5" fill="#FFB81C"/>
+    <!-- Inner dots -->
+    <circle cx="0" cy="-8" r="3" fill="#E03C31"/>
+    <circle cx="8" cy="0" r="3" fill="#009E49"/>
+    <circle cx="0" cy="8" r="3" fill="#582C83"/>
+    <circle cx="-8" cy="0" r="3" fill="#0072CE"/>
+  </g>
+  <text x="60" y="94" fill="#2D2926" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="16" letter-spacing="1" text-anchor="middle">wipro</text>
+</svg>

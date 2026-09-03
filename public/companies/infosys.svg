@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Infosys Corporate Blue Wordmark representation -->
+  <g fill="#007CC3">
+    <!-- i -->
+    <circle cx="24" cy="46" r="3.8"/>
+    <rect x="20.5" y="54" width="7" height="24" rx="3"/>
+    <!-- n -->
+    <path d="M 33 54 L 39.5 54 L 39.5 58 C 41.5 55 45 53.5 49 53.5 C 55 53.5 58 57 58 63 L 58 78 L 51.5 78 L 51.5 64.5 C 51.5 60.5 49.5 58.5 46.5 58.5 C 43 58.5 40 60.5 40 65 L 40 78 L 33 78 Z"/>
+    <!-- f -->
+    <path d="M 67 50 C 65 50 63.5 51 63 53 L 63 54 L 68 54 L 68 59 L 63 59 L 63 78 L 57 78 L 57 59 L 53 59 L 53 54 L 57 54 L 57 51 C 57 45.5 61 43.5 67 44 Z"/>
+    <!-- o -->
+    <path d="M 78 53.5 C 85.5 53.5 91 59 91 66 C 91 73 85.5 78.5 78 78.5 C 70.5 78.5 65 73 65 66 C 65 59 70.5 53.5 78 53.5 Z M 78 59 C 74 59 71.5 62 71.5 66 C 71.5 70 74 73 78 73 C 82 73 84.5 70 84.5 66 C 84.5 62 82 59 78 59 Z"/>
+  </g>
+  <text x="60" y="96" fill="#007CC3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="13" letter-spacing="1" text-anchor="middle">Infosys</text>
+</svg>

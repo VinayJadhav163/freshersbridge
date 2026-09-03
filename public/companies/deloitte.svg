@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#000000"/>
+  <text x="56" y="68" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="20" letter-spacing="-0.5" text-anchor="middle">Deloitte</text>
+  <circle cx="98" cy="66" r="4" fill="#86BC25"/>
+</svg>

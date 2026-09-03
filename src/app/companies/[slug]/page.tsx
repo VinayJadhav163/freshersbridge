@@ -167,29 +167,39 @@ export default async function CompanyDetailPage({ params }: Props) {
       </div>
 
       {/* Hero Header Card */}
-      <div className="rounded-2xl border border-border bg-card p-6 sm:p-10 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex items-start gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-black text-2xl shrink-0">
-              {company.shortName.charAt(0)}
-            </div>
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/10 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-10 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+            {company.logo ? (
+              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 p-2 shadow-xs flex items-center justify-center shrink-0">
+                <img
+                  src={company.logo}
+                  alt={`${company.name} Logo`}
+                  className="h-full w-full object-contain rounded-xl"
+                />
+              </div>
+            ) : (
+              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 font-black text-2xl shrink-0">
+                {company.shortName.charAt(0)}
+              </div>
+            )}
+            <div className="space-y-1.5 min-w-0">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
                 <CheckCircle2 className="h-3 w-3" /> Top Fresher Recruiter
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-foreground tracking-tight break-words">
                 {company.name} Jobs for Freshers 2026
               </h1>
-              <p className="text-sm text-muted-foreground">{company.category} • HQ: {company.headquarters}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{company.category} • HQ: {company.headquarters}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto pt-1 sm:pt-0">
             <a
               href={company.careersUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border bg-background text-xs font-bold text-foreground hover:bg-accent transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-background text-xs font-bold text-foreground hover:bg-accent transition-colors shadow-2xs"
             >
               <span>Official Careers Portal</span>
               <ExternalLink className="h-3.5 w-3.5" />
@@ -198,9 +208,9 @@ export default async function CompanyDetailPage({ params }: Props) {
         </div>
 
         {/* Quick Highlights Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-border text-sm">
           <div className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border/60">
-            <IndianRupee className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
+            <IndianRupee className="h-5 w-5 text-[#275df5] shrink-0 mt-0.5" />
             <div>
               <p className="text-xs text-muted-foreground font-medium">Fresher Package Range</p>
               <p className="text-sm font-bold text-foreground">{company.salaryRange}</p>
@@ -208,7 +218,7 @@ export default async function CompanyDetailPage({ params }: Props) {
           </div>
 
           <div className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border/60">
-            <GraduationCap className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
+            <GraduationCap className="h-5 w-5 text-[#275df5] shrink-0 mt-0.5" />
             <div>
               <p className="text-xs text-muted-foreground font-medium">Eligible Batches</p>
               <p className="text-sm font-bold text-foreground">{company.eligibleBatches.join(', ')} Passouts</p>
@@ -216,7 +226,7 @@ export default async function CompanyDetailPage({ params }: Props) {
           </div>
 
           <div className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border/60">
-            <Briefcase className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
+            <Briefcase className="h-5 w-5 text-[#275df5] shrink-0 mt-0.5" />
             <div>
               <p className="text-xs text-muted-foreground font-medium">Degree Criteria</p>
               <p className="text-xs font-semibold text-foreground line-clamp-2">{company.eligibility.split('(')[0].trim()}</p>
@@ -233,12 +243,12 @@ export default async function CompanyDetailPage({ params }: Props) {
           
           {/* Active Job Openings Section */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-indigo-600" />
-                Latest {company.shortName} Off-Campus Drives & Jobs
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
+                <Briefcase className="h-5 w-5 text-[#275df5] shrink-0" />
+                <span>Latest {company.shortName} Off-Campus Drives & Jobs</span>
               </h2>
-              <span className="text-xs font-semibold text-muted-foreground">
+              <span className="text-xs font-semibold text-muted-foreground shrink-0 self-start sm:self-auto">
                 {jobs.length} Opportunities Found
               </span>
             </div>
@@ -258,7 +268,7 @@ export default async function CompanyDetailPage({ params }: Props) {
                 </p>
                 <Link
                   href="/jobs"
-                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-500 transition-colors"
+                  className="inline-flex items-center justify-center rounded-lg bg-[#275df5] px-4 py-2 text-xs font-bold text-white hover:bg-[#1f4cd0] transition-colors"
                 >
                   Browse Other Active Drives
                 </Link>

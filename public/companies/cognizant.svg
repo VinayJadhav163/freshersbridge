@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Cognizant Stylized C Chevron Emblem -->
+  <g transform="translate(60, 48)">
+    <path d="M -15 -18 C 5 -25 20 -12 20 0 C 20 12 5 25 -15 18 C -22 14 -26 6 -26 0 C -26 -6 -22 -14 -15 -18 Z" fill="none" stroke="#0033A0" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="16" cy="0" r="5" fill="#00A3E0"/>
+  </g>
+  <text x="60" y="93" fill="#0033A0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="14" letter-spacing="0.5" text-anchor="middle">cognizant</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Capgemini Ace of Spades Symbol -->
+  <g transform="translate(60, 48)">
+    <path d="M 0 -22 C -6 -14 -18 -4 -18 7 C -18 16 -10 20 -2 18 C -3 21 -4 24 -7 27 L 7 27 C 4 24 3 21 2 18 C 10 20 18 16 18 7 C 18 -4 6 -14 0 -22 Z" fill="#0070AD"/>
+  </g>
+  <text x="60" y="94" fill="#0070AD" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="13" letter-spacing="0.5" text-anchor="middle">Capgemini</text>
+</svg>

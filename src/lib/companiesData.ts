@@ -2,6 +2,7 @@ export interface CompanyProfile {
   slug: string;
   name: string;
   shortName: string;
+  logo: string;
   category: string;
   headquarters: string;
   website: string;
@@ -28,6 +29,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'tcs',
     name: 'Tata Consultancy Services',
     shortName: 'TCS',
+    logo: '/companies/tcs.svg',
     category: 'IT Services & Consulting',
     headquarters: 'Mumbai, Maharashtra',
     website: 'https://www.tcs.com',
@@ -80,6 +82,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'infosys',
     name: 'Infosys Limited',
     shortName: 'Infosys',
+    logo: '/companies/infosys.svg',
     category: 'IT Services & Digital Transformation',
     headquarters: 'Bengaluru, Karnataka',
     website: 'https://www.infosys.com',
@@ -128,6 +131,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'accenture',
     name: 'Accenture',
     shortName: 'Accenture',
+    logo: '/companies/accenture.svg',
     category: 'Professional Services & Consulting',
     headquarters: 'Dublin, Ireland (Global) / Bengaluru (India)',
     website: 'https://www.accenture.com',
@@ -176,6 +180,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'wipro',
     name: 'Wipro Limited',
     shortName: 'Wipro',
+    logo: '/companies/wipro.svg',
     category: 'Information Technology & Consulting',
     headquarters: 'Bengaluru, Karnataka',
     website: 'https://www.wipro.com',
@@ -224,6 +229,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'cognizant',
     name: 'Cognizant Technology Solutions',
     shortName: 'Cognizant',
+    logo: '/companies/cognizant.svg',
     category: 'IT Services & Digital Engineering',
     headquarters: 'Teaneck, New Jersey (Global) / Chennai (India)',
     website: 'https://www.cognizant.com',
@@ -268,6 +274,7 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     slug: 'capgemini',
     name: 'Capgemini',
     shortName: 'Capgemini',
+    logo: '/companies/capgemini.svg',
     category: 'IT Consulting & Engineering Services',
     headquarters: 'Paris, France / Mumbai (India HQ)',
     website: 'https://www.capgemini.com',
@@ -311,4 +318,30 @@ export function getCompanyBySlug(slug: string): CompanyProfile | undefined {
 
 export function getAllCompanySlugs(): string[] {
   return COMPANIES_DATA.map((c) => c.slug);
+}
+
+// Global helper to find company logo by name, keyword, or slug
+export function getCompanyLogo(companyNameOrSlug: string): string | null {
+  if (!companyNameOrSlug) return null;
+  const lower = companyNameOrSlug.toLowerCase().trim();
+
+  // Match in defined database
+  const matched = COMPANIES_DATA.find(
+    (c) =>
+      c.slug === lower ||
+      c.shortName.toLowerCase() === lower ||
+      c.name.toLowerCase() === lower ||
+      lower.includes(c.shortName.toLowerCase()) ||
+      lower.includes(c.name.toLowerCase())
+  );
+  if (matched) return matched.logo;
+
+  // Additional top brands
+  if (lower.includes('ibm')) return '/companies/ibm.svg';
+  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
+  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
+  if (lower.includes('google')) return '/companies/google.svg';
+  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
+
+  return null;
 }
