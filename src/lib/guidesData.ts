@@ -1120,23 +1120,357 @@ Cognizant recruits through three progressive bands:
       { id: 'coding-challenges', title: '4. Top 10 Python Coding Problems for Freshers' },
     ],
     content: `
-### 1. Python Core: Mutable vs Immutable & Memory
+### 1. Python Core: Mutable vs Immutable, Memory & Data Structures
 **Q1. What is the difference between mutable and immutable data types in Python?**
-* **Mutable:** Objects whose values can be altered in place without creating a new object in memory (e.g. \`list\`, \`dict\`, \`set\`).
-* **Immutable:** Objects whose state cannot be changed once created (e.g. \`int\`, \`float\`, \`str\`, \`tuple\`, \`frozenset\`). Modifying an immutable type creates an entirely new object with a distinct \`id()\`.
+* **Mutable:** Objects whose values can be altered in place without creating a new object in memory (e.g. \`list\`, \`dict\`, \`set\`, \`bytearray\`).
+* **Immutable:** Objects whose state cannot be changed once created (e.g. \`int\`, \`float\`, \`str\`, \`tuple\`, \`frozenset\`, \`bytes\`). Any modification creates an entirely new object in memory with a distinct \`id()\`.
+
+**Q2. How is memory managed in Python?**
+Python uses a private heap containing all objects and data structures. The runtime handles memory allocation through:
+1. **Reference Counting:** Every object tracks how many references point to it. When the count hits zero, the memory is deallocated immediately.
+2. **Cyclic Garbage Collector (gc module):** Periodically detects and clears cyclical references (e.g., object A referencing B and B referencing A).
+
+**Q3. What is the difference between \`is\` and \`==\` in Python?**
+* \`==\` checks for **value equality** (whether two objects contain the same data).
+* \`is\` checks for **identity** (whether two variables point to the exact same memory address in RAM).
+
+**Q4. What is the difference between a Shallow Copy and a Deep Copy?**
+* **Shallow Copy (\`copy.copy\`):** Copies the outer object but inserts references to the child objects within the original. Changes to nested objects affect both.
+* **Deep Copy (\`copy.deepcopy\`):** Recursively clones both the outer object and all nested child objects independently.
+
+**Q5. Why are dictionaries so fast in Python?**
+Python dictionaries are implemented as hash tables with sparse array indexing. Looking up, inserting, or deleting keys has an average time complexity of $O(1)$.
+
+**Q6. What is the difference between \`list.append()\` and \`list.extend()\`?**
+* \`append(x)\` adds \`x\` as a single element to the end of the list.
+* \`extend(iterable)\` iterates over the given iterable and appends each element individually.
+
+**Q7. What is \`*args\` and \`**kwargs\` in Python function definitions?**
+* \`*args\` allows a function to accept any number of positional arguments as a \`tuple\`.
+* \`**kwargs\` allows a function to accept any number of keyword (named) arguments as a \`dict\`.
+
+**Q8. What is the Global Interpreter Lock (GIL)?**
+The GIL is a mutex lock in CPython that ensures only one native OS thread executes Python bytecode at any given moment. For CPU-bound operations, developers use multiprocessing instead of multithreading to leverage multiple CPU cores.
+
+**Q9. What are Lambda functions and when should they be used?**
+Lambda functions are small, anonymous single-line functions created using the \`lambda\` keyword (e.g. \`square = lambda x: x ** 2\`). They are most useful as transient arguments inside \`map()\`, \`filter()\`, or \`sorted(key=...)\`.
+
+**Q10. What is the difference between \`break\`, \`continue\`, and \`pass\`?**
+* \`break\`: Immediately terminates the nearest enclosing loop.
+* \`continue\`: Skips the rest of the current iteration and jumps to the next loop iteration.
+* \`pass\`: A null statement used as a syntactic placeholder where code is required but no action is needed.
+
+**Q11. What is the difference between \`range()\` and \`enumerate()\`?**
+\`range(n)\` produces a sequence of numbers from 0 to $n-1$, while \`enumerate(iterable)\` yields a tuple of \`(index, value)\` on each iteration.
+
+**Q12. What are Python docstrings and how do you access them?**
+A docstring is a string literal placed as the first statement in a function, class, or module. It is accessible at runtime via the \`__doc__\` attribute or \`help()\`.
 
 ---
 
-### 2. Decorators, Generators & Comprehensions
-**Q2. What is a Generator in Python and why is it memory efficient?**
+### 2. Decorators, Generators, Iterators & Comprehensions
+**Q13. What is a Generator in Python and why is it memory efficient?**
 A generator is a function that produces a sequence of values on the fly using the \`yield\` keyword instead of \`return\`. Unlike lists that store all elements in RAM simultaneously, generators compute items one at a time (*lazy evaluation*).
 
 \`\`\`python
-def fibonacci(n):
+def fibonacci_gen(limit):
     a, b = 0, 1
-    for _ in range(n):
+    while a < limit:
         yield a
         a, b = b, a + b
+\`\`\`
+
+**Q14. What is a Decorator in Python and how do you write one?**
+A decorator is a callable that takes another function as input, extends or modifies its behavior without modifying its source code, and returns the modified function.
+
+\`\`\`python
+import time
+
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time() - start:.4f}s")
+        return result
+    return wrapper
+
+@timing_decorator
+def calculate_squares(n):
+    return [x**2 for x in range(n)]
+\`\`\`
+
+**Q15. What is the difference between an Iterable and an Iterator?**
+* **Iterable:** Any object capable of returning its members one at a time (implements \`__iter__()\`, e.g. \`list\`, \`str\`, \`tuple\`).
+* **Iterator:** The stateful object that performs the actual traversal by implementing \`__next__()\`. When no elements remain, it raises \`StopIteration\`.
+
+**Q16. What are List, Dict, and Set Comprehensions?**
+Syntactic shortcuts to transform iterables into new collections:
+* **List:** \`[x * 2 for x in nums if x % 2 == 0]\`
+* **Dict:** \`{word: len(word) for word in words}\`
+* **Set:** \`{x % 10 for x in nums}\`
+
+**Q17. What does the \`zip()\` built-in function do?**
+\`zip(*iterables)\` pairs corresponding elements from multiple iterables into tuples until the shortest iterable is exhausted.
+
+**Q18. What is the purpose of \`any()\` and \`all()\`?**
+* \`all(iterable)\`: Returns \`True\` if all elements evaluate to true (truthy).
+* \`any(iterable)\`: Returns \`True\` if at least one element evaluates to true.
+
+**Q19. How do \`map()\` and \`filter()\` work?**
+* \`map(func, iterable)\`: Applies \`func\` to every item in \`iterable\` and returns an iterator.
+* \`filter(func, iterable)\`: Returns an iterator yielding only items for which \`func(item)\` returns \`True\`.
+
+**Q20. What is the purpose of the \`itertools\` module?**
+The \`itertools\` standard library module provides memory-efficient looping tools such as \`count()\`, \`cycle()\`, \`chain()\`, \`combinations()\`, and \`permutations()\`.
+
+**Q21. How do you handle exceptions in Python?**
+Using a \`try ... except ... else ... finally\` construct:
+* \`try\`: Code that may raise an error.
+* \`except ExceptionType as e\`: Handles specific errors.
+* \`else\`: Executes only if no exception occurred.
+* \`finally\`: Executes unconditionally (ideal for releasing resources/closing files).
+
+**Q22. What is a Context Manager and the \`with\` statement?**
+Context managers guarantee cleanup of resources (like files or database connections) by implementing \`__enter__()\` and \`__exit__()\`.
+\`\`\`python
+with open("data.txt", "r") as f:
+    content = f.read()
+# File is guaranteed to close automatically even if exceptions occur
+\`\`\`
+
+**Q23. What is \`functools.lru_cache\`?**
+A decorator in the \`functools\` module that memoizes the results of expensive function calls with a Least Recently Used (LRU) caching eviction policy.
+
+**Q24. How do you serialize Python objects to JSON?**
+Using the built-in \`json\` module:
+* \`json.dumps(obj)\`: Converts Python object to JSON string.
+* \`json.loads(str)\`: Parses JSON string to Python dictionary/list.
+
+---
+
+### 3. OOP in Python: Inheritance, Dunder Methods & Polymorphism
+**Q25. What are the four core pillars of Object-Oriented Programming in Python?**
+1. **Encapsulation:** Bundling data and methods that operate on that data inside classes, restricting direct external access via private attributes (\`_protected\`, \`__private\`).
+2. **Abstraction:** Hiding complex implementation details and showing only necessary interfaces using the \`abc\` (Abstract Base Class) module.
+3. **Inheritance:** Enabling a child class to inherit fields and methods from a parent class.
+4. **Polymorphism:** Allowing different classes to define the same interface or method name with custom implementation.
+
+**Q26. What are Dunder (Magic) Methods in Python?**
+Dunder (double-underscore) methods allow custom classes to hook into Python syntax and built-in operators:
+* \`__init__(self)\`: Constructor initializing instance state.
+* \`__str__(self)\`: User-friendly string representation for \`print()\`.
+* \`__repr__(self)\`: Unambiguous developer representation.
+* \`__len__(self)\`: Invoked by \`len(obj)\`.
+* \`__getitem__(self, key)\`: Enables index access like \`obj[key]\`.
+* \`__eq__(self, other)\`: Overloads the \`==\` comparison operator.
+
+**Q27. What is the difference between Instance, Class, and Static Methods?**
+* **Instance Method:** Takes \`self\` as the first parameter; can inspect and modify instance state as well as class state.
+* **Class Method (\`@classmethod\`):** Takes \`cls\` as the first parameter; can inspect and modify class-level attributes shared across all instances.
+* **Static Method (\`@staticmethod\`):** Takes neither \`self\` nor \`cls\`; acts as an isolated utility function logically namespaced inside the class.
+
+**Q28. What is Method Resolution Order (MRO)?**
+MRO is the order in which Python searches for an attribute or method in a hierarchy of classes, especially under multiple inheritance. Python uses the **C3 Linearization algorithm**, and the order can be inspected via \`ClassName.mro()\` or \`ClassName.__mro__\`.
+
+**Q29. How does \`super()\` work in multiple inheritance?**
+\`super()\` returns a proxy object that delegates method calls to the next parent class according to the class's MRO, preventing duplicate initialization in diamond-shaped inheritance hierarchies.
+
+**Q30. What is Duck Typing?**
+A programming philosophy where an object's suitability is determined by the presence of certain methods and properties, rather than its explicit class type (*"If it walks like a duck and quacks like a duck, it's a duck"*).
+
+**Q31. How do you create an Abstract Class in Python?**
+By subclassing \`ABC\` from the \`abc\` module and annotating abstract methods with \`@abstractmethod\`:
+\`\`\`python
+from abc import ABC, abstractmethod
+
+class PaymentGateway(ABC):
+    @abstractmethod
+    def process_payment(self, amount: float) -> bool:
+        pass
+\`\`\`
+
+**Q32. What is the \`@property\` decorator?**
+It allows getter, setter, and deleter methods to be accessed like ordinary attributes while enforcing validation:
+\`\`\`python
+class Employee:
+    def __init__(self, salary):
+        self._salary = salary
+
+    @property
+    def salary(self):
+        return self._salary
+
+    @salary.setter
+    def salary(self, value):
+        if value < 0:
+            raise ValueError("Salary cannot be negative")
+        self._salary = value
+\`\`\`
+
+**Q33. What is the difference between \`__new__\` and \`__init__\`?**
+* \`__new__(cls)\`: The static method that actually creates and allocates the instance object in memory.
+* \`__init__(self)\`: The instance method that initializes the attributes of the newly created object.
+
+**Q34. How do you implement a Singleton Pattern in Python?**
+By overriding \`__new__\` to return the existing instance:
+\`\`\`python
+class Singleton:
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+\`\`\`
+
+**Q35. What is monkey patching in Python?**
+Monkey patching is dynamically modifying or extending a module, class, or function at runtime without altering the original source code.
+
+**Q36. What are Dataclasses in Python 3.7+?**
+Annotated classes using \`@dataclass\` that automatically generate boilerplate methods such as \`__init__\`, \`__repr__\`, and \`__eq__\`.
+
+---
+
+### 4. Top 14 Python Coding Problems for Freshers
+**Q37. Reverse a String without slicing.**
+\`\`\`python
+def reverse_string(s: str) -> str:
+    res = []
+    for i in range(len(s) - 1, -1, -1):
+        res.append(s[i])
+    return "".join(res)
+\`\`\`
+
+**Q38. Check if a String is a Palindrome.**
+\`\`\`python
+def is_palindrome(s: str) -> bool:
+    clean = "".join(c.lower() for c in s if c.isalnum())
+    return clean == clean[::-1]
+\`\`\`
+
+**Q39. Find the First Non-Repeating Character in a String.**
+\`\`\`python
+from collections import Counter
+
+def first_unique_char(s: str) -> str:
+    counts = Counter(s)
+    for char in s:
+        if counts[char] == 1:
+            return char
+    return ""
+\`\`\`
+
+**Q40. Two Sum Problem ($O(n)$ Solution).**
+\`\`\`python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    seen = {}
+    for i, num in enumerate(nums):
+        diff = target - num
+        if diff in seen:
+            return [seen[diff], i]
+        seen[num] = i
+    return []
+\`\`\`
+
+**Q41. Check if Two Strings are Anagrams.**
+\`\`\`python
+def is_anagram(s1: str, s2: str) -> bool:
+    return sorted(s1.lower()) == sorted(s2.lower())
+\`\`\`
+
+**Q42. Find the Second Largest Element in a List ($O(n)$).**
+\`\`\`python
+def second_largest(arr: list[int]) -> int | None:
+    first = second = float('-inf')
+    for num in arr:
+        if num > first:
+            second, first = first, num
+        elif num > second and num != first:
+            second = num
+    return second if second != float('-inf') else None
+\`\`\`
+
+**Q43. Flatten a Deeply Nested List (Recursive).**
+\`\`\`python
+def flatten(nested: list) -> list:
+    flat = []
+    for item in nested:
+        if isinstance(item, list):
+            flat.extend(flatten(item))
+        else:
+            flat.append(item)
+    return flat
+\`\`\`
+
+**Q44. Remove Duplicates from a List while Preserving Order.**
+\`\`\`python
+def remove_duplicates_ordered(arr: list) -> list:
+    return list(dict.fromkeys(arr))
+\`\`\`
+
+**Q45. Count the Frequency of Each Word in a Sentence.**
+\`\`\`python
+def word_frequencies(text: str) -> dict[str, int]:
+    words = text.lower().split()
+    return {w: words.count(w) for w in set(words)}
+\`\`\`
+
+**Q46. Find the Missing Number in an Array of $1$ to $N$.**
+\`\`\`python
+def find_missing_number(arr: list[int], n: int) -> int:
+    expected_sum = n * (n + 1) // 2
+    return expected_sum - sum(arr)
+\`\`\`
+
+**Q47. Check if a Number is Prime.**
+\`\`\`python
+def is_prime(n: int) -> bool:
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+\`\`\`
+
+**Q48. Merge Two Sorted Lists into One Sorted List.**
+\`\`\`python
+def merge_sorted_lists(l1: list[int], l2: list[int]) -> list[int]:
+    res = []
+    i = j = 0
+    while i < len(l1) and j < len(l2):
+        if l1[i] < l2[j]:
+            res.append(l1[i])
+            i += 1
+        else:
+            res.append(l2[j])
+            j += 1
+    res.extend(l1[i:])
+    res.extend(l2[j:])
+    return res
+\`\`\`
+
+**Q49. Check for Balanced Parentheses.**
+\`\`\`python
+def is_valid_parentheses(s: str) -> bool:
+    stack = []
+    brackets = {')': '(', '}': '{', ']': '['}
+    for char in s:
+        if char in brackets.values():
+            stack.append(char)
+        elif char in brackets:
+            if not stack or stack.pop() != brackets[char]:
+                return False
+    return len(stack) == 0
+\`\`\`
+
+**Q50. Find the Maximum Subarray Sum (Kadane's Algorithm - $O(n)$).**
+\`\`\`python
+def max_subarray_sum(nums: list[int]) -> int:
+    max_so_far = current_max = nums[0]
+    for num in nums[1:]:
+        current_max = max(num, current_max + num)
+        max_so_far = max(max_so_far, current_max)
+    return max_so_far
 \`\`\`
     `,
   },
