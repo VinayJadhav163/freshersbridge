@@ -970,6 +970,176 @@ Never message senior engineers with "Sir please refer me" or send your raw resum
 - **Evening (5 PM – 7 PM):** Apply to 10 verified fresh job drives on [FreshersBridge](/jobs) and send 5 personalized LinkedIn referral requests.
     `,
   },
+  {
+    id: '11',
+    slug: 'wipro-elite-nth-2026-syllabus-exam-pattern-coding-preparation',
+    title: 'Wipro Elite NTH 2026: Complete Exam Pattern, Syllabus & Coding Blueprint',
+    subtitle: 'Everything freshers need to crack Wipro Elite Project Engineer (₹3.5 LPA) and Turbo (₹6.5 LPA) off-campus hiring drives.',
+    description: 'A detailed breakdown of Wipro National Talent Hunt (NTH) test pattern, including Quantitative Aptitude, Logical Reasoning, Verbal, Essay Writing rules, and Coding problem patterns.',
+    category: 'Company Patterns',
+    readTime: '11 min read',
+    publishedAt: '2026-08-25',
+    updatedAt: '2026-09-02',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Wipro', 'Wipro NTH', 'Off-Campus', 'Aptitude', 'Freshers 2026'],
+    tableOfContents: [
+      { id: 'eligibility', title: '1. Wipro Elite Eligibility & Criteria' },
+      { id: 'exam-pattern', title: '2. 3-Stage Assessment Pattern' },
+      { id: 'essay-writing', title: '3. Written Communication (Essay) Secrets' },
+      { id: 'coding-section', title: '4. Coding Section: Top Tested Topics' },
+      { id: 'interview-prep', title: '5. Technical & HR Interview Questions' },
+    ],
+    content: `
+### 1. Wipro Elite Eligibility & Criteria
+Wipro’s National Talent Hunt (NTH) hires engineering graduates for the **Project Engineer** role with a starting package of ₹3.5 LPA (with an upgrade opportunity to Turbo at ₹6.5 LPA upon high performance).
+
+* **Qualification:** B.E. / B.Tech / 5-Year Integrated M.Tech.
+* **Eligible Branches:** All engineering streams (Circuit & Non-Circuit).
+* **Cutoff:** Minimum 60% or 6.0 CGPA in 10th, 12th, and Degree without active backlogs.
+* **Maximum Gap:** Up to 3 years permitted between 10th and Graduation.
+
+---
+
+### 2. 3-Stage Assessment Pattern
+The online assessment is hosted on the AMCAT / CoCubes platform and spans **128 minutes**:
+
+1. **Aptitude Section (48 mins):** Logical Reasoning, Quantitative Ability, and Verbal English.
+2. **Written Communication (20 mins):** Automated essay writing evaluated by AI on grammar, structure, and vocabulary.
+3. **Online Programming (60 mins):** 2 coding questions covering Arrays, Strings, Searching, and Sorting in C++, Java, or Python.
+
+---
+
+### 3. Written Communication (Essay) Secrets
+* Maintain an essay length between **200 and 350 words**.
+* Do not use conversational slang, contractions (use *do not* instead of *don't*), or repetitive points.
+* Follow the 3-paragraph structure: Introduction $\rightarrow$ Key Supporting Arguments $\rightarrow$ Balanced Conclusion.
+    `,
+  },
+  {
+    id: '12',
+    slug: 'infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide',
+    title: 'Infosys SP & DSE 2026: Specialist Programmer & DSE Hiring Guide',
+    subtitle: 'How freshers can crack the ₹9.5 LPA Specialist Programmer (SP) and ₹6.25 LPA Digital Specialist Engineer (DSE) roles.',
+    description: 'Complete guide for cracking Infosys high-package hiring through HackWithInfy and online assessments, with syllabus, algorithmic coding patterns, and interview strategies.',
+    category: 'Company Patterns',
+    readTime: '13 min read',
+    publishedAt: '2026-08-28',
+    updatedAt: '2026-09-02',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Infosys', 'Specialist Programmer', 'DSE', 'Coding', 'Freshers 2026'],
+    tableOfContents: [
+      { id: 'roles-overview', title: '1. SE vs DSE vs SP Packages & Differences' },
+      { id: 'exam-structure', title: '2. HackWithInfy & SP Exam Structure' },
+      { id: 'coding-problems', title: '3. Advanced Algorithmic Patterns' },
+      { id: 'interview-prep', title: '4. System Design & Technical Interview' },
+    ],
+    content: `
+### 1. SE vs DSE vs SP Packages & Differences
+Infosys offers three distinct tiers of entry-level engineering roles:
+* **Systems Engineer (SE):** ₹3.6 LPA – Core software maintenance and baseline technology enablement.
+* **Digital Specialist Engineer (DSE):** ₹6.25 LPA – Full-stack engineering, microservices, and cloud architectures.
+* **Specialist Programmer (SP):** ₹9.5 LPA – Elite competitive programming and systems engineering.
+
+---
+
+### 2. HackWithInfy & SP Exam Structure
+The assessment consists of **3 intense algorithmic problems** with a duration of 3 hours:
+* **Question 1 (Easy-Medium):** Greedy algorithms, Two-Pointer technique, or HashMaps.
+* **Question 2 (Medium-Hard):** Tree / Graph Traversals (BFS, DFS, Dijkstra) or Dynamic Programming on subsequences.
+* **Question 3 (Hard):** Advanced Dynamic Programming (Bitmask / Trees), Segment Trees, or Game Theory.
+
+To secure an interview for SP (₹9.5 LPA), candidates typically need to solve at least **2 full questions with 100% test cases passing**.
+    `,
+  },
+  {
+    id: '13',
+    slug: 'cognizant-genc-elevate-2026-exam-pattern-interview-blueprint',
+    title: 'Cognizant GenC & GenC Elevate 2026: Complete Selection Blueprint',
+    subtitle: 'Master the Cognizant aptitude, pseudocode, and technical interview stages for 2026 graduates.',
+    description: 'Learn how to clear Cognizant GenC (₹4.0 LPA) and GenC Elevate (₹5.0 LPA) recruitment with section-by-section breakdown, pseudocode problem sets, and interview prep.',
+    category: 'Company Patterns',
+    readTime: '10 min read',
+    publishedAt: '2026-08-30',
+    updatedAt: '2026-09-02',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Cognizant', 'GenC', 'GenC Elevate', 'Freshers 2026', 'Interview'],
+    tableOfContents: [
+      { id: 'genc-cadres', title: '1. GenC vs GenC Elevate vs GenC Next' },
+      { id: 'assessment-rounds', title: '2. Online Test Stages & Mark Distribution' },
+      { id: 'pseudocode-tips', title: '3. Cracking the Pseudocode Round' },
+      { id: 'interview-tips', title: '4. Technical & HR Interview Questions' },
+    ],
+    content: `
+### 1. GenC vs GenC Elevate vs GenC Next
+Cognizant recruits through three progressive bands:
+1. **GenC (₹4.0 LPA):** Evaluates general problem solving, analytical ability, and foundational programming.
+2. **GenC Elevate (₹4.5 - ₹5.0 LPA):** Targets students with strong hands-on skills in web development, Java/Python, and cloud basics.
+3. **GenC Next (₹6.75 - ₹9.0 LPA):** Advanced full-stack and competitive coding profile.
+
+---
+
+### 2. Online Test Stages & Mark Distribution
+* **Numerical Ability (25 questions, 25 mins):** Profit & loss, percentages, ratios, permutations, and time-speed-distance.
+* **Analytical Reasoning (25 questions, 25 mins):** Coding-decoding, blood relations, seating arrangement, syllogisms.
+* **English Comprehension (20 questions, 20 mins):** Reading comprehension, sentence correction, and contextual vocabulary.
+* **Pseudocode & Technical MCQ:** 30 questions on nested loops, recursion tree outputs, and bitwise operators.
+    `,
+  },
+  {
+    id: '14',
+    slug: 'top-50-python-interview-questions-coding-challenges-freshers-2026',
+    title: 'Top 50 Python Interview Questions & Coding Challenges for Freshers 2026',
+    subtitle: 'From core fundamentals and OOP to decorators, generators, and top 20 data structure coding problems in Python.',
+    description: 'Prepare for your entry-level Python developer interview with 50 high-frequency questions covering data types, memory management, list comprehensions, decorators, and DSA.',
+    category: 'Technical Prep',
+    readTime: '15 min read',
+    publishedAt: '2026-09-01',
+    updatedAt: '2026-09-03',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Python', 'Interview Questions', 'Coding', 'Freshers 2026', 'OOP'],
+    tableOfContents: [
+      { id: 'core-basics', title: '1. Python Core: Mutable vs Immutable & Memory' },
+      { id: 'advanced-features', title: '2. Decorators, Generators & Comprehensions' },
+      { id: 'oops-in-python', title: '3. OOP in Python: Inheritance, Dunder Methods & Polymorphism' },
+      { id: 'coding-challenges', title: '4. Top 10 Python Coding Problems for Freshers' },
+    ],
+    content: `
+### 1. Python Core: Mutable vs Immutable & Memory
+**Q1. What is the difference between mutable and immutable data types in Python?**
+* **Mutable:** Objects whose values can be altered in place without creating a new object in memory (e.g. \`list\`, \`dict\`, \`set\`).
+* **Immutable:** Objects whose state cannot be changed once created (e.g. \`int\`, \`float\`, \`str\`, \`tuple\`, \`frozenset\`). Modifying an immutable type creates an entirely new object with a distinct \`id()\`.
+
+---
+
+### 2. Decorators, Generators & Comprehensions
+**Q2. What is a Generator in Python and why is it memory efficient?**
+A generator is a function that produces a sequence of values on the fly using the \`yield\` keyword instead of \`return\`. Unlike lists that store all elements in RAM simultaneously, generators compute items one at a time (*lazy evaluation*).
+
+\`\`\`python
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+\`\`\`
+    `,
+  },
 ];
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {

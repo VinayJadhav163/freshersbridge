@@ -18,6 +18,7 @@ export default function Navbar() {
     { name: 'Home', href: '/' },
     { name: 'Find Jobs', href: '/jobs' },
     { name: 'Internships', href: '/internships' },
+    { name: 'Companies', href: '/companies' },
     { name: 'Career Guides', href: '/guides' },
     { name: 'Career Tools', href: '/career-tools' },
     { name: 'Contact Us', href: '/contact' },

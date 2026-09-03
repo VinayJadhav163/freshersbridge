@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
+import { COMPANIES_DATA } from '@/lib/companiesData';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
 
@@ -23,6 +24,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/internships`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/companies`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
@@ -77,6 +84,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // Company profile routes
+  const companyRoutes: MetadataRoute.Sitemap = COMPANIES_DATA.map((company) => ({
+    url: `${baseUrl}/companies/${company.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.85,
+  }));
+
   // Career guide static routes from editorial data
   const guideRoutes: MetadataRoute.Sitemap = GUIDE_ARTICLES.map((guide) => ({
     url: `${baseUrl}/guides/${guide.slug}`,
@@ -100,11 +115,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-      return [...staticRoutes, ...guideRoutes, ...dynamicRoutes];
+      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicRoutes];
     }
   } catch (err) {
     console.error('Failed to generate sitemap dynamic routes:', err);
   }
 
-  return [...staticRoutes, ...guideRoutes];
+  return [...staticRoutes, ...companyRoutes, ...guideRoutes];
 }
