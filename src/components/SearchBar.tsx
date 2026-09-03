@@ -57,33 +57,33 @@ export default function SearchBar({
   return (
     <form
       onSubmit={handleSearch}
-      className="w-full max-w-full overflow-hidden rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs p-1.5 flex flex-col md:flex-row gap-1.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#275df5]/15 focus-within:border-[#275df5]"
+      className="w-full max-w-full overflow-hidden rounded-xl border border-border bg-card shadow-md p-2 flex flex-col md:flex-row gap-2 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#275df5]/20 focus-within:border-[#275df5]/50"
     >
       {/* Title/Keyword Input */}
       <div className="flex-1 flex items-center gap-2 px-3 py-1.5 min-w-0">
-        <Search className="h-4.5 w-4.5 text-slate-400 shrink-0" />
+        <Search className="h-5 w-5 text-[#275df5] shrink-0" />
         <input
           ref={queryInputRef}
           type="text"
           placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full bg-transparent border-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-xs sm:text-sm font-medium"
+          className="w-full bg-transparent border-0 outline-none text-foreground placeholder:text-muted-foreground/75 text-sm font-medium"
         />
       </div>
 
       {/* Vertical Divider */}
-      <div className="hidden md:block w-px bg-slate-200 dark:bg-slate-800 my-1.5" />
+      <div className="hidden md:block w-px bg-border my-2" />
 
       {/* Location Input */}
       <div className="flex-1 flex items-center gap-2 px-3 py-1.5 min-w-0">
-        <MapPin className="h-4.5 w-4.5 text-slate-400 shrink-0" />
+        <MapPin className="h-5 w-5 text-[#275df5] shrink-0" />
         <input
           type="text"
           placeholder="City or 'Remote'..."
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="w-full bg-transparent border-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-xs sm:text-sm font-medium"
+          className="w-full bg-transparent border-0 outline-none text-foreground placeholder:text-muted-foreground/75 text-sm font-medium"
         />
       </div>
 
@@ -91,10 +91,10 @@ export default function SearchBar({
       <button
         type="submit"
         disabled={isPending}
-        className={`rounded-lg px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs transition-all shrink-0 flex items-center justify-center gap-2 cursor-pointer ${
+        className={`rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 shrink-0 flex items-center justify-center gap-2 cursor-pointer ${
           isPending
             ? 'bg-[#1f4cd0] opacity-90 cursor-wait'
-            : 'bg-[#275df5] hover:bg-[#1f4cd0] active:scale-[0.99]'
+            : 'bg-[#275df5] hover:bg-[#1f4cd0] active:scale-[0.98]'
         } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#275df5]`}
       >
         {isPending ? (
