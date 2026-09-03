@@ -87,17 +87,23 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col w-full pb-16">
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
+      {/* 1. Hero Section with Minimal Modern Gradient */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
+        {/* Minimal soft ambient glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
+
         <div className="relative mx-auto max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 dark:border-blue-900/50 bg-white/90 dark:bg-slate-900/90 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs backdrop-blur-xs">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
             <span>Verified Off-Campus Drives & Tech Hiring 2026</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Your Bridge from College <br />
-            To Your <span className="text-[#275df5] dark:text-[#3b82f6]">First Tech Job</span>
+            To Your{' '}
+            <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
+              First Tech Job
+            </span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium">

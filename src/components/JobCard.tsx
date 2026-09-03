@@ -10,11 +10,12 @@ interface JobCardProps {
   job: Job;
 }
 
-function formatSalary(salary?: string | null): string {
-  if (!salary) return 'Apply';
+function getValidSalary(salary?: string | null): string | null {
+  if (!salary) return null;
   const s = salary.trim();
   const lower = s.toLowerCase();
   if (
+    lower === 'apply' ||
     lower.includes('not disclosed') ||
     lower.includes('as per industry') ||
     lower.includes('industry standard') ||
@@ -24,7 +25,7 @@ function formatSalary(salary?: string | null): string {
     lower === 'na' ||
     lower === 'tbd'
   ) {
-    return 'Apply';
+    return null;
   }
   return s;
 }
@@ -36,7 +37,7 @@ export default function JobCard({ job }: JobCardProps) {
     /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title);
 
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
-  const salaryText = formatSalary(job.salary);
+  const packageText = getValidSalary(job.salary);
   const resolvedLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
 
   return (
@@ -109,23 +110,27 @@ export default function JobCard({ job }: JobCardProps) {
         )}
       </div>
 
-      {/* Footer Row: Date, Salary & Apply Now */}
+      {/* Footer Row: Date, Package (if present) & Apply Button */}
       <div className="mt-3 pt-2.5 border-t border-[#f7f7f9] dark:border-slate-800/80 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2 text-xs font-semibold">
           <span className="text-[#979ec2] font-medium">
             {formatDate(job.created_at)}
           </span>
-          <span className="text-slate-300 dark:text-slate-700">•</span>
-          <span className="text-[#275df5] font-bold">
-            {salaryText}
-          </span>
+          {packageText && (
+            <>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                {packageText}
+              </span>
+            </>
+          )}
         </div>
 
         <Link
           href={detailUrl}
-          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-3.5 py-1 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20"
+          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-4 py-1 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20"
         >
-          Apply Now
+          Apply
         </Link>
       </div>
     </div>
