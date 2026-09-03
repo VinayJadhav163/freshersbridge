@@ -760,19 +760,27 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     const chunkSize = 8;
     const chunks: { index: number; text: string; jobCount: number; jobs: Job[] }[] = [];
 
-    const commonHeader = `📢 FRESHERSBRIDGE | DAILY FRESHER JOB ALERTS
-📢 Entry-Level Jobs & Internships
-❌ Applying everywhere but not getting shortlisted?
-📄 Your resume might not be ATS-friendly.
-🎯 Tailor your resume. Improve your chances.
-👉 Check your resume with our ATS Resume Scanner:
-https://freshersbridge.in/career-tools
+    const getSlotLabel = () => {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const ist = new Date(utc + (3600000 * 5.5));
+      const hour = ist.getHours();
+      if (hour >= 5 && hour < 12) return "🌅 MORNING FRESHERS DIGEST (Top 8 Curated Drop)";
+      if (hour >= 12 && hour < 17) return "☀️ AFTERNOON FRESHERS DIGEST (Top 8 Curated Drop)";
+      return "🌙 EVENING FRESHERS DIGEST (Top 8 Curated Drop)";
+    };
 
-🔥 Today's Fresh Opportunities:`;
+    const commonHeaderTop = `*📌Great Opportunities open for freshers candidates*
+*Tailor your resume. Improve your chances.*
+*👉 Check your resume with our ATS Resume Scanner:*
+https://freshersbridge.in/career-tools`;
+
+    const opportunitiesHeader = `*🔥 Today's Fresh Opportunities:*`;
+    const slotLabel = getSlotLabel();
 
     const whatsappFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
-https://freshersbridge.in
+https://www.freshersbridge.in/jobs
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
@@ -787,17 +795,13 @@ https://t.me/freshersbridge
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 New jobs & internships added regularly.
-👉 Visit FreshersBridge and apply before opportunities close.
-
 📤 Share with your friends, batchmates & college groups!
-
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
     const telegramFooter = `━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
-https://freshersbridge.in
+https://www.freshersbridge.in/jobs
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
@@ -812,12 +816,8 @@ https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
+📤 Share with your friends, batchmates & college groups!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 New jobs & internships added regularly.
-👉 Visit FreshersBridge and apply before opportunities close.
-
-📤 Share with your batchmates & college groups!
-
 FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
 
     const footer = platform === 'telegram' ? telegramFooter : whatsappFooter;
@@ -834,14 +834,14 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
         const salary = j.salary || 'Competitive / Best in Industry';
         const link = `https://freshersbridge.in/jobs/${j.slug}`;
 
-        let passingYear = '2026 | 2025 | 2024';
-        const years = ['2028', '2027', '2026', '2025', '2024'].filter(y => eligibility.includes(y));
-        if (years.length > 0) passingYear = years.join(' | ');
-
-        return `🔗 Company : ${company}\nRole : ${title}\nQualification : ${eligibility}\nPassing Year : ${passingYear}\nLocation : ${location}\nSalary : ${salary}\n📌 Apply Link : ${link}`;
+        return `🔗 Company : ${company}\nRole : ${title}\nQualification : ${eligibility}\nLocation : ${location}\nSalary : ${salary}\n📌 Apply Link : ${link}`;
       }).join('\n\n');
 
-      const fullMessage = `${commonHeader}\n\n${jobCards}\n\n${footer}`;
+      const batchHeader = batchNum === 1
+        ? `${commonHeaderTop}\n\n${opportunitiesHeader}\n*✨ ${slotLabel}*`
+        : `${commonHeaderTop}\n\n${opportunitiesHeader} *(Batch #${batchNum})*`;
+
+      const fullMessage = `${batchHeader}\n\n${jobCards}\n\n${footer}`;
       chunks.push({
         index: batchNum,
         text: fullMessage,

@@ -27,19 +27,16 @@ def get_slot_title() -> str:
     else:
         return "🌙 EVENING FRESHERS DIGEST (Top 8 Curated Drop)"
 
-COMMON_HEADER = """📢 FRESHERSBRIDGE | DAILY FRESHER JOB ALERTS
-📢 Entry-Level Jobs & Internships
-❌ Applying everywhere but not getting shortlisted?
-📄 Your resume might not be ATS-friendly.
-🎯 Tailor your resume. Improve your chances.
-👉 Check your resume with our ATS Resume Scanner:
-https://freshersbridge.in/career-tools
+COMMON_HEADER_TOP = """*📌Great Opportunities open for freshers candidates*
+*Tailor your resume. Improve your chances.*
+*👉 Check your resume with our ATS Resume Scanner:*
+https://freshersbridge.in/career-tools"""
 
-🔥 Today's Fresh Opportunities:"""
+OPPORTUNITIES_HEADER = "*🔥 Today's Fresh Opportunities:*"
 
 WHATSAPP_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
-https://freshersbridge.in
+https://www.freshersbridge.in/jobs
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
@@ -54,17 +51,13 @@ https://t.me/freshersbridge
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 New jobs & internships added regularly.
-👉 Visit FreshersBridge and apply before opportunities close.
-
 📤 Share with your friends, batchmates & college groups!
-
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
 
 TELEGRAM_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
-https://freshersbridge.in
+https://www.freshersbridge.in/jobs
 
 🧮 HR Email Scripts + In-Hand Salary Calculator:
 https://freshersbridge.in/career-tools
@@ -79,12 +72,8 @@ https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
+📤 Share with your friends, batchmates & college groups!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 New jobs & internships added regularly.
-👉 Visit FreshersBridge and apply before opportunities close.
-
-📤 Share with your batchmates & college groups!
-
 FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
 
 def slugify(text: str) -> str:
@@ -108,18 +97,10 @@ def format_single_job_block(job: Dict[str, Any]) -> str:
     is_internship = job.get('job_type') == 'internship' or any(k in title.lower() for k in ['intern', 'internship', 'trainee'])
     section = 'internships' if is_internship else 'jobs'
     apply_link = f"https://freshersbridge.in/{section}/{slug}"
-    
-    # Determine passing year / batch text
-    if any(yr in eligibility for yr in ['2024', '2025', '2026', '2027', '2028']):
-        batches = [yr for yr in ['2028', '2027', '2026', '2025', '2024'] if yr in eligibility]
-        passing_year = " | ".join(batches) if batches else "2026 | 2025 | 2024"
-    else:
-        passing_year = "2026 | 2025 | 2024"
 
     return f"""🔗 Company : {company}
 Role : {title}
 Qualification : {eligibility}
-Passing Year : {passing_year}
 Location : {location}
 Salary : {salary}
 📌 Apply Link : {apply_link}"""
@@ -160,7 +141,11 @@ def generate_broadcast_messages(jobs: List[Dict[str, Any]], platform: str = 'wha
         job_blocks = "\n\n".join([format_single_job_block(j) for j in chunk])
         
         # Batch #1 gets the dynamic session label (Morning/Afternoon/Evening)
-        batch_header = f"{COMMON_HEADER}\n✨ {slot_label}" if batch_num == 1 else COMMON_HEADER
+        batch_header = (
+            f"{COMMON_HEADER_TOP}\n\n{OPPORTUNITIES_HEADER}\n*✨ {slot_label}*"
+            if batch_num == 1
+            else f"{COMMON_HEADER_TOP}\n\n{OPPORTUNITIES_HEADER} *(Batch #{batch_num})*"
+        )
         
         msg = f"""{batch_header}
 
