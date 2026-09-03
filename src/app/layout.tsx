@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     'Entry level coding jobs',
   ],
   metadataBase: new URL('https://freshersbridge.in'),
+  alternates: {
+    canonical: 'https://freshersbridge.in',
+  },
   openGraph: {
     title: 'FreshersBridge | Handpicked Jobs & Internships for Freshers',
     description:

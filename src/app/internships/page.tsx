@@ -11,12 +11,6 @@ import { Job, Category } from '@/types';
 import { resolveCategory } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
 
-export const metadata: Metadata = {
-  title: 'Tech Internships for Freshers & Graduates | FreshersBridge',
-  description:
-    'Explore verified software engineering, web development, data science, and cloud internships for freshers and college graduates.',
-};
-
 interface SearchParams {
   q?: string;
   location?: string;
@@ -31,6 +25,52 @@ interface InternshipsPageProps {
 }
 
 export const revalidate = 60;
+
+// Dynamic SEO Metadata for /internships
+export async function generateMetadata({ searchParams }: InternshipsPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const q = (resolvedSearchParams.q || '').trim();
+  const location = (resolvedSearchParams.location || '').trim();
+  const categorySlug = (resolvedSearchParams.category || '').trim();
+  const page = resolvedSearchParams.page || '1';
+
+  const hasFilterParams = Boolean(q || location || resolvedSearchParams.eligibility || resolvedSearchParams.featured || parseInt(page) > 1);
+
+  const categories = await getCachedCategories();
+  const activeCat = resolveCategory(categories, categorySlug);
+
+  const baseTitle = activeCat
+    ? `${activeCat.name} Internships for Students & Freshers 2026 | FreshersBridge`
+    : 'Tech Internships for Freshers & College Graduates 2026 | FreshersBridge';
+  const baseDesc = activeCat
+    ? `Explore verified ${activeCat.name} internships, summer training programs, and software apprentice opportunities across India.`
+    : 'Explore verified software engineering, web development, data science, and cloud internships for college students and fresh graduates in India.';
+
+  return {
+    title: baseTitle,
+    description: baseDesc,
+    alternates: {
+      canonical: activeCat 
+        ? `https://freshersbridge.in/internships?category=${activeCat.slug}` 
+        : 'https://freshersbridge.in/internships',
+    },
+    robots: hasFilterParams
+      ? {
+          index: false,
+          follow: true,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+    openGraph: {
+      title: baseTitle,
+      description: baseDesc,
+      url: 'https://freshersbridge.in/internships',
+      type: 'website',
+    },
+  };
+}
 
 // Cached category lookup
 const getCachedCategories = cache(async (): Promise<Category[]> => {

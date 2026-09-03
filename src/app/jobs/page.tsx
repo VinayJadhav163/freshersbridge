@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { cache } from 'react';
 import { supabase } from '@/lib/supabase';
 import JobCard from '@/components/JobCard';
@@ -24,6 +25,53 @@ interface JobsPageProps {
 }
 
 export const revalidate = 60; // 60s background ISR cache
+
+// Dynamic SEO Metadata for /jobs
+export async function generateMetadata({ searchParams }: JobsPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const q = (resolvedSearchParams.q || '').trim();
+  const location = (resolvedSearchParams.location || '').trim();
+  const categorySlug = (resolvedSearchParams.category || '').trim();
+  const page = resolvedSearchParams.page || '1';
+
+  const hasFilterParams = Boolean(q || location || resolvedSearchParams.eligibility || resolvedSearchParams.featured || parseInt(page) > 1);
+
+  const categories = await getCachedCategories();
+  const activeCat = resolveCategory(categories, categorySlug);
+
+  const baseTitle = activeCat
+    ? `${activeCat.name} Jobs for Freshers 2026 | FreshersBridge`
+    : 'Browse Latest Off-Campus Tech Jobs for Freshers 2026 | FreshersBridge';
+  const baseDesc = activeCat
+    ? `Explore verified ${activeCat.name} entry-level job openings, graduate drives, and fresher engineering roles across India on FreshersBridge.`
+    : 'Explore verified entry-level software developer jobs, IT openings, and off-campus drives for college freshers across top tech companies in India.';
+
+  return {
+    title: baseTitle,
+    description: baseDesc,
+    alternates: {
+      canonical: activeCat 
+        ? `https://freshersbridge.in/jobs?category=${activeCat.slug}` 
+        : 'https://freshersbridge.in/jobs',
+    },
+    // Protect crawl budget from parameter bloat: noindex search query combinations while following internal links
+    robots: hasFilterParams
+      ? {
+          index: false,
+          follow: true,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+    openGraph: {
+      title: baseTitle,
+      description: baseDesc,
+      url: 'https://freshersbridge.in/jobs',
+      type: 'website',
+    },
+  };
+}
 
 // Cached category lookup
 const getCachedCategories = cache(async (): Promise<Category[]> => {

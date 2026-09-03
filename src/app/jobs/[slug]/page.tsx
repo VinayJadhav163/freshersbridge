@@ -10,13 +10,22 @@ import {
   IndianRupee, 
   Briefcase, 
   ArrowLeft,
-  GraduationCap
+  GraduationCap,
+  AlertCircle,
+  CheckCircle2,
+  BookOpen,
+  ShieldCheck,
+  Building2,
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import ApplyButton from '@/components/ApplyButton';
 import JobCard from '@/components/JobCard';
 import JobViewTracker from '@/components/JobViewTracker';
 import { Job } from '@/types';
+import { GUIDE_ARTICLES } from '@/lib/guidesData';
+import { fetchWithCache } from '@/lib/dataCache';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -39,8 +48,6 @@ export async function generateStaticParams() {
     return [];
   }
 }
-
-import { fetchWithCache } from '@/lib/dataCache';
 
 // React cache + In-memory TTL cache to eliminate remote HTTPS roundtrips
 const getJob = cache(async (slug: string) => {
@@ -65,7 +72,6 @@ const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: str
         .order('created_at', { ascending: false })
         .limit(3);
 
-
       if (categoryId) {
         query = query.eq('category_id', categoryId);
       }
@@ -78,7 +84,6 @@ const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: str
   }, 180);
 });
 
-
 // Generate dynamic SEO Metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
@@ -90,7 +95,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${job.title} at ${job.company} | FreshersBridge`;
+  const isExpired = job.application_deadline
+    ? new Date(job.application_deadline).getTime() < Date.now()
+    : false;
+
+  const titlePrefix = isExpired ? '[Closed] ' : '';
+  const title = `${titlePrefix}${job.title} at ${job.company} | FreshersBridge`;
   const description = `Apply for ${job.title} vacancy at ${job.company} in ${job.location}. Eligibility: ${
     job.eligibility
   }. Required skills: ${job.skills.join(', ')}. Find more entry-level tech opportunities on FreshersBridge.in.`;
@@ -99,6 +109,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://freshersbridge.in/jobs/${job.slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -272,8 +285,29 @@ export default async function JobDetailsPage({ params }: Props) {
     job.job_type === 'internship' ||
     /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title);
 
+  // Expiration calculation
+  const isExpired = job.application_deadline
+    ? new Date(job.application_deadline).getTime() < Date.now()
+    : false;
+
+  // Compliant schema validThrough date (falls back to 60 days post-creation if no deadline)
+  const validThroughDate = job.application_deadline
+    ? new Date(job.application_deadline).toISOString()
+    : new Date(new Date(job.created_at).getTime() + 60 * 24 * 60 * 60 * 1000).toISOString();
+
   // 2. Fast parallel related jobs query
   const relatedJobs = await getRelatedJobs(job.category_id, job.id);
+
+  // 3. Smart contextual guides matching for internal topic clusters
+  const jobText = `${job.title} ${job.company} ${job.skills.join(' ')}`.toLowerCase();
+  const relevantGuides = GUIDE_ARTICLES.filter((g) => {
+    return (
+      g.tags.some((tag) => jobText.includes(tag.toLowerCase())) ||
+      g.title.toLowerCase().includes(job.company.toLowerCase()) ||
+      g.tags.includes('Aptitude') ||
+      g.tags.includes('Coding')
+    );
+  }).slice(0, 2);
 
   // 4. Prepare structured JSON-LD data for Google Jobs
   const jsonLd = {
@@ -282,7 +316,7 @@ export default async function JobDetailsPage({ params }: Props) {
     'title': job.title,
     'description': job.description,
     'datePosted': job.created_at,
-    'validThrough': job.application_deadline || undefined,
+    'validThrough': validThroughDate,
     'employmentType': isInternship ? 'INTERN' : 'FULL_TIME',
     'hiringOrganization': {
       '@type': 'Organization',
@@ -320,6 +354,29 @@ export default async function JobDetailsPage({ params }: Props) {
       {/* Real User View Tracker (Only fires in browser, not during next build) */}
       <JobViewTracker jobId={job.id} />
 
+      {/* Expired Job Alert Notice */}
+      {isExpired && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-50/80 dark:bg-amber-950/30 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <h2 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+                Applications for this role are currently closed
+              </h2>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                The application deadline for this opening at {job.company} has passed. Explore active alternative openings below.
+              </p>
+            </div>
+          </div>
+          <Link
+            href={isInternship ? "/internships" : "/jobs"}
+            className="shrink-0 inline-flex items-center justify-center rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:bg-amber-500 transition-colors shadow-xs"
+          >
+            Browse Active {isInternship ? 'Internships' : 'Jobs'}
+          </Link>
+        </div>
+      )}
+
       {/* Back to Jobs / Internships Link */}
       <div className="flex items-center">
         <Link
@@ -356,38 +413,45 @@ export default async function JobDetailsPage({ params }: Props) {
                     Full-Time Job
                   </span>
                 )}
+                {isExpired && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-rose-600/10 border border-rose-500/20 px-3 py-1 text-xs font-bold text-rose-600 dark:text-rose-400">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    Closed
+                  </span>
+                )}
               </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                 {job.title}
               </h1>
-              <p className="mt-1.5 text-lg font-bold text-indigo-600 dark:text-indigo-400">
+              <p className="mt-1.5 text-lg font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+                <Building2 className="h-5 w-5 inline" />
                 {job.company}
               </p>
             </div>
 
             {/* Badges block */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-[#e7e7f1] text-sm w-full overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-border text-sm w-full overflow-hidden">
               <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
-                <Briefcase className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <Briefcase className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
                 <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-[#121224] truncate">Experience / Eligibility</p>
-                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.eligibility}>{job.eligibility}</p>
+                  <p className="text-xs font-bold text-foreground truncate">Experience / Eligibility</p>
+                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.eligibility}>{job.eligibility}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
-                <IndianRupee className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <IndianRupee className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
                 <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-[#121224] truncate">Salary</p>
-                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.salary || 'Not Disclosed'}>{job.salary || 'Not Disclosed'}</p>
+                  <p className="text-xs font-bold text-foreground truncate">Salary</p>
+                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.salary || 'Not Disclosed'}>{job.salary || 'Not Disclosed'}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
-                <MapPin className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <MapPin className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
                 <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-[#121224] truncate">Location</p>
-                  <p className="truncate text-xs text-[#474d6a] font-medium block w-full" title={job.location}>{job.location}</p>
+                  <p className="text-xs font-bold text-foreground truncate">Location</p>
+                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.location}>{job.location}</p>
                 </div>
               </div>
             </div>
@@ -408,6 +472,43 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
           </div>
 
+          {/* Value-Add Section: Why this opening is relevant for freshers */}
+          <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-950/20 p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              <h2 className="text-base font-bold text-foreground">
+                Fresher Suitability & Application Blueprint
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div className="space-y-1.5 p-3.5 rounded-lg bg-card/80 border border-border/60">
+                <p className="font-bold text-foreground flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Suitable For
+                </p>
+                <p className="text-muted-foreground">
+                  College graduates, entry-level candidates, and students matching: <strong className="text-foreground">{job.eligibility}</strong>.
+                </p>
+              </div>
+
+              <div className="space-y-1.5 p-3.5 rounded-lg bg-card/80 border border-border/60">
+                <p className="font-bold text-foreground flex items-center gap-1.5">
+                  <BookOpen className="h-4 w-4 text-indigo-500" /> Key Skills to Prepare
+                </p>
+                <p className="text-muted-foreground">
+                  Focus on {job.skills.slice(0, 4).join(', ') || 'core computer science fundamentals and problem solving'}.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-indigo-100 dark:border-indigo-900/40 flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span>
+                <strong>Verified Opportunity:</strong> FreshersBridge directs you to the verified official employer application portal. We never charge applicants.
+              </span>
+            </div>
+          </div>
+
           {/* Job Description Card */}
           <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-4">
             <h2 className="text-lg font-bold text-foreground border-b border-border pb-2 flex items-center justify-between">
@@ -416,6 +517,40 @@ export default async function JobDetailsPage({ params }: Props) {
             </h2>
             <FormattedJobDescription content={job.description} />
           </div>
+
+          {/* Internal Topic Cluster: Career Preparation Guides */}
+          {relevantGuides.length > 0 && (
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-indigo-600" /> Recommended Preparation Guides
+                </h3>
+                <Link href="/guides" className="text-xs font-semibold text-indigo-600 hover:underline">
+                  All Guides
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {relevantGuides.map((guide) => (
+                  <Link
+                    key={guide.id}
+                    href={`/guides/${guide.slug}`}
+                    className="group block p-4 rounded-lg border border-border/70 bg-background hover:border-indigo-500 transition-all hover:shadow-xs"
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-full">
+                      {guide.category}
+                    </span>
+                    <h4 className="mt-2 text-sm font-bold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
+                      {guide.title}
+                    </h4>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      {guide.description}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
         </main>
 
@@ -433,13 +568,33 @@ export default async function JobDetailsPage({ params }: Props) {
                 </span>
                 <span className="font-semibold">{formatDate(job.created_at)}</span>
               </div>
+
+              {job.application_deadline && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground flex items-center gap-2">
+                    <Calendar className="h-4 w-4" /> Deadline
+                  </span>
+                  <span className={`font-semibold ${isExpired ? 'text-rose-600' : 'text-foreground'}`}>
+                    {formatDate(job.application_deadline)}
+                  </span>
+                </div>
+              )}
             </div>
 
             <hr className="border-border" />
 
             {/* Apply Action */}
             <div className="space-y-3">
-              <ApplyButton applyUrl={job.apply_url} company={job.company} title={job.title} />
+              {isExpired ? (
+                <button
+                  disabled
+                  className="w-full py-3 px-4 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-500 font-bold text-sm cursor-not-allowed text-center"
+                >
+                  Applications Closed
+                </button>
+              ) : (
+                <ApplyButton applyUrl={job.apply_url} company={job.company} title={job.title} />
+              )}
               <ShareButton title={job.title} company={job.company} slug={job.slug} />
             </div>
           </div>
@@ -467,3 +622,4 @@ export default async function JobDetailsPage({ params }: Props) {
     </div>
   );
 }
+
