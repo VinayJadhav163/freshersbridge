@@ -223,6 +223,13 @@ export default function ATSResumeMatcher() {
         const analysis = analyzeResumeATS(resumeText, jobDescription);
         setResults(analysis);
 
+        // Record scan event in analytics
+        fetch('/api/analytics/ats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'scan' }),
+        }).catch(() => {});
+
         // Smooth scroll down to results on mobile
         setTimeout(() => {
           const resultsElem = document.getElementById('ats-results-dashboard');

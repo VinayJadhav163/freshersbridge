@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { recordATSScan } from '@/lib/atsAnalytics';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -142,6 +143,7 @@ export async function POST(req: Request) {
               try {
                 const parsed = JSON.parse(cleanText);
                 if (parsed.tailored_resume && parsed.cover_letter) {
+                  await recordATSScan('tailor').catch(() => {});
                   return NextResponse.json({ success: true, result: parsed, source: `ai-${model}` });
                 }
               } catch (parseErr) {
@@ -160,6 +162,7 @@ export async function POST(req: Request) {
 
     // Fallback Rule-Based Engine preserving candidate's real data
     const fallbackResult = generateFallbackTailoredPackage(resumeText, jobDescription);
+    await recordATSScan('tailor').catch(() => {});
     return NextResponse.json({ success: true, result: fallbackResult, source: 'rule-engine' });
 
   } catch (error: any) {

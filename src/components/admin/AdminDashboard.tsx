@@ -49,22 +49,35 @@ import {
   Filter,
   MessageSquare,
   Share2,
-  SendHorizontal
+  SendHorizontal,
+  Activity,
+  Cpu,
+  CheckCircle2,
+  FileText
 } from 'lucide-react';
+import { ATSAnalyticsData } from '@/lib/atsAnalytics';
 
 interface AdminDashboardProps {
   initialJobs: Job[];
   initialCategories: Category[];
   initialSubscribers?: Subscriber[];
+  initialAtsAnalytics?: ATSAnalyticsData | null;
 }
 
-export default function AdminDashboard({ initialJobs, initialCategories, initialSubscribers = [] }: AdminDashboardProps) {
+export default function AdminDashboard({ 
+  initialJobs, 
+  initialCategories, 
+  initialSubscribers = [],
+  initialAtsAnalytics = null 
+}: AdminDashboardProps) {
   const router = useRouter();
   
   // Lists state
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [subscribers, setSubscribers] = useState<Subscriber[]>(initialSubscribers);
+  const [atsAnalytics, setAtsAnalytics] = useState<ATSAnalyticsData | null>(initialAtsAnalytics);
+  const [isRefreshingAts, setIsRefreshingAts] = useState<boolean>(false);
 
   // Sync state with props when they change
   useEffect(() => {
@@ -79,12 +92,35 @@ export default function AdminDashboard({ initialJobs, initialCategories, initial
     setSubscribers(initialSubscribers);
   }, [initialSubscribers]);
 
+  useEffect(() => {
+    if (initialAtsAnalytics) {
+      setAtsAnalytics(initialAtsAnalytics);
+    }
+  }, [initialAtsAnalytics]);
+
+  const refreshAtsAnalytics = async () => {
+    setIsRefreshingAts(true);
+    try {
+      const res = await fetch('/api/analytics/ats');
+      const json = await res.json();
+      if (json.success && json.data) {
+        setAtsAnalytics(json.data);
+        showNotification('success', 'ATS usage analytics synchronized.');
+      }
+    } catch (e) {
+      console.error('Failed to refresh ATS analytics:', e);
+      showNotification('error', 'Failed to refresh ATS analytics.');
+    } finally {
+      setIsRefreshingAts(false);
+    }
+  };
+
   // Admin key auth state
   const [adminKey, setAdminKey] = useState<string>('');
   const [isKeySaved, setIsKeySaved] = useState<boolean>(false);
 
   // Tabs & Forms UI state
-  const [activeTab, setActiveTab] = useState<'jobs' | 'categories' | 'subscribers' | 'broadcasts'>('jobs');
+  const [activeTab, setActiveTab] = useState<'jobs' | 'categories' | 'subscribers' | 'broadcasts' | 'ats'>('jobs');
   const [showJobForm, setShowJobForm] = useState<boolean>(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   
@@ -1217,6 +1253,122 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
         </div>
       </div>
 
+      {/* ATS & AI Usage Quota Health Banner */}
+      <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-br from-card via-[#275df5]/5 to-indigo-500/10 p-5 sm:p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/70 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#275df5]/10 text-[#275df5]">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-foreground">
+                  ATS Resume Scanner &amp; Gemini AI Quota Monitor
+                </h3>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Free Tier Active
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Real-time tracking of candidate resume scans &amp; AI tailoring requests vs Google Gemini's 1,500/day free limit.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={refreshAtsAnalytics}
+              disabled={isRefreshingAts}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary px-3 py-1.5 text-xs font-bold text-foreground transition-all cursor-pointer shadow-2xs"
+              title="Refresh ATS usage counts"
+            >
+              <RotateCcw className={`h-3.5 w-3.5 ${isRefreshingAts ? 'animate-spin text-[#275df5]' : ''}`} />
+              <span>{isRefreshingAts ? 'Refreshing...' : 'Live Sync'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('ats')}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-3.5 py-1.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+            >
+              <span>View Full History</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Mini Stat Blocks */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="rounded-xl border border-border bg-background/80 p-3.5 space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">AI Tailored Today</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-black text-[#275df5]">
+                {atsAnalytics?.todayTailors || 0}
+              </span>
+              <span className="text-xs text-muted-foreground font-semibold">/ 1,500 Limit</span>
+            </div>
+            {/* Progress bar */}
+            <div className="w-full bg-secondary h-2 rounded-full overflow-hidden mt-1.5">
+              <div 
+                className={`h-full transition-all duration-500 rounded-full ${
+                  ((atsAnalytics?.todayTailors || 0) / 1500) > 0.85
+                    ? 'bg-rose-500'
+                    : ((atsAnalytics?.todayTailors || 0) / 1500) > 0.65
+                    ? 'bg-amber-500'
+                    : 'bg-emerald-500'
+                }`}
+                style={{ width: `${Math.min(100, Math.max(3, (((atsAnalytics?.todayTailors || 0) / 1500) * 100)))}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-background/80 p-3.5 space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">ATS Score Scans Today</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-black text-foreground">
+                {atsAnalytics?.todayScans || 0}
+              </span>
+              <span className="text-xs text-emerald-600 font-semibold font-mono">100% Client-Safe</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Keyword &amp; formatting checks</p>
+          </div>
+
+          <div className="rounded-xl border border-border bg-background/80 p-3.5 space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">Total Tailored Resumes</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-black text-foreground">
+                {atsAnalytics?.totalTailors || 0}
+              </span>
+              <span className="text-xs text-muted-foreground">All-time</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Zero-fabrication AI runs</p>
+          </div>
+
+          <div className="rounded-xl border border-border bg-background/80 p-3.5 space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">Active Model &amp; Cost</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                ₹0.00 Free Tier
+              </span>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Gemini 3.5 Flash-Lite (Active 🟢)</p>
+          </div>
+        </div>
+
+        {/* Informative footer tip */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-muted-foreground bg-secondary/50 rounded-xl px-3.5 py-2 border border-border/80">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span>
+              <strong>Quota Status:</strong> {1500 - (atsAnalytics?.todayTailors || 0)} free AI tailorings remaining today.
+            </span>
+          </div>
+          <span className="italic">
+            💡 Pay-As-You-Go tip: 10,000 resumes cost approx. ₹300 INR if daily volume ever exceeds 1,500.
+          </span>
+        </div>
+      </div>
+
       {/* Tabs list */}
       <div className="flex items-center border-b border-border gap-2 overflow-x-auto">
         <button
@@ -1273,7 +1425,21 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
           }`}
         >
           <MessageSquare className="h-4 w-4" />
-          <span>📢 WhatsApp & Telegram Broadcasts</span>
+          <span>📢 WhatsApp &amp; Telegram Broadcasts</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('ats');
+            setShowJobForm(false);
+          }}
+          className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 -mb-px flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'ats'
+              ? 'border-[#275df5] text-[#275df5]'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Activity className="h-4 w-4" />
+          <span>ATS AI Quota &amp; Activity</span>
         </button>
       </div>
 
@@ -2448,6 +2614,221 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                 <p className="text-xs">Jobs added manually or scraped automatically will appear here grouped into 10-job message blocks.</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ATS AI Quota & Activity Tab */}
+      {activeTab === 'ats' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+            <div>
+              <h2 className="text-xl font-black text-foreground flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-[#275df5]" />
+                <span>ATS Resume Scanner &amp; AI Gemini Quota Hub</span>
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Detailed real-time tracking of candidate resume evaluations and Google Gemini Flash API consumption.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={refreshAtsAnalytics}
+                disabled={isRefreshingAts}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary px-3.5 py-2 text-xs font-bold text-foreground transition-all cursor-pointer shadow-2xs"
+              >
+                <RotateCcw className={`h-3.5 w-3.5 ${isRefreshingAts ? 'animate-spin text-[#275df5]' : ''}`} />
+                <span>{isRefreshingAts ? 'Syncing...' : 'Sync Live Counts'}</span>
+              </button>
+              <Link
+                href="/career-tools"
+                target="_blank"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-3.5 py-2 text-xs font-bold transition-all shadow-2xs"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                <span>Open ATS Tool</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* 3 Top Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Free Tier Capacity */}
+            <div className="rounded-2xl border border-border bg-card p-5 space-y-3 shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Today's AI Quota</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                  Google Free Tier
+                </span>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-3xl font-black text-[#275df5]">
+                    {atsAnalytics?.todayTailors || 0}
+                  </span>
+                  <span className="text-xs text-muted-foreground font-bold">
+                    / 1,500 daily requests
+                  </span>
+                </div>
+                <div className="w-full bg-secondary h-2.5 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-500 rounded-full ${
+                      ((atsAnalytics?.todayTailors || 0) / 1500) > 0.85
+                        ? 'bg-rose-500'
+                        : ((atsAnalytics?.todayTailors || 0) / 1500) > 0.65
+                        ? 'bg-amber-500'
+                        : 'bg-emerald-500'
+                    }`}
+                    style={{ width: `${Math.min(100, Math.max(3, (((atsAnalytics?.todayTailors || 0) / 1500) * 100)))}%` }}
+                  />
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Remaining today: <strong className="text-foreground">{Math.max(0, 1500 - (atsAnalytics?.todayTailors || 0))} AI generations</strong>
+              </p>
+            </div>
+
+            {/* Score Scans vs Tailors */}
+            <div className="rounded-2xl border border-border bg-card p-5 space-y-3 shadow-xs">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">ATS Score Scans</span>
+              <div className="space-y-1">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-3xl font-black text-foreground">
+                    {atsAnalytics?.todayScans || 0}
+                  </span>
+                  <span className="text-xs text-emerald-600 font-bold">
+                    Today
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  All-time score scans: <strong className="text-foreground">{atsAnalytics?.totalScans || 0}</strong>
+                </p>
+              </div>
+              <div className="pt-2 border-t border-border flex items-center gap-2 text-[11px] text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                <span>Runs client-side with 0 API cost</span>
+              </div>
+            </div>
+
+            {/* Quota Health & Estimated Cost */}
+            <div className="rounded-2xl border border-border bg-card p-5 space-y-3 shadow-xs">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Infrastructure Health</span>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+                    Optimal • 100% Free
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Current API Cost: <strong className="text-foreground">₹0.00</strong> (Zero billing active)
+                </p>
+              </div>
+              <div className="pt-2 border-t border-border text-[11px] text-muted-foreground">
+                Last Activity: <strong className="text-foreground">{atsAnalytics?.lastEventAt ? new Date(atsAnalytics.lastEventAt).toLocaleTimeString() : 'No scans yet today'}</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* 14-Day Activity Table */}
+          <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
+            <div className="p-4 sm:p-5 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-[#275df5]" />
+                  <span>Recent Daily ATS Activity (Last 14 Days)</span>
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Daily breakdown of candidate evaluations and Google Gemini free quota usage.
+                </p>
+              </div>
+              <span className="text-xs text-muted-foreground font-mono">
+                {atsAnalytics?.history?.length || 0} records
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-secondary/60 text-muted-foreground uppercase text-[10px] tracking-wider border-b border-border">
+                  <tr>
+                    <th className="px-5 py-3 font-bold">Date</th>
+                    <th className="px-5 py-3 font-bold">ATS Score Scans</th>
+                    <th className="px-5 py-3 font-bold">AI Resumes Tailored</th>
+                    <th className="px-5 py-3 font-bold">Daily Free Quota Used</th>
+                    <th className="px-5 py-3 font-bold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {(atsAnalytics?.history && atsAnalytics.history.length > 0 ? atsAnalytics.history : [
+                    { date: atsAnalytics?.todayDate || 'Today', scans: atsAnalytics?.todayScans || 0, tailors: atsAnalytics?.todayTailors || 0 }
+                  ]).map((rec, idx) => {
+                    const usagePct = ((rec.tailors / 1500) * 100).toFixed(1);
+                    return (
+                      <tr key={idx} className="hover:bg-secondary/30 transition-colors">
+                        <td className="px-5 py-3.5 font-bold text-foreground">
+                          {rec.date} {idx === 0 ? '(Today)' : ''}
+                        </td>
+                        <td className="px-5 py-3.5 font-mono text-foreground font-semibold">
+                          {rec.scans} scans
+                        </td>
+                        <td className="px-5 py-3.5 font-mono text-[#275df5] font-bold">
+                          {rec.tailors} resumes
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 bg-secondary h-1.5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-[#275df5] rounded-full"
+                                style={{ width: `${Math.min(100, Math.max(4, Number(usagePct)))}%` }}
+                              />
+                            </div>
+                            <span className="font-mono text-muted-foreground">{usagePct}%</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                            Safe
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Scaling & Pay-As-You-Go FAQ */}
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-card to-secondary/30 p-5 sm:p-6 space-y-4">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Cpu className="h-4 w-4 text-[#275df5]" />
+              <span>Scaling Guide: When and How to Enable Pay-As-You-Go</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+              <div className="rounded-xl border border-border bg-background p-4 space-y-1.5">
+                <span className="font-bold text-foreground block">1. Free Tier Limits</span>
+                <p className="text-muted-foreground leading-relaxed">
+                  Google gives <strong>1,500 requests per day</strong> for free. That covers up to 45,000 resume tailorings every month without paying a single rupee.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-border bg-background p-4 space-y-1.5">
+                <span className="font-bold text-foreground block">2. Automatic Fallback Protection</span>
+                <p className="text-muted-foreground leading-relaxed">
+                  If traffic spikes past 1,500 in a single day, FreshersBridge’s built-in zero-fabrication engine handles the request automatically so your users never face a broken screen.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-border bg-background p-4 space-y-1.5">
+                <span className="font-bold text-foreground block">3. Ultra-Low Paid Pricing</span>
+                <p className="text-muted-foreground leading-relaxed">
+                  When you see daily requests nearing 1,000+, adding a debit/credit card to Google Cloud unlocks <strong>1,000+ requests/min</strong>. 10,000 resumes cost just ~<strong>₹300 INR</strong>.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

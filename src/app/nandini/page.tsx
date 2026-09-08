@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import AdminLoginGate from '@/components/admin/AdminLoginGate';
 import { getAdminAuthToken } from '@/lib/adminAuth';
+import { getATSAnalytics } from '@/lib/atsAnalytics';
 
 export const revalidate = 0; // Ensure admin dashboard is never cached
 
@@ -54,12 +55,21 @@ export default async function NandiniAdminPage() {
     console.error('Error fetching subscribers for admin:', err);
   }
 
+  // Fetch ATS Resume Scanner & AI Tailor analytics
+  let atsAnalytics = null;
+  try {
+    atsAnalytics = await getATSAnalytics();
+  } catch (err) {
+    console.error('Error fetching ATS analytics for admin:', err);
+  }
+
   return (
     <div className="flex-1 bg-slate-50/30 dark:bg-slate-950/10">
       <AdminDashboard
         initialJobs={jobs}
         initialCategories={categories}
         initialSubscribers={subscribers}
+        initialAtsAnalytics={atsAnalytics}
       />
     </div>
   );
