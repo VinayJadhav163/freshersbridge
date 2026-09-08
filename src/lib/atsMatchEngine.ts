@@ -1,4 +1,10 @@
-import { ALL_TECH_SKILLS, ATS_ACTION_VERBS, ATS_SOFT_SKILLS } from './atsTaxonomy';
+import {
+  ALL_TECH_SKILLS,
+  ATS_ACTION_VERBS,
+  ATS_SOFT_SKILLS,
+  CANONICAL_SKILLS,
+  matchSkillInText,
+} from './atsTaxonomy';
 
 export interface ATSAnalysisResult {
   overallScore: number;
@@ -49,32 +55,78 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   const lowerResume = cleanResume.toLowerCase();
   const lowerJD = jobDescriptionText.toLowerCase();
 
-  // 1. Extract Target Keywords from JD
-  let extractedSkills = ALL_TECH_SKILLS.filter((skill) => {
-    // Word boundary check to prevent substring false positives (e.g. 'c' in 'react')
-    const regex = new RegExp(`\\b${escapeRegExp(skill)}\\b`, 'i');
-    return regex.test(lowerJD);
-  });
+  // 1. Extract Target Keywords from JD with Canonical Aliases
+  // A. Check canonical skills (Tableau, SQL, ETL, DBT, Generative AI, LLM, etc.)
+  const targetSkillObjects: { label: string; aliases: string[] }[] = [];
+  const matchedCanonicalIds = new Set<string>();
 
-  // Fallback if JD is empty or too short
-  if (extractedSkills.length < 4) {
-    const fallbackCommon = [
-      'data structures', 'algorithms', 'oops', 'java', 'python', 'javascript',
-      'react', 'sql', 'git', 'rest api', 'problem solving'
-    ];
-    extractedSkills = Array.from(new Set([...extractedSkills, ...fallbackCommon]));
+  for (const cs of CANONICAL_SKILLS) {
+    if (matchSkillInText(lowerJD, cs.aliases)) {
+      targetSkillObjects.push({ label: cs.label, aliases: cs.aliases });
+      matchedCanonicalIds.add(cs.id);
+    }
   }
 
-  // 2. Compute Matched vs Missing Hard Skills
-  const matchedSkills = extractedSkills.filter((skill) => {
-    const regex = new RegExp(`\\b${escapeRegExp(skill)}\\b`, 'i');
-    return regex.test(lowerResume);
-  });
-  const missingSkills = extractedSkills.filter((skill) => !matchedSkills.includes(skill));
+  // B. Also scan for additional tech skills from taxonomy that aren't already represented
+  for (const skill of ALL_TECH_SKILLS) {
+    if (skill.length < 3) continue; // Skip single/double character noise
+    // Skip if already covered by an alias in targetSkillObjects
+    const alreadyCovered = targetSkillObjects.some((t) =>
+      t.aliases.some((a) => a.toLowerCase() === skill.toLowerCase())
+    );
+    if (!alreadyCovered && matchSkillInText(lowerJD, [skill])) {
+      const formattedLabel = skill
+        .split(' ')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+      targetSkillObjects.push({ label: formattedLabel, aliases: [skill] });
+    }
+  }
+
+  // Fallback if JD is empty or too short (< 4 skills identified)
+  if (targetSkillObjects.length < 4) {
+    const fallbackCommon = [
+      'Data Structures & Algorithms',
+      'OOPs (Object Oriented Programming)',
+      'Python',
+      'Java',
+      'SQL',
+      'Git & Version Control',
+      'RESTful APIs',
+      'Problem Solving',
+    ];
+    for (const fb of fallbackCommon) {
+      if (!targetSkillObjects.some((t) => t.label.toLowerCase() === fb.toLowerCase())) {
+        const matchingCanonical = CANONICAL_SKILLS.find(
+          (c) => c.label.toLowerCase() === fb.toLowerCase()
+        );
+        targetSkillObjects.push({
+          label: fb,
+          aliases: matchingCanonical ? matchingCanonical.aliases : [fb.toLowerCase()],
+        });
+      }
+    }
+  }
+
+  // 2. Compute Matched vs Missing Hard Skills using Intelligent Synonyms / Aliases
+  // E.g. If target skill is 'Generative AI', resume containing 'GenAI' or 'gen-ai' will MATCH!
+  const matchedSkills: string[] = [];
+  const missingSkills: string[] = [];
+
+  for (const target of targetSkillObjects) {
+    if (matchSkillInText(lowerResume, target.aliases)) {
+      matchedSkills.push(target.label);
+    } else {
+      missingSkills.push(target.label);
+    }
+  }
+
+  const targetSkills = targetSkillObjects.map((t) => t.label);
 
   // 3. Compute Soft Skills
   const targetSoftSkills = ATS_SOFT_SKILLS.filter((s) => lowerJD.includes(s));
-  const effectiveSoftSkills = targetSoftSkills.length >= 2 ? targetSoftSkills : ATS_SOFT_SKILLS.slice(0, 5);
+  const effectiveSoftSkills =
+    targetSoftSkills.length >= 2 ? targetSoftSkills : ATS_SOFT_SKILLS.slice(0, 5);
   const matchedSoftSkills = effectiveSoftSkills.filter((s) => lowerResume.includes(s));
   const missingSoftSkills = effectiveSoftSkills.filter((s) => !matchedSoftSkills.includes(s));
 
@@ -92,13 +144,17 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
       name: 'Contact Header (Email & Phone)',
       found: contactInfo.email && contactInfo.phone,
       importance: 'Critical' as const,
-      feedback: contactInfo.email && contactInfo.phone
-        ? 'Valid contact details detected at the top.'
-        : 'Missing professional email or phone number in header.',
+      feedback:
+        contactInfo.email && contactInfo.phone
+          ? 'Valid contact details detected at the top.'
+          : 'Missing professional email or phone number in header.',
     },
     {
       name: 'Technical Skills Section',
-      found: /\b(technical skills|skills|technologies|proficiencies|languages & tools)\b/i.test(lowerResume),
+      found:
+        /\b(technical skills|skills|technologies|proficiencies|languages & tools)\b/i.test(
+          lowerResume
+        ),
       importance: 'Critical' as const,
       feedback: 'Dedicated skills section makes it easy for ATS parsers to index your stack.',
     },
@@ -110,7 +166,9 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     },
     {
       name: 'Education & Degree Section',
-      found: /\b(education|b\.?e|b\.?tech|bca|mca|b\.?sc|university|college|cgpa|gpa)\b/i.test(lowerResume),
+      found: /\b(education|b\.?e|b\.?tech|bca|mca|b\.?sc|university|college|cgpa|gpa)\b/i.test(
+        lowerResume
+      ),
       importance: 'Critical' as const,
       feedback: 'Recruiters check your graduation year, degree, and eligibility cutoff.',
     },
@@ -130,14 +188,18 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
 
   // 6. Action Verbs & Quantified Metrics (Google XYZ formula)
   const actionVerbsFound = ATS_ACTION_VERBS.filter((verb) => {
-    const regex = new RegExp(`\\b${verb}\\b`, 'i');
+    const regex = new RegExp(`(^|[^a-zA-Z0-9])${verb}([^a-zA-Z0-9]|$)`, 'i');
     return regex.test(lowerResume);
   });
 
-  const metricMatches = cleanResume.match(/(\d+%\s*|\d+x\s*|\b\d+\s*(users|clients|students|requests|stars|ms|seconds|minutes|downloads|records)\b|\b(reduced|improved|increased|accelerated|scaled)\b[^\n.]{0,30}\d+)/gi) || [];
+  const metricMatches =
+    cleanResume.match(
+      /(\d+%\s*|\d+x\s*|\b\d+\s*(users|clients|students|requests|stars|ms|seconds|minutes|downloads|records)\b|\b(reduced|improved|increased|accelerated|scaled)\b[^\n.]{0,30}\d+)/gi
+    ) || [];
   const metricsCount = metricMatches.length;
 
-  let impactRating: 'High Impact' | 'Moderate Impact' | 'Low Impact (Passive)' = 'Low Impact (Passive)';
+  let impactRating: 'High Impact' | 'Moderate Impact' | 'Low Impact (Passive)' =
+    'Low Impact (Passive)';
   if (metricsCount >= 4) {
     impactRating = 'High Impact';
   } else if (metricsCount >= 2) {
@@ -147,7 +209,8 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   // 7. Word Count & Formatting Health
   const words = cleanResume.split(/\s+/).filter(Boolean);
   const wordCount = words.length;
-  let wordCountStatus: 'Optimal (1 Page)' | 'Too Short' | 'Too Long (Multi-page)' = 'Optimal (1 Page)';
+  let wordCountStatus: 'Optimal (1 Page)' | 'Too Short' | 'Too Long (Multi-page)' =
+    'Optimal (1 Page)';
   if (wordCount < 250) {
     wordCountStatus = 'Too Short';
   } else if (wordCount > 750) {
@@ -160,18 +223,22 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   // - Metric & Quantified Impact: 15 points
   // - Action Verbs & Soft Skills: 10 points
   // - ATS Formatting & Length: 10 points
-  const skillRatio = extractedSkills.length > 0 ? matchedSkills.length / extractedSkills.length : 0;
+  const skillRatio = targetSkills.length > 0 ? matchedSkills.length / targetSkills.length : 0;
   const hardSkillPoints = Math.round(skillRatio * 40);
 
   const passedSections = sections.filter((s) => s.found).length;
   const sectionPoints = Math.round((passedSections / sections.length) * 25);
 
   const metricPoints = Math.min(metricsCount * 3.5, 15);
-  const verbPoints = Math.min(actionVerbsFound.length * 1.5, 6) + (matchedSoftSkills.length >= 2 ? 4 : 2);
+  const verbPoints =
+    Math.min(actionVerbsFound.length * 1.5, 6) + (matchedSoftSkills.length >= 2 ? 4 : 2);
   const lengthPoints = wordCountStatus === 'Optimal (1 Page)' ? 10 : 5;
 
   const totalScore = Math.min(
-    Math.max(Math.round(hardSkillPoints + sectionPoints + metricPoints + verbPoints + lengthPoints), 10),
+    Math.max(
+      Math.round(hardSkillPoints + sectionPoints + metricPoints + verbPoints + lengthPoints),
+      10
+    ),
     100
   );
 
@@ -188,14 +255,16 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     scoreColor = 'text-amber-500';
   }
 
-  // 9. Generate Actionable Jobsuit-Style Recommendations
+  // 9. Generate Actionable Recommendations
   const actionableFeedback: ATSAnalysisResult['actionableFeedback'] = [];
 
   if (missingSkills.length > 0) {
     const topMissing = missingSkills.slice(0, 4);
     actionableFeedback.push({
       title: `Inject Missing Keywords (${topMissing.length} high priority)`,
-      description: `The job description strongly targets: ${topMissing.join(', ')}. Include these naturally inside your "Technical Skills" or relevant project descriptions.`,
+      description: `The job description strongly targets: ${topMissing.join(
+        ', '
+      )}. Include these naturally inside your "Technical Skills" or relevant project descriptions.`,
       priority: 'high',
       suggestedExample: `Example for Skills section: "${topMissing.join(', ')}"`,
     });
@@ -204,34 +273,41 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   if (metricsCount < 3) {
     actionableFeedback.push({
       title: 'Quantify Your Bullet Points (Google XYZ Formula)',
-      description: 'Your project bullet points appear mostly descriptive. Quantify results with metrics (e.g. % performance increase, user counts, latency reduction).',
+      description:
+        'Your project bullet points appear mostly descriptive. Quantify results with metrics (e.g. % performance increase, user counts, latency reduction).',
       priority: 'high',
-      suggestedExample: 'Formula: "Accomplished [X] as measured by [Y] by doing [Z]" -> e.g. "Optimized SQL query performance by 40%, reducing API response time from 350ms to 120ms for 1,000+ test records."',
+      suggestedExample:
+        'Formula: "Accomplished [X] as measured by [Y] by doing [Z]" -> e.g. "Optimized SQL query performance by 40%, reducing API response time from 350ms to 120ms for 1,000+ test records."',
     });
   }
 
   if (!contactInfo.github || !contactInfo.linkedin) {
     actionableFeedback.push({
       title: 'Add Live Portfolio Links (GitHub & LinkedIn)',
-      description: 'Recruiters want proof of work. Adding clickable GitHub repositories and a LinkedIn URL increases recruiter trust by over 60%.',
+      description:
+        'Recruiters want proof of work. Adding clickable GitHub repositories and a LinkedIn URL increases recruiter trust by over 60%.',
       priority: 'medium',
-      suggestedExample: 'Add in header: "GitHub: github.com/yourhandle | LinkedIn: linkedin.com/in/yourhandle"',
+      suggestedExample:
+        'Add in header: "GitHub: github.com/yourhandle | LinkedIn: linkedin.com/in/yourhandle"',
     });
   }
 
   if (actionVerbsFound.length < 4) {
     actionableFeedback.push({
       title: 'Begin Bullets with Strong Power Action Verbs',
-      description: 'Avoid passive phrasing like "Responsible for" or "Worked on". Start every project bullet with a decisive engineering action verb.',
+      description:
+        'Avoid passive phrasing like "Responsible for" or "Worked on". Start every project bullet with a decisive engineering action verb.',
       priority: 'medium',
-      suggestedExample: 'Replace "Worked on React app" with "Engineered responsive full-stack platform with React and Next.js..."',
+      suggestedExample:
+        'Replace "Worked on React app" with "Engineered responsive full-stack platform with React and Next.js..."',
     });
   }
 
   if (wordCountStatus === 'Too Short') {
     actionableFeedback.push({
       title: 'Expand Project Explanations',
-      description: 'Your resume is under 250 words. Add details regarding architecture, APIs, databases, and problem-solving trade-offs for your main projects.',
+      description:
+        'Your resume is under 250 words. Add details regarding architecture, APIs, databases, and problem-solving trade-offs for your main projects.',
       priority: 'medium',
     });
   }
@@ -242,7 +318,7 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     scoreColor,
     wordCount,
     wordCountStatus,
-    targetSkills: extractedSkills,
+    targetSkills,
     matchedSkills,
     missingSkills,
     matchedSoftSkills,
@@ -254,8 +330,4 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     impactRating,
     actionableFeedback,
   };
-}
-
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
