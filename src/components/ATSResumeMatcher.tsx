@@ -21,10 +21,24 @@ import {
   Award, 
   BarChart3,
   FileCheck,
-  TrendingUp
+  TrendingUp,
+  Wand2,
+  Download,
+  Printer,
+  CheckSquare
 } from 'lucide-react';
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
+
+export interface TailoredResumeResult {
+  hard_requirements: string[];
+  nice_to_have: string[];
+  core_responsibilities: string[];
+  gap_summary: string[];
+  adjacent_matches: string[];
+  change_log: string[];
+  tailored_resume: string;
+}
 
 // Quick-Fill Sample Target JDs for Top Fresher Drives
 const SAMPLE_JOB_PRESETS = [
@@ -120,6 +134,10 @@ export default function ATSResumeMatcher() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [results, setResults] = useState<ATSAnalysisResult | null>(null);
+  const [isTailoring, setIsTailoring] = useState(false);
+  const [tailoredResult, setTailoredResult] = useState<TailoredResumeResult | null>(null);
+  const [activeTailorTab, setActiveTailorTab] = useState<'resume' | 'gaps' | 'changelog' | 'requirements'>('resume');
+  const [copiedTailored, setCopiedTailored] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -172,6 +190,7 @@ export default function ATSResumeMatcher() {
     setResumeText('');
     setUploadedFileName(null);
     setResults(null);
+    setTailoredResult(null);
     setErrorMessage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -204,6 +223,106 @@ export default function ATSResumeMatcher() {
         setIsAnalyzing(false);
       }
     }, 400);
+  };
+
+  const handleTailorResume = async () => {
+    if (!resumeText.trim()) {
+      setErrorMessage('Please upload or paste your resume first.');
+      return;
+    }
+    if (!jobDescription.trim()) {
+      setErrorMessage('Please provide a target job description or select a quick-fill drive to tailor your resume against.');
+      return;
+    }
+
+    setIsTailoring(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch('/api/resume/tailor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resumeText, jobDescription }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.result) {
+        setTailoredResult(data.result);
+        setTimeout(() => {
+          const elem = document.getElementById('tailored-resume-section');
+          if (elem) {
+            elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      } else {
+        throw new Error(data.error || 'Failed to tailor resume.');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMessage(err?.message || 'Error generating tailored resume. Please try again.');
+    } finally {
+      setIsTailoring(false);
+    }
+  };
+
+  const handleCopyTailoredResume = () => {
+    if (!tailoredResult) return;
+    navigator.clipboard.writeText(tailoredResult.tailored_resume);
+    setCopiedTailored(true);
+    setTimeout(() => setCopiedTailored(false), 2000);
+  };
+
+  const handleDownloadTxt = () => {
+    if (!tailoredResult) return;
+    const blob = new Blob([tailoredResult.tailored_resume], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'tailored-ats-resume.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handlePrint = () => {
+    if (!tailoredResult) return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Tailored ATS Resume - FreshersBridge</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.5;
+              padding: 40px;
+              color: #111;
+              max-width: 800px;
+              margin: 0 auto;
+              font-size: 10.5pt;
+            }
+            pre {
+              white-space: pre-wrap;
+              font-family: inherit;
+              word-wrap: break-word;
+            }
+            @media print {
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <pre>${tailoredResult.tailored_resume.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const handleCopyMissingKeywords = () => {
@@ -496,25 +615,46 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             <span>Privacy Guaranteed: Your resume is processed strictly client-side. Zero server storage.</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAnalyze}
-            disabled={!resumeText.trim() || isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#275df5] hover:bg-[#1f4cd0] px-8 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
-          >
-            {isAnalyzing ? (
-              <>
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                <span>Analyzing ATS Keywords &amp; Metrics...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                <span>Analyze ATS Match Score</span>
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleAnalyze}
+              disabled={!resumeText.trim() || isAnalyzing || isTailoring}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-secondary hover:bg-secondary/80 px-6 py-3.5 text-sm font-bold text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs shrink-0"
+            >
+              {isAnalyzing ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
+                  <span>Scanning ATS Score...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 text-[#275df5]" />
+                  <span>Scan ATS Match Score</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleTailorResume}
+              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+            >
+              {isTailoring ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>Generating Tailored Resume (Master Prompt Engine)...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4" />
+                  <span>AI Tailor &amp; Generate Resume</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
       </div>
@@ -760,6 +900,409 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               ))}
             </div>
           </div>
+
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* AI RESUME TAILORING ENGINE & GAP ANALYSIS SUITE (MASTER PROMPT SPEC)       */}
+      {/* ========================================================================= */}
+
+      {/* Loading Indicator for Tailoring */}
+      {isTailoring && (
+        <div id="tailored-resume-section" className="rounded-2xl border border-[#275df5]/30 bg-gradient-to-b from-[#275df5]/5 via-background to-[#275df5]/10 p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="text-center space-y-3 max-w-md mx-auto py-6">
+            <div className="inline-flex p-4 rounded-2xl bg-[#275df5]/15 text-[#275df5] animate-spin">
+              <RefreshCw className="h-8 w-8" />
+            </div>
+            <h4 className="text-lg font-bold text-foreground">
+              Executing Master Resume Tailoring Engine...
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Executing the 7-step optimization pipeline: parsing JD hard requirements, performing atomic zero-fabrication gap analysis, and reordering bullet points for 1-page ATS dominance.
+            </p>
+            <div className="space-y-2.5 pt-2 text-left text-xs bg-card/90 rounded-xl p-4 border border-border/80 shadow-2xs">
+              <div className="flex items-center gap-2 text-emerald-600 font-medium">
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <span>Step 1: Extracted JD Hard Requirements &amp; Core Duties</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#275df5] font-semibold">
+                <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
+                <span>Step 2 &amp; 3: Running Honest Gap Analysis &amp; Adjacent Matching...</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-muted-foreground/40 ml-1 mr-1" />
+                <span>Step 4 &amp; 5: Reordering &amp; Rewording with JD Vocabulary</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-muted-foreground/40 ml-1 mr-1" />
+                <span>Step 6 &amp; 7: Zero-Fabrication Factual Audit &amp; Output Generation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Generated Tailored Resume Output */}
+      {tailoredResult && !isTailoring && (
+        <div id="tailored-resume-section" className="rounded-2xl border-2 border-[#275df5]/40 bg-card p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+          {/* Top Decorative Background Glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          {/* Section Header */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-border pb-6 relative z-10">
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#275df5]/10 text-[#275df5] border border-[#275df5]/20">
+                  <Wand2 className="h-3.5 w-3.5" />
+                  Master Tailoring Engine v2
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  100% Zero-Fabrication Guarantee
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-secondary text-muted-foreground">
+                  1-Page ATS Standard
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
+                <span>Tailored ATS Resume &amp; Gap Suite</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
+                Optimized specifically for this target job description without inventing skills or inflated metrics. Factual work history, dates, and institutions are strictly preserved.
+              </p>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleCopyTailoredResume}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+              >
+                {copiedTailored ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    <span>Copied to Clipboard!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4" />
+                    <span>Copy ATS Resume</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDownloadTxt}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
+                title="Download ATS-Friendly Plain Text Resume"
+              >
+                <Download className="h-4 w-4 text-[#275df5]" />
+                <span>Download .TXT</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer"
+                title="Print or Save as PDF"
+              >
+                <Printer className="h-4 w-4 text-muted-foreground" />
+                <span>Print / PDF</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-2 border-b border-border overflow-x-auto pb-1 no-scrollbar">
+            <button
+              type="button"
+              onClick={() => setActiveTailorTab('resume')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+                activeTailorTab === 'resume'
+                  ? 'border-[#275df5] text-[#275df5]'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <FileText className="h-4 w-4" />
+              <span>Tailored Resume</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-mono">
+                ATS Clean
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTailorTab('gaps')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+                activeTailorTab === 'gaps'
+                  ? 'border-[#275df5] text-[#275df5]'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Target className="h-4 w-4" />
+              <span>Honest Gap Analysis</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                tailoredResult.gap_summary.length > 0
+                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                  : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+              }`}>
+                {tailoredResult.gap_summary.length} Gaps
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTailorTab('changelog')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+                activeTailorTab === 'changelog'
+                  ? 'border-[#275df5] text-[#275df5]'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <FileCheck className="h-4 w-4" />
+              <span>Change Log &amp; Audit</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-foreground font-mono font-bold">
+                {tailoredResult.change_log.length} Updates
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTailorTab('requirements')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+                activeTailorTab === 'requirements'
+                  ? 'border-[#275df5] text-[#275df5]'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Layers className="h-4 w-4" />
+              <span>Parsed JD Buckets</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-foreground font-mono font-bold">
+                {tailoredResult.hard_requirements.length} Hard Req
+              </span>
+            </button>
+          </div>
+
+          {/* Tab 1: Tailored Resume Body */}
+          {activeTailorTab === 'resume' && (
+            <div className="space-y-4">
+              {/* ATS Formatting Guidelines Pill */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground bg-secondary/50 rounded-xl px-4 py-2.5 border border-border">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <span><strong>ATS Safe:</strong> Single-column, standard headers, chronological order, zero unparseable tables/graphics.</span>
+                </div>
+                <span className="text-[11px] font-mono">
+                  {tailoredResult.tailored_resume.split(/\s+/).filter(Boolean).length} words • ~45 sec recruiter scan
+                </span>
+              </div>
+
+              {/* Resume Paper Container */}
+              <div className="relative rounded-xl border border-border bg-background p-6 sm:p-8 shadow-inner">
+                <button
+                  type="button"
+                  onClick={handleCopyTailoredResume}
+                  className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
+                >
+                  {copiedTailored ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                  <span>{copiedTailored ? 'Copied' : 'Copy'}</span>
+                </button>
+
+                <pre className="font-sans text-xs sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap selection:bg-[#275df5]/20 font-normal">
+                  {tailoredResult.tailored_resume}
+                </pre>
+              </div>
+
+              {/* Practical Guidance */}
+              <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-xs text-muted-foreground flex items-start gap-3">
+                <Info className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-bold text-foreground">How to use this tailored resume:</p>
+                  <p className="leading-relaxed">
+                    Copy the text above into Google Docs or Microsoft Word. Set font to <strong>Calibri or Arial (10pt to 11pt)</strong> with 0.5 to 0.75-inch margins. It will cleanly format into an exact 1-page ATS-passable resume. Then export as <strong>.PDF</strong> or submit as <strong>.DOCX</strong>!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tab 2: Honest Gap Analysis */}
+          {activeTailorTab === 'gaps' && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/30 p-4 sm:p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
+                  <h4 className="text-sm sm:text-base font-bold text-foreground">
+                    Transparent JD Gap Analysis (Master Prompt Step 3)
+                  </h4>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Unlike generic AI tools that hallucinate fake experience, FreshersBridge never papers over real gaps. Below is what this JD explicitly mandates that your resume currently lacks, so you can study them before the technical screening.
+                </p>
+              </div>
+
+              {/* Missing Requirements List */}
+              <div className="space-y-3">
+                <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
+                  Unmatched Job Requirements ({tailoredResult.gap_summary.length})
+                </h5>
+                <div className="grid grid-cols-1 gap-3">
+                  {tailoredResult.gap_summary.map((gap, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-border bg-card p-4 flex items-start gap-3 text-xs sm:text-sm"
+                    >
+                      <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-medium text-foreground leading-relaxed">{gap}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          💡 <strong>Interview Tip:</strong> If asked, be honest about having foundational knowledge or willingness to learn this tool rapidly (e.g. within 2 weeks).
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Adjacent / Transferable Matches */}
+              {tailoredResult.adjacent_matches && tailoredResult.adjacent_matches.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
+                    Adjacent &amp; Transferable Skills Highlighted ({tailoredResult.adjacent_matches.length})
+                  </h5>
+                  <div className="grid grid-cols-1 gap-2.5">
+                    {tailoredResult.adjacent_matches.map((adj, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-xl border border-blue-200/60 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/20 p-3.5 flex items-start gap-3 text-xs"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                        <p className="text-foreground leading-relaxed">{adj}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tab 3: Change Log & Verification */}
+          {activeTailorTab === 'changelog' && (
+            <div className="space-y-6">
+              {/* Zero-Fabrication Audit Box */}
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/25 p-4 sm:p-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
+                  <h4 className="text-sm sm:text-base font-bold text-foreground">
+                    Factual Integrity &amp; Safety Audit (Master Prompt Step 6)
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    <span>Company names &amp; titles strictly preserved</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    <span>Graduation dates &amp; GPA untouched</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    <span>Percentages &amp; metric values preserved</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    <span>Zero hallucinated jobs or tools</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Exact Changes Made */}
+              <div className="space-y-3">
+                <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
+                  Transformations &amp; Strategic Reordering Log ({tailoredResult.change_log.length})
+                </h5>
+                <div className="grid grid-cols-1 gap-3">
+                  {tailoredResult.change_log.map((log, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-border bg-card p-4 flex items-start gap-3 text-xs sm:text-sm"
+                    >
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#275df5]/10 text-[11px] font-bold text-[#275df5]">
+                        {idx + 1}
+                      </span>
+                      <p className="text-foreground leading-relaxed">{log}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tab 4: Parsed JD Buckets */}
+          {activeTailorTab === 'requirements' && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-xl border border-rose-200/70 dark:border-rose-900/50 bg-rose-50/40 dark:bg-rose-950/20 p-4 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300">
+                    Hard Requirements
+                  </h5>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300">
+                    {tailoredResult.hard_requirements.length}
+                  </span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  {tailoredResult.hard_requirements.map((req, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-xl border border-amber-200/70 dark:border-amber-900/50 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
+                    Nice To Have / Bonus
+                  </h5>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
+                    {tailoredResult.nice_to_have.length}
+                  </span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  {tailoredResult.nice_to_have.map((nth, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-amber-500 font-bold">•</span>
+                      <span>{nth}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/50 bg-blue-50/40 dark:bg-blue-950/20 p-4 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
+                    Core Responsibilities
+                  </h5>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                    {tailoredResult.core_responsibilities.length}
+                  </span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  {tailoredResult.core_responsibilities.map((cr, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-blue-500 font-bold">•</span>
+                      <span>{cr}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
 
         </div>
       )}
