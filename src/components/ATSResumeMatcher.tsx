@@ -458,10 +458,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/30 px-3 py-1 text-xs font-bold text-[#275df5] mb-2">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Jobsuit-Grade ATS Matching Engine</span>
-            </div>
             <h3 className="text-xl sm:text-2xl font-bold text-foreground">
               ATS Resume Scanner &amp; Role Tailor
             </h3>
@@ -690,37 +686,17 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               type="button"
               onClick={handleAnalyze}
               disabled={!resumeText.trim() || isAnalyzing || isTailoring}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-secondary hover:bg-secondary/80 px-6 py-3.5 text-sm font-bold text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
             >
               {isAnalyzing ? (
                 <>
-                  <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
+                  <RefreshCw className="h-4 w-4 animate-spin" />
                   <span>Scanning ATS Score...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 text-[#275df5]" />
+                  <Sparkles className="h-4 w-4" />
                   <span>Scan ATS Match Score</span>
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleTailorResume}
-              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
-            >
-              {isTailoring ? (
-                <>
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>Generating Tailored Resume (Master Prompt Engine)...</span>
-                </>
-              ) : (
-                <>
-                  <Wand2 className="h-4 w-4" />
-                  <span>AI Tailor &amp; Generate Resume</span>
-                  <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </button>
@@ -971,21 +947,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* Section Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-border pb-6 relative z-10">
             <div className="space-y-1.5">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#275df5]/10 text-[#275df5] border border-[#275df5]/20">
-                  <Wand2 className="h-3.5 w-3.5" />
-                  Master Tailoring Engine v2
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                  100% Zero-Fabrication Guarantee
-                </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-secondary text-muted-foreground">
-                  1-Page ATS Standard
-                </span>
-              </div>
               <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
-                <span>Tailored ATS Resume &amp; Gap Suite</span>
+                <span>Tailored ATS Resume</span>
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
                 Optimized specifically for this target job description without inventing skills or inflated metrics. Factual work history, dates, and institutions are strictly preserved.
@@ -1018,50 +981,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     type="button"
                     onClick={handleDownloadCoverLetter}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Download Cover Letter as .TXT"
+                    title="Download Cover Letter"
                   >
                     <Download className="h-4 w-4 text-[#275df5]" />
-                    <span>Download .TXT</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handlePrintCoverLetter}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Print Cover Letter"
-                  >
-                    <Printer className="h-4 w-4 text-muted-foreground" />
-                    <span>Print / PDF</span>
-                  </button>
-                </>
-              ) : activeTailorTab === 'latex' ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleCopyLatex}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
-                  >
-                    {copiedLatex ? (
-                      <>
-                        <Check className="h-4 w-4" />
-                        <span>Copied LaTeX!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4" />
-                        <span>Copy LaTeX Code</span>
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDownloadTex}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Download Compilable .TEX File"
-                  >
-                    <Download className="h-4 w-4 text-[#275df5]" />
-                    <span>Download .TEX</span>
+                    <span>Download</span>
                   </button>
                 </>
               ) : (
@@ -1091,139 +1014,37 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     title="Download ATS-Friendly Plain Text Resume"
                   >
                     <Download className="h-4 w-4 text-[#275df5]" />
-                    <span>Download .TXT</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handlePrint}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Print or Save as PDF"
-                  >
-                    <Printer className="h-4 w-4 text-muted-foreground" />
-                    <span>Print / PDF</span>
+                    <span>Download</span>
                   </button>
                 </>
               )}
             </div>
           </div>
 
-          {/* Navigation Tabs (Multi-Agent Suite) */}
+          {/* Navigation Tabs */}
           <div className="flex items-center gap-2 border-b border-border overflow-x-auto pb-1 no-scrollbar">
             <button
               type="button"
               onClick={() => setActiveTailorTab('resume')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
                 activeTailorTab === 'resume'
                   ? 'border-[#275df5] text-[#275df5]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              <FileText className="h-4 w-4" />
-              <span>Tailored Resume</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-mono">
-                ATS Clean
-              </span>
+              Tailored Resume
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTailorTab('cover_letter')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
                 activeTailorTab === 'cover_letter'
                   ? 'border-[#275df5] text-[#275df5]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Mail className="h-4 w-4" />
-              <span>Cover Letter</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-mono">
-                Fresher Fit
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTailorTab('latex')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'latex'
-                  ? 'border-[#275df5] text-[#275df5]'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Code2 className="h-4 w-4" />
-              <span>LaTeX (.TEX)</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300 font-mono">
-                Overleaf
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTailorTab('critic')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'critic'
-                  ? 'border-[#275df5] text-[#275df5]'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span>Reviewer Agent Audit</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-mono font-bold">
-                {tailoredResult.critic_review?.score || 88}/100
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTailorTab('gaps')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'gaps'
-                  ? 'border-[#275df5] text-[#275df5]'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Target className="h-4 w-4" />
-              <span>Honest Gap Analysis</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
-                tailoredResult.gap_summary.length > 0
-                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
-                  : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-              }`}>
-                {tailoredResult.gap_summary.length} Gaps
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTailorTab('changelog')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'changelog'
-                  ? 'border-[#275df5] text-[#275df5]'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <FileCheck className="h-4 w-4" />
-              <span>Change Log</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-foreground font-mono font-bold">
-                {tailoredResult.change_log.length} Updates
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTailorTab('requirements')}
-              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'requirements'
-                  ? 'border-[#275df5] text-[#275df5]'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Layers className="h-4 w-4" />
-              <span>Parsed JD</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-foreground font-mono font-bold">
-                {tailoredResult.hard_requirements.length} Hard
-              </span>
+              Cover Letter
             </button>
           </div>
 
@@ -1305,19 +1126,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                       type="button"
                       onClick={handleDownloadCoverLetter}
                       className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
-                      title="Download Cover Letter as .TXT"
+                      title="Download Cover Letter"
                     >
                       <Download className="h-3.5 w-3.5 text-[#275df5]" />
-                      <span>.TXT</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handlePrintCoverLetter}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
-                      title="Print Cover Letter"
-                    >
-                      <Printer className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span>Print</span>
+                      <span>Download</span>
                     </button>
                   </div>
                 </div>
@@ -1336,345 +1148,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     When applying on company portals (TCS iON, Infosys Careers, Accenture Careers) or reaching out to recruiters on LinkedIn/Email, paste this directly into the Cover Letter / Message box. It proves you researched their tech stack rather than mass-spamming applications!
                   </p>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* ================================================================= */}
-          {/* TAB 3: JAKE'S RESUME LATEX CODE & OVERLEAF GUIDE                 */}
-          {/* ================================================================= */}
-          {activeTailorTab === 'latex' && (
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground bg-secondary/50 rounded-xl px-4 py-2.5 border border-border">
-                <div className="flex items-center gap-2">
-                  <Code2 className="h-4 w-4 text-[#275df5] shrink-0" />
-                  <span><strong>Industry-Standard Jake's Resume LaTeX:</strong> Compiles cleanly into pixel-perfect PDF on Overleaf, MacTeX, and TeX Live.</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyLatex}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#275df5] hover:underline cursor-pointer"
-                  >
-                    {copiedLatex ? 'Copied Code!' : 'Copy Code'}
-                  </button>
-                  <span>•</span>
-                  <button
-                    type="button"
-                    onClick={handleDownloadTex}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#275df5] hover:underline cursor-pointer"
-                  >
-                    Download .TEX
-                  </button>
-                </div>
-              </div>
-
-              {/* Overleaf 3-Step Guide */}
-              <div className="rounded-xl border border-[#275df5]/30 bg-gradient-to-r from-blue-500/5 to-indigo-500/10 p-4 sm:p-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
-                    <ExternalLink className="h-4 w-4 text-[#275df5]" />
-                    <span>How to compile this in 30 seconds on Overleaf:</span>
-                  </h5>
-                  <a
-                    href="https://www.overleaf.com/project"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-[#275df5] hover:underline"
-                  >
-                    <span>Open Overleaf</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-muted-foreground">
-                  <div className="rounded-lg bg-card/80 p-3 border border-border/80 space-y-1">
-                    <span className="font-bold text-foreground block">1. Copy or Download</span>
-                    <p className="text-[11px]">Click "Download .TEX" or copy the LaTeX code below.</p>
-                  </div>
-                  <div className="rounded-lg bg-card/80 p-3 border border-border/80 space-y-1">
-                    <span className="font-bold text-foreground block">2. Create New Project</span>
-                    <p className="text-[11px]">Go to Overleaf.com, click "New Project" ➔ "Blank Project".</p>
-                  </div>
-                  <div className="rounded-lg bg-card/80 p-3 border border-border/80 space-y-1">
-                    <span className="font-bold text-foreground block">3. Paste &amp; Recompile</span>
-                    <p className="text-[11px]">Paste the code into main.tex and click "Recompile" for your vector PDF!</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* LaTeX Code Box */}
-              <div className="relative rounded-xl border border-border bg-[#0f172a] text-slate-200 p-5 sm:p-6 shadow-inner font-mono text-xs overflow-x-auto max-h-[520px]">
-                <button
-                  type="button"
-                  onClick={handleCopyLatex}
-                  className="sticky top-0 float-right inline-flex items-center gap-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-white px-3 py-1.5 text-xs font-semibold transition-all border border-slate-700 shadow-md cursor-pointer ml-4 mb-2 z-10"
-                >
-                  {copiedLatex ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-                  <span>{copiedLatex ? 'Copied' : 'Copy LaTeX'}</span>
-                </button>
-
-                <pre className="whitespace-pre leading-relaxed selection:bg-[#275df5]/40 font-mono text-[11px]">
-                  {tailoredResult.latex_resume || '% LaTeX generation in progress...'}
-                </pre>
-              </div>
-            </div>
-          )}
-
-          {/* ================================================================= */}
-          {/* TAB 4: REVIEWER AGENT (ADVERSARIAL CRITIC) AUDIT SCORECARD        */}
-          {/* ================================================================= */}
-          {activeTailorTab === 'critic' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-br from-card via-[#275df5]/5 to-indigo-500/10 p-6 sm:p-7 space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border/70 pb-5">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#275df5]/10 text-[#275df5]">
-                        Dual-Agent Architecture
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                        Zero Hallucinations Verified
-                      </span>
-                    </div>
-                    <h4 className="text-lg sm:text-xl font-black text-foreground flex items-center gap-2">
-                      <span>Adversarial Reviewer Agent Audit Scorecard</span>
-                    </h4>
-                    <p className="text-xs text-muted-foreground max-w-xl">
-                      Inspired by Mads Lorentzen's ai-job-search framework: An independent critic agent audits the draft to prevent hallucinated tools and enforce 1-page freshers conciseness.
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-card border-2 border-[#275df5] p-3 text-center min-w-[100px] shadow-sm">
-                      <span className="text-[10px] font-bold uppercase text-muted-foreground block">Recruiter Score</span>
-                      <span className="text-3xl font-black text-[#275df5]">
-                        {tailoredResult.critic_review?.score || 88}
-                      </span>
-                      <span className="text-[10px] font-bold text-emerald-600 block">/ 100</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recruiter Verdict Callout */}
-                <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/30 p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-                    <h5 className="text-xs sm:text-sm font-bold text-foreground">
-                      Reviewer Agent Verdict
-                    </h5>
-                  </div>
-                  <p className="text-xs sm:text-sm font-medium text-emerald-900 dark:text-emerald-200 leading-relaxed pl-7 italic">
-                    "{tailoredResult.critic_review?.verdict || 'Recruiter-Ready: Passed Adversarial Hallucination Audit & Strong Verb Density.'}"
-                  </p>
-                </div>
-
-                {/* Reviewer Audit Checklist */}
-                <div className="space-y-3 pt-2">
-                  <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
-                    Reviewer Agent Observations &amp; Quality Audits
-                  </h5>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {(tailoredResult.critic_review?.notes || [
-                      'Zero hallucinated metrics or employers detected; factual claims strictly preserved.',
-                      'Action verbs standardized to strong past-tense achievements (Engineered, Implemented).',
-                      'Cover letter articulates fresher technical adaptability with professional clarity.',
-                      'Resume fits standard single-page format for 0-2 years experience candidates.'
-                    ]).map((note, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-xl border border-border bg-card p-4 flex items-start gap-3 text-xs"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <p className="text-foreground leading-relaxed">{note}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Why it Matters Banner */}
-                <div className="rounded-xl border border-border bg-card/60 p-4 text-xs text-muted-foreground space-y-1">
-                  <p className="font-bold text-foreground">Why the Drafter-Reviewer Loop Matters:</p>
-                  <p className="leading-relaxed">
-                    Standard AI tools try to write everything in a single prompt, frequently fabricating unperformed duties or inflating metrics. FreshersBridge uses a dedicated Reviewer Critic that acts as a gatekeeper, rejecting any hallucinated content and ensuring bullet points align with Google's XYZ impact formulation.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ================================================================= */}
-          {/* TAB 5: HONEST GAP ANALYSIS                                       */}
-          {/* ================================================================= */}
-          {activeTailorTab === 'gaps' && (
-            <div className="space-y-6">
-              <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/30 p-4 sm:p-5 space-y-2">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-                  <h4 className="text-sm sm:text-base font-bold text-foreground">
-                    Transparent JD Gap Analysis (Master Prompt Step 3)
-                  </h4>
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Unlike generic AI tools that hallucinate fake experience, FreshersBridge never papers over real gaps. Below is what this JD explicitly mandates that your resume currently lacks, so you can study them before the technical screening.
-                </p>
-              </div>
-
-              {/* Missing Requirements List */}
-              <div className="space-y-3">
-                <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
-                  Unmatched Job Requirements ({tailoredResult.gap_summary.length})
-                </h5>
-                <div className="grid grid-cols-1 gap-3">
-                  {tailoredResult.gap_summary.map((gap, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-xl border border-border bg-card p-4 flex items-start gap-3 text-xs sm:text-sm"
-                    >
-                      <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
-                      <div className="space-y-1">
-                        <p className="font-medium text-foreground leading-relaxed">{gap}</p>
-                        <p className="text-[11px] text-muted-foreground">
-                          💡 <strong>Interview Tip:</strong> If asked, be honest about having foundational knowledge or willingness to learn this tool rapidly (e.g. within 2 weeks).
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Adjacent / Transferable Matches */}
-              {tailoredResult.adjacent_matches && tailoredResult.adjacent_matches.length > 0 && (
-                <div className="space-y-3 pt-2">
-                  <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
-                    Adjacent &amp; Transferable Skills Highlighted ({tailoredResult.adjacent_matches.length})
-                  </h5>
-                  <div className="grid grid-cols-1 gap-2.5">
-                    {tailoredResult.adjacent_matches.map((adj, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-xl border border-blue-200/60 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/20 p-3.5 flex items-start gap-3 text-xs"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
-                        <p className="text-foreground leading-relaxed">{adj}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Tab 3: Change Log & Verification */}
-          {activeTailorTab === 'changelog' && (
-            <div className="space-y-6">
-              {/* Zero-Fabrication Audit Box */}
-              <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/25 p-4 sm:p-5 space-y-3">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-                  <h4 className="text-sm sm:text-base font-bold text-foreground">
-                    Factual Integrity &amp; Safety Audit (Master Prompt Step 6)
-                  </h4>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    <span>Company names &amp; titles strictly preserved</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    <span>Graduation dates &amp; GPA untouched</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    <span>Percentages &amp; metric values preserved</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    <span>Zero hallucinated jobs or tools</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Exact Changes Made */}
-              <div className="space-y-3">
-                <h5 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
-                  Transformations &amp; Strategic Reordering Log ({tailoredResult.change_log.length})
-                </h5>
-                <div className="grid grid-cols-1 gap-3">
-                  {tailoredResult.change_log.map((log, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-xl border border-border bg-card p-4 flex items-start gap-3 text-xs sm:text-sm"
-                    >
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#275df5]/10 text-[11px] font-bold text-[#275df5]">
-                        {idx + 1}
-                      </span>
-                      <p className="text-foreground leading-relaxed">{log}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 4: Parsed JD Buckets */}
-          {activeTailorTab === 'requirements' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-xl border border-rose-200/70 dark:border-rose-900/50 bg-rose-50/40 dark:bg-rose-950/20 p-4 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-xs font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300">
-                    Hard Requirements
-                  </h5>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300">
-                    {tailoredResult.hard_requirements.length}
-                  </span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground">
-                  {tailoredResult.hard_requirements.map((req, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-rose-500 font-bold">•</span>
-                      <span>{req}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl border border-amber-200/70 dark:border-amber-900/50 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
-                    Nice To Have / Bonus
-                  </h5>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
-                    {tailoredResult.nice_to_have.length}
-                  </span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground">
-                  {tailoredResult.nice_to_have.map((nth, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-amber-500 font-bold">•</span>
-                      <span>{nth}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/50 bg-blue-50/40 dark:bg-blue-950/20 p-4 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
-                    Core Responsibilities
-                  </h5>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-                    {tailoredResult.core_responsibilities.length}
-                  </span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground">
-                  {tailoredResult.core_responsibilities.map((cr, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-blue-500 font-bold">•</span>
-                      <span>{cr}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
           )}
