@@ -540,9 +540,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-bold text-foreground truncate">{uploadedFileName}</p>
-                          <p className="text-[11px] text-muted-foreground">
-                            {resumeText.split(/\s+/).filter(Boolean).length} words extracted • 100% Client-Side Private
-                          </p>
                         </div>
                       </div>
 
@@ -641,27 +638,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               <span className="text-[11px] text-muted-foreground">
                 Match against role criteria
               </span>
-            </div>
-
-            {/* Quick Presets Dropdown/Pills */}
-            <div className="flex flex-wrap gap-1.5">
-              <span className="text-[11px] font-bold text-muted-foreground self-center mr-1">
-                Quick Fill:
-              </span>
-              {SAMPLE_JOB_PRESETS.map((preset, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => handleSelectPreset(idx)}
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
-                    selectedPresetIndex === idx
-                      ? 'border-[#275df5] bg-[#275df5] text-white'
-                      : 'border-border bg-background text-muted-foreground hover:text-foreground hover:border-[#275df5]/40'
-                  }`}
-                >
-                  {preset.company.split(' ')[0]} {preset.label.split('-')[1]?.trim() || ''}
-                </button>
-              ))}
             </div>
 
             <textarea
@@ -811,45 +787,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             </div>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
-              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
-                <Award className="h-3.5 w-3.5 text-[#275df5]" /> Hard Skills Match
-              </span>
-              <p className="text-sm font-bold text-foreground">
-                {results.matchedSkills.length} / {results.targetSkills.length} Skills
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
-              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-indigo-500" /> Structure Checks
-              </span>
-              <p className="text-sm font-bold text-foreground">
-                {results.sections.filter((s) => s.found).length} / {results.sections.length} Passed
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
-              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-500" /> Metric Density
-              </span>
-              <p className="text-sm font-bold text-foreground">
-                {results.impactRating}
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
-              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
-                <FileText className="h-3.5 w-3.5 text-amber-500" /> Resume Length
-              </span>
-              <p className="text-sm font-bold text-foreground">
-                {results.wordCount} words ({results.wordCountStatus.split(' ')[0]})
-              </p>
-            </div>
-          </div>
-
           {/* 3 Columns: Matched Skills, Missing Skills, and Sections */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -950,49 +887,37 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
           </div>
 
-          {/* Actionable Recommendations & Google XYZ Formula Suggestions */}
-          <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/40 dark:bg-blue-950/25 p-5 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-blue-200/60 dark:border-blue-900/50 pb-3">
-              <h5 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
-                <Target className="h-4 w-4 text-[#275df5]" />
-                <span>Role-Tailoring Recommendations (Jobsuit Style)</span>
-              </h5>
-              <span className="text-xs font-semibold text-[#275df5]">
-                {results.actionableFeedback.length} Action Items
-              </span>
+          {/* Action CTA Button at bottom of Scorecard */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
+            <div className="space-y-0.5 text-center sm:text-left">
+              <p className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
+                <Sparkles className="h-4 w-4 text-[#275df5]" />
+                <span>Ready to tailor your application?</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Generate a 1-page tailored ATS resume, fresher cover letter, and LaTeX package matching this JD.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              {results.actionableFeedback.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-lg bg-card/80 border border-border/70 p-4 space-y-2 text-xs sm:text-sm"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-bold text-foreground flex items-center gap-2">
-                      <span className={`h-2 w-2 rounded-full ${item.priority === 'high' ? 'bg-rose-500' : 'bg-amber-500'}`} />
-                      {item.title}
-                    </p>
-                    <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
-                      item.priority === 'high' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
-                    }`}>
-                      {item.priority} priority
-                    </span>
-                  </div>
-
-                  <p className="text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
-
-                  {item.suggestedExample && (
-                    <div className="rounded-md bg-secondary/70 p-2.5 border border-border/60 text-xs font-mono text-foreground/90">
-                      <strong className="text-[#275df5] font-sans font-bold block mb-1">Recommended Rewrite:</strong>
-                      {item.suggestedExample}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={handleTailorResume}
+              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-8 py-4 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+            >
+              {isTailoring ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>Generating Tailored Package...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4" />
+                  <span>AI Tailor &amp; Generate Resume</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
           </div>
 
         </div>
