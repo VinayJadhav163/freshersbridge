@@ -1,330 +1,766 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Sparkles, 
+  Upload, 
+  FileText, 
   CheckCircle2, 
   AlertTriangle, 
-  FileText, 
-  Briefcase, 
+  XCircle, 
+  Copy, 
+  Check, 
   RefreshCw, 
   Layers, 
-  Target,
-  ArrowRight
+  Target, 
+  ArrowRight, 
+  ShieldCheck, 
+  Info, 
+  Building2, 
+  ChevronDown, 
+  Award, 
+  BarChart3,
+  FileCheck,
+  TrendingUp
 } from 'lucide-react';
+import { extractTextFromFile } from '@/lib/pdfTextExtractor';
+import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
 
-const COMMON_TECH_KEYWORDS = [
-  'javascript', 'typescript', 'react', 'next.js', 'node.js', 'python', 'java', 'c++', 'c#',
-  'sql', 'postgresql', 'mongodb', 'mysql', 'git', 'github', 'docker', 'aws', 'rest api',
-  'html5', 'css3', 'tailwind css', 'data structures', 'algorithms', 'oops', 'dbms',
-  'operating systems', 'machine learning', 'ci/cd', 'agile', 'linux', 'unit testing'
+// Quick-Fill Sample Target JDs for Top Fresher Drives
+const SAMPLE_JOB_PRESETS = [
+  {
+    label: 'TCS NQT 2026 - Ninja & Digital Role',
+    company: 'Tata Consultancy Services',
+    jd: `Role: Assistant System Engineer / Digital Trainee (2025/2026 Batch)
+Requirements:
+- B.E./B.Tech/MCA/M.Sc in Computer Science, IT, or related fields.
+- Strong knowledge of Data Structures, Algorithms, OOPs, and DBMS.
+- Proficiency in Java, Python, C++, or C#.
+- Familiarity with SQL databases, HTML, CSS, JavaScript, and Git.
+- Basic understanding of Operating Systems, Computer Networks, and Cloud fundamentals.
+- Strong problem solving, analytical thinking, and effective communication skills.`,
+  },
+  {
+    label: 'Accenture - Associate Software Engineer (ASE)',
+    company: 'Accenture',
+    jd: `Role: Associate Software Engineer (ASE)
+Key Qualifications:
+- Degree in Engineering, Computer Science, or equivalent.
+- Hands-on coding in Java, Python, JavaScript, or C#.
+- Experience building web applications with React, Node.js, and RESTful APIs.
+- Understanding of relational databases (PostgreSQL, MySQL) and query optimization.
+- Familiarity with Cloud platforms (AWS or Azure), CI/CD pipelines, and Docker basics.
+- Excellent collaboration, agile mindset, and debugging capabilities.`,
+  },
+  {
+    label: 'Full-Stack Developer (React + Node.js)',
+    company: 'Tech Startup / Product Team',
+    jd: `Position: Junior Full Stack Developer
+Requirements:
+- Proficiency in React.js, Next.js, TypeScript, and Tailwind CSS.
+- Backend proficiency with Node.js, Express.js, and REST APIs.
+- Hands-on experience with PostgreSQL, MongoDB, Prisma, or Redis.
+- Knowledge of Git, GitHub Actions, Docker, and deployment on Vercel or AWS.
+- Demonstrated projects with quantifiable user impact and clean code architecture.`,
+  },
+  {
+    label: 'Infosys - Specialist Programmer (SP)',
+    company: 'Infosys',
+    jd: `Role: Specialist Programmer (High-Package Coding Track)
+Key Requirements:
+- Deep expertise in Advanced Data Structures, Algorithms, and Dynamic Programming.
+- High proficiency in Java, Python, or C++.
+- Experience in System Design, Microservices, Spring Boot, or Django.
+- Database query tuning in PostgreSQL or MySQL.
+- Competitive programming rank (LeetCode, CodeChef, Codeforces) is a strong plus.`,
+  },
 ];
 
-const SAMPLE_RESUME = `
-RAHUL SHARMA
-Email: rahul.sharma@example.com | Phone: +91-9876543210 | Bangalore, India
+const SAMPLE_RESUME_TEXT = `RAHUL SHARMA
+Email: rahul.sharma.dev@gmail.com | Phone: +91-9876543210 | Bangalore, India
 LinkedIn: linkedin.com/in/rahul-sharma-dev | GitHub: github.com/rahul-sharma-dev
 
 EDUCATION
-B.E. in Computer Science and Engineering | 2022 - 2026 | CGPA: 8.6/10.0
+B.Tech in Computer Science and Engineering | 2022 - 2026 | CGPA: 8.7/10.0
 ABC Institute of Technology, Bangalore
 
 TECHNICAL SKILLS
-- Languages: Java, Python, JavaScript, TypeScript, SQL
-- Frontend: React.js, Next.js, HTML5, CSS3, Tailwind CSS
-- Backend & DB: Node.js, Express, PostgreSQL, MongoDB, RESTful APIs
-- Developer Tools: Git, GitHub, Postman, Docker, Vercel
+- Programming Languages: Java, Python, JavaScript, TypeScript, SQL
+- Frontend: React.js, Next.js, HTML5, CSS3, Tailwind CSS, Redux
+- Backend & APIs: Node.js, Express.js, RESTful APIs, Microservices
+- Databases: PostgreSQL, MongoDB, Redis, MySQL
+- Developer Tools & Cloud: Git, GitHub, Docker, AWS (S3, EC2), Postman
+- Core CS: Data Structures & Algorithms (DSA), OOPs, DBMS, Operating Systems
 
 PROJECTS
-1. FreshersBridge - Job Search & Application Portal
-- Developed a full-stack job board using Next.js, TypeScript, and Supabase for 1,000+ active freshers.
-- Implemented real-time search, filters, and background web scrapers in Python, reducing data ingestion latency by 40%.
-- Integrated responsive UI with Tailwind CSS and dark mode support.
+1. FreshersBridge - Off-Campus Tech Job Portal
+- Engineered full-stack job search portal using Next.js, TypeScript, and Supabase for 2,500+ active student users.
+- Implemented real-time indexing and search filtering, improving query latency by 45% (reduced from 280ms to 150ms).
+- Built automated background scrapers in Python, processing 100+ verified tech drives daily.
 
-2. Real-Time Collaborative Whiteboard
-- Built an interactive whiteboard using React and WebSockets for simultaneous multi-user sketching.
-- Handled state synchronization with Redis and deployed on Vercel.
-`;
+2. Collaborative Real-Time Whiteboard
+- Developed interactive canvas drawing platform using React and WebSockets for 10+ simultaneous users per room.
+- Handled distributed state synchronization with Redis pub/sub, achieving <50ms sync latency.
 
-const SAMPLE_JOB_DESCRIPTION = `
-We are looking for an Associate Software Engineer (Full Stack) to join our engineering team.
-Requirements:
-- Bachelor's degree in Computer Science, IT, or related engineering discipline (2025/2026 batch).
-- Strong foundation in Data Structures, Algorithms, and OOPs concepts.
-- Proficiency in JavaScript, React.js, Node.js, and RESTful APIs.
-- Experience with PostgreSQL, MySQL, or MongoDB database querying.
-- Familiarity with Git, GitHub, Docker, and AWS cloud basics.
-- Excellent communication and problem-solving mindset.
-`;
+EXPERIENCE / INTERNSHIPS
+Software Engineering Intern | TechNova Labs (June 2025 - August 2025)
+- Developed responsive UI components in React and integrated 8+ backend REST API endpoints.
+- Optimized PostgreSQL database queries, reducing average page load time by 30%.`;
 
 export default function ATSResumeMatcher() {
+  const [activeTab, setActiveTab] = useState<'upload' | 'paste'>('upload');
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [resumeText, setResumeText] = useState('');
   const [jobDescription, setJobDescription] = useState('');
+  const [selectedPresetIndex, setSelectedPresetIndex] = useState<number | ''>('');
+  const [isExtracting, setIsExtracting] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState<{
-    score: number;
-    matchedKeywords: string[];
-    missingKeywords: string[];
-    detectedSections: { name: string; found: boolean }[];
-    wordCount: number;
-    recommendations: string[];
-  } | null>(null);
+  const [copiedMissing, setCopiedMissing] = useState(false);
+  const [copiedReport, setCopiedReport] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const loadSample = () => {
-    setResumeText(SAMPLE_RESUME.trim());
-    setJobDescription(SAMPLE_JOB_DESCRIPTION.trim());
+  const [results, setResults] = useState<ATSAnalysisResult | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // File Upload Handler (PDF, TXT, DOCX)
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+
+    setErrorMessage(null);
+    setIsExtracting(true);
+    setUploadedFileName(file.name);
+
+    try {
+      const extracted = await extractTextFromFile(file);
+      if (!extracted || extracted.trim().length < 50) {
+        throw new Error('Extracted text seems too short or unreadable. If this is a scanned PDF image, please paste your text.');
+      }
+      setResumeText(extracted);
+      setActiveTab('upload');
+    } catch (err: any) {
+      console.error(err);
+      setErrorMessage(err?.message || 'Could not parse the uploaded file. Please paste your resume text directly.');
+      setUploadedFileName(null);
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleSelectPreset = (idx: number) => {
+    setSelectedPresetIndex(idx);
+    setJobDescription(SAMPLE_JOB_PRESETS[idx].jd);
+  };
+
+  const handleLoadSampleResume = () => {
+    setResumeText(SAMPLE_RESUME_TEXT.trim());
+    setUploadedFileName('rahul-sharma-sample-resume.pdf');
+    setActiveTab('upload');
+    if (!jobDescription.trim()) {
+      handleSelectPreset(0);
+    }
+  };
+
+  const handleClearResume = () => {
+    setResumeText('');
+    setUploadedFileName(null);
+    setResults(null);
+    setErrorMessage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleAnalyze = () => {
     if (!resumeText.trim()) return;
 
     setIsAnalyzing(true);
+    setErrorMessage(null);
 
+    // Short simulated delay for smooth UI transition
     setTimeout(() => {
-      const lowerResume = resumeText.toLowerCase();
-      const lowerJD = jobDescription.toLowerCase();
+      try {
+        const analysis = analyzeResumeATS(resumeText, jobDescription);
+        setResults(analysis);
 
-      // 1. Extract Target Keywords from JD or fallback to common tech keywords
-      let targetKeywords = COMMON_TECH_KEYWORDS.filter(k => lowerJD.includes(k));
-      if (targetKeywords.length < 5) {
-        // Fallback default skills if JD is short
-        targetKeywords = ['java', 'python', 'javascript', 'react', 'sql', 'git', 'oops', 'data structures', 'rest api', 'postgresql'];
+        // Smooth scroll down to results on mobile
+        setTimeout(() => {
+          const resultsElem = document.getElementById('ats-results-dashboard');
+          if (resultsElem) {
+            resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      } catch (err: any) {
+        console.error('Analysis error:', err);
+        setErrorMessage('Failed to complete ATS analysis. Please check your resume text and try again.');
+      } finally {
+        setIsAnalyzing(false);
       }
-
-      // 2. Identify Matched vs Missing
-      const matched = targetKeywords.filter(k => lowerResume.includes(k));
-      const missing = targetKeywords.filter(k => !lowerResume.includes(k));
-
-      // 3. Detect standard sections
-      const sections = [
-        { name: 'Contact Info (Email/Phone)', found: /@|\+91|\d{10}/.test(lowerResume) },
-        { name: 'Education Section', found: /education|degree|b\.?e|b\.?tech|mca|bca|college|university/.test(lowerResume) },
-        { name: 'Technical Skills Section', found: /skills|technologies|proficiencies|languages/.test(lowerResume) },
-        { name: 'Projects Section', found: /projects|academic projects|built|developed/.test(lowerResume) },
-        { name: 'Work Experience / Internships', found: /experience|internship|trainee|work history/.test(lowerResume) },
-      ];
-
-      // 4. Calculate Score
-      const keywordScore = (matched.length / Math.max(targetKeywords.length, 1)) * 60;
-      const sectionScore = (sections.filter(s => s.found).length / sections.length) * 30;
-      const lengthBonus = lowerResume.split(/\s+/).length >= 150 && lowerResume.split(/\s+/).length <= 600 ? 10 : 5;
-      const totalScore = Math.min(Math.round(keywordScore + sectionScore + lengthBonus), 100);
-
-      // 5. Actionable Recommendations
-      const recs: string[] = [];
-      if (missing.length > 0) {
-        recs.push(`Add missing high-demand technical keywords: ${missing.slice(0, 4).join(', ')}.`);
-      }
-      if (!sections.find(s => s.name.includes('Experience'))?.found) {
-        recs.push('Add an "Internships & Open Source" section to demonstrate practical experience.');
-      }
-      if (!/(\d+%\s*|\d+x\s*|\b\d+\s*users\b|\b\d+\s*ms\b)/i.test(resumeText)) {
-        recs.push('Quantify project achievements with metrics (e.g., "improved speed by 35%", "used by 200+ students").');
-      }
-      if (lowerResume.split(/\s+/).length < 200) {
-        recs.push('Resume is relatively short. Expand project bullet points using the Google XYZ formula.');
-      } else {
-        recs.push('Great single-page word count! Ensure project bullet points start with strong action verbs (Engineered, Built, Implemented).');
-      }
-
-      setResults({
-        score: totalScore,
-        matchedKeywords: matched,
-        missingKeywords: missing,
-        detectedSections: sections,
-        wordCount: lowerResume.split(/\s+/).filter(Boolean).length,
-        recommendations: recs,
-      });
-
-      setIsAnalyzing(false);
     }, 400);
   };
 
+  const handleCopyMissingKeywords = () => {
+    if (!results || results.missingSkills.length === 0) return;
+    const textToCopy = results.missingSkills.join(', ');
+    navigator.clipboard.writeText(textToCopy);
+    setCopiedMissing(true);
+    setTimeout(() => setCopiedMissing(false), 2000);
+  };
+
+  const handleCopyFullReport = () => {
+    if (!results) return;
+    const report = `FreshersBridge ATS Resume Evaluation Report
+Overall Match Score: ${results.overallScore}% (${results.scoreTier})
+Word Count: ${results.wordCount} words (${results.wordCountStatus})
+Impact Rating: ${results.impactRating} (${results.metricsCount} quantified metrics detected)
+
+Matched Technical Skills (${results.matchedSkills.length}):
+${results.matchedSkills.join(', ') || 'None'}
+
+Missing Target Skills (${results.missingSkills.length}):
+${results.missingSkills.join(', ') || 'None'}
+
+Key Recommendations:
+${results.actionableFeedback.map((f, i) => `${i + 1}. ${f.title}: ${f.description}`).join('\n')}
+
+Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
+
+    navigator.clipboard.writeText(report);
+    setCopiedReport(true);
+    setTimeout(() => setCopiedReport(false), 2000);
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Input Form Box */}
+    <div className="space-y-8 w-full max-w-5xl mx-auto">
+      {/* 1. Main Scanner Inputs Card */}
       <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
+        
+        {/* Top Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              <span>Instant ATS Resume Scanner & Matcher</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/30 px-3 py-1 text-xs font-bold text-[#275df5] mb-2">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Jobsuit-Grade ATS Matching Engine</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground">
+              ATS Resume Scanner &amp; Role Tailor
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-              Paste your resume and target job description to check your ATS compatibility score (100% Client-Side & Private).
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Upload your PDF resume to detect missing keywords, section gaps, and Google XYZ impact metrics.
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={loadSample}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-xs font-bold text-foreground hover:bg-secondary/80 transition-colors shrink-0"
-          >
-            <RefreshCw className="h-3.5 w-3.5 text-indigo-600" />
-            <span>Load Sample Data</span>
-          </button>
+          {/* Quick Actions */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleLoadSampleResume}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/80 hover:bg-secondary px-3 py-2 text-xs font-bold text-foreground transition-all cursor-pointer shadow-2xs"
+            >
+              <RefreshCw className="h-3.5 w-3.5 text-[#275df5]" />
+              <span>Load Sample Resume</span>
+            </button>
+          </div>
         </div>
 
+        {/* Two-Column Input Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Resume Text Area */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-foreground flex items-center justify-between">
-              <span>Your Resume Text (Paste Text or Copy-Paste from PDF)</span>
-              <span className="text-muted-foreground font-normal">
-                {resumeText.split(/\s+/).filter(Boolean).length} words
-              </span>
-            </label>
-            <textarea
-              rows={10}
-              value={resumeText}
-              onChange={(e) => setResumeText(e.target.value)}
-              placeholder="Paste your raw resume text here (Education, Skills, Projects, Experience)..."
-              className="w-full h-64 sm:h-72 rounded-xl border border-border bg-background p-4 text-xs sm:text-sm font-mono text-foreground placeholder:text-muted-foreground focus:border-indigo-600 focus:outline-hidden focus:ring-1 focus:ring-indigo-600 leading-relaxed resize-none overflow-y-auto"
-            />
+
+          {/* Left Column: Resume File Upload / Text Area */}
+          <div className="space-y-3 flex flex-col">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5 text-[#275df5]" />
+                <span>1. Your Resume</span>
+              </label>
+
+              {/* Upload vs Paste Toggle */}
+              <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('upload')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    activeTab === 'upload' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground'
+                  }`}
+                >
+                  Upload File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('paste')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    activeTab === 'paste' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground'
+                  }`}
+                >
+                  Paste Text
+                </button>
+              </div>
+            </div>
+
+            {activeTab === 'upload' ? (
+              <div className="space-y-3 flex-1 flex flex-col">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.txt,.docx"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      handleFileUpload(e.target.files[0]);
+                    }
+                  }}
+                  className="hidden"
+                />
+
+                {uploadedFileName ? (
+                  <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-5 flex flex-col justify-between flex-1 space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-10 w-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                          <FileCheck className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-foreground truncate">{uploadedFileName}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {resumeText.split(/\s+/).filter(Boolean).length} words extracted • 100% Client-Side Private
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleClearResume}
+                        className="text-muted-foreground hover:text-rose-600 p-1 rounded-md transition-colors"
+                        title="Remove file"
+                      >
+                        <XCircle className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="rounded-lg bg-background/90 p-3 border border-border/60 text-xs font-mono text-muted-foreground line-clamp-3">
+                      {resumeText.slice(0, 300)}...
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="text-xs font-bold text-[#275df5] hover:underline cursor-pointer"
+                      >
+                        Upload different file
+                      </button>
+                      <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="h-3.5 w-3.5" /> Ready for ATS scan
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={onDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 min-h-[220px] rounded-xl border-2 border-dashed border-border hover:border-[#275df5]/60 bg-background/50 hover:bg-blue-50/10 dark:hover:bg-blue-950/10 transition-all flex flex-col items-center justify-center p-6 text-center cursor-pointer group"
+                  >
+                    {isExtracting ? (
+                      <div className="space-y-3 flex flex-col items-center">
+                        <RefreshCw className="h-8 w-8 text-[#275df5] animate-spin" />
+                        <p className="text-xs font-bold text-foreground">Reading &amp; Parsing PDF in Browser...</p>
+                        <p className="text-[11px] text-muted-foreground">Zero bytes uploaded to any server</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="h-12 w-12 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#275df5] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Upload className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm font-bold text-foreground">
+                          Drag &amp; drop your Resume PDF here
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          or <span className="text-[#275df5] font-semibold underline">browse file</span> from your computer
+                        </p>
+                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-secondary px-2.5 py-1 rounded-full">
+                          Supports PDF, DOCX, TXT (Max 5MB)
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2 flex-1 flex flex-col">
+                <textarea
+                  rows={8}
+                  value={resumeText}
+                  onChange={(e) => setResumeText(e.target.value)}
+                  placeholder="Paste your raw resume text here (Education, Skills, Projects, Experience)..."
+                  className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
+                />
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>{resumeText.split(/\s+/).filter(Boolean).length} words</span>
+                  {resumeText && (
+                    <button
+                      type="button"
+                      onClick={() => setResumeText('')}
+                      className="text-rose-600 hover:underline cursor-pointer"
+                    >
+                      Clear text
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Job Description Area */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-foreground flex items-center justify-between">
-              <span>Target Job Description (JD) / Skills</span>
-              <span className="text-muted-foreground font-normal">Optional for custom role matching</span>
-            </label>
+          {/* Right Column: Target Job Description & Quick Presets */}
+          <div className="space-y-3 flex flex-col">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <Target className="h-3.5 w-3.5 text-[#275df5]" />
+                <span>2. Target Job Description</span>
+              </label>
+
+              <span className="text-[11px] text-muted-foreground">
+                Match against role criteria
+              </span>
+            </div>
+
+            {/* Quick Presets Dropdown/Pills */}
+            <div className="flex flex-wrap gap-1.5">
+              <span className="text-[11px] font-bold text-muted-foreground self-center mr-1">
+                Quick Fill:
+              </span>
+              {SAMPLE_JOB_PRESETS.map((preset, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSelectPreset(idx)}
+                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
+                    selectedPresetIndex === idx
+                      ? 'border-[#275df5] bg-[#275df5] text-white'
+                      : 'border-border bg-background text-muted-foreground hover:text-foreground hover:border-[#275df5]/40'
+                  }`}
+                >
+                  {preset.company.split(' ')[0]} {preset.label.split('-')[1]?.trim() || ''}
+                </button>
+              ))}
+            </div>
+
             <textarea
-              rows={10}
+              rows={8}
               value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="Paste the target job description or company requirements (e.g. TCS Ninja, Accenture ASE, Frontend Developer)..."
-              className="w-full h-64 sm:h-72 rounded-xl border border-border bg-background p-4 text-xs sm:text-sm font-mono text-foreground placeholder:text-muted-foreground focus:border-indigo-600 focus:outline-hidden focus:ring-1 focus:ring-indigo-600 leading-relaxed resize-none overflow-y-auto"
+              onChange={(e) => {
+                setJobDescription(e.target.value);
+                setSelectedPresetIndex('');
+              }}
+              placeholder="Paste the target job description or requirements here to match keywords, skills, and qualifications..."
+              className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
             />
+
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{jobDescription.split(/\s+/).filter(Boolean).length} words</span>
+              {jobDescription && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setJobDescription('');
+                    setSelectedPresetIndex('');
+                  }}
+                  className="text-rose-600 hover:underline cursor-pointer"
+                >
+                  Clear JD
+                </button>
+              )}
+            </div>
           </div>
+
         </div>
 
-        {/* Action Button */}
-        <div className="flex justify-center pt-2">
+        {/* Error Notification */}
+        {errorMessage && (
+          <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs font-medium text-rose-700 dark:text-rose-300 flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-rose-600" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Primary CTA Scan Button */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span>Privacy Guaranteed: Your resume is processed strictly client-side. Zero server storage.</span>
+          </div>
+
           <button
             type="button"
             onClick={handleAnalyze}
             disabled={!resumeText.trim() || isAnalyzing}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-bold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#275df5] hover:bg-[#1f4cd0] px-8 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
           >
             {isAnalyzing ? (
               <>
                 <RefreshCw className="h-4 w-4 animate-spin" />
-                <span>Scanning Resume against ATS Filters...</span>
+                <span>Analyzing ATS Keywords &amp; Metrics...</span>
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
                 <span>Analyze ATS Match Score</span>
+                <ArrowRight className="h-4 w-4" />
               </>
             )}
           </button>
         </div>
+
       </div>
 
-      {/* Results Dashboard */}
+      {/* 2. Jobsuit-Grade Results Dashboard */}
       {results && (
-        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6 animate-in fade-in-50 duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b border-border pb-6">
-            <div className="space-y-1">
-              <h4 className="text-lg font-bold text-foreground">ATS Compatibility Report</h4>
-              <p className="text-xs text-muted-foreground">
-                Evaluation based on keyword frequency, standard section detection, and format parsing.
+        <div
+          id="ats-results-dashboard"
+          className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-8 animate-in fade-in-50 duration-300"
+        >
+          {/* Top Score Showcase */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-border pb-6">
+            <div className="space-y-1.5 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold bg-secondary text-foreground">
+                <span>ATS Screening Verdict</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#275df5]" />
+                <span className={results.scoreColor}>{results.scoreTier} Match</span>
+              </div>
+              <h4 className="text-xl sm:text-2xl font-black text-foreground">
+                Resume Compatibility Scorecard
+              </h4>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
+                Multi-dimensional evaluation covering hard skills frequency, section completeness, Google XYZ impact metrics, and ATS readability.
               </p>
             </div>
 
-            {/* Score Badge */}
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Overall Match</p>
-                <p className="text-3xl font-black text-foreground">{results.score}%</p>
+            {/* Circular Gauge / Badge */}
+            <div className="flex items-center gap-4 bg-background/80 border border-border p-4 rounded-2xl shadow-2xs shrink-0">
+              <div className="relative flex items-center justify-center">
+                <div className={`h-20 w-20 rounded-full flex flex-col items-center justify-center font-black border-4 ${
+                  results.overallScore >= 80
+                    ? 'border-emerald-500 text-emerald-600 bg-emerald-50/40 dark:bg-emerald-950/30'
+                    : results.overallScore >= 65
+                    ? 'border-blue-500 text-[#275df5] bg-blue-50/40 dark:bg-blue-950/30'
+                    : results.overallScore >= 50
+                    ? 'border-amber-500 text-amber-600 bg-amber-50/40 dark:bg-amber-950/30'
+                    : 'border-rose-500 text-rose-600 bg-rose-50/40 dark:bg-rose-950/30'
+                }`}>
+                  <span className="text-2xl leading-none">{results.overallScore}%</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">Match</span>
+                </div>
               </div>
-              <div className={`h-16 w-16 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-sm ${
-                results.score >= 80 ? 'bg-emerald-600' : results.score >= 60 ? 'bg-amber-500' : 'bg-rose-600'
-              }`}>
-                {results.score >= 80 ? 'A+' : results.score >= 60 ? 'B' : 'C'}
+
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-foreground">
+                  {results.overallScore >= 80 ? 'Strong Candidate' : results.overallScore >= 60 ? 'Competitive' : 'Needs Optimization'}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {results.matchedSkills.length} of {results.targetSkills.length} target skills found
+                </p>
+                <button
+                  type="button"
+                  onClick={handleCopyFullReport}
+                  className="text-[11px] font-bold text-[#275df5] hover:underline flex items-center gap-1 cursor-pointer pt-0.5"
+                >
+                  {copiedReport ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  <span>{copiedReport ? 'Report Copied!' : 'Copy Full Report'}</span>
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Matched Keywords */}
-            <div className="rounded-xl border border-border bg-background p-4 space-y-3">
-              <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-emerald-600 flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> Matched Keywords
-                </span>
-                <span className="rounded-full bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 text-emerald-700 dark:text-emerald-300">
-                  {results.matchedKeywords.length}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {results.matchedKeywords.map((k) => (
-                  <span key={k} className="rounded-md bg-emerald-50 dark:bg-emerald-950/80 px-2 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-900/60">
-                    ✓ {k}
-                  </span>
-                ))}
-              </div>
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
+                <Award className="h-3.5 w-3.5 text-[#275df5]" /> Hard Skills Match
+              </span>
+              <p className="text-sm font-bold text-foreground">
+                {results.matchedSkills.length} / {results.targetSkills.length} Skills
+              </p>
             </div>
 
-            {/* Missing Keywords */}
-            <div className="rounded-xl border border-border bg-background p-4 space-y-3">
-              <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-amber-600 flex items-center gap-1.5">
-                  <AlertTriangle className="h-4 w-4" /> Missing Keywords
+            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
+                <Layers className="h-3.5 w-3.5 text-indigo-500" /> Structure Checks
+              </span>
+              <p className="text-sm font-bold text-foreground">
+                {results.sections.filter((s) => s.found).length} / {results.sections.length} Passed
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-500" /> Metric Density
+              </span>
+              <p className="text-sm font-bold text-foreground">
+                {results.impactRating}
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <span className="text-muted-foreground font-semibold flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5 text-amber-500" /> Resume Length
+              </span>
+              <p className="text-sm font-bold text-foreground">
+                {results.wordCount} words ({results.wordCountStatus.split(' ')[0]})
+              </p>
+            </div>
+          </div>
+
+          {/* 3 Columns: Matched Skills, Missing Skills, and Sections */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Matched Keywords (Emerald) */}
+            <div className="rounded-xl border border-border bg-background p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4" /> Matched Skills ({results.matchedSkills.length})
                 </span>
-                <span className="rounded-full bg-amber-50 dark:bg-amber-950 px-2 py-0.5 text-amber-700 dark:text-amber-300">
-                  {results.missingKeywords.length}
+                <span className="rounded-full bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                  Indexed
                 </span>
               </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {results.missingKeywords.length > 0 ? (
-                  results.missingKeywords.map((k) => (
-                    <span key={k} className="rounded-md bg-amber-50 dark:bg-amber-950/80 px-2 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/60">
-                      + {k}
+
+              {results.matchedSkills.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {results.matchedSkills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-md bg-emerald-50 dark:bg-emerald-950/70 px-2 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1"
+                    >
+                      <span>✓</span> {skill}
                     </span>
-                  ))
-                ) : (
-                  <p className="text-xs text-muted-foreground">All target core keywords present!</p>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground italic py-2">
+                  No overlapping technical keywords identified from target job.
+                </p>
+              )}
+            </div>
+
+            {/* Missing Keywords (Amber/Red with Copy Action) */}
+            <div className="rounded-xl border border-border bg-background p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                  <AlertTriangle className="h-4 w-4" /> Missing Keywords ({results.missingSkills.length})
+                </span>
+
+                {results.missingSkills.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleCopyMissingKeywords}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#275df5] hover:underline cursor-pointer"
+                  >
+                    {copiedMissing ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                    <span>{copiedMissing ? 'Copied!' : 'Copy All'}</span>
+                  </button>
                 )}
               </div>
+
+              {results.missingSkills.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {results.missingSkills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-md bg-amber-50 dark:bg-amber-950/70 px-2 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1"
+                    >
+                      <span>+</span> {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-emerald-600 font-semibold py-2 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4" /> 100% of target skills present!
+                </p>
+              )}
             </div>
 
-            {/* Detected Sections */}
-            <div className="rounded-xl border border-border bg-background p-4 space-y-3">
-              <p className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <Layers className="h-4 w-4 text-indigo-600" /> Structure Checks
-              </p>
-              <div className="space-y-1.5 text-xs">
-                {results.detectedSections.map((sec) => (
-                  <div key={sec.name} className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{sec.name}</span>
+            {/* Structural Audit Checklist */}
+            <div className="rounded-xl border border-border bg-background p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                  <Layers className="h-4 w-4 text-[#275df5]" /> ATS Formatting &amp; Sections
+                </span>
+                <span className="text-[11px] text-muted-foreground font-semibold">
+                  Standard
+                </span>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                {results.sections.map((sec, i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-muted-foreground truncate max-w-[170px]">{sec.name}</span>
                     {sec.found ? (
-                      <span className="font-bold text-emerald-600">Found</span>
+                      <span className="font-bold text-emerald-600 inline-flex items-center gap-1">
+                        <Check className="h-3 w-3" /> Found
+                      </span>
                     ) : (
-                      <span className="font-bold text-rose-600">Missing</span>
+                      <span className="font-bold text-rose-600 inline-flex items-center gap-1">
+                        <XCircle className="h-3 w-3" /> Missing
+                      </span>
                     )}
                   </div>
                 ))}
               </div>
             </div>
+
           </div>
 
-          {/* Actionable Recommendations Box */}
-          <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/40 p-5 space-y-3">
-            <h5 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Target className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              <span>Recommended Fixes to Boost ATS Pass Rate:</span>
-            </h5>
-            <ul className="space-y-2 text-xs sm:text-sm text-foreground/90 font-medium pl-1">
-              {results.recommendations.map((rec, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 mt-2 shrink-0" />
-                  <span>{rec}</span>
-                </li>
+          {/* Actionable Recommendations & Google XYZ Formula Suggestions */}
+          <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/40 dark:bg-blue-950/25 p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-blue-200/60 dark:border-blue-900/50 pb-3">
+              <h5 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+                <Target className="h-4 w-4 text-[#275df5]" />
+                <span>Role-Tailoring Recommendations (Jobsuit Style)</span>
+              </h5>
+              <span className="text-xs font-semibold text-[#275df5]">
+                {results.actionableFeedback.length} Action Items
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {results.actionableFeedback.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-lg bg-card/80 border border-border/70 p-4 space-y-2 text-xs sm:text-sm"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-bold text-foreground flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full ${item.priority === 'high' ? 'bg-rose-500' : 'bg-amber-500'}`} />
+                      {item.title}
+                    </p>
+                    <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
+                      item.priority === 'high' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                    }`}>
+                      {item.priority} priority
+                    </span>
+                  </div>
+
+                  <p className="text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  {item.suggestedExample && (
+                    <div className="rounded-md bg-secondary/70 p-2.5 border border-border/60 text-xs font-mono text-foreground/90">
+                      <strong className="text-[#275df5] font-sans font-bold block mb-1">Recommended Rewrite:</strong>
+                      {item.suggestedExample}
+                    </div>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
+
         </div>
       )}
     </div>
