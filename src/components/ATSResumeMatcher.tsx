@@ -265,8 +265,25 @@ export default function ATSResumeMatcher() {
       return;
     }
 
+    // If already tailored for this exact same Resume and JD, don't re-tailor again
+    if (tailoredResult && !hasInputChangedSinceTailoring) {
+      const elem = document.getElementById('tailored-resume-section');
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
     setIsTailoring(true);
     setErrorMessage(null);
+
+    // Immediately smooth scroll down to the generating card section
+    setTimeout(() => {
+      const elem = document.getElementById('tailored-resume-section');
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
 
     // Keep ATS scorecard synchronized automatically
     try {
@@ -292,7 +309,7 @@ export default function ATSResumeMatcher() {
           if (elem) {
             elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        }, 150);
+        }, 100);
       } else {
         throw new Error(data.error || 'Failed to tailor resume.');
       }
@@ -497,8 +514,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Left Column: Resume File Upload / Text Area */}
-          <div className="space-y-3 flex flex-col">
-            <div className="flex items-center justify-between">
+          <div className="space-y-2.5 flex flex-col">
+            <div className="flex items-center justify-between min-h-[36px]">
               <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
                 <span>1. Your Resume</span>
               </label>
@@ -527,7 +544,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             </div>
 
             {activeTab === 'upload' ? (
-              <div className="space-y-3 flex-1 flex flex-col">
+              <div className="space-y-2 flex-1 flex flex-col">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -540,8 +557,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   className="hidden"
                 />
 
-                {uploadedFileName ? (
-                  <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-5 flex flex-col justify-between flex-1 space-y-4">
+                {uploadedFileName && resumeText.trim() ? (
+                  <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-5 flex flex-col justify-between flex-1 min-h-[220px] space-y-4">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="h-10 w-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
@@ -555,7 +572,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                       <button
                         type="button"
                         onClick={handleClearResume}
-                        className="text-muted-foreground hover:text-rose-600 p-1 rounded-md transition-colors"
+                        className="text-muted-foreground hover:text-rose-600 p-1 rounded-md transition-colors cursor-pointer"
                         title="Remove file"
                       >
                         <XCircle className="h-4 w-4" />
@@ -610,22 +627,40 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     )}
                   </div>
                 )}
+
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground h-5">
+                  <span>{resumeText.trim() ? `${resumeText.split(/\s+/).filter(Boolean).length} words parsed` : 'PDF, Word, or Text document'}</span>
+                  {uploadedFileName && (
+                    <button
+                      type="button"
+                      onClick={handleClearResume}
+                      className="text-rose-600 hover:underline cursor-pointer"
+                    >
+                      Clear file
+                    </button>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="space-y-2 flex-1 flex flex-col">
                 <textarea
                   rows={8}
                   value={resumeText}
-                  onChange={(e) => setResumeText(e.target.value)}
+                  onChange={(e) => {
+                    setResumeText(e.target.value);
+                    if (!e.target.value.trim() && uploadedFileName) {
+                      handleClearResume();
+                    }
+                  }}
                   placeholder="Paste your raw resume text here (Education, Skills, Projects, Experience)..."
                   className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
                 />
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground h-5">
                   <span>{resumeText.split(/\s+/).filter(Boolean).length} words</span>
                   {resumeText && (
                     <button
                       type="button"
-                      onClick={() => setResumeText('')}
+                      onClick={handleClearResume}
                       className="text-rose-600 hover:underline cursor-pointer"
                     >
                       Clear text
@@ -637,8 +672,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           </div>
 
           {/* Right Column: Target Job Description & Quick Presets */}
-          <div className="space-y-3 flex flex-col">
-            <div className="flex items-center justify-between">
+          <div className="space-y-2.5 flex flex-col">
+            <div className="flex items-center justify-between min-h-[36px]">
               <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
                 <span>2. Target Job Description</span>
               </label>
@@ -648,31 +683,33 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               </span>
             </div>
 
-            <textarea
-              rows={8}
-              value={jobDescription}
-              onChange={(e) => {
-                setJobDescription(e.target.value);
-                setSelectedPresetIndex('');
-              }}
-              placeholder="Paste the target job description or requirements here to match keywords, skills, and qualifications..."
-              className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
-            />
+            <div className="space-y-2 flex-1 flex flex-col">
+              <textarea
+                rows={8}
+                value={jobDescription}
+                onChange={(e) => {
+                  setJobDescription(e.target.value);
+                  setSelectedPresetIndex('');
+                }}
+                placeholder="Paste the target job description or requirements here to match keywords, skills, and qualifications..."
+                className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
+              />
 
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{jobDescription.split(/\s+/).filter(Boolean).length} words</span>
-              {jobDescription && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setJobDescription('');
-                    setSelectedPresetIndex('');
-                  }}
-                  className="text-rose-600 hover:underline cursor-pointer"
-                >
-                  Clear JD
-                </button>
-              )}
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground h-5">
+                <span>{jobDescription.split(/\s+/).filter(Boolean).length} words</span>
+                {jobDescription && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setJobDescription('');
+                      setSelectedPresetIndex('');
+                    }}
+                    className="text-rose-600 hover:underline cursor-pointer"
+                  >
+                    Clear JD
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -723,7 +760,13 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <span>{tailoredResult ? 'Re-tailoring Resume to JD...' : 'Scanning & Tailoring for JD...'}</span>
                 </>
               ) : (
-                <span>{tailoredResult ? 'Re-tailor Resume for JD' : 'Scan & Tailor Resume for JD'}</span>
+                <span>
+                  {tailoredResult
+                    ? hasInputChangedSinceTailoring
+                      ? 'Re-tailor Resume for JD'
+                      : 'View Tailored Resume'
+                    : 'Scan & Tailor Resume for JD'}
+                </span>
               )}
             </button>
           </div>
