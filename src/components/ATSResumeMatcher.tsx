@@ -33,6 +33,8 @@ import {
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
 import { ThinkingOrb } from '@/components/ui/thinking-orbs';
+import FaangPathResumeView from '@/components/FaangPathResumeView';
+import { generateFaangPathResumeHtml } from '@/lib/resumeFormatters';
 
 export interface TailoredResumeResult {
   hard_requirements: string[];
@@ -150,6 +152,7 @@ export default function ATSResumeMatcher() {
   const [tailoredResult, setTailoredResult] = useState<TailoredResumeResult | null>(null);
   const [tailoredInputSnapshot, setTailoredInputSnapshot] = useState<{ resumeText: string; jobDescription: string } | null>(null);
   const [activeTailorTab, setActiveTailorTab] = useState<'resume' | 'cover_letter' | 'latex' | 'critic' | 'gaps' | 'changelog' | 'requirements'>('resume');
+  const [resumeDisplayMode, setResumeDisplayMode] = useState<'formatted' | 'raw'>('formatted');
   const [copiedTailored, setCopiedTailored] = useState(false);
   const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const [copiedLatex, setCopiedLatex] = useState(false);
@@ -362,43 +365,12 @@ export default function ATSResumeMatcher() {
     URL.revokeObjectURL(url);
   };
 
-  const handlePrint = () => {
-    if (!tailoredResult) return;
+  const handleDownloadPdf = () => {
+    if (!tailoredResult?.tailored_resume) return;
+    const htmlContent = generateFaangPathResumeHtml(tailoredResult.tailored_resume);
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Tailored ATS Resume - FreshersBridge</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.5;
-              padding: 40px;
-              color: #111;
-              max-width: 800px;
-              margin: 0 auto;
-              font-size: 10.5pt;
-            }
-            pre {
-              white-space: pre-wrap;
-              font-family: inherit;
-              word-wrap: break-word;
-            }
-            @media print {
-              body { padding: 0; }
-            }
-          </style>
-        </head>
-        <body>
-          <pre>${tailoredResult.tailored_resume.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
-          <script>
-            window.onload = function() { window.print(); }
-          </script>
-        </body>
-      </html>
-    `);
+    printWindow.document.write(htmlContent);
     printWindow.document.close();
   };
 
@@ -1024,6 +996,16 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 <>
                   <button
                     type="button"
+                    onClick={handleDownloadPdf}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    title="Download resume in standard 1-page FAANGPath / Overleaf PDF format"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Download Resume (PDF)</span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={handleApplyTailoredResumeToScanner}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
                     title="Load this tailored resume directly into the scanner and refresh match score"
@@ -1035,17 +1017,17 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <button
                     type="button"
                     onClick={handleCopyTailoredResume}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
                   >
                     {copiedTailored ? (
                       <>
-                        <Check className="h-4 w-4" />
-                        <span>Copied to Clipboard!</span>
+                        <Check className="h-4 w-4 text-emerald-600" />
+                        <span>Copied!</span>
                       </>
                     ) : (
                       <>
                         <Copy className="h-4 w-4" />
-                        <span>Copy ATS Resume</span>
+                        <span>Copy Text</span>
                       </>
                     )}
                   </button>
@@ -1053,11 +1035,11 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <button
                     type="button"
                     onClick={handleDownloadTxt}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3 py-2.5 text-xs font-bold transition-all cursor-pointer"
                     title="Download ATS-Friendly Plain Text Resume"
                   >
-                    <Download className="h-4 w-4 text-[#275df5]" />
-                    <span>Download</span>
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <span>.TXT</span>
                   </button>
                 </>
               )}
@@ -1092,29 +1074,72 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* Tab 1: Tailored Resume Body */}
           {activeTailorTab === 'resume' && (
             <div className="space-y-4">
-              {/* Resume Paper Container */}
-              <div className="relative rounded-xl border border-border bg-background p-6 sm:p-8 shadow-inner">
+              {/* Display Mode Switcher (Formatted vs Plain Text) */}
+              <div className="flex items-center justify-between gap-3">
+                <div className="inline-flex items-center bg-secondary/80 p-1 rounded-xl border border-border text-xs gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setResumeDisplayMode('formatted')}
+                    className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                      resumeDisplayMode === 'formatted'
+                        ? 'bg-background text-foreground shadow-xs'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    📄 Standard Formatted View
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setResumeDisplayMode('raw')}
+                    className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                      resumeDisplayMode === 'raw'
+                        ? 'bg-background text-foreground shadow-xs'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    📝 ATS Plain Text
+                  </button>
+                </div>
+
                 <button
                   type="button"
-                  onClick={handleCopyTailoredResume}
-                  className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
+                  onClick={handleDownloadPdf}
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-[#275df5] hover:underline cursor-pointer"
                 >
-                  {copiedTailored ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-                  <span>{copiedTailored ? 'Copied' : 'Copy'}</span>
+                  <Download className="h-3.5 w-3.5" />
+                  <span>Download PDF Document</span>
                 </button>
-
-                <pre className="font-sans text-xs sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap selection:bg-[#275df5]/20 font-normal">
-                  {tailoredResult.tailored_resume}
-                </pre>
               </div>
+
+              {resumeDisplayMode === 'formatted' ? (
+                <FaangPathResumeView
+                  resumeText={tailoredResult.tailored_resume}
+                  onDownloadPdf={handleDownloadPdf}
+                />
+              ) : (
+                <div className="relative rounded-xl border border-border bg-background p-6 sm:p-8 shadow-inner">
+                  <button
+                    type="button"
+                    onClick={handleCopyTailoredResume}
+                    className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
+                  >
+                    {copiedTailored ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                    <span>{copiedTailored ? 'Copied' : 'Copy'}</span>
+                  </button>
+
+                  <pre className="font-sans text-xs sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap selection:bg-[#275df5]/20 font-normal">
+                    {tailoredResult.tailored_resume}
+                  </pre>
+                </div>
+              )}
 
               {/* Practical Guidance */}
               <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-xs text-muted-foreground flex items-start gap-3">
                 <Info className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-bold text-foreground">How to use this tailored resume:</p>
+                  <p className="font-bold text-foreground">Standard 1-Page ATS Format:</p>
                   <p className="leading-relaxed">
-                    Copy the text above into Google Docs or Microsoft Word. Set font to <strong>Calibri or Arial (10pt to 11pt)</strong> with 0.5 to 0.75-inch margins. It will cleanly format into an exact 1-page ATS-passable resume. Then export as <strong>.PDF</strong> or submit as <strong>.DOCX</strong>!
+                    Click <strong>Download Resume (PDF)</strong> above to save your resume formatted into the exact single-page FAANGPath / Overleaf LaTeX layout. Or switch to <strong>ATS Plain Text</strong> to copy raw content into Word or Google Docs!
                   </p>
                 </div>
               </div>
