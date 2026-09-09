@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, Copy, AlertCircle, Code2, Terminal, Sparkles } from 'lucide-react';
+import { Check, Copy, AlertCircle, Code2, Terminal, CheckCircle2 } from 'lucide-react';
 
 interface GuideContentRendererProps {
   content: string;
@@ -226,7 +226,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
                 }`}
               >
                 {isModelAnswer ? (
-                  <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                 ) : (
                   <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 )}

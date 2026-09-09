@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ExternalLink, Sparkles, CheckCircle2, ArrowRight, X, Clock } from 'lucide-react';
+import { ExternalLink, CheckCircle2, ArrowRight, X, Clock } from 'lucide-react';
 
 interface ApplyButtonProps {
   applyUrl: string;
@@ -115,7 +115,7 @@ export default function ApplyButton({
             {/* Application Prep Tips Card */}
             <div className="rounded-xl border border-border bg-muted/40 p-3.5 text-left space-y-2">
               <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-indigo-600" />
                 <span>Quick Application Checklist</span>
               </div>
               <ul className="text-[11px] text-muted-foreground space-y-1.5">

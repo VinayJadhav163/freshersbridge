@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   Copy, 
   Check, 
-  Sparkles, 
   X, 
   ArrowUpRight,
   User,
@@ -21,7 +20,7 @@ export type TemplateCategory = 'Follow-up' | 'Interview' | 'Offer' | 'Networking
 export interface TemplateItem {
   id: string;
   category: TemplateCategory;
-  icon: string;
+  icon?: string;
   title: string;
   timing: string;
   subject: string;
@@ -40,7 +39,6 @@ const TEMPLATES: TemplateItem[] = [
   {
     id: 'request-schedule-interview',
     category: 'Interview',
-    icon: '🎯',
     title: 'Request to Schedule Interview (Matching Skills Follow-up)',
     timing: 'Send 2–4 days after applying to stand out directly to HR',
     subject: 'Application & Interview Request: [role] — [Your Name]',
@@ -66,7 +64,6 @@ Warm regards,
   {
     id: 'follow-up-applying',
     category: 'Follow-up',
-    icon: '✉️',
     title: 'Follow-up after applying (no reply)',
     timing: 'Send 5–7 working days after you apply',
     subject: 'Following up — [role] application',
@@ -85,7 +82,6 @@ Warm regards,
   {
     id: 'second-follow-up',
     category: 'Follow-up',
-    icon: '🔁',
     title: 'Second follow-up (final nudge)',
     timing: 'One week after the first follow-up — then stop',
     subject: 'Re: Following up — [role] application',
@@ -104,7 +100,6 @@ Warm regards,
   {
     id: 'application-status',
     category: 'Follow-up',
-    icon: '📋',
     title: 'Asking for application status update',
     timing: 'When the portal has said "In review" for weeks',
     subject: 'Status Update Request — [role] application',
@@ -125,7 +120,6 @@ Warm regards,
   {
     id: 'thank-you-interview',
     category: 'Interview',
-    icon: '🙏',
     title: 'Thank-you note after an interview',
     timing: 'Within 24 hours of the interview',
     subject: 'Thank you — [role] interview',
@@ -144,7 +138,6 @@ Best regards,
   {
     id: 'asking-result',
     category: 'Interview',
-    icon: '⏰',
     title: 'Asking about the interview result',
     timing: 'After the date they promised has passed',
     subject: 'Update on Interview Result — [role] position',
@@ -165,7 +158,6 @@ Warm regards,
   {
     id: 'accepting-offer',
     category: 'Offer',
-    icon: '✅',
     title: 'Accepting an offer',
     timing: 'Same day you decide — do not sit on it',
     subject: 'Job Offer Acceptance — [role]',
@@ -184,7 +176,6 @@ Sincerely,
   {
     id: 'offer-letter-status',
     category: 'Offer',
-    icon: '📄',
     title: 'Asking for the offer letter status',
     timing: 'When the verbal offer has not become paper',
     subject: 'Written Offer Letter Request — [role]',
@@ -203,7 +194,6 @@ Warm regards,
   {
     id: 'joining-date-extension',
     category: 'Offer',
-    icon: '🗓️',
     title: 'Requesting a joining date extension',
     timing: 'As soon as you know you cannot make the date',
     subject: 'Joining Date Extension Request — [role]',
@@ -222,7 +212,6 @@ Warm regards,
   {
     id: 'declining-offer',
     category: 'Offer',
-    icon: '🙋',
     title: 'Politely declining an offer',
     timing: 'Within 2 days — they are holding the seat for you',
     subject: 'Offer Decision — [role] position',
@@ -241,7 +230,6 @@ Best regards,
   {
     id: 'referral-request',
     category: 'Networking',
-    icon: '🤝',
     title: 'Asking an employee for a referral',
     timing: 'After you have engaged with them at least once',
     subject: 'Referral Request for [Role] at [Company]',
@@ -263,7 +251,6 @@ Best regards,
   {
     id: 'withdrawing-application',
     category: 'Follow-up',
-    icon: '📝',
     title: 'Withdrawing an application',
     timing: 'The moment you accept elsewhere',
     subject: 'Application Withdrawal — [role] position',
@@ -407,11 +394,10 @@ export default function HREmailTemplates() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
         <div>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/60 px-3.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
             <span>Copy-Ready Career Tools</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2">
-            <span>✉️</span> HR Email Templates for Freshers
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            HR Email Templates for Freshers
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
             12 copy-ready professional email templates to handle every stage of your job hunt.
@@ -485,7 +471,7 @@ export default function HREmailTemplates() {
               type="text"
               value={userInputs.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="e.g. Rahul Sharma"
+              placeholder="e.g. Vinay Jadhav"
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
             />
           </div>
@@ -513,7 +499,7 @@ export default function HREmailTemplates() {
               type="text"
               value={userInputs.role}
               onChange={(e) => handleInputChange('role', e.target.value)}
-              placeholder="e.g. Software Engineer"
+              placeholder="e.g. Data Analyst / SDE Intern"
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
             />
           </div>
@@ -545,9 +531,6 @@ export default function HREmailTemplates() {
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50/80 dark:bg-indigo-950/60 text-base border border-indigo-100/80 dark:border-indigo-900/60 shadow-2xs group-hover:scale-105 transition-transform">
-                    {item.icon}
-                  </span>
                   <span className={`inline-block rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${getCategoryBadgeClass(item.category)}`}>
                     {item.category}
                   </span>
@@ -590,9 +573,6 @@ export default function HREmailTemplates() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 sm:p-6 border-b border-border bg-secondary/30">
               <div className="flex items-center gap-3 min-w-0 pr-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/80 text-2xl border border-indigo-100 dark:border-indigo-900 shadow-xs">
-                  {selectedTemplate.icon}
-                </div>
                 <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className={`inline-block rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${getCategoryBadgeClass(selectedTemplate.category)}`}>

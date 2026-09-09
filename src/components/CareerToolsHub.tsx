@@ -8,7 +8,6 @@ import {
   FileCheck2, 
   IndianRupee, 
   MailCheck, 
-  Sparkles,
   ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
@@ -113,7 +112,6 @@ export default function CareerToolsHub() {
       <div className="rounded-2xl border border-indigo-200 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/60 via-card to-card p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold text-white">
-            <Sparkles className="h-3 w-3" />
             Exam Blueprints & Interview Prep
           </div>
           <h4 className="text-lg sm:text-xl font-bold text-foreground">

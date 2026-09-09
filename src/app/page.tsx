@@ -10,7 +10,7 @@ import {
   Cpu, 
   ShieldCheck, 
   BarChart4, 
-  Sparkles, 
+  Briefcase, 
   Rocket,
   GraduationCap,
   Calendar
@@ -231,7 +231,7 @@ export default async function Home() {
                 className="flex flex-col items-center justify-center text-center p-5 rounded-xl border border-dashed border-border bg-card/50"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
-                  <Sparkles className="h-6 w-6 text-muted" />
+                  <Code className="h-6 w-6 text-muted" />
                 </div>
                 <h3 className="mt-3 text-xs sm:text-sm font-semibold text-muted-foreground">{name}</h3>
               </div>
@@ -269,7 +269,7 @@ export default async function Home() {
             ))
           ) : (
             <div className="col-span-full border-2 border-dashed border-border rounded-xl p-12 text-center">
-              <Sparkles className="h-10 w-10 text-indigo-500 mx-auto mb-4" />
+              <Briefcase className="h-10 w-10 text-indigo-500 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-foreground mb-1">No Jobs Found</h3>
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
                 We are refreshing recent listings. Browse all handpicked freshers jobs.

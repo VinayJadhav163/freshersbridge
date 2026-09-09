@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from 'react';
 import { 
-  Sparkles, 
   Upload, 
   FileText, 
   CheckCircle2, 
@@ -723,10 +722,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <span>{tailoredResult ? 'Re-tailoring Resume to JD...' : 'Scanning & Tailoring for JD...'}</span>
                 </>
               ) : (
-                <>
-                  <Sparkles className="h-4 w-4" />
-                  <span>{tailoredResult ? 'Re-tailor Resume for JD' : 'Scan & Tailor Resume for JD'}</span>
-                </>
+                <span>{tailoredResult ? 'Re-tailor Resume for JD' : 'Scan & Tailor Resume for JD'}</span>
               )}
             </button>
           </div>
