@@ -407,8 +407,8 @@ export function generateFaangPathResumeHtml(resumeText: string): string {
   <title>${structured.name.toUpperCase()} - Resume</title>
   <style>
     @page {
-      size: letter portrait;
-      margin: 0.4in;
+      size: A4 portrait;
+      margin: 0mm; /* Removes browser default headers (date/time, URL) and footers (page numbers) */
     }
     * {
       box-sizing: border-box;
@@ -416,20 +416,22 @@ export function generateFaangPathResumeHtml(resumeText: string): string {
     }
     body {
       font-family: 'Times New Roman', Times, 'Computer Modern', Georgia, serif;
-      font-size: 10pt;
-      line-height: 1.35;
       color: #000;
       background: #fff;
       margin: 0;
-      padding: 24px;
-      max-width: 800px;
+      padding: 14mm 16mm;
+      width: 210mm;
+      min-height: 297mm;
       margin-left: auto;
       margin-right: auto;
+      line-height: 1.4;
     }
     @media print {
-      body {
-        padding: 0;
-        max-width: 100%;
+      html, body {
+        width: 210mm;
+        height: 297mm;
+        padding: 12mm 15mm;
+        margin: 0 auto;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -439,44 +441,44 @@ export function generateFaangPathResumeHtml(resumeText: string): string {
     }
     .resume-header {
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
     .candidate-name {
-      font-size: 18pt;
+      font-size: 22pt;
       font-weight: bold;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       margin: 0;
-      line-height: 1.1;
+      line-height: 1.15;
     }
     .resume-section {
-      margin-top: 10px;
-      margin-bottom: 4px;
+      margin-top: 14px;
+      margin-bottom: 6px;
     }
     .section-title {
-      font-size: 10.5pt;
+      font-size: 11pt;
       font-weight: bold;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
       color: #000;
     }
     .section-hr {
       border-bottom: 1.5px solid #000;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
     }
     .section-content {
-      font-size: 10pt;
+      font-size: 10.5pt;
     }
     .bullet-list {
-      margin: 2px 0 4px 18px;
+      margin: 4px 0 6px 18px;
       padding: 0;
       list-style-type: disc;
     }
     .bullet-list li {
-      margin-bottom: 2.5px;
-      font-size: 9.5pt;
-      line-height: 1.32;
+      margin-bottom: 4px;
+      font-size: 10pt;
+      line-height: 1.42;
       text-align: justify;
     }
   </style>

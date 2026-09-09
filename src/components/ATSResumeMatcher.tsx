@@ -35,6 +35,7 @@ import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
 import { ThinkingOrb } from '@/components/ui/thinking-orbs';
 import FaangPathResumeView from '@/components/FaangPathResumeView';
 import { generateFaangPathResumeHtml } from '@/lib/resumeFormatters';
+import { downloadDirectResumePdf } from '@/lib/pdfDownloader';
 
 export interface TailoredResumeResult {
   hard_requirements: string[];
@@ -153,6 +154,7 @@ export default function ATSResumeMatcher() {
   const [tailoredInputSnapshot, setTailoredInputSnapshot] = useState<{ resumeText: string; jobDescription: string } | null>(null);
   const [activeTailorTab, setActiveTailorTab] = useState<'resume' | 'cover_letter' | 'latex' | 'critic' | 'gaps' | 'changelog' | 'requirements'>('resume');
   const [resumeDisplayMode, setResumeDisplayMode] = useState<'formatted' | 'raw'>('formatted');
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [copiedTailored, setCopiedTailored] = useState(false);
   const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const [copiedLatex, setCopiedLatex] = useState(false);
@@ -365,13 +367,22 @@ export default function ATSResumeMatcher() {
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
     if (!tailoredResult?.tailored_resume) return;
-    const htmlContent = generateFaangPathResumeHtml(tailoredResult.tailored_resume);
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
+    setIsPdfGenerating(true);
+    try {
+      await downloadDirectResumePdf(tailoredResult.tailored_resume);
+    } catch (e) {
+      console.error('Direct PDF export error, falling back to clean print:', e);
+      const htmlContent = generateFaangPathResumeHtml(tailoredResult.tailored_resume);
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+      }
+    } finally {
+      setIsPdfGenerating(false);
+    }
   };
 
   const handleCopyCoverLetter = () => {
@@ -997,11 +1008,21 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <button
                     type="button"
                     onClick={handleDownloadPdf}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
-                    title="Download resume in standard 1-page FAANGPath / Overleaf PDF format"
+                    disabled={isPdfGenerating}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] disabled:opacity-70 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    title="Directly download clean single-page PDF with 0 browser headers or footers"
                   >
-                    <Download className="h-4 w-4" />
-                    <span>Download Resume (PDF)</span>
+                    {isPdfGenerating ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="h-4 w-4" />
+                        <span>Download Resume (PDF)</span>
+                      </>
+                    )}
                   </button>
 
                   <button
