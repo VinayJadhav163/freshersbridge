@@ -503,12 +503,12 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               </label>
 
               {/* Upload vs Paste Toggle */}
-              <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs font-semibold">
+              <div className="inline-flex items-center rounded-full border border-border bg-secondary/80 p-1 text-xs font-semibold">
                 <button
                   type="button"
                   onClick={() => setActiveTab('upload')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                    activeTab === 'upload' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground'
+                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                    activeTab === 'upload' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   Upload File
@@ -516,8 +516,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 <button
                   type="button"
                   onClick={() => setActiveTab('paste')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                    activeTab === 'paste' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground'
+                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                    activeTab === 'paste' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   Paste Text
