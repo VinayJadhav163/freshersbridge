@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
+import { ThinkingOrb } from '@/components/ui/thinking-orbs';
 
 export interface TailoredResumeResult {
   hard_requirements: string[];
@@ -887,37 +888,24 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {/* AI RESUME TAILORING ENGINE & GAP ANALYSIS SUITE (MASTER PROMPT SPEC)       */}
       {/* ========================================================================= */}
 
-      {/* Loading Indicator for Tailoring */}
+      {/* Loading Indicator for Tailoring with Animated Thinking Orb */}
       {isTailoring && (
-        <div id="tailored-resume-section" className="rounded-2xl border border-[#275df5]/30 bg-gradient-to-b from-[#275df5]/5 via-background to-[#275df5]/10 p-6 sm:p-8 space-y-6 shadow-xl">
-          <div className="text-center space-y-3 max-w-md mx-auto py-6">
-            <div className="inline-flex p-4 rounded-2xl bg-[#275df5]/15 text-[#275df5] animate-spin">
-              <RefreshCw className="h-8 w-8" />
-            </div>
-            <h4 className="text-lg font-bold text-foreground">
-              Executing Master Resume Tailoring Engine...
-            </h4>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Executing the 7-step optimization pipeline: parsing JD hard requirements, performing atomic zero-fabrication gap analysis, and reordering bullet points for 1-page ATS dominance.
-            </p>
-            <div className="space-y-2.5 pt-2 text-left text-xs bg-card/90 rounded-xl p-4 border border-border/80 shadow-2xs">
-              <div className="flex items-center gap-2 text-emerald-600 font-medium">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
-                <span>Step 1: Extracted JD Hard Requirements &amp; Core Duties</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#275df5] font-semibold">
-                <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
-                <span>Step 2 &amp; 3: Running Honest Gap Analysis &amp; Adjacent Matching...</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-muted-foreground/40 ml-1 mr-1" />
-                <span>Step 4 &amp; 5: Reordering &amp; Rewording with JD Vocabulary</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-muted-foreground/40 ml-1 mr-1" />
-                <span>Step 6 &amp; 7: Zero-Fabrication Factual Audit &amp; Output Generation</span>
-              </div>
-            </div>
+        <div
+          id="tailored-resume-section"
+          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
+        >
+          <div
+            className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-[9px] pr-8 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
+            style={{
+              boxShadow: "inset 0 0 0 1px rgba(120,120,120,0.1), 0 4px 20px -2px rgba(0,0,0,0.05)",
+            }}
+          >
+            <span className="[&_canvas]:!size-14 shrink-0 flex items-center justify-center">
+              <ThinkingOrb state="composing" size={64} theme="auto" />
+            </span>
+            <span className="whitespace-nowrap text-base sm:text-lg font-semibold text-foreground tracking-tight">
+              Generating Tailored ATS Resume...
+            </span>
           </div>
         </div>
       )}
