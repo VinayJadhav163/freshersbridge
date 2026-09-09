@@ -93,7 +93,6 @@ export async function POST(req: Request) {
       const models = [
         'gemini-3.5-flash-lite',
         'gemini-3.1-flash-lite',
-        'gemini-3.5-flash',
         'gemini-3.6-flash',
         'gemini-flash-latest',
       ];
@@ -124,7 +123,7 @@ export async function POST(req: Request) {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload),
-              signal: AbortSignal.timeout(45000),
+              signal: AbortSignal.timeout(20000),
             }
           );
 

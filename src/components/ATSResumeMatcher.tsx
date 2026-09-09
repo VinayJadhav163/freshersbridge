@@ -148,10 +148,18 @@ export default function ATSResumeMatcher() {
   const [results, setResults] = useState<ATSAnalysisResult | null>(null);
   const [isTailoring, setIsTailoring] = useState(false);
   const [tailoredResult, setTailoredResult] = useState<TailoredResumeResult | null>(null);
+  const [tailoredInputSnapshot, setTailoredInputSnapshot] = useState<{ resumeText: string; jobDescription: string } | null>(null);
   const [activeTailorTab, setActiveTailorTab] = useState<'resume' | 'cover_letter' | 'latex' | 'critic' | 'gaps' | 'changelog' | 'requirements'>('resume');
   const [copiedTailored, setCopiedTailored] = useState(false);
   const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const [copiedLatex, setCopiedLatex] = useState(false);
+
+  const hasInputChangedSinceTailoring = Boolean(
+    tailoredResult &&
+    tailoredInputSnapshot &&
+    (resumeText.trim() !== tailoredInputSnapshot.resumeText.trim() ||
+     jobDescription.trim() !== tailoredInputSnapshot.jobDescription.trim())
+  );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -205,6 +213,7 @@ export default function ATSResumeMatcher() {
     setUploadedFileName(null);
     setResults(null);
     setTailoredResult(null);
+    setTailoredInputSnapshot(null);
     setErrorMessage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -259,6 +268,14 @@ export default function ATSResumeMatcher() {
     setIsTailoring(true);
     setErrorMessage(null);
 
+    // Keep ATS scorecard synchronized automatically
+    try {
+      const analysis = analyzeResumeATS(resumeText, jobDescription);
+      setResults(analysis);
+    } catch (e) {
+      console.warn('ATS score auto-sync warning:', e);
+    }
+
     try {
       const res = await fetch('/api/resume/tailor', {
         method: 'POST',
@@ -269,6 +286,7 @@ export default function ATSResumeMatcher() {
       const data = await res.json();
       if (data.success && data.result) {
         setTailoredResult(data.result);
+        setTailoredInputSnapshot({ resumeText, jobDescription });
         setTimeout(() => {
           const elem = document.getElementById('tailored-resume-section');
           if (elem) {
@@ -681,7 +699,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           </div>
         )}
 
-        {/* Primary CTA Scan Button */}
+        {/* Primary CTA Buttons: Scan ATS Score and Tailor/Re-tailor */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
@@ -693,17 +711,36 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               type="button"
               onClick={handleAnalyze}
               disabled={!resumeText.trim() || isAnalyzing || isTailoring}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground px-6 py-3.5 text-sm font-bold border border-border transition-all cursor-pointer shrink-0"
             >
               {isAnalyzing ? (
                 <>
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
                   <span>Scanning ATS Score...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4 text-[#275df5]" />
                   <span>Scan ATS Match Score</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleTailorResume}
+              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+            >
+              {isTailoring ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>{tailoredResult ? 'Re-tailoring Resume...' : 'Tailoring Resume...'}</span>
+                </>
+              ) : (
+                <>
+                  {tailoredResult ? <RefreshCw className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
+                  <span>{tailoredResult ? 'Re-tailor Resume' : 'AI Tailor Resume'}</span>
                 </>
               )}
             </button>
@@ -891,12 +928,12 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               {isTailoring ? (
                 <>
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>Generating Tailored Package...</span>
+                  <span>{tailoredResult ? 'Re-tailoring Application...' : 'Generating Tailored Package...'}</span>
                 </>
               ) : (
                 <>
-                  <Wand2 className="h-4 w-4" />
-                  <span>AI Tailor &amp; Generate Resume</span>
+                  {tailoredResult ? <RefreshCw className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
+                  <span>{tailoredResult ? 'Re-tailor Resume & Cover Letter' : 'AI Tailor & Generate Resume'}</span>
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -951,6 +988,25 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* Top Decorative Background Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
+          {/* Input Modification Sync Alert */}
+          {hasInputChangedSinceTailoring && (
+            <div className="rounded-xl border border-amber-300 dark:border-amber-800/80 bg-amber-50/90 dark:bg-amber-950/40 p-3.5 text-xs font-medium text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-10">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <span>You modified your resume or job description above. Re-tailor to synchronize your tailored document with your changes.</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleTailorResume}
+                disabled={isTailoring}
+                className="shrink-0 px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isTailoring ? 'animate-spin' : ''}`} />
+                <span>Re-tailor Now</span>
+              </button>
+            </div>
+          )}
+
           {/* Section Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-border pb-6 relative z-10">
             <div className="space-y-1.5">
@@ -964,6 +1020,16 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
             {/* Quick Actions */}
             <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleTailorResume}
+                disabled={isTailoring}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-[#275df5]/40 bg-[#275df5]/10 hover:bg-[#275df5]/20 text-[#275df5] px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                title="Re-run AI tailoring with your current inputs"
+              >
+                <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin' : ''}`} />
+                <span>{isTailoring ? 'Re-tailoring...' : 'Re-tailor'}</span>
+              </button>
               {activeTailorTab === 'cover_letter' ? (
                 <>
                   <button
