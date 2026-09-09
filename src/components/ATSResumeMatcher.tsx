@@ -304,6 +304,13 @@ export default function ATSResumeMatcher() {
       if (data.success && data.result) {
         setTailoredResult(data.result);
         setTailoredInputSnapshot({ resumeText, jobDescription });
+        // Automatically evaluate the tailored resume so the score dashboard reflects the tailored document
+        try {
+          const tailoredAnalysis = analyzeResumeATS(data.result.tailored_resume, jobDescription);
+          setResults(tailoredAnalysis);
+        } catch (e) {
+          console.warn('Auto score analysis warning:', e);
+        }
         setTimeout(() => {
           const elem = document.getElementById('tailored-resume-section');
           if (elem) {
@@ -319,6 +326,20 @@ export default function ATSResumeMatcher() {
     } finally {
       setIsTailoring(false);
     }
+  };
+
+  const handleApplyTailoredResumeToScanner = () => {
+    if (!tailoredResult?.tailored_resume) return;
+    setResumeText(tailoredResult.tailored_resume);
+    setActiveTab('paste');
+    const analysis = analyzeResumeATS(tailoredResult.tailored_resume, jobDescription);
+    setResults(analysis);
+    setTimeout(() => {
+      const elem = document.getElementById('ats-results-dashboard');
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleCopyTailoredResume = () => {
@@ -1001,6 +1022,16 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 </>
               ) : (
                 <>
+                  <button
+                    type="button"
+                    onClick={handleApplyTailoredResumeToScanner}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    title="Load this tailored resume directly into the scanner and refresh match score"
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Check Tailored Score</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={handleCopyTailoredResume}

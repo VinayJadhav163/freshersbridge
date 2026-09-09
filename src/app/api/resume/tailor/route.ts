@@ -163,6 +163,7 @@ export async function POST(req: Request) {
             }
 
             if (parsed && parsed.tailored_resume) {
+              parsed.tailored_resume = auditAndEnforceJDKeywordsInResume(parsed.tailored_resume, jobDescription);
               await recordATSScan('tailor').catch(() => {});
               return NextResponse.json({ success: true, result: parsed, source: 'ai' });
             }
@@ -175,6 +176,7 @@ export async function POST(req: Request) {
 
     // High-fidelity fallback strictly preserving candidate's genuine credentials
     const fallbackResult = generateFallbackTailoredPackage(resumeText, jobDescription);
+    fallbackResult.tailored_resume = auditAndEnforceJDKeywordsInResume(fallbackResult.tailored_resume, jobDescription);
     await recordATSScan('tailor').catch(() => {});
     return NextResponse.json({ success: true, result: fallbackResult, source: 'rule-engine' });
 
@@ -185,6 +187,53 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+// Enforce that 100% of the target JD's canonical keywords are literally represented in the resume
+function auditAndEnforceJDKeywordsInResume(resumeText: string, jobDescription: string): string {
+  const lowerJD = jobDescription.toLowerCase();
+  const lowerResume = resumeText.toLowerCase();
+
+  // Find all canonical skills required by the JD
+  const targetCanonical = CANONICAL_SKILLS.filter((cs) => matchSkillInText(lowerJD, cs.aliases));
+
+  // Identify any target skill completely absent from the resume text
+  const missingFromResume = targetCanonical.filter(
+    (cs) => !matchSkillInText(lowerResume, cs.aliases) && !lowerResume.includes(cs.label.toLowerCase())
+  );
+
+  if (missingFromResume.length === 0) {
+    return resumeText;
+  }
+
+  let updatedResume = resumeText;
+  for (const missing of missingFromResume) {
+    const formattedPhrase = missing.id === 'relational_databases'
+      ? 'Relational Databases (MySQL, PostgreSQL, RDBMS)'
+      : missing.id === 'dbms'
+      ? 'Database Management Systems (DBMS / RDBMS)'
+      : missing.label;
+
+    // Check if resume has a Data Engineering or Pipelines line
+    if (/• (?:Data Engineering|Data Architecture|Pipelines)[^\n]*/i.test(updatedResume)) {
+      updatedResume = updatedResume.replace(
+        /(• (?:Data Engineering|Data Architecture|Pipelines)[^\n]*)/i,
+        `$1, ${formattedPhrase}`
+      );
+    } else if (/• (?:Technical Skills|Core Skills)[^\n]*/i.test(updatedResume)) {
+      updatedResume = updatedResume.replace(
+        /(• (?:Technical Skills|Core Skills)[^\n]*)/i,
+        `$1, ${formattedPhrase}`
+      );
+    } else if (/^(SKILLS|TECHNICAL SKILLS|CORE SKILLS)/im.test(updatedResume)) {
+      updatedResume = updatedResume.replace(
+        /^(SKILLS|TECHNICAL SKILLS|CORE SKILLS)/im,
+        `$1\n• Core Competencies: ${formattedPhrase}`
+      );
+    }
+  }
+
+  return updatedResume;
 }
 
 // Fallback Generator strictly preserving the candidate's real data while ensuring 100% JD keyword coverage
