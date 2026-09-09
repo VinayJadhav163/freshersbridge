@@ -491,17 +491,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             </p>
           </div>
 
-          {/* Quick Actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={handleLoadSampleResume}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/80 hover:bg-secondary px-3 py-2 text-xs font-bold text-foreground transition-all cursor-pointer shadow-2xs"
-            >
-              <RefreshCw className="h-3.5 w-3.5 text-[#275df5]" />
-              <span>Load Sample Resume</span>
-            </button>
-          </div>
         </div>
 
         {/* Two-Column Input Grid */}
@@ -511,7 +500,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           <div className="space-y-3 flex flex-col">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
-                <FileText className="h-3.5 w-3.5 text-[#275df5]" />
                 <span>1. Your Resume</span>
               </label>
 
@@ -652,7 +640,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           <div className="space-y-3 flex flex-col">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
-                <Target className="h-3.5 w-3.5 text-[#275df5]" />
                 <span>2. Target Job Description</span>
               </label>
 
@@ -720,10 +707,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <span>Checking Score...</span>
                 </>
               ) : (
-                <>
-                  <Target className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span>Quick Score Check</span>
-                </>
+                <span>Quick Score Check</span>
               )}
             </button>
 
@@ -796,14 +780,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 <p className="text-[11px] text-muted-foreground">
                   {results.matchedSkills.length} of {results.targetSkills.length} target skills found
                 </p>
-                <button
-                  type="button"
-                  onClick={handleCopyFullReport}
-                  className="text-[11px] font-bold text-[#275df5] hover:underline flex items-center gap-1 cursor-pointer pt-0.5"
-                >
-                  {copiedReport ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                  <span>{copiedReport ? 'Report Copied!' : 'Copy Full Report'}</span>
-                </button>
               </div>
             </div>
           </div>
@@ -908,39 +884,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
           </div>
 
-          {/* Action CTA Button at bottom of Scorecard */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
-            <div className="space-y-0.5 text-center sm:text-left">
-              <p className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
-                <Sparkles className="h-4 w-4 text-[#275df5]" />
-                <span>Ready to tailor your application?</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Generate a 1-page tailored ATS resume, fresher cover letter, and LaTeX package matching this JD.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleTailorResume}
-              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-8 py-4 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
-            >
-              {isTailoring ? (
-                <>
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>{tailoredResult ? 'Re-tailoring Application...' : 'Generating Tailored Package...'}</span>
-                </>
-              ) : (
-                <>
-                  {tailoredResult ? <RefreshCw className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
-                  <span>{tailoredResult ? 'Re-tailor Resume & Cover Letter' : 'AI Tailor & Generate Resume'}</span>
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </button>
-          </div>
-
         </div>
       )}
 
@@ -989,25 +932,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* Top Decorative Background Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-          {/* Input Modification Sync Alert */}
-          {hasInputChangedSinceTailoring && (
-            <div className="rounded-xl border border-amber-300 dark:border-amber-800/80 bg-amber-50/90 dark:bg-amber-950/40 p-3.5 text-xs font-medium text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-10">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-                <span>You modified your resume or job description above. Re-tailor to synchronize your tailored document with your changes.</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleTailorResume}
-                disabled={isTailoring}
-                className="shrink-0 px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${isTailoring ? 'animate-spin' : ''}`} />
-                <span>Re-tailor Now</span>
-              </button>
-            </div>
-          )}
-
           {/* Section Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-border pb-6 relative z-10">
             <div className="space-y-1.5">
@@ -1021,16 +945,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
             {/* Quick Actions */}
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={handleTailorResume}
-                disabled={isTailoring}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-[#275df5]/40 bg-[#275df5]/10 hover:bg-[#275df5]/20 text-[#275df5] px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
-                title="Re-run AI tailoring with your current inputs"
-              >
-                <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin' : ''}`} />
-                <span>{isTailoring ? 'Re-tailoring...' : 'Re-tailor'}</span>
-              </button>
               {activeTailorTab === 'cover_letter' ? (
                 <>
                   <button
@@ -1125,17 +1039,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* Tab 1: Tailored Resume Body */}
           {activeTailorTab === 'resume' && (
             <div className="space-y-4">
-              {/* ATS Formatting Guidelines Pill */}
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground bg-secondary/50 rounded-xl px-4 py-2.5 border border-border">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span><strong>ATS Safe:</strong> Single-column, standard headers, chronological order, zero unparseable tables/graphics.</span>
-                </div>
-                <span className="text-[11px] font-mono">
-                  {tailoredResult.tailored_resume.split(/\s+/).filter(Boolean).length} words • ~45 sec recruiter scan
-                </span>
-              </div>
-
               {/* Resume Paper Container */}
               <div className="relative rounded-xl border border-border bg-background p-6 sm:p-8 shadow-inner">
                 <button
@@ -1170,16 +1073,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           {/* ================================================================= */}
           {activeTailorTab === 'cover_letter' && (
             <div className="space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground bg-secondary/50 rounded-xl px-4 py-2.5 border border-border">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-[#275df5] shrink-0" />
-                  <span><strong>Personalized Fresher Cover Letter:</strong> Structured to connect academic projects to the company's real tech stack with immediate joiner positioning.</span>
-                </div>
-                <span className="text-[11px] font-mono">
-                  {(tailoredResult.cover_letter || '').split(/\s+/).filter(Boolean).length} words • 3 focused paragraphs
-                </span>
-              </div>
-
               {/* Cover Letter Paper Card */}
               <div className="relative rounded-xl border border-border bg-background p-6 sm:p-8 shadow-inner">
                 <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
