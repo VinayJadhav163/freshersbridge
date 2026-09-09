@@ -972,7 +972,37 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
             {/* Quick Actions */}
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              {activeTailorTab === 'cover_letter' ? (
+              {activeTailorTab === 'latex' ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleCopyLatex}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                  >
+                    {copiedLatex ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        <span>Copied LaTeX!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        <span>Copy LaTeX Code</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDownloadTex}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
+                    title="Download LaTeX Resume (.tex)"
+                  >
+                    <Download className="h-4 w-4 text-[#275df5]" />
+                    <span>Download .tex</span>
+                  </button>
+                </>
+              ) : activeTailorTab === 'cover_letter' ? (
                 <>
                   <button
                     type="button"
@@ -1061,6 +1091,18 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             >
               Cover Letter
             </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTailorTab('latex')}
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
+                activeTailorTab === 'latex'
+                  ? 'border-[#275df5] text-[#275df5]'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              LaTeX Format (.tex)
+            </button>
           </div>
 
           {/* Tab 1: Tailored Resume Body */}
@@ -1140,6 +1182,57 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <p className="font-bold text-foreground">How to send this cover letter:</p>
                   <p className="leading-relaxed">
                     When applying on company portals (TCS iON, Infosys Careers, Accenture Careers) or reaching out to recruiters on LinkedIn/Email, paste this directly into the Cover Letter / Message box. It proves you researched their tech stack rather than mass-spamming applications!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================================================================= */}
+          {/* TAB 3: TAILORED LATEX RESUME (resume.cls format)                 */}
+          {/* ================================================================= */}
+          {activeTailorTab === 'latex' && (
+            <div className="space-y-4">
+              {/* LaTeX Code Container */}
+              <div className="relative rounded-xl border border-border bg-[#090d16] text-slate-100 p-6 sm:p-8 shadow-inner overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800/80 pb-3 mb-4 gap-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                    <Code2 className="h-4 w-4 text-[#275df5]" />
+                    <span>FAANGPath LaTeX Format (resume.cls)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleCopyLatex}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
+                    >
+                      {copiedLatex ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span>{copiedLatex ? 'Copied' : 'Copy .tex'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownloadTex}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white transition-all cursor-pointer"
+                      title="Download .tex"
+                    >
+                      <Download className="h-3.5 w-3.5 text-[#275df5]" />
+                      <span>Download .tex</span>
+                    </button>
+                  </div>
+                </div>
+
+                <pre className="font-mono text-xs sm:text-xs text-slate-200 leading-relaxed whitespace-pre-wrap selection:bg-[#275df5]/40 font-normal overflow-x-auto max-h-[600px] no-scrollbar">
+                  {tailoredResult.latex_resume || '% Compiling tailored LaTeX resume...'}
+                </pre>
+              </div>
+
+              {/* Overleaf / LaTeX Guidance */}
+              <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-xs text-muted-foreground flex items-start gap-3">
+                <Info className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-bold text-foreground">How to compile this LaTeX resume:</p>
+                  <p className="leading-relaxed">
+                    This template uses the standard <strong>FAANGPath (resume.cls)</strong> format with 0.4-inch margins and tight itemize spacing. To compile on <strong>Overleaf</strong>: create a blank project, upload the standard <code className="text-[#275df5] font-semibold">resume.cls</code> file, paste this into <code className="text-[#275df5] font-semibold">main.tex</code>, and click <strong>Recompile</strong> to download your PDF!
                   </p>
                 </div>
               </div>
