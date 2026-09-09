@@ -103,12 +103,17 @@ export const CANONICAL_SKILLS: CanonicalSkill[] = [
   {
     id: 'relational_databases',
     label: 'Relational Databases',
-    aliases: ['relational databases', 'relational database', 'rdbms', 'relational data models', 'relational data'],
+    aliases: [
+      'relational databases', 'relational database', 'rdbms', 'relational data models',
+      'relational data', 'mysql', 'postgresql', 'postgres', 'sqlite', 'oracle db',
+      'oracle database', 'sql server', 'relational db', 'relational tables', 'relational schema',
+      'relational'
+    ],
   },
   {
     id: 'sql_joins',
     label: 'SQL Joins',
-    aliases: ['joins', 'sql joins', 'inner join', 'outer join', 'left join', 'right join', 'table joins'],
+    aliases: ['joins', 'sql joins', 'inner join', 'outer join', 'left join', 'right join', 'table joins', 'complex joins'],
   },
   {
     id: 'large_datasets',
@@ -279,7 +284,7 @@ export const CANONICAL_SKILLS: CanonicalSkill[] = [
   {
     id: 'dbms',
     label: 'DBMS',
-    aliases: ['dbms', 'database management systems', 'database management'],
+    aliases: ['dbms', 'database management systems', 'database management', 'rdbms', 'relational databases', 'database systems', 'sql databases', 'mysql', 'postgresql'],
   },
   {
     id: 'system_design',

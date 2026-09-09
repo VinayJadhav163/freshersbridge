@@ -25,13 +25,14 @@ CRITICAL ZERO-FABRICATION & ABSOLUTE FACTUAL FIDELITY RULES:
 
 2. MANDATORY 100% KEYWORD INJECTION:
    - The primary goal is achieving a 100% match when scanned by any automated ATS against this JD.
-   - Parse EVERY technical skill, tool, and requirement from the JD (e.g. Tableau, SQL, DBT, ETL/ELT, Data Modeling, Data Warehousing, Python, Generative AI, LLMs, Troubleshooting, Complex Calculations).
+   - Parse EVERY technical skill, tool, and requirement from the JD (e.g. Tableau, SQL, DBT, ETL/ELT, Data Modeling, Data Warehousing, Relational Databases, Python, Generative AI, LLMs, Troubleshooting, Complex Calculations, Large Datasets).
    - In the "SKILLS" section, you MUST EXPLICITLY INCLUDE every single target JD keyword under dedicated categories:
-     * Technical Skills: Explicitly include core languages and foundational technical competencies.
+     * Technical Skills: Explicitly include core languages and foundational technical competencies (e.g., Python, SQL, Data Modeling, Data Validation).
      * Tools & Technologies: Explicitly include all tools from JD (e.g., Tableau, Power BI, Python, MySQL, Excel, Git).
-     * Data Engineering & Pipelines: Explicitly include ETL/ELT workflows, DBT (data build tool pipelines & transformations), Data Modeling, Data Warehousing concepts, Joins.
+     * Data Engineering & Pipelines: Explicitly include Relational Databases (MySQL, PostgreSQL, RDBMS), ETL/ELT workflows, DBT (data build tool pipelines & transformations), Data Modeling, Data Warehousing concepts, Joins, Large Datasets.
      * AI & Advanced Capabilities: Explicitly write "Generative AI (GenAI), LLM integrations & AI-driven data analytics solutions" (never leave GenAI abbreviated as just generic text).
-     * Methodologies & Quality: Explicitly write "Performance optimization, dashboard troubleshooting, data validation and reporting, complex calculations & calculated fields".
+     * Methodologies & Quality: Explicitly write "Performance optimization, dashboard troubleshooting, data validation and reporting, complex calculations & calculated fields, SDLC best practices".
+   - CRITICAL EXACT MATCH RULE: If the JD specifies "Relational Databases", you MUST literally write "Relational Databases (MySQL, RDBMS)" in the resume. Real-world ATS parsers perform exact keyword searches; never rely on implicit matches (e.g. do not assume writing only "MySQL" is enough if the JD asks for "Relational Databases").
    - When this tailored resume is scanned against the JD, ZERO target keywords should be missing!
 
 3. ATS FORMAT & SECTION SEQUENCE:
@@ -266,7 +267,8 @@ function generateFallbackTailoredPackage(resumeText: string, jobDescription: str
 
   const techSkillsStr = targetLabels.slice(0, 6).join(', ') || 'Tableau, SQL, Python, MySQL, Relational Databases';
   const toolsStr = toolsList.join(', ') || 'Tableau, Power BI, Excel, Git';
-  const dataStr = dataEngList.join(', ') || 'ETL/ELT Workflows, DBT, Data Modeling, Data Warehousing, Complex Joins';
+  const dataEngFormatted = dataEngList.map(item => item === 'Relational Databases' ? 'Relational Databases (MySQL, RDBMS)' : item);
+  const dataStr = dataEngFormatted.join(', ') || 'ETL/ELT Workflows, DBT, Data Modeling, Data Warehousing, Relational Databases (MySQL, RDBMS), Complex Joins';
   const aiStr = aiList.join(', ') || 'Generative AI (GenAI), LLM integrations & AI-driven analytics';
   const softStr = softList.join(', ') || 'Performance Optimization, Troubleshooting, Data Validation, Agile Collaboration';
 

@@ -1,23 +1,23 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { 
-  Upload, 
-  FileText, 
-  CheckCircle2, 
-  AlertTriangle, 
-  XCircle, 
-  Copy, 
-  Check, 
-  RefreshCw, 
-  Layers, 
-  Target, 
-  ArrowRight, 
-  ShieldCheck, 
-  Info, 
-  Building2, 
-  ChevronDown, 
-  Award, 
+import {
+  Upload,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Copy,
+  Check,
+  RefreshCw,
+  Layers,
+  Target,
+  ArrowRight,
+  ShieldCheck,
+  Info,
+  Building2,
+  ChevronDown,
+  Award,
   BarChart3,
   FileCheck,
   TrendingUp,
@@ -158,7 +158,7 @@ export default function ATSResumeMatcher() {
     tailoredResult &&
     tailoredInputSnapshot &&
     (resumeText.trim() !== tailoredInputSnapshot.resumeText.trim() ||
-     jobDescription.trim() !== tailoredInputSnapshot.jobDescription.trim())
+      jobDescription.trim() !== tailoredInputSnapshot.jobDescription.trim())
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -237,7 +237,7 @@ export default function ATSResumeMatcher() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'scan' }),
-        }).catch(() => {});
+        }).catch(() => { });
 
         // Smooth scroll down to results on mobile
         setTimeout(() => {
@@ -496,7 +496,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
     <div className="space-y-8 w-full max-w-5xl mx-auto">
       {/* 1. Main Scanner Inputs Card */}
       <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs space-y-6">
-        
+
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
@@ -525,18 +525,16 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 <button
                   type="button"
                   onClick={() => setActiveTab('upload')}
-                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
-                    activeTab === 'upload' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${activeTab === 'upload' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
+                    }`}
                 >
                   Upload File
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('paste')}
-                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
-                    activeTab === 'paste' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  className={`px-3 py-1 rounded-full transition-all cursor-pointer ${activeTab === 'paste' ? 'bg-background shadow-xs text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
+                    }`}
                 >
                   Paste Text
                 </button>
@@ -744,7 +742,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <span>Checking Score...</span>
                 </>
               ) : (
-                <span>Quick Score Check</span>
+                <span>Check ATS Score</span>
               )}
             </button>
 
@@ -799,15 +797,14 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             {/* Circular Gauge / Badge */}
             <div className="flex items-center gap-4 bg-background/80 border border-border p-4 rounded-2xl shadow-2xs shrink-0">
               <div className="relative flex items-center justify-center">
-                <div className={`h-20 w-20 rounded-full flex flex-col items-center justify-center font-black border-4 ${
-                  results.overallScore >= 80
+                <div className={`h-20 w-20 rounded-full flex flex-col items-center justify-center font-black border-4 ${results.overallScore >= 80
                     ? 'border-emerald-500 text-emerald-600 bg-emerald-50/40 dark:bg-emerald-950/30'
                     : results.overallScore >= 65
-                    ? 'border-blue-500 text-[#275df5] bg-blue-50/40 dark:bg-blue-950/30'
-                    : results.overallScore >= 50
-                    ? 'border-amber-500 text-amber-600 bg-amber-50/40 dark:bg-amber-950/30'
-                    : 'border-rose-500 text-rose-600 bg-rose-50/40 dark:bg-rose-950/30'
-                }`}>
+                      ? 'border-blue-500 text-[#275df5] bg-blue-50/40 dark:bg-blue-950/30'
+                      : results.overallScore >= 50
+                        ? 'border-amber-500 text-amber-600 bg-amber-50/40 dark:bg-amber-950/30'
+                        : 'border-rose-500 text-rose-600 bg-rose-50/40 dark:bg-rose-950/30'
+                  }`}>
                   <span className="text-2xl leading-none">{results.overallScore}%</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">Match</span>
                 </div>
@@ -1041,11 +1038,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             <button
               type="button"
               onClick={() => setActiveTailorTab('resume')}
-              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'resume'
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${activeTailorTab === 'resume'
                   ? 'border-[#275df5] text-[#275df5]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               Tailored Resume
             </button>
@@ -1053,11 +1049,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
             <button
               type="button"
               onClick={() => setActiveTailorTab('cover_letter')}
-              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
-                activeTailorTab === 'cover_letter'
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all cursor-pointer ${activeTailorTab === 'cover_letter'
                   ? 'border-[#275df5] text-[#275df5]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               Cover Letter
             </button>
