@@ -699,7 +699,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           </div>
         )}
 
-        {/* Primary CTA Buttons: Scan ATS Score and Tailor/Re-tailor */}
+        {/* Primary CTA Buttons: 1-Click Scan & Tailor for JD */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
@@ -711,17 +711,18 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               type="button"
               onClick={handleAnalyze}
               disabled={!resumeText.trim() || isAnalyzing || isTailoring}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground px-6 py-3.5 text-sm font-bold border border-border transition-all cursor-pointer shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground px-5 py-3.5 text-xs font-bold border border-border transition-all cursor-pointer shrink-0"
+              title="Check ATS match score only without tailoring"
             >
               {isAnalyzing ? (
                 <>
-                  <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
-                  <span>Scanning ATS Score...</span>
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin text-[#275df5]" />
+                  <span>Checking Score...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 text-[#275df5]" />
-                  <span>Scan ATS Match Score</span>
+                  <Target className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Quick Score Check</span>
                 </>
               )}
             </button>
@@ -730,17 +731,17 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               type="button"
               onClick={handleTailorResume}
               disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-8 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
             >
               {isTailoring ? (
                 <>
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>{tailoredResult ? 'Re-tailoring Resume...' : 'Tailoring Resume...'}</span>
+                  <span>{tailoredResult ? 'Re-tailoring Resume to JD...' : 'Scanning & Tailoring for JD...'}</span>
                 </>
               ) : (
                 <>
-                  {tailoredResult ? <RefreshCw className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
-                  <span>{tailoredResult ? 'Re-tailor Resume' : 'AI Tailor Resume'}</span>
+                  <Sparkles className="h-4 w-4" />
+                  <span>{tailoredResult ? 'Re-tailor Resume for JD' : 'Scan & Tailor Resume for JD'}</span>
                 </>
               )}
             </button>
