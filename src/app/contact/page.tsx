@@ -1,9 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Mail, Send, Check, MessageSquare, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Mail, Send, Check, MessageSquare, ArrowLeft, ExternalLink, Clock, ShieldAlert } from 'lucide-react';
 import { AnimatedSubscribeButton } from '@/components/ui/animated-subscribe-button';
+
+const STORAGE_KEY = 'fb_contact_submission_history';
+const COOLDOWN_SECONDS = 180; // 3 minutes cooldown between messages
+const MAX_DAILY_MESSAGES = 3; // Maximum 3 messages per 24 hours
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,20 +16,116 @@ export default function ContactPage() {
     message: '',
   });
 
+  const [honeypot, setHoneypot] = useState('');
+  const [formErrors, setFormErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [fallbackMailto, setFallbackMailto] = useState<string | null>(null);
 
+  // Anti-spam state
+  const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
+  const [isDailyLimitReached, setIsDailyLimitReached] = useState<boolean>(false);
+
+  const contactCardRef = useRef<HTMLDivElement>(null);
+
+  // Helper to read submissions in last 24h
+  const getRecentSubmissions = (): number[] => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const list = JSON.parse(raw);
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      return Array.isArray(list) ? list.filter((t: number) => t > oneDayAgo) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Check rate limit on component mount
+  useEffect(() => {
+    const recent = getRecentSubmissions();
+    if (recent.length >= MAX_DAILY_MESSAGES) {
+      setIsDailyLimitReached(true);
+    }
+    if (recent.length > 0) {
+      const lastTime = Math.max(...recent);
+      const elapsed = Math.floor((Date.now() - lastTime) / 1000);
+      if (elapsed < COOLDOWN_SECONDS) {
+        setCooldownRemaining(COOLDOWN_SECONDS - elapsed);
+      }
+    }
+  }, []);
+
+  // Cooldown countdown timer
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return;
+    const timer = setInterval(() => {
+      setCooldownRemaining((prev) => {
+        if (prev <= 1) return 0;
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldownRemaining]);
+
+  const validateForm = () => {
+    const errors: { name?: string; email?: string; message?: string } = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Please enter your name.';
+    }
+    if (!formData.email.trim()) {
+      errors.email = 'Please enter your email address.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = 'Please enter a valid email address.';
+    }
+    if (!formData.message.trim()) {
+      errors.message = 'Please write your message.';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const recordSuccessfulSubmission = () => {
+    const recent = [...getRecentSubmissions(), Date.now()];
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
+    } catch {}
+
+    setCooldownRemaining(COOLDOWN_SECONDS);
+    if (recent.length >= MAX_DAILY_MESSAGES) {
+      setIsDailyLimitReached(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim() || isSubmitting || isSent) return;
+
+    // Check anti-spam limitations
+    if (isDailyLimitReached || cooldownRemaining > 0 || isSubmitting || isSent) {
+      return;
+    }
+
+    // Bot honeypot check
+    if (honeypot.trim() !== '') {
+      setIsSent(true);
+      setTimeout(() => setSubmitted(true), 1000);
+      return;
+    }
+
+    // Custom non-intrusive validation (no browser popup tooltip)
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
     setFallbackMailto(null);
 
     try {
-      // 1. Direct Web3Forms submission from browser (origin header matches domain/localhost)
+      // 1. Direct Web3Forms submission
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -34,10 +134,10 @@ export default function ContactPage() {
         },
         body: JSON.stringify({
           access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '6c3e4150-6343-4c3e-a6c0-299f736bd4d1',
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          subject: `New Contact Message from ${formData.name}`,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+          subject: `New Contact Message from ${formData.name.trim()}`,
           from_name: 'FreshersBridge Portal',
         }),
       });
@@ -47,8 +147,10 @@ export default function ContactPage() {
 
       if (res.ok && data.success) {
         setIsSent(true);
+        recordSuccessfulSubmission();
         setTimeout(() => {
           setSubmitted(true);
+          contactCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 1200);
         return;
       }
@@ -57,7 +159,11 @@ export default function ContactPage() {
       const routeRes = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+        }),
       });
 
       const routeData = await routeRes.json();
@@ -67,9 +173,11 @@ export default function ContactPage() {
       }
 
       setIsSent(true);
+      recordSuccessfulSubmission();
       setTimeout(() => {
         setSubmitted(true);
-      }, 750);
+        contactCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 1200);
     } catch (err) {
       console.error('Submit error:', err);
       const directMailto = `mailto:freshersbridge@gmail.com?subject=${encodeURIComponent(
@@ -81,10 +189,27 @@ export default function ContactPage() {
       window.open(directMailto, '_blank');
       setIsSubmitting(false);
       setIsSent(true);
+      recordSuccessfulSubmission();
       setTimeout(() => {
         setSubmitted(true);
-      }, 750);
+        contactCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 1200);
     }
+  };
+
+  const handleSendAnother = () => {
+    if (cooldownRemaining > 0 || isDailyLimitReached) return;
+    setSubmitted(false);
+    setIsSent(false);
+    setFormData({ name: '', email: '', message: '' });
+    setFormErrors({});
+    contactCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const formatCountdown = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s.toString().padStart(2, '0')}s`;
   };
 
   return (
@@ -101,7 +226,7 @@ export default function ContactPage() {
       </div>
 
       {/* Main Contact Card Container */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+      <div ref={contactCardRef} className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg scroll-mt-24">
         <div className="grid grid-cols-1 md:grid-cols-12">
           
           {/* Left Column: Contact Details */}
@@ -147,8 +272,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Form */}
-          <div className="md:col-span-8 p-6 sm:p-10 bg-card flex flex-col justify-center">
+          {/* Right Column: Interactive Form & Anti-Spam Protected States */}
+          <div className="md:col-span-8 p-6 sm:p-10 bg-card flex flex-col justify-center min-h-[540px]">
             <div className="space-y-2 mb-6">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">
                 <MessageSquare className="h-3.5 w-3.5" />
@@ -163,7 +288,7 @@ export default function ContactPage() {
             </div>
 
             {submitted ? (
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 p-8 text-center space-y-4 my-auto animate-in fade-in duration-300">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 p-6 sm:p-8 text-center space-y-4 my-auto animate-in fade-in duration-300">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 mx-auto text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                   <Check className="h-6 w-6" />
                 </div>
@@ -175,6 +300,7 @@ export default function ContactPage() {
                     ? 'Thank you! Your message has been prepared for freshersbridge@gmail.com.'
                     : 'Thank you! Your message has been sent directly to freshersbridge@gmail.com. We will reply to your email shortly.'}
                 </p>
+
                 {fallbackMailto && (
                   <div className="pt-1">
                     <a
@@ -188,59 +314,149 @@ export default function ContactPage() {
                     </a>
                   </div>
                 )}
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      setSubmitted(false);
-                      setIsSent(false);
-                      setFormData({ name: '', email: '', message: '' });
-                    }}
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-indigo-600 transition-colors"
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" /> Send Another Message
-                  </button>
+
+                {/* Anti-Spam Limitation Info */}
+                <div className="pt-3 space-y-3">
+                  {isDailyLimitReached ? (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 p-3.5 text-left flex items-start gap-2.5">
+                      <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <p className="text-xs font-bold text-amber-800 dark:text-amber-300">Daily Message Limit Reached</p>
+                        <p className="text-xs text-amber-700/90 dark:text-amber-400/90">
+                          To prevent spam, you have reached the limit of 3 messages today. For urgent queries, contact freshersbridge@gmail.com.
+                        </p>
+                      </div>
+                    </div>
+                  ) : cooldownRemaining > 0 ? (
+                    <div className="rounded-xl border border-indigo-200/70 bg-indigo-50/60 dark:bg-indigo-950/20 p-3 text-left flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        <Clock className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                        <span>Anti-spam cooldown active</span>
+                      </div>
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
+                        {formatCountdown(cooldownRemaining)}
+                      </span>
+                    </div>
+                  ) : null}
+
+                  <div>
+                    <button
+                      type="button"
+                      disabled={cooldownRemaining > 0 || isDailyLimitReached}
+                      onClick={handleSendAnother}
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-muted-foreground"
+                    >
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      {isDailyLimitReached
+                        ? 'Message limit reached for today'
+                        : cooldownRemaining > 0
+                        ? `Send Another Message (wait ${formatCountdown(cooldownRemaining)})`
+                        : 'Send Another Message'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name Input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Name</label>
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {/* Honeypot field (hidden from users, traps bots) */}
+                <div className="hidden" aria-hidden="true">
                   <input
                     type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Enter your name"
-                    className="w-full rounded-xl border border-border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20 font-medium"
+                    name="website_feedback_trap"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
                   />
+                </div>
+
+                {/* Name Input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => {
+                      setFormData({ ...formData, name: e.target.value });
+                      if (formErrors.name) setFormErrors({ ...formErrors, name: undefined });
+                    }}
+                    placeholder="Enter your name"
+                    className={`w-full rounded-xl border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all font-medium ${
+                      formErrors.name
+                        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
+                    }`}
+                  />
+                  {formErrors.name && (
+                    <p className="text-xs font-medium text-rose-500">{formErrors.name}</p>
+                  )}
                 </div>
 
                 {/* Email Input */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Email</label>
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Email
+                  </label>
                   <input
                     type="email"
-                    required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (formErrors.email) setFormErrors({ ...formErrors, email: undefined });
+                    }}
                     placeholder="Enter your email"
-                    className="w-full rounded-xl border border-border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20 font-medium"
+                    className={`w-full rounded-xl border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all font-medium ${
+                      formErrors.email
+                        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
+                    }`}
                   />
+                  {formErrors.email && (
+                    <p className="text-xs font-medium text-rose-500">{formErrors.email}</p>
+                  )}
                 </div>
 
                 {/* Message Textarea */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Message</label>
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Message
+                  </label>
                   <textarea
-                    required
                     rows={4}
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, message: e.target.value });
+                      if (formErrors.message) setFormErrors({ ...formErrors, message: undefined });
+                    }}
                     placeholder="Write message here..."
-                    className="w-full h-32 sm:h-36 rounded-xl border border-border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20 font-sans font-medium resize-none overflow-y-auto"
+                    className={`w-full h-32 sm:h-36 rounded-xl border bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm text-foreground outline-none transition-all font-sans font-medium resize-none overflow-y-auto ${
+                      formErrors.message
+                        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
+                    }`}
                   />
+                  {formErrors.message && (
+                    <p className="text-xs font-medium text-rose-500">{formErrors.message}</p>
+                  )}
                 </div>
+
+                {/* Cooldown or Daily limit warning if returning user is restricted */}
+                {isDailyLimitReached ? (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                    <ShieldAlert className="h-4 w-4 shrink-0" />
+                    <span>Daily message limit reached (3/3). Please email freshersbridge@gmail.com for inquiries.</span>
+                  </div>
+                ) : cooldownRemaining > 0 ? (
+                  <div className="rounded-xl border border-indigo-200/60 bg-indigo-50/60 dark:bg-indigo-950/20 p-2.5 text-xs text-indigo-800 dark:text-indigo-300 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <span>Anti-spam wait time active:</span>
+                    </span>
+                    <span className="font-mono font-bold">{formatCountdown(cooldownRemaining)}</span>
+                  </div>
+                ) : null}
 
                 {/* Animated Submit Button */}
                 <div className="pt-2 flex justify-center">
@@ -249,7 +465,7 @@ export default function ContactPage() {
                     buttonColor="#0f172a"
                     buttonTextColor="#ffffff"
                     subscribeStatus={isSent}
-                    disabled={isSubmitting || isSent}
+                    disabled={isSubmitting || isSent || cooldownRemaining > 0 || isDailyLimitReached}
                     className="dark:!bg-indigo-600 dark:hover:!bg-indigo-500"
                     initialText={
                       isSubmitting ? (
@@ -277,3 +493,4 @@ export default function ContactPage() {
     </div>
   );
 }
+
