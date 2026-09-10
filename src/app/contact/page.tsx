@@ -49,7 +49,7 @@ export default function ContactPage() {
         setIsSent(true);
         setTimeout(() => {
           setSubmitted(true);
-        }, 750);
+        }, 1200);
         return;
       }
 
@@ -163,9 +163,9 @@ export default function ContactPage() {
             </div>
 
             {submitted ? (
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 p-8 text-center space-y-4 my-auto animate-in fade-in zoom-in-95 duration-300">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 mx-auto text-emerald-600">
-                  <Check className="h-8 w-8" />
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 p-8 text-center space-y-4 my-auto animate-in fade-in duration-300">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 mx-auto text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <Check className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground">
                   {fallbackMailto ? 'Message Prepared for Email' : 'Message Sent Successfully!'}

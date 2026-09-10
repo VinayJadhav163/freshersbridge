@@ -48,17 +48,17 @@ export const AnimatedSubscribeButton: React.FC<
           key="subscribed"
           type={type}
           disabled={disabled}
-          className={`relative flex min-w-[180px] sm:min-w-[200px] items-center justify-center overflow-hidden rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-6 py-3 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 font-bold shadow-sm ${className}`}
+          className={`relative flex min-w-[180px] sm:min-w-[200px] items-center justify-center overflow-hidden rounded-xl bg-emerald-50 dark:bg-emerald-950/40 px-6 py-3 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 font-bold shadow-sm ${className}`}
           onClick={handleClick}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
           <motion.span
             key="action"
             className="relative flex items-center justify-center font-bold text-sm"
-            initial={{ y: -20, opacity: 0 }}
+            initial={{ y: -15, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.2 }}
           >
@@ -70,12 +70,12 @@ export const AnimatedSubscribeButton: React.FC<
           key="unsubscribed"
           type={type}
           disabled={disabled}
-          className={`relative flex min-w-[180px] sm:min-w-[200px] cursor-pointer items-center justify-center rounded-full px-6 py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+          className={`relative flex min-w-[180px] sm:min-w-[200px] cursor-pointer items-center justify-center rounded-xl px-6 py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
           style={{ backgroundColor: buttonColor, color: buttonTextColor }}
           onClick={handleClick}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
           <motion.span
