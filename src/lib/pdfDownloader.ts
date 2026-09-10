@@ -41,15 +41,19 @@ export async function downloadDirectResumePdf(resumeText: string) {
   const isDense = estimatedLines > 38;
   const isVeryDense = estimatedLines > 46;
 
+  const startY = isVeryDense ? 12 : isDense ? 14 : 16;
   const nameSize = isVeryDense ? 19 : isDense ? 20 : 21;
-  const headerSectionGap = isVeryDense ? 3.2 : isDense ? 3.8 : 4.4;
+  const nameToContactGap = isVeryDense ? 4.8 : isDense ? 5.6 : 6.2;
+  const contactSize = isVeryDense ? 8.8 : isDense ? 9.2 : 9.6;
+  const headerSectionGap = isVeryDense ? 4.0 : isDense ? 4.8 : 5.6;
   const headerFontSize = isVeryDense ? 10 : 10.5;
-  const bodyFontSize = isVeryDense ? 8.8 : isDense ? 9.2 : 9.5;
-  const lineHeight = isVeryDense ? 3.7 : isDense ? 4.0 : 4.2;
-  const bulletGap = isVeryDense ? 0.6 : 0.9;
-  const itemGap = isVeryDense ? 1.5 : 2.0;
+  const bodyFontSize = isVeryDense ? 9.0 : isDense ? 9.4 : 9.8;
+  const lineHeight = isVeryDense ? 3.9 : isDense ? 4.3 : 4.7;
+  const bulletGap = isVeryDense ? 0.9 : isDense ? 1.2 : 1.6;
+  const itemGap = isVeryDense ? 1.8 : isDense ? 2.5 : 3.2;
+  const skillsRowGap = isVeryDense ? 0.6 : 1.2;
 
-  let y = isVeryDense ? 13 : 15;
+  let y = startY;
 
   // 1. Candidate Name (Centered, Bold, Times)
   doc.setFont('times', 'bold');
@@ -57,7 +61,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   doc.setTextColor(0, 0, 0);
   const safeName = (structured.name || 'Candidate').trim();
   doc.text(safeName.toUpperCase(), pageWidth / 2, y, { align: 'center' });
-  y += isVeryDense ? 5.2 : 6.0;
+  y += nameToContactGap;
 
   // 2. Contact Line (Centered, cleanly separated with standard ASCII pipe)
   if (structured.contactLines.length > 0) {
@@ -69,8 +73,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
       .filter(Boolean);
 
     doc.setFont('times', 'normal');
-    const contactFontSize = isVeryDense ? 8.8 : 9.3;
-    doc.setFontSize(contactFontSize);
+    doc.setFontSize(contactSize);
     doc.setTextColor(30, 30, 30);
 
     const fullContactStr = parts.join('   |   ');
@@ -78,16 +81,16 @@ export async function downloadDirectResumePdf(resumeText: string) {
 
     if (fullWidth <= contentWidth) {
       doc.text(fullContactStr, pageWidth / 2, y, { align: 'center' });
-      y += isVeryDense ? 5.2 : 6.0;
+      y += isVeryDense ? 5.2 : isDense ? 5.8 : 6.5;
     } else {
       // If contact information is very long, split across 2 centered lines cleanly
       const mid = Math.ceil(parts.length / 2);
       const line1 = parts.slice(0, mid).join('   |   ');
       const line2 = parts.slice(mid).join('   |   ');
       doc.text(line1, pageWidth / 2, y, { align: 'center' });
-      y += 4.0;
+      y += 4.2;
       doc.text(line2, pageWidth / 2, y, { align: 'center' });
-      y += isVeryDense ? 4.8 : 5.5;
+      y += isVeryDense ? 5.0 : isDense ? 5.6 : 6.2;
     }
   }
 
@@ -104,7 +107,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
     doc.setDrawColor(0, 0, 0);
     doc.line(marginX, lineY, pageWidth - marginX, lineY);
 
-    y = lineY + 3.8; // Content starts cleanly below underline
+    y = lineY + (isVeryDense ? 3.4 : isDense ? 3.8 : 4.2); // Content starts cleanly below underline
   };
 
   // Helper to draw bullet point with crisp filled dot
@@ -172,7 +175,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
       doc.setFontSize(bodyFontSize);
       const itemLines = doc.splitTextToSize(sk.items, itemsWidth);
       doc.text(itemLines, marginX + catColWidth, y);
-      y += Math.max(1, itemLines.length) * lineHeight + 0.6;
+      y += Math.max(1, itemLines.length) * lineHeight + skillsRowGap;
     });
   }
 

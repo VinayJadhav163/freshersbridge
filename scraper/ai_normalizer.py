@@ -21,7 +21,7 @@ load_dotenv(os.path.join(root_dir, ".env"))
 logger = logging.getLogger("FreshersBridgeAINormalizer")
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("NEXT_PUBLIC_GEMINI_API_KEY")
-GEMINI_MODELS = ["gemini-3.6-flash", "gemini-flash-latest"]
+GEMINI_MODELS = ["gemini-2.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.6-flash"]
 
 SYSTEM_PROMPT = """You are an expert technical recruiter and job data extraction agent for FreshersBridge, an Indian career platform exclusively for Freshers (0-1 years of experience, 2024/2025/2026 batch graduates, and college interns).
 
@@ -173,7 +173,16 @@ def process_batch_with_ai(jobs_batch: List[Dict[str, Any]], api_key: Optional[st
     ai_results, quota_exhausted = call_gemini_api(batch_payload, key_to_use)
 
     if quota_exhausted or not ai_results:
-        return [(False, None, "AI quota exhausted or unavailable") for _ in jobs_batch], quota_exhausted
+        # Graceful fallback: normalize with rule engine so NO fresher job is discarded!
+        from normalizer import normalize_job_dict
+        fallback_output = []
+        for job in jobs_batch:
+            try:
+                norm = normalize_job_dict(job, query_loc=job.get('query_location', ''))
+                fallback_output.append((True, norm, "Rule engine fallback"))
+            except Exception as fe:
+                fallback_output.append((False, None, f"Fallback error: {fe}"))
+        return fallback_output, quota_exhausted
 
     results_map = {}
     for item in ai_results:

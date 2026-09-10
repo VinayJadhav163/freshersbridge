@@ -63,13 +63,13 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
         {/* 2. OBJECTIVE */}
         {structured.objective && (
-          <div className="mt-2.5">
+          <div className="mt-3.5">
             <div className="border-b-[1.5px] border-black pb-0.5 mb-1.5">
               <h2 className="text-[12px] sm:text-[13px] font-bold tracking-wider uppercase text-black m-0 leading-tight">
                 OBJECTIVE
               </h2>
             </div>
-            <p className="text-[11.5px] sm:text-[12px] text-black leading-relaxed text-justify m-0">
+            <p className="text-[11.5px] sm:text-[12.5px] text-black leading-relaxed text-justify m-0">
               {structured.objective}
             </p>
           </div>
@@ -77,21 +77,21 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
         {/* 3. EDUCATION */}
         {structured.education.length > 0 && (
-          <div className="mt-3.5">
+          <div className="mt-4">
             <div className="border-b-[1.5px] border-black pb-0.5 mb-1.5">
               <h2 className="text-[12px] sm:text-[13px] font-bold tracking-wider uppercase text-black m-0 leading-tight">
                 EDUCATION
               </h2>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {structured.education.map((edu, idx) => (
                 <div key={idx}>
-                  <div className="flex items-baseline justify-between text-[12px] sm:text-[12.5px]">
+                  <div className="flex items-baseline justify-between text-[12px] sm:text-[13px]">
                     <span className="font-bold text-black">{edu.institution}</span>
                     {edu.date && <span className="text-black shrink-0 font-medium">{edu.date}</span>}
                   </div>
                   {edu.details && (
-                    <p className="text-[11px] sm:text-[11.5px] text-gray-800 m-0 mt-0.5">
+                    <p className="text-[11px] sm:text-[12px] text-gray-800 m-0 mt-0.5">
                       {edu.details}
                     </p>
                   )}
@@ -103,20 +103,20 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
         {/* 4. SKILLS */}
         {structured.skills.length > 0 && (
-          <div className="mt-3.5">
+          <div className="mt-4">
             <div className="border-b-[1.5px] border-black pb-0.5 mb-1.5">
               <h2 className="text-[12px] sm:text-[13px] font-bold tracking-wider uppercase text-black m-0 leading-tight">
                 SKILLS
               </h2>
             </div>
-            <table className="w-full text-[11.5px] sm:text-[12px] border-collapse">
+            <table className="w-full text-[11.5px] sm:text-[12.5px] border-collapse">
               <tbody>
                 {structured.skills.map((sk, idx) => (
                   <tr key={idx} className="align-top">
-                    <td className="w-[190px] font-bold text-black py-0.5 pr-2 whitespace-nowrap">
+                    <td className="w-[190px] font-bold text-black py-1 pr-2 whitespace-nowrap">
                       {sk.category}:
                     </td>
-                    <td className="text-black py-0.5 leading-snug">{sk.items}</td>
+                    <td className="text-black py-1 leading-snug">{sk.items}</td>
                   </tr>
                 ))}
               </tbody>
@@ -126,16 +126,16 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
         {/* 5. EXPERIENCE */}
         {structured.experience.length > 0 && (
-          <div className="mt-3.5">
+          <div className="mt-4">
             <div className="border-b-[1.5px] border-black pb-0.5 mb-1.5">
               <h2 className="text-[12px] sm:text-[13px] font-bold tracking-wider uppercase text-black m-0 leading-tight">
                 EXPERIENCE
               </h2>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {structured.experience.map((exp, idx) => (
                 <div key={idx}>
-                  <div className="flex items-baseline justify-between text-[12px] sm:text-[12.5px]">
+                  <div className="flex items-baseline justify-between text-[12px] sm:text-[13px]">
                     <span className="font-bold text-black">{exp.role}</span>
                     {exp.date && <span className="text-black shrink-0 font-medium">{exp.date}</span>}
                   </div>
@@ -144,7 +144,7 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
                     {exp.location && <span>{exp.location}</span>}
                   </div>
                   {exp.bullets.length > 0 && (
-                    <ul className="list-disc list-outside pl-4 m-0 mt-1 space-y-1 text-[11px] sm:text-[11.5px] leading-relaxed text-black">
+                    <ul className="list-disc list-outside pl-4 m-0 mt-1 space-y-1.5 text-[11px] sm:text-[12px] leading-relaxed text-black">
                       {exp.bullets.map((b, bIdx) => (
                         <li key={bIdx} className="text-justify">
                           {b}
@@ -160,20 +160,20 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
         {/* 6. PROJECTS */}
         {structured.projects.length > 0 && (
-          <div className="mt-3.5">
+          <div className="mt-4">
             <div className="border-b-[1.5px] border-black pb-0.5 mb-1.5">
               <h2 className="text-[12px] sm:text-[13px] font-bold tracking-wider uppercase text-black m-0 leading-tight">
                 PROJECTS
               </h2>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {structured.projects.map((proj, idx) => (
                 <div key={idx}>
-                  <div className="text-[12px] sm:text-[12.5px] font-bold text-black">
+                  <h3 className="text-[12px] sm:text-[13px] font-bold text-black m-0 leading-tight">
                     {proj.title}
-                  </div>
+                  </h3>
                   {proj.bullets.length > 0 && (
-                    <ul className="list-disc list-outside pl-4 m-0 mt-1 space-y-1 text-[11px] sm:text-[11.5px] leading-relaxed text-black">
+                    <ul className="list-disc list-outside pl-4 m-0 mt-1 space-y-1.5 text-[11px] sm:text-[12px] leading-relaxed text-black">
                       {proj.bullets.map((b, bIdx) => (
                         <li key={bIdx} className="text-justify">
                           {b}

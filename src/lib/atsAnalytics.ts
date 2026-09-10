@@ -19,7 +19,8 @@ export interface ATSAnalyticsData {
   history: ATSDailyRecord[];
 }
 
-const DATA_FILE_PATH = path.join(process.cwd(), 'data', 'ats-analytics.json');
+const DATA_FILE_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'data', 'ats-analytics.json');
+const TMP_FILE_PATH = path.join(process.env.TMPDIR || '/tmp', 'ats-analytics.json');
 
 function getTodayString(): string {
   const now = new Date();
@@ -42,22 +43,50 @@ function getDefaultAnalytics(): ATSAnalyticsData {
   };
 }
 
-export async function getATSAnalytics(): Promise<ATSAnalyticsData> {
-  const today = getTodayString();
-  let data: ATSAnalyticsData = getDefaultAnalytics();
+function readStoredData(): ATSAnalyticsData | null {
+  for (const filePath of [DATA_FILE_PATH, TMP_FILE_PATH]) {
+    try {
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, 'utf-8');
+        return JSON.parse(raw);
+      }
+    } catch {
+      // Continue to next path
+    }
+  }
+  return null;
+}
+
+function writeStoredData(data: ATSAnalyticsData) {
+  const jsonStr = JSON.stringify(data, null, 2);
+  let saved = false;
 
   try {
-    if (fs.existsSync(DATA_FILE_PATH)) {
-      const raw = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
-      data = JSON.parse(raw);
-    }
-  } catch (err) {
-    console.error('Error reading ATS analytics file:', err);
+    const dir = path.dirname(DATA_FILE_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(DATA_FILE_PATH, jsonStr, 'utf-8');
+    saved = true;
+  } catch {
+    // Expected on Vercel read-only filesystem
   }
+
+  if (!saved) {
+    try {
+      const tmpDir = path.dirname(TMP_FILE_PATH);
+      if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+      fs.writeFileSync(TMP_FILE_PATH, jsonStr, 'utf-8');
+    } catch {
+      // Silently fail if tmp is also unavailable
+    }
+  }
+}
+
+export async function getATSAnalytics(): Promise<ATSAnalyticsData> {
+  const today = getTodayString();
+  let data: ATSAnalyticsData = readStoredData() || getDefaultAnalytics();
 
   // If new day, reset today counters while archiving previous day in history
   if (data.todayDate !== today) {
-    // Ensure previous today is archived in history
     const existingEntry = data.history.find((h) => h.date === data.todayDate);
     if (!existingEntry && (data.todayScans > 0 || data.todayTailors > 0)) {
       data.history.unshift({
@@ -70,20 +99,34 @@ export async function getATSAnalytics(): Promise<ATSAnalyticsData> {
     data.todayDate = today;
     data.todayScans = 0;
     data.todayTailors = 0;
-
-    // Keep only last 14 days
     data.history = data.history.slice(0, 14);
 
-    try {
-      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (saveErr) {
-      console.error('Error saving updated ATS analytics:', saveErr);
-    }
+    writeStoredData(data);
   }
 
   // Ensure today is in history list
   if (!data.history.some((h) => h.date === today)) {
     data.history.unshift({ date: today, scans: data.todayScans, tailors: data.todayTailors });
+  }
+
+  // Live query Supabase ats_analytics table if created
+  try {
+    const todayStart = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+    const [todayScansRes, todayTailorsRes, totalScansRes, totalTailorsRes] = await Promise.all([
+      supabase.from('ats_analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'scan').gte('created_at', todayStart),
+      supabase.from('ats_analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'tailor').gte('created_at', todayStart),
+      supabase.from('ats_analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'scan'),
+      supabase.from('ats_analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'tailor'),
+    ]);
+
+    if (!totalScansRes.error && !totalTailorsRes.error) {
+      data.todayScans = Math.max(data.todayScans, todayScansRes.count || 0);
+      data.todayTailors = Math.max(data.todayTailors, todayTailorsRes.count || 0);
+      data.totalScans = Math.max(data.totalScans, totalScansRes.count || 0);
+      data.totalTailors = Math.max(data.totalTailors, totalTailorsRes.count || 0);
+    }
+  } catch {
+    // Silently proceed with local counters if table does not exist
   }
 
   return data;
@@ -117,17 +160,9 @@ export async function recordATSScan(type: 'scan' | 'tailor'): Promise<ATSAnalyti
     });
   }
 
-  try {
-    const dir = path.dirname(DATA_FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Error persisting ATS analytics:', err);
-  }
+  writeStoredData(data);
 
-  // Optional sync to Supabase if table exists
+  // Sync to Supabase if table exists
   try {
     await supabase.from('ats_analytics').insert({
       event_type: type,

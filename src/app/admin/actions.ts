@@ -418,6 +418,12 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
         ? item.skills
         : ['Freshers', 'Graduate'];
 
+      const isIntern = title.toLowerCase().includes('intern');
+      let finalEligibility = item.eligibility?.trim() || 'Any Graduate (2024, 2025, 2026 Batch)';
+      if (isIntern && !finalEligibility.toLowerCase().includes('intern')) {
+        finalEligibility = `${finalEligibility} (Internship)`;
+      }
+
       payloads.push({
         title,
         slug,
@@ -425,13 +431,12 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
         location: location || 'India / Remote',
         category_id: catId,
         salary: item.salary?.trim() || 'Best in Industry',
-        eligibility: item.eligibility?.trim() || 'Any Graduate (2024, 2025, 2026 Batch)',
+        eligibility: finalEligibility,
         skills: skillsArray.length > 0 ? skillsArray : ['Engineering', 'Fresher'],
         description: item.description?.trim() || `${title} opening at ${company}. Apply online.`,
         apply_url: applyUrl,
         source_name: item.source_name?.trim() || 'Campus Drive',
         source_url: item.source_url?.trim() || applyUrl,
-        job_type: item.job_type || (title.toLowerCase().includes('intern') ? 'internship' : 'full-time'),
         featured_job: String(item.featured_job).toLowerCase() === 'true',
         views_count: 0,
       });
@@ -441,7 +446,7 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
       return { success: true, count: 0, message: 'All scraped jobs are already up-to-date in the database. 0 duplicates added.' };
     }
 
-    // 3. Batch insert in chunks of 50
+    // 3. Batch insert in chunks of 50 with individual row fallback
     const chunkSize = 50;
     let insertedCount = 0;
 
@@ -449,20 +454,16 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
       const chunk = payloads.slice(i, i + chunkSize);
       const { data, error } = await supabase.from('jobs').insert(chunk).select('id');
       if (error) {
-        // Retry without job_type if column doesn't exist in Supabase
-        const sanitizedChunk = chunk.map(p => {
-          const clone = { ...p };
-          delete clone.job_type;
-          return clone;
-        });
-        const retry = await supabase.from('jobs').insert(sanitizedChunk).select('id');
-        if (retry.error) {
-          console.error('Supabase chunk insert error:', retry.error);
-        } else {
-          insertedCount += retry.data?.length || 0;
+        console.warn('Chunk insert warning, inserting row-by-row:', error.message);
+        // Fallback: try individual inserts so one faulty row doesn't break the whole batch
+        for (const singleJob of chunk) {
+          const singleRes = await supabase.from('jobs').insert([singleJob]).select('id');
+          if (!singleRes.error && singleRes.data) {
+            insertedCount += singleRes.data.length;
+          }
         }
-      } else {
-        insertedCount += data?.length || 0;
+      } else if (data) {
+        insertedCount += data.length;
       }
     }
 

@@ -93,8 +93,36 @@ export default function AdminDashboard({
   }, [initialSubscribers]);
 
   useEffect(() => {
-    if (initialAtsAnalytics) {
-      setAtsAnalytics(initialAtsAnalytics);
+    let dataToSet = initialAtsAnalytics;
+    try {
+      const rawClient = typeof window !== 'undefined' ? localStorage.getItem('fresherbridge_ats_client_stats') : null;
+      if (rawClient) {
+        const clientParsed = JSON.parse(rawClient);
+        if (dataToSet) {
+          dataToSet = {
+            ...dataToSet,
+            todayScans: Math.max(dataToSet.todayScans || 0, clientParsed.todayScans || 0),
+            todayTailors: Math.max(dataToSet.todayTailors || 0, clientParsed.todayTailors || 0),
+            totalScans: Math.max(dataToSet.totalScans || 0, clientParsed.totalScans || 0),
+            totalTailors: Math.max(dataToSet.totalTailors || 0, clientParsed.totalTailors || 0),
+          };
+        } else {
+          dataToSet = {
+            todayDate: clientParsed.date || new Date().toISOString().split('T')[0],
+            todayScans: clientParsed.todayScans || 0,
+            todayTailors: clientParsed.todayTailors || 0,
+            totalScans: clientParsed.totalScans || 0,
+            totalTailors: clientParsed.totalTailors || 0,
+            dailyLimit: 1500,
+            lastEventAt: new Date().toISOString(),
+            history: [{ date: clientParsed.date || 'today', scans: clientParsed.todayScans || 0, tailors: clientParsed.todayTailors || 0 }]
+          };
+        }
+      }
+    } catch {}
+
+    if (dataToSet) {
+      setAtsAnalytics(dataToSet);
     }
   }, [initialAtsAnalytics]);
 
@@ -104,7 +132,21 @@ export default function AdminDashboard({
       const res = await fetch('/api/analytics/ats');
       const json = await res.json();
       if (json.success && json.data) {
-        setAtsAnalytics(json.data);
+        let merged = json.data;
+        try {
+          const rawClient = typeof window !== 'undefined' ? localStorage.getItem('fresherbridge_ats_client_stats') : null;
+          if (rawClient) {
+            const clientParsed = JSON.parse(rawClient);
+            merged = {
+              ...merged,
+              todayScans: Math.max(merged.todayScans || 0, clientParsed.todayScans || 0),
+              todayTailors: Math.max(merged.todayTailors || 0, clientParsed.todayTailors || 0),
+              totalScans: Math.max(merged.totalScans || 0, clientParsed.totalScans || 0),
+              totalTailors: Math.max(merged.totalTailors || 0, clientParsed.totalTailors || 0),
+            };
+          }
+        } catch {}
+        setAtsAnalytics(merged);
         showNotification('success', 'ATS usage analytics synchronized.');
       }
     } catch (e) {

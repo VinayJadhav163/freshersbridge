@@ -236,7 +236,21 @@ export default function ATSResumeMatcher() {
         const analysis = analyzeResumeATS(resumeText, jobDescription);
         setResults(analysis);
 
-        // Record scan event in analytics
+        // Record scan event in client local storage and server analytics
+        try {
+          const today = new Date().toISOString().split('T')[0];
+          const raw = localStorage.getItem('fresherbridge_ats_client_stats');
+          const parsed = raw ? JSON.parse(raw) : { date: today, todayScans: 0, todayTailors: 0, totalScans: 0, totalTailors: 0 };
+          if (parsed.date !== today) {
+            parsed.date = today;
+            parsed.todayScans = 0;
+            parsed.todayTailors = 0;
+          }
+          parsed.todayScans = (parsed.todayScans || 0) + 1;
+          parsed.totalScans = (parsed.totalScans || 0) + 1;
+          localStorage.setItem('fresherbridge_ats_client_stats', JSON.stringify(parsed));
+        } catch {}
+
         fetch('/api/analytics/ats', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -308,6 +322,28 @@ export default function ATSResumeMatcher() {
       if (data.success && data.result) {
         setTailoredResult(data.result);
         setTailoredInputSnapshot({ resumeText, jobDescription });
+
+        // Record tailor event in client local storage and server analytics
+        try {
+          const today = new Date().toISOString().split('T')[0];
+          const raw = localStorage.getItem('fresherbridge_ats_client_stats');
+          const parsed = raw ? JSON.parse(raw) : { date: today, todayScans: 0, todayTailors: 0, totalScans: 0, totalTailors: 0 };
+          if (parsed.date !== today) {
+            parsed.date = today;
+            parsed.todayScans = 0;
+            parsed.todayTailors = 0;
+          }
+          parsed.todayTailors = (parsed.todayTailors || 0) + 1;
+          parsed.totalTailors = (parsed.totalTailors || 0) + 1;
+          localStorage.setItem('fresherbridge_ats_client_stats', JSON.stringify(parsed));
+        } catch {}
+
+        fetch('/api/analytics/ats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'tailor' }),
+        }).catch(() => {});
+
         // Automatically evaluate the tailored resume so the score dashboard reflects the tailored document
         try {
           const tailoredAnalysis = analyzeResumeATS(data.result.tailored_resume, jobDescription);

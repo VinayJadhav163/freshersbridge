@@ -385,7 +385,7 @@ def run_pipeline(use_ai: bool = False):
 
     # Step 6: Direct Automatic Publishing to FreshersBridge Database
     api_url = os.getenv("FRESHERSBRIDGE_API_URL") or "https://freshersbridge.in/api/admin/jobs/bulk"
-    admin_key = os.getenv("ADMIN_ACCESS_KEY") or os.getenv("NEXT_PUBLIC_ADMIN_ACCESS_KEY")
+    admin_key = os.getenv("ADMIN_ACCESS_KEY") or os.getenv("NEXT_PUBLIC_ADMIN_ACCESS_KEY") or "freshersbridgeadmin2026"
     
     if admin_key:
         logger.info(f"🚀 Auto-Publishing {len(clean_final_jobs)} verified non-duplicate jobs directly to: {api_url}")
