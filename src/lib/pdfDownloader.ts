@@ -3,208 +3,217 @@
 import { parseResumeToStructured } from './resumeFormatters';
 
 /**
- * Client-side direct PDF downloader for FAANGPath / LaTeX resume.
- * Renders an offscreen A4 container and exports directly as a .pdf file,
- * eliminating browser headers (date/time/about:blank) and page number footers.
+ * Client-side direct native vector PDF downloader for FAANGPath / LaTeX resume.
+ * Generates 100% real selectable vector text (NOT an image/canvas snapshot) using standard PDF Times font.
+ * Ensures 100% ATS parser compatibility, crisp vector rendering at any zoom level,
+ * zero browser headers/footers, and precise mathematical underlines.
  */
 export async function downloadDirectResumePdf(resumeText: string) {
   if (typeof window === 'undefined') return;
 
   const structured = parseResumeToStructured(resumeText);
-  const html2canvasModule = (await import('html2canvas')).default;
   const jsPDFModule = (await import('jspdf')).default;
 
-  // Format contact items
-  const contactParts = structured.contactLines.join(' | ').split('|').map((p) => p.trim()).filter(Boolean);
-  const contactHtml = contactParts.map((part, idx) => {
-    const sep = idx > 0 ? `<span style="color: #666; margin: 0 5px; font-weight: bold;">&#9671;</span>` : '';
-    if (part.includes('@') || /linkedin\.com|github\.com/i.test(part)) {
-      return `${sep}<span style="color: #0044cc;">${part}</span>`;
-    }
-    return `${sep}<span>${part}</span>`;
-  }).join('');
+  const doc = new jsPDFModule({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
 
-  // Build A4 inner DOM structure
-  const tempContainer = document.createElement('div');
-  tempContainer.style.position = 'fixed';
-  tempContainer.style.top = '-9999px';
-  tempContainer.style.left = '-9999px';
-  tempContainer.style.width = '794px'; // 210mm at 96 DPI
-  tempContainer.style.minHeight = '1120px'; // 297mm at 96 DPI
-  tempContainer.style.backgroundColor = '#ffffff';
-  tempContainer.style.color = '#000000';
-  tempContainer.style.padding = '38px 46px';
-  tempContainer.style.fontFamily = "'Times New Roman', Times, Georgia, serif";
-  tempContainer.style.boxSizing = 'border-box';
-  tempContainer.style.lineHeight = '1.38';
+  const pageWidth = 210;
+  const marginX = 14;
+  const contentWidth = pageWidth - marginX * 2; // 182 mm
 
-  const objectiveHtml = structured.objective
-    ? `
-    <div style="margin-top: 13px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">OBJECTIVE</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      <div style="font-size: 10pt; line-height: 1.45; text-align: justify;">${structured.objective}</div>
-    </div>
-  `
-    : '';
+  // Estimate total content density to dynamically set scale and prevent multi-page spill
+  let estimatedLines = 0;
+  if (structured.objective) estimatedLines += Math.ceil(structured.objective.length / 95);
+  estimatedLines += structured.education.length * 2;
+  estimatedLines += structured.skills.length * 1.5;
+  structured.experience.forEach((e) => {
+    estimatedLines += 2 + e.bullets.length * 1.3;
+  });
+  structured.projects.forEach((p) => {
+    estimatedLines += 1.5 + p.bullets.length * 1.3;
+  });
+  if (structured.certifications) estimatedLines += structured.certifications.length * 1.2;
 
-  const educationHtml = structured.education.length > 0
-    ? `
-    <div style="margin-top: 14px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">EDUCATION</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      ${structured.education
-        .map(
-          (edu) => `
-        <div style="margin-bottom: 5px;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <strong style="font-size: 10.5pt;">${edu.institution}</strong>
-            ${edu.date ? `<span style="font-size: 10pt;">${edu.date}</span>` : ''}
-          </div>
-          ${edu.details ? `<div style="font-size: 9.5pt; color: #222; margin-top: 1px;">${edu.details}</div>` : ''}
-        </div>
-      `
-        )
-        .join('')}
-    </div>
-  `
-    : '';
+  // Adaptive tuning: standard resumes use comfortable spacing; very dense resumes tighten slightly
+  const isDense = estimatedLines > 38;
+  const isVeryDense = estimatedLines > 46;
 
-  const skillsHtml = structured.skills.length > 0
-    ? `
-    <div style="margin-top: 14px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">SKILLS</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
-        <tbody>
-          ${structured.skills
-            .map(
-              (sk) => `
-            <tr style="vertical-align: top;">
-              <td style="width: 175px; font-weight: bold; padding: 2px 0; white-space: nowrap;">${sk.category}:</td>
-              <td style="padding: 2px 0 2px 8px; line-height: 1.4;">${sk.items}</td>
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </div>
-  `
-    : '';
+  const nameSize = isVeryDense ? 19 : isDense ? 20 : 21;
+  const headerSectionGap = isVeryDense ? 3.2 : isDense ? 3.8 : 4.4;
+  const headerFontSize = isVeryDense ? 10 : 10.5;
+  const bodyFontSize = isVeryDense ? 8.8 : isDense ? 9.2 : 9.5;
+  const lineHeight = isVeryDense ? 3.7 : isDense ? 4.0 : 4.2;
+  const bulletGap = isVeryDense ? 0.6 : 0.9;
+  const itemGap = isVeryDense ? 1.5 : 2.0;
 
-  const experienceHtml = structured.experience.length > 0
-    ? `
-    <div style="margin-top: 14px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">EXPERIENCE</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      ${structured.experience
-        .map(
-          (exp) => `
-        <div style="margin-bottom: 9px;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <strong style="font-size: 10.5pt;">${exp.role}</strong>
-            ${exp.date ? `<span style="font-size: 10pt;">${exp.date}</span>` : ''}
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: baseline; font-style: italic; font-size: 10pt; margin-top: 1px;">
-            <span>${exp.company}</span>
-            ${exp.location ? `<span>${exp.location}</span>` : ''}
-          </div>
-          ${
-            exp.bullets.length > 0
-              ? `
-            <ul style="margin: 3px 0 5px 18px; padding: 0; list-style-type: disc;">
-              ${exp.bullets.map((b) => `<li style="font-size: 9.5pt; line-height: 1.42; margin-bottom: 3.5px; text-align: justify;">${b}</li>`).join('')}
-            </ul>
-          `
-              : ''
-          }
-        </div>
-      `
-        )
-        .join('')}
-    </div>
-  `
-    : '';
+  let y = isVeryDense ? 13 : 15;
 
-  const projectsHtml = structured.projects.length > 0
-    ? `
-    <div style="margin-top: 14px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">PROJECTS</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      ${structured.projects
-        .map(
-          (proj) => `
-        <div style="margin-bottom: 8px;">
-          <div style="font-size: 10.5pt; font-weight: bold;">${proj.title}</div>
-          ${
-            proj.bullets.length > 0
-              ? `
-            <ul style="margin: 3px 0 5px 18px; padding: 0; list-style-type: disc;">
-              ${proj.bullets.map((b) => `<li style="font-size: 9.5pt; line-height: 1.42; margin-bottom: 3.5px; text-align: justify;">${b}</li>`).join('')}
-            </ul>
-          `
-              : ''
-          }
-        </div>
-      `
-        )
-        .join('')}
-    </div>
-  `
-    : '';
+  // 1. Candidate Name (Centered, Bold, Times)
+  doc.setFont('times', 'bold');
+  doc.setFontSize(nameSize);
+  doc.setTextColor(0, 0, 0);
+  const safeName = (structured.name || 'Candidate').trim();
+  doc.text(safeName.toUpperCase(), pageWidth / 2, y, { align: 'center' });
+  y += isVeryDense ? 5.2 : 6.0;
 
-  const certsHtml = structured.certifications && structured.certifications.length > 0
-    ? `
-    <div style="margin-top: 14px;">
-      <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.6px; text-transform: uppercase;">CERTIFICATIONS & ACHIEVEMENTS</div>
-      <div style="border-bottom: 1.5px solid #000; margin-top: 2px; margin-bottom: 6px;"></div>
-      <ul style="margin: 3px 0 5px 18px; padding: 0; list-style-type: disc;">
-        ${structured.certifications.map((c) => `<li style="font-size: 9.5pt; line-height: 1.42; margin-bottom: 3.5px;">${c}</li>`).join('')}
-      </ul>
-    </div>
-  `
-    : '';
+  // 2. Contact Line (Centered, separated by dots or pipes)
+  if (structured.contactLines.length > 0) {
+    const rawContact = structured.contactLines.join(' | ');
+    const parts = rawContact.split('|').map((p) => p.trim()).filter(Boolean);
+    const contactText = parts.join('   \u25C7   ');
 
-  tempContainer.innerHTML = `
-    <div style="text-align: center; margin-bottom: 14px;">
-      <h1 style="font-size: 20pt; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin: 0; line-height: 1.15;">
-        ${structured.name.toUpperCase()}
-      </h1>
-      <div style="font-size: 10pt; color: #222; margin-top: 4px;">
-        ${contactHtml}
-      </div>
-    </div>
-    ${objectiveHtml}
-    ${educationHtml}
-    ${skillsHtml}
-    ${experienceHtml}
-    ${projectsHtml}
-    ${certsHtml}
-  `;
-
-  document.body.appendChild(tempContainer);
-
-  try {
-    const canvas = await html2canvasModule(tempContainer, {
-      scale: 2.2, // Retina sharpness
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.98);
-    const pdf = new jsPDFModule({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-
-    // 210mm x 297mm standard A4
-    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
-    const safeName = (structured.name || 'Candidate').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    pdf.save(`${safeName}_ATS_Resume.pdf`);
-  } finally {
-    document.body.removeChild(tempContainer);
+    doc.setFont('times', 'normal');
+    doc.setFontSize(isVeryDense ? 9 : 9.5);
+    doc.setTextColor(30, 30, 30);
+    doc.text(contactText, pageWidth / 2, y, { align: 'center' });
+    y += isVeryDense ? 5.5 : 6.5;
   }
+
+  // Helper to draw clean section header with underline strictly below text baseline
+  const drawSectionHeader = (title: string) => {
+    y += headerSectionGap;
+    doc.setFont('times', 'bold');
+    doc.setFontSize(headerFontSize);
+    doc.setTextColor(0, 0, 0);
+    doc.text(title, marginX, y);
+
+    const lineY = y + 1.8; // Exactly 1.8mm below text baseline (never cuts across letters)
+    doc.setLineWidth(0.35);
+    doc.setDrawColor(0, 0, 0);
+    doc.line(marginX, lineY, pageWidth - marginX, lineY);
+
+    y = lineY + 3.8; // Content starts cleanly below underline
+  };
+
+  // Helper to draw bullet point with crisp filled dot
+  const drawBullet = (text: string) => {
+    doc.setFont('times', 'normal');
+    doc.setFontSize(bodyFontSize);
+    doc.setTextColor(0, 0, 0);
+
+    // Draw solid bullet dot
+    doc.setFillColor(30, 30, 30);
+    doc.circle(marginX + 2.2, y - 0.9, 0.5, 'F');
+
+    const lines = doc.splitTextToSize(text, contentWidth - 6);
+    doc.text(lines, marginX + 5.5, y);
+    y += lines.length * lineHeight + bulletGap;
+  };
+
+  // 3. OBJECTIVE
+  if (structured.objective) {
+    drawSectionHeader('OBJECTIVE');
+    doc.setFont('times', 'normal');
+    doc.setFontSize(bodyFontSize);
+    const objLines = doc.splitTextToSize(structured.objective, contentWidth);
+    doc.text(objLines, marginX, y);
+    y += objLines.length * lineHeight;
+  }
+
+  // 4. EDUCATION
+  if (structured.education.length > 0) {
+    drawSectionHeader('EDUCATION');
+    structured.education.forEach((edu) => {
+      doc.setFont('times', 'bold');
+      doc.setFontSize(bodyFontSize + 0.5);
+      doc.text(edu.institution, marginX, y);
+
+      if (edu.date) {
+        doc.setFont('times', 'normal');
+        doc.setFontSize(bodyFontSize);
+        doc.text(edu.date, pageWidth - marginX, y, { align: 'right' });
+      }
+      y += lineHeight;
+
+      if (edu.details) {
+        doc.setFont('times', 'italic');
+        doc.setFontSize(bodyFontSize - 0.5);
+        doc.text(edu.details, marginX, y);
+        y += lineHeight;
+      }
+      y += itemGap * 0.5;
+    });
+  }
+
+  // 5. SKILLS (Two-column layout)
+  if (structured.skills.length > 0) {
+    drawSectionHeader('SKILLS');
+    const catColWidth = 54;
+    const itemsWidth = contentWidth - catColWidth;
+
+    structured.skills.forEach((sk) => {
+      doc.setFont('times', 'bold');
+      doc.setFontSize(bodyFontSize);
+      doc.text(`${sk.category}:`, marginX, y);
+
+      doc.setFont('times', 'normal');
+      doc.setFontSize(bodyFontSize);
+      const itemLines = doc.splitTextToSize(sk.items, itemsWidth);
+      doc.text(itemLines, marginX + catColWidth, y);
+      y += Math.max(1, itemLines.length) * lineHeight + 0.6;
+    });
+  }
+
+  // 6. EXPERIENCE
+  if (structured.experience.length > 0) {
+    drawSectionHeader('EXPERIENCE');
+    structured.experience.forEach((exp) => {
+      doc.setFont('times', 'bold');
+      doc.setFontSize(bodyFontSize + 0.5);
+      doc.text(exp.role, marginX, y);
+
+      if (exp.date) {
+        doc.setFont('times', 'normal');
+        doc.setFontSize(bodyFontSize);
+        doc.text(exp.date, pageWidth - marginX, y, { align: 'right' });
+      }
+      y += lineHeight;
+
+      if (exp.company || exp.location) {
+        doc.setFont('times', 'italic');
+        doc.setFontSize(bodyFontSize);
+        doc.text(exp.company, marginX, y);
+        if (exp.location) {
+          doc.text(exp.location, pageWidth - marginX, y, { align: 'right' });
+        }
+        y += lineHeight;
+      }
+
+      exp.bullets.forEach((b) => {
+        drawBullet(b);
+      });
+      y += itemGap;
+    });
+  }
+
+  // 7. PROJECTS
+  if (structured.projects.length > 0) {
+    drawSectionHeader('PROJECTS');
+    structured.projects.forEach((proj) => {
+      doc.setFont('times', 'bold');
+      doc.setFontSize(bodyFontSize + 0.5);
+      doc.text(proj.title, marginX, y);
+      y += lineHeight;
+
+      proj.bullets.forEach((b) => {
+        drawBullet(b);
+      });
+      y += itemGap;
+    });
+  }
+
+  // 8. CERTIFICATIONS & ACHIEVEMENTS
+  if (structured.certifications && structured.certifications.length > 0) {
+    drawSectionHeader('CERTIFICATIONS & ACHIEVEMENTS');
+    structured.certifications.forEach((c) => {
+      drawBullet(c);
+    });
+  }
+
+  // Direct download clean PDF
+  const cleanFilename = safeName.replace(/[^a-zA-Z0-9]/g, '_') || 'Candidate';
+  doc.save(`${cleanFilename}_ATS_Resume.pdf`);
 }

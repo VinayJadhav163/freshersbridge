@@ -460,12 +460,13 @@ export function generateFaangPathResumeHtml(resumeText: string): string {
       font-weight: bold;
       letter-spacing: 0.6px;
       text-transform: uppercase;
-      margin-bottom: 3px;
+      margin-bottom: 6px;
+      padding-bottom: 2px;
+      border-bottom: 1.5px solid #000;
       color: #000;
     }
     .section-hr {
-      border-bottom: 1.5px solid #000;
-      margin-bottom: 7px;
+      display: none;
     }
     .section-content {
       font-size: 10.5pt;
