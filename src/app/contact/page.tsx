@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Send, CheckCircle2, Sparkles, MessageSquare, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, ArrowLeft, ExternalLink, RefreshCw } from 'lucide-react';
+import { AnimatedSubscribeButton } from '@/components/ui/animated-subscribe-button';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,12 +13,13 @@ export default function ContactPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [fallbackMailto, setFallbackMailto] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) return;
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim() || isSubmitting || isSent) return;
 
     setIsSubmitting(true);
     setFallbackMailto(null);
@@ -44,7 +46,10 @@ export default function ContactPage() {
       setIsSubmitting(false);
 
       if (res.ok && data.success) {
-        setSubmitted(true);
+        setIsSent(true);
+        setTimeout(() => {
+          setSubmitted(true);
+        }, 750);
         return;
       }
 
@@ -61,7 +66,10 @@ export default function ContactPage() {
         window.open(routeData.mailtoUrl, '_blank');
       }
 
-      setSubmitted(true);
+      setIsSent(true);
+      setTimeout(() => {
+        setSubmitted(true);
+      }, 750);
     } catch (err) {
       console.error('Submit error:', err);
       const directMailto = `mailto:freshersbridge@gmail.com?subject=${encodeURIComponent(
@@ -72,7 +80,10 @@ export default function ContactPage() {
       setFallbackMailto(directMailto);
       window.open(directMailto, '_blank');
       setIsSubmitting(false);
-      setSubmitted(true);
+      setIsSent(true);
+      setTimeout(() => {
+        setSubmitted(true);
+      }, 750);
     }
   };
 
@@ -100,8 +111,8 @@ export default function ContactPage() {
             <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
 
             <div className="space-y-6 relative z-10">
-              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/20 border border-indigo-400/30 px-3 py-1 text-xs font-bold text-indigo-300">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-300" /> Get in Touch
+              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/20 border border-indigo-400/30 px-3.5 py-1 text-xs font-bold text-indigo-300">
+                Get in Touch
               </div>
 
               <div>
@@ -181,6 +192,7 @@ export default function ContactPage() {
                   <button
                     onClick={() => {
                       setSubmitted(false);
+                      setIsSent(false);
                       setFormData({ name: '', email: '', message: '' });
                     }}
                     className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-indigo-600 transition-colors"
@@ -230,22 +242,35 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {/* Submit Button */}
+                {/* Animated Submit Button */}
                 <div className="pt-2 flex justify-center">
-                  <button
+                  <AnimatedSubscribeButton
                     type="submit"
-                    disabled={isSubmitting}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 dark:bg-indigo-600 px-8 py-3 text-sm font-bold text-white shadow-lg hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <span>Sending...</span>
-                    ) : (
-                      <>
-                        <span>Send Now</span>
-                        <Send className="h-4 w-4" />
-                      </>
-                    )}
-                  </button>
+                    buttonColor="#0f172a"
+                    buttonTextColor="#ffffff"
+                    subscribeStatus={isSent}
+                    disabled={isSubmitting || isSent}
+                    className="dark:!bg-indigo-600 dark:hover:!bg-indigo-500"
+                    initialText={
+                      isSubmitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          <span>Sending...</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-2">
+                          <span>Send Message</span>
+                          <Send className="h-4 w-4" />
+                        </span>
+                      )
+                    }
+                    changeText={
+                      <span className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>Sent</span>
+                      </span>
+                    }
+                  />
                 </div>
               </form>
             )}
