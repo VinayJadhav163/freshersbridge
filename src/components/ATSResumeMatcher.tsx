@@ -1034,7 +1034,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/70 dark:from-[#275df5]/10 dark:via-indigo-950/20 dark:to-[#275df5]/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xs">
             <div className="text-center sm:text-left">
               <h5 className="text-base sm:text-lg font-black text-foreground">
-                {tailoredResult ? 'Re-align Your Resume to Target Requirements' : 'Instantly Boost Your ATS Match Score to 85%+'}
+                {tailoredResult ? 'Re-align Your Resume to Target Requirements' : 'Instantly Boost Your ATS Match Score to 90%+'}
               </h5>
             </div>
 
@@ -1050,16 +1050,13 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <span>Tailoring Resume to JD...</span>
                 </>
               ) : (
-                <>
-                  <Sparkles className="h-4 w-4 text-white" />
-                  <span>
-                    {tailoredResult
-                      ? hasInputChangedSinceTailoring
-                        ? 'Re-tailor Resume for JD'
-                        : 'View Tailored Resume'
-                      : 'Scan & Tailor Resume for JD'}
-                  </span>
-                </>
+                <span>
+                  {tailoredResult
+                    ? hasInputChangedSinceTailoring
+                      ? 'Re-tailor Resume for JD'
+                      : 'View Tailored Resume'
+                    : 'Scan & Tailor Resume for JD'}
+                </span>
               )}
             </button>
           </div>

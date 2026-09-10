@@ -108,27 +108,27 @@ export default function CareerToolsHub() {
         )}
       </div>
 
-      {/* Banner linking to Career Guides */}
-      <div className="rounded-2xl border border-indigo-200 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/60 via-card to-card p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 text-center sm:text-left">
-          <div className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold text-white">
-            Exam Blueprints & Interview Prep
+      {/* Sleek Banner linking to Career Guides */}
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="space-y-1 text-center sm:text-left">
+          <div className="inline-flex items-center gap-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/50">
+            Exam Blueprints &amp; Interview Prep
           </div>
-          <h4 className="text-lg sm:text-xl font-bold text-foreground">
-            Explore 10+ In-Depth Career & Placement Guides
+          <h4 className="text-sm sm:text-base font-bold text-foreground">
+            Explore 10+ In-Depth Career &amp; Placement Guides
           </h4>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
-            Read complete syllabus breakdowns for TCS NQT, Accenture ASE, Core Java & Python interview questions.
+          <p className="text-xs text-muted-foreground max-w-xl">
+            Read complete syllabus breakdowns for TCS NQT, Accenture ASE, Core Java &amp; Python interview questions.
           </p>
         </div>
 
         <Link
           href="/guides"
           prefetch={true}
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-indigo-500 transition-all hover:scale-105 shrink-0"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-bold shadow-2xs transition-all hover:scale-105 active:scale-95 shrink-0"
         >
           <span>Browse All Guides</span>
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
     </div>

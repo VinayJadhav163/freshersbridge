@@ -218,30 +218,36 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   }
 
   // 8. Overall ATS Score Calculation (100 Point Breakdown)
-  // - Hard Skills Match: 40 points
+  // - Hard Skills Match: 50 points (core primary ATS parsing factor)
   // - Section Completeness: 25 points
-  // - Metric & Quantified Impact: 15 points
-  // - Action Verbs & Soft Skills: 10 points
-  // - ATS Formatting & Length: 10 points
+  // - Metric & Quantified Impact: 10 points
+  // - Action Verbs & Soft Skills: 8 points
+  // - ATS Formatting & Length: 7 points
   const skillRatio = targetSkills.length > 0 ? matchedSkills.length / targetSkills.length : 0;
-  const hardSkillPoints = Math.round(skillRatio * 40);
+  const hardSkillPoints = Math.round(skillRatio * 50);
 
   // Critical core sections (Contact, Technical Skills, Projects, Education) determine the 25 section points.
   // Social profiles (LinkedIn & GitHub) and work history are recommended bonuses and do NOT penalize ATS score if absent.
   const criticalSections = sections.filter((s) => s.importance === 'Critical');
   const passedCritical = criticalSections.filter((s) => s.found).length;
-  const sectionPoints = Math.round((passedCritical / criticalSections.length) * 25);
+  const sectionRatio = criticalSections.length > 0 ? passedCritical / criticalSections.length : 1;
+  const sectionPoints = Math.round(sectionRatio * 25);
 
-  const metricPoints = Math.min(metricsCount * 3.5, 15);
+  const metricPoints = Math.min(metricsCount * 2.5, 10);
   const verbPoints =
-    Math.min(actionVerbsFound.length * 1.5, 6) + (matchedSoftSkills.length >= 2 ? 4 : 2);
-  const lengthPoints = wordCountStatus === 'Optimal (1 Page)' ? 10 : 5;
+    Math.min(actionVerbsFound.length * 1.5, 5) + (matchedSoftSkills.length >= 2 ? 3 : 1);
+  const lengthPoints = wordCountStatus === 'Optimal (1 Page)' ? 7 : 4;
+
+  let rawTotal = Math.round(hardSkillPoints + sectionPoints + metricPoints + verbPoints + lengthPoints);
+
+  // When a candidate achieves 95%+ or 100% target skill match (e.g. 22 of 22 target skills found)
+  // and has complete core sections, ensure score reaches top tier (90% - 95%+)
+  if (skillRatio >= 0.95 && sectionRatio === 1) {
+    rawTotal = Math.max(rawTotal, Math.round(90 + (skillRatio - 0.95) * 40 + Math.min(metricPoints, 3)));
+  }
 
   const totalScore = Math.min(
-    Math.max(
-      Math.round(hardSkillPoints + sectionPoints + metricPoints + verbPoints + lengthPoints),
-      10
-    ),
+    Math.max(rawTotal, 10),
     100
   );
 
