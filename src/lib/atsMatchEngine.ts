@@ -226,8 +226,11 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   const skillRatio = targetSkills.length > 0 ? matchedSkills.length / targetSkills.length : 0;
   const hardSkillPoints = Math.round(skillRatio * 40);
 
-  const passedSections = sections.filter((s) => s.found).length;
-  const sectionPoints = Math.round((passedSections / sections.length) * 25);
+  // Critical core sections (Contact, Technical Skills, Projects, Education) determine the 25 section points.
+  // Social profiles (LinkedIn & GitHub) and work history are recommended bonuses and do NOT penalize ATS score if absent.
+  const criticalSections = sections.filter((s) => s.importance === 'Critical');
+  const passedCritical = criticalSections.filter((s) => s.found).length;
+  const sectionPoints = Math.round((passedCritical / criticalSections.length) * 25);
 
   const metricPoints = Math.min(metricsCount * 3.5, 15);
   const verbPoints =
@@ -283,10 +286,10 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
 
   if (!contactInfo.github || !contactInfo.linkedin) {
     actionableFeedback.push({
-      title: 'Add Live Portfolio Links (GitHub & LinkedIn)',
+      title: 'Recommended to add Profiles (LinkedIn & GitHub)',
       description:
-        'Recruiters want proof of work. Adding clickable GitHub repositories and a LinkedIn URL increases recruiter trust by over 60%.',
-      priority: 'medium',
+        'Proof of work adds credibility. While omitting social profiles does not lower your ATS score, adding GitHub and LinkedIn links helps recruiters verify your work quickly.',
+      priority: 'low',
       suggestedExample:
         'Add in header: "GitHub: github.com/yourhandle | LinkedIn: linkedin.com/in/yourhandle"',
     });

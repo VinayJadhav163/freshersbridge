@@ -912,6 +912,14 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                       <span className="font-bold text-emerald-600 inline-flex items-center gap-1">
                         <Check className="h-3 w-3" /> Found
                       </span>
+                    ) : sec.name.includes('Social Profiles') ? (
+                      <span className="font-semibold text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-[11px] bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-900/40">
+                        Recommended to add
+                      </span>
+                    ) : sec.importance === 'Recommended' ? (
+                      <span className="font-semibold text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-[11px]">
+                        Recommended
+                      </span>
                     ) : (
                       <span className="font-bold text-rose-600 inline-flex items-center gap-1">
                         <XCircle className="h-3 w-3" /> Missing
@@ -1025,16 +1033,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
                   <button
                     type="button"
-                    onClick={handleApplyTailoredResumeToScanner}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
-                    title="Load this tailored resume directly into the scanner and refresh match score"
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    <span>Check Tailored Score</span>
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={handleCopyTailoredResume}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
                   >
@@ -1049,16 +1047,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                         <span>Copy Text</span>
                       </>
                     )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDownloadTxt}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Download ATS-Friendly Plain Text Resume"
-                  >
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span>.TXT</span>
                   </button>
                 </>
               )}
@@ -1096,17 +1084,6 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               <FaangPathResumeView
                 resumeText={tailoredResult.tailored_resume}
               />
-
-              {/* Practical Guidance */}
-              <div className="rounded-xl border border-blue-200/70 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-xs text-muted-foreground flex items-start gap-3">
-                <Info className="h-4 w-4 text-[#275df5] shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="font-bold text-foreground">Standard 1-Page ATS Format:</p>
-                  <p className="leading-relaxed">
-                    Click <strong>Download Resume (PDF)</strong> above to save your resume formatted into the exact single-page FAANGPath / Overleaf LaTeX layout.
-                  </p>
-                </div>
-              </div>
             </div>
           )}
 
