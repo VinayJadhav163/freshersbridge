@@ -1032,19 +1032,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
           {/* Prompt / Call-To-Action Banner: Re-Tailor Resume for JD */}
           <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/70 dark:from-[#275df5]/10 dark:via-indigo-950/20 dark:to-[#275df5]/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xs">
-            <div className="space-y-1 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2">
-                <Sparkles className="h-4 w-4 text-[#275df5]" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[#275df5]">
-                  AI Role Tailoring Engine
-                </span>
-              </div>
+            <div className="text-center sm:text-left">
               <h5 className="text-base sm:text-lg font-black text-foreground">
                 {tailoredResult ? 'Re-align Your Resume to Target Requirements' : 'Instantly Boost Your ATS Match Score to 85%+'}
               </h5>
-              <p className="text-xs text-muted-foreground max-w-xl">
-                Our Gemini AI intelligently embeds missing keywords into your actual experiences and projects, matching the JD requirements without fabricating skills.
-              </p>
             </div>
 
             <button
