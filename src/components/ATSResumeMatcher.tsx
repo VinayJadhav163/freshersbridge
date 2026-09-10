@@ -33,7 +33,6 @@ import {
 } from 'lucide-react';
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
-import { ThinkingOrb } from '@/components/ui/thinking-orbs';
 import FaangPathResumeView from '@/components/FaangPathResumeView';
 import { generateFaangPathResumeHtml } from '@/lib/resumeFormatters';
 import { downloadDirectResumePdf } from '@/lib/pdfDownloader';
@@ -1085,22 +1084,20 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {/* AI RESUME TAILORING ENGINE & GAP ANALYSIS SUITE (MASTER PROMPT SPEC)       */}
       {/* ========================================================================= */}
 
-      {/* Loading Indicator for Tailoring with Animated Thinking Orb */}
+      {/* Loading Indicator for Tailoring */}
       {isTailoring && (
         <div
           id="tailored-resume-section"
           style={{ scrollMarginTop: '160px' }}
-          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
+          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[220px] animate-in fade-in-50 duration-300"
         >
           <div
-            className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-[9px] pr-8 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
+            className="inline-flex items-center gap-3 rounded-full px-6 py-3.5 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
             style={{
               boxShadow: "inset 0 0 0 1px rgba(120,120,120,0.1), 0 4px 20px -2px rgba(0,0,0,0.05)",
             }}
           >
-            <span className="[&_canvas]:!size-14 shrink-0 flex items-center justify-center">
-              <ThinkingOrb state="composing" size={64} theme="auto" />
-            </span>
+            <RefreshCw className="h-5 w-5 text-[#275df5] animate-spin shrink-0" />
             <span className="whitespace-nowrap text-base sm:text-lg font-semibold text-foreground tracking-tight">
               Generating Tailored ATS Resume...
             </span>

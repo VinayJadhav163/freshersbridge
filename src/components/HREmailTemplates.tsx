@@ -551,9 +551,8 @@ export default function HREmailTemplates() {
               </div>
             </div>
 
-            <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400 font-bold group-hover:underline">
+            <div className="mt-2 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400 font-bold">
               <span>{hasAnyInput ? 'Auto-Filled • View & Copy' : 'View & Copy Template'}</span>
-              <span>→</span>
             </div>
           </div>
         ))}
