@@ -94,8 +94,21 @@ export async function downloadDirectResumePdf(resumeText: string) {
     }
   }
 
+  const pageHeight = 297;
+  const maxContentY = 277;
+  const topMargin = 16;
+
+  // Helper to ensure enough vertical room on the current page, or create a clean new page
+  const ensureSpace = (neededHeight: number) => {
+    if (y + neededHeight > maxContentY) {
+      doc.addPage();
+      y = topMargin;
+    }
+  };
+
   // Helper to draw clean section header with underline strictly below text baseline
   const drawSectionHeader = (title: string) => {
+    ensureSpace(headerSectionGap + 16); // Prevent orphaned headers at the bottom of a page
     y += headerSectionGap;
     doc.setFont('times', 'bold');
     doc.setFontSize(headerFontSize);
@@ -112,6 +125,9 @@ export async function downloadDirectResumePdf(resumeText: string) {
 
   // Helper to draw bullet point with crisp filled dot
   const drawBullet = (text: string) => {
+    const lines = doc.splitTextToSize(text, contentWidth - 6);
+    ensureSpace(lines.length * lineHeight + bulletGap);
+
     doc.setFont('times', 'normal');
     doc.setFontSize(bodyFontSize);
     doc.setTextColor(0, 0, 0);
@@ -120,7 +136,6 @@ export async function downloadDirectResumePdf(resumeText: string) {
     doc.setFillColor(30, 30, 30);
     doc.circle(marginX + 2.2, y - 0.9, 0.5, 'F');
 
-    const lines = doc.splitTextToSize(text, contentWidth - 6);
     doc.text(lines, marginX + 5.5, y);
     y += lines.length * lineHeight + bulletGap;
   };
@@ -131,6 +146,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
     doc.setFont('times', 'normal');
     doc.setFontSize(bodyFontSize);
     const objLines = doc.splitTextToSize(structured.objective, contentWidth);
+    ensureSpace(objLines.length * lineHeight);
     doc.text(objLines, marginX, y);
     y += objLines.length * lineHeight;
   }
@@ -139,6 +155,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   if (structured.education.length > 0) {
     drawSectionHeader('EDUCATION');
     structured.education.forEach((edu) => {
+      ensureSpace(lineHeight * 2 + itemGap);
       doc.setFont('times', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(edu.institution, marginX, y);
@@ -167,13 +184,15 @@ export async function downloadDirectResumePdf(resumeText: string) {
     const itemsWidth = contentWidth - catColWidth;
 
     structured.skills.forEach((sk) => {
+      const itemLines = doc.splitTextToSize(sk.items, itemsWidth);
+      ensureSpace(Math.max(1, itemLines.length) * lineHeight + skillsRowGap);
+
       doc.setFont('times', 'bold');
       doc.setFontSize(bodyFontSize);
       doc.text(`${sk.category}:`, marginX, y);
 
       doc.setFont('times', 'normal');
       doc.setFontSize(bodyFontSize);
-      const itemLines = doc.splitTextToSize(sk.items, itemsWidth);
       doc.text(itemLines, marginX + catColWidth, y);
       y += Math.max(1, itemLines.length) * lineHeight + skillsRowGap;
     });
@@ -183,6 +202,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   if (structured.experience.length > 0) {
     drawSectionHeader('EXPERIENCE');
     structured.experience.forEach((exp) => {
+      ensureSpace(lineHeight * 2 + 10);
       doc.setFont('times', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(exp.role, marginX, y);
@@ -215,6 +235,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   if (structured.projects.length > 0) {
     drawSectionHeader('PROJECTS');
     structured.projects.forEach((proj) => {
+      ensureSpace(lineHeight + 10);
       doc.setFont('times', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(proj.title, marginX, y);
@@ -233,6 +254,20 @@ export async function downloadDirectResumePdf(resumeText: string) {
     structured.certifications.forEach((c) => {
       drawBullet(c);
     });
+  }
+
+  // Multi-page footer labeling (Clean: only adds footer when resume actually has >1 page)
+  const totalPages = typeof (doc as any).getNumberOfPages === 'function' 
+    ? (doc as any).getNumberOfPages() 
+    : 1;
+  if (totalPages > 1) {
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFont('times', 'italic');
+      doc.setFontSize(8.5);
+      doc.setTextColor(110, 110, 110);
+      doc.text(`${safeName} — Page ${p} of ${totalPages}`, pageWidth - marginX, 290, { align: 'right' });
+    }
   }
 
   // Direct download clean PDF

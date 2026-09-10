@@ -19,8 +19,7 @@ export interface ATSAnalyticsData {
   history: ATSDailyRecord[];
 }
 
-const DATA_FILE_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'data', 'ats-analytics.json');
-const TMP_FILE_PATH = path.join(process.env.TMPDIR || '/tmp', 'ats-analytics.json');
+const DATA_FILE_PATH = path.join(process.env.TMPDIR || '/tmp', 'ats-analytics.json');
 
 function getTodayString(): string {
   const now = new Date();
@@ -44,40 +43,24 @@ function getDefaultAnalytics(): ATSAnalyticsData {
 }
 
 function readStoredData(): ATSAnalyticsData | null {
-  for (const filePath of [DATA_FILE_PATH, TMP_FILE_PATH]) {
-    try {
-      if (fs.existsSync(filePath)) {
-        const raw = fs.readFileSync(filePath, 'utf-8');
-        return JSON.parse(raw);
-      }
-    } catch {
-      // Continue to next path
+  try {
+    if (fs.existsSync(DATA_FILE_PATH)) {
+      const raw = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
+      return JSON.parse(raw);
     }
+  } catch {
+    // Ignore read errors
   }
   return null;
 }
 
 function writeStoredData(data: ATSAnalyticsData) {
-  const jsonStr = JSON.stringify(data, null, 2);
-  let saved = false;
-
   try {
     const dir = path.dirname(DATA_FILE_PATH);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(DATA_FILE_PATH, jsonStr, 'utf-8');
-    saved = true;
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
   } catch {
-    // Expected on Vercel read-only filesystem
-  }
-
-  if (!saved) {
-    try {
-      const tmpDir = path.dirname(TMP_FILE_PATH);
-      if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-      fs.writeFileSync(TMP_FILE_PATH, jsonStr, 'utf-8');
-    } catch {
-      // Silently fail if tmp is also unavailable
-    }
+    // Silently ignore write failures on read-only environments
   }
 }
 
