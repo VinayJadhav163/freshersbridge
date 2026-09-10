@@ -284,20 +284,37 @@ export default function ATSResumeMatcher() {
     }
   };
 
-  const scrollToElementWithOffset = (elementId: string, offset = 100) => {
+  const scrollToElementWithOffset = (elementId: string, offset = 160) => {
     const doScroll = () => {
       const elem = document.getElementById(elementId);
-      if (elem) {
-        const elementPosition = elem.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - offset;
+      if (!elem) return;
+
+      // 1. Explicitly apply inline scrollMarginTop so native scrollIntoView accounts for sticky header
+      elem.style.scrollMarginTop = `${offset}px`;
+
+      // 2. Trigger native scrollIntoView with scrollMarginTop
+      try {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch {}
+
+      // 3. Guarantee scroll with coordinate-based scrollTo
+      try {
+        const rect = elem.getBoundingClientRect();
+        const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const targetY = Math.max(0, rect.top + scrollTop - offset);
         window.scrollTo({
-          top: Math.max(0, offsetPosition),
+          top: targetY,
           behavior: 'smooth',
         });
-      }
+        document.documentElement.scrollTo({
+          top: targetY,
+          behavior: 'smooth',
+        });
+      } catch {}
     };
+
     requestAnimationFrame(() => {
-      setTimeout(doScroll, 20);
+      setTimeout(doScroll, 10);
     });
   };
 
@@ -306,7 +323,7 @@ export default function ATSResumeMatcher() {
 
     // If score is already calculated for these exact inputs, scroll directly without redundant reprocessing
     if (isScoreAlreadyCalculated) {
-      scrollToElementWithOffset('ats-results-dashboard', 100);
+      scrollToElementWithOffset('ats-results-dashboard', 160);
       return;
     }
 
@@ -343,7 +360,7 @@ export default function ATSResumeMatcher() {
 
         // Smooth scroll down to results with navbar offset
         setTimeout(() => {
-          scrollToElementWithOffset('ats-results-dashboard', 100);
+          scrollToElementWithOffset('ats-results-dashboard', 160);
         }, 80);
       } catch (err: any) {
         console.error('Analysis error:', err);
@@ -366,7 +383,7 @@ export default function ATSResumeMatcher() {
 
     // If already tailored for this exact same Resume and JD, scroll to section directly
     if (tailoredResult && !hasInputChangedSinceTailoring) {
-      scrollToElementWithOffset('tailored-resume-section', 100);
+      scrollToElementWithOffset('tailored-resume-section', 160);
       return;
     }
 
@@ -375,7 +392,7 @@ export default function ATSResumeMatcher() {
 
     // Immediately smooth scroll down to the loading card section
     setTimeout(() => {
-      scrollToElementWithOffset('tailored-resume-section', 100);
+      scrollToElementWithOffset('tailored-resume-section', 160);
     }, 60);
 
     // Keep ATS scorecard synchronized automatically
@@ -427,7 +444,7 @@ export default function ATSResumeMatcher() {
           console.warn('Auto score analysis warning:', e);
         }
         setTimeout(() => {
-          scrollToElementWithOffset('tailored-resume-section', 100);
+          scrollToElementWithOffset('tailored-resume-section', 160);
         }, 120);
       } else {
         throw new Error(data.error || 'Failed to tailor resume.');
@@ -447,7 +464,7 @@ export default function ATSResumeMatcher() {
     const analysis = analyzeResumeATS(tailoredResult.tailored_resume, jobDescription);
     setResults(analysis);
     setTimeout(() => {
-      scrollToElementWithOffset('ats-results-dashboard', 100);
+      scrollToElementWithOffset('ats-results-dashboard', 160);
     }, 100);
   };
 
@@ -874,7 +891,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {results && (
         <div
           id="ats-results-dashboard"
-          className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-8 animate-in fade-in-50 duration-300"
+          style={{ scrollMarginTop: '160px' }}
+          className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-8 animate-in fade-in-50 duration-300"
         >
           {/* Top Score Showcase */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-border pb-6">
@@ -1071,7 +1089,8 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {isTailoring && (
         <div
           id="tailored-resume-section"
-          className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
+          style={{ scrollMarginTop: '160px' }}
+          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
         >
           <div
             className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-[9px] pr-8 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
@@ -1091,7 +1110,11 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
       {/* Generated Tailored Resume Output */}
       {tailoredResult && !isTailoring && (
-        <div id="tailored-resume-section" className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-[#275df5]/40 bg-card p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div 
+          id="tailored-resume-section" 
+          style={{ scrollMarginTop: '160px' }}
+          className="rounded-2xl border-2 border-[#275df5]/40 bg-card p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden"
+        >
           {/* Top Decorative Background Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
