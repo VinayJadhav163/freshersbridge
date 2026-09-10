@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Send, CheckCircle2, MessageSquare, ArrowLeft, ExternalLink, RefreshCw } from 'lucide-react';
+import { Mail, Send, Check, MessageSquare, ArrowLeft, ExternalLink } from 'lucide-react';
 import { AnimatedSubscribeButton } from '@/components/ui/animated-subscribe-button';
 
 export default function ContactPage() {
@@ -165,7 +165,7 @@ export default function ContactPage() {
             {submitted ? (
               <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 p-8 text-center space-y-4 my-auto animate-in fade-in zoom-in-95 duration-300">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 mx-auto text-emerald-600">
-                  <CheckCircle2 className="h-8 w-8" />
+                  <Check className="h-8 w-8" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground">
                   {fallbackMailto ? 'Message Prepared for Email' : 'Message Sent Successfully!'}
@@ -253,10 +253,7 @@ export default function ContactPage() {
                     className="dark:!bg-indigo-600 dark:hover:!bg-indigo-500"
                     initialText={
                       isSubmitting ? (
-                        <span className="inline-flex items-center gap-2">
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          <span>Sending...</span>
-                        </span>
+                        <span>Sending...</span>
                       ) : (
                         <span className="inline-flex items-center gap-2">
                           <span>Send Message</span>
@@ -266,7 +263,7 @@ export default function ContactPage() {
                     }
                     changeText={
                       <span className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                        <CheckCircle2 className="h-4 w-4" />
+                        <Check className="h-4 w-4" />
                         <span>Sent</span>
                       </span>
                     }
