@@ -13,7 +13,8 @@ import {
   Briefcase, 
   Rocket,
   GraduationCap,
-  Calendar
+  Calendar,
+  Check
 } from 'lucide-react';
 import { Job, Category } from '@/types';
 
@@ -43,13 +44,29 @@ function getCategoryIcon(slug: string) {
   }
 }
 
+// Strictly ordered category sequence:
+// 1. Software Development, 2. Web Development, 3. Data Science & Analytics,
+// 4. QA & Testing, 5. DevOps & Cloud, 6. Database Administration
+function getCategorySortOrder(cat: Category): number {
+  const slug = (cat.slug || '').toLowerCase();
+  const name = (cat.name || '').toLowerCase();
+
+  if (slug.includes('software') || name.includes('software')) return 1;
+  if (slug.includes('web') || name.includes('web') || slug.includes('frontend') || name.includes('frontend')) return 2;
+  if (slug.includes('data') || name.includes('data') || slug.includes('analytics') || name.includes('analytics')) return 3;
+  if (slug.includes('qa') || slug.includes('test') || name.includes('qa') || name.includes('test')) return 4;
+  if (slug.includes('devops') || slug.includes('cloud') || name.includes('devops') || name.includes('cloud')) return 5;
+  if (slug.includes('database') || slug.includes('dba') || name.includes('database') || name.includes('admin')) return 6;
+  return 99;
+}
+
 import { fetchWithCache } from '@/lib/dataCache';
 
 export default async function Home() {
   // Parallel fetch cached categories & pools of jobs/internships
   const [categories, allJobsPool, allInternshipsPool] = await Promise.all([
     fetchWithCache<Category[]>('home:categories', async () => {
-      const { data } = await supabase.from('categories').select('*').order('name');
+      const { data } = await supabase.from('categories').select('*');
       return (data || []) as Category[];
     }, 180),
     fetchWithCache<Job[]>('home:jobsPool', async () => {
@@ -85,6 +102,15 @@ export default async function Home() {
 
   const displayInternships = allInternshipsPool.slice(0, 3);
 
+  // Strictly sort categories according to requested sequence:
+  // 1. Software Development, 2. Web Development, 3. Data Science & Analytics,
+  // 4. QA & Testing, 5. DevOps & Cloud, 6. Database Administration
+  const sortedCategories = [...categories].sort((a, b) => {
+    const diff = getCategorySortOrder(a) - getCategorySortOrder(b);
+    if (diff !== 0) return diff;
+    return a.name.localeCompare(b.name);
+  });
+
   // Structured Data for Google Sitelinks Searchbox & Organization
   const homepageJsonLd = {
     '@context': 'https://schema.org',
@@ -111,22 +137,22 @@ export default async function Home() {
         'url': 'https://freshersbridge.in',
         'logo': 'https://freshersbridge.in/icon.png',
         'sameAs': [
-          'https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1',
           'https://t.me/freshersbridge',
+          'https://chat.whatsapp.com/G5yqV0rZqJm8'
         ],
       },
     ],
   };
 
   return (
-    <div className="flex flex-col w-full pb-16">
-      {/* Google Sitelinks Searchbox & Organization Structured Data */}
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
       />
 
-      {/* 1. Hero Section with Minimal Modern Gradient */}
+      {/* 1. Hero Section: Direct, clean, and optimized */}
       <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
         {/* Minimal soft ambient glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
@@ -154,51 +180,57 @@ export default async function Home() {
           <div className="pt-2 flex flex-col items-center gap-3">
             <SearchBar />
 
-            {/* Quick Action Shortcuts */}
-            <div className="flex items-center gap-2 pt-1 flex-wrap justify-center text-xs font-semibold">
-              <span className="text-slate-500">Popular:</span>
+            {/* Quick Action Shortcuts as Modern Interactive Chips */}
+            <div className="flex items-center gap-2 pt-2 flex-wrap justify-center text-xs">
+              <span className="font-semibold text-slate-600 dark:text-slate-400 mr-0.5">Popular:</span>
               <Link
                 href="/jobs"
-                className="text-slate-700 hover:text-[#275df5] underline underline-offset-4 decoration-slate-300"
+                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
               >
                 Software Engineer
               </Link>
-              <span className="text-slate-300">•</span>
               <Link
                 href="/internships"
-                className="text-slate-700 hover:text-[#275df5] underline underline-offset-4 decoration-slate-300"
+                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
               >
                 Tech Internships
               </Link>
-              <span className="text-slate-300">•</span>
               <Link
                 href="/companies"
-                className="text-slate-700 hover:text-[#275df5] underline underline-offset-4 decoration-slate-300"
+                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
               >
-                TCS & Infosys
+                TCS &amp; Infosys
               </Link>
-              <span className="text-slate-300">•</span>
               <Link
                 href="/career-tools"
-                className="text-slate-700 hover:text-[#275df5] underline underline-offset-4 decoration-slate-300"
+                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
               >
                 ATS Resume Checker
               </Link>
             </div>
 
-            {/* Subtle authentic trust line */}
-            <div className="flex items-center justify-center gap-5 sm:gap-7 pt-2 text-[11px] font-medium text-slate-400 dark:text-slate-500 flex-wrap">
-              <span>✓ 100% Free Applications</span>
-              <span>•</span>
-              <span>✓ Official Company Careers Links</span>
-              <span>•</span>
-              <span>✓ Verified Daily Updates</span>
+            {/* Subtle authentic trust line with crisp icons */}
+            <div className="flex items-center justify-center gap-4 sm:gap-6 pt-2 text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 flex-wrap">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                <span>100% Free Applications</span>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                <span>Official Company Careers Links</span>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                <span>Verified Daily Updates</span>
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Categories Section */}
+      {/* 2. Categories Section: Strictly ordered with full non-truncated titles */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-12 w-full">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -208,33 +240,43 @@ export default async function Home() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {categories.length > 0 ? (
-            categories.slice(0, 12).map((category) => (
+          {sortedCategories.length > 0 ? (
+            sortedCategories.slice(0, 6).map((category) => (
               <Link
                 key={category.id}
                 href={`/jobs?category=${category.slug}`}
                 prefetch={true}
-                className="group flex flex-col items-center justify-center text-center p-5 rounded-xl border border-border bg-card shadow-sm transition-all hover:border-indigo-500 hover:shadow-md"
+                className="group flex flex-col items-center justify-center text-center px-3 py-5 rounded-xl border border-border bg-card shadow-xs transition-all hover:border-[#275df5] hover:shadow-md min-h-[148px]"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary group-hover:bg-indigo-600/10 group-hover:scale-110 transition-all">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary group-hover:bg-[#275df5]/10 group-hover:scale-105 transition-all">
                   {getCategoryIcon(category.slug)}
                 </div>
-                <h3 className="mt-3 text-xs sm:text-sm font-bold text-foreground line-clamp-1">
+                <h3 className="mt-3 text-xs sm:text-sm font-bold text-foreground text-center leading-snug px-1 flex items-center justify-center min-h-[2.5rem]">
                   {category.name}
                 </h3>
               </Link>
             ))
           ) : (
-            ['Software Dev', 'Frontend', 'Backend', 'Data Analytics', 'QA Testing', 'DevOps'].map((name, i) => (
-              <div
+            [
+              { name: 'Software Development', slug: 'software-development' },
+              { name: 'Web Development', slug: 'web-development' },
+              { name: 'Data Science & Analytics', slug: 'data-science-analytics' },
+              { name: 'QA & Testing', slug: 'qa-testing' },
+              { name: 'DevOps & Cloud', slug: 'devops-cloud' },
+              { name: 'Database Administration', slug: 'database-administration' },
+            ].map((cat, i) => (
+              <Link
                 key={i}
-                className="flex flex-col items-center justify-center text-center p-5 rounded-xl border border-dashed border-border bg-card/50"
+                href={`/jobs?category=${cat.slug}`}
+                className="flex flex-col items-center justify-center text-center px-3 py-5 rounded-xl border border-border bg-card/50 shadow-xs min-h-[148px]"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
-                  <Code className="h-6 w-6 text-muted" />
+                  {getCategoryIcon(cat.slug)}
                 </div>
-                <h3 className="mt-3 text-xs sm:text-sm font-semibold text-muted-foreground">{name}</h3>
-              </div>
+                <h3 className="mt-3 text-xs sm:text-sm font-bold text-foreground text-center leading-snug px-1 flex items-center justify-center min-h-[2.5rem]">
+                  {cat.name}
+                </h3>
+              </Link>
             ))
           )}
         </div>
