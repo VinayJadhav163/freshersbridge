@@ -59,17 +59,36 @@ export async function downloadDirectResumePdf(resumeText: string) {
   doc.text(safeName.toUpperCase(), pageWidth / 2, y, { align: 'center' });
   y += isVeryDense ? 5.2 : 6.0;
 
-  // 2. Contact Line (Centered, separated by dots or pipes)
+  // 2. Contact Line (Centered, cleanly separated with standard ASCII pipe)
   if (structured.contactLines.length > 0) {
     const rawContact = structured.contactLines.join(' | ');
-    const parts = rawContact.split('|').map((p) => p.trim()).filter(Boolean);
-    const contactText = parts.join('   \u25C7   ');
+    // Filter out corrupted artifacts like %Ç or odd unicode
+    const parts = rawContact
+      .split(/[|⋄◇•·]/)
+      .map((p) => p.replace(/%Ç|⋄|◇/g, '').trim())
+      .filter(Boolean);
 
     doc.setFont('times', 'normal');
-    doc.setFontSize(isVeryDense ? 9 : 9.5);
+    const contactFontSize = isVeryDense ? 8.8 : 9.3;
+    doc.setFontSize(contactFontSize);
     doc.setTextColor(30, 30, 30);
-    doc.text(contactText, pageWidth / 2, y, { align: 'center' });
-    y += isVeryDense ? 5.5 : 6.5;
+
+    const fullContactStr = parts.join('   |   ');
+    const fullWidth = doc.getTextWidth(fullContactStr);
+
+    if (fullWidth <= contentWidth) {
+      doc.text(fullContactStr, pageWidth / 2, y, { align: 'center' });
+      y += isVeryDense ? 5.2 : 6.0;
+    } else {
+      // If contact information is very long, split across 2 centered lines cleanly
+      const mid = Math.ceil(parts.length / 2);
+      const line1 = parts.slice(0, mid).join('   |   ');
+      const line2 = parts.slice(mid).join('   |   ');
+      doc.text(line1, pageWidth / 2, y, { align: 'center' });
+      y += 4.0;
+      doc.text(line2, pageWidth / 2, y, { align: 'center' });
+      y += isVeryDense ? 4.8 : 5.5;
+    }
   }
 
   // Helper to draw clean section header with underline strictly below text baseline

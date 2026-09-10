@@ -904,25 +904,27 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 </span>
               </div>
 
-              <div className="space-y-2 text-xs">
+              <div className="space-y-1.5 text-xs">
                 {results.sections.map((sec, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-muted-foreground truncate max-w-[170px]">{sec.name}</span>
+                  <div key={i} className="flex items-center justify-between gap-2 py-1 border-b border-border/30 last:border-0">
+                    <span className="text-muted-foreground font-medium min-w-0">
+                      {sec.name}
+                    </span>
                     {sec.found ? (
-                      <span className="font-bold text-emerald-600 inline-flex items-center gap-1">
-                        <Check className="h-3 w-3" /> Found
+                      <span className="shrink-0 font-bold text-emerald-600 inline-flex items-center gap-1 text-xs whitespace-nowrap">
+                        <Check className="h-3.5 w-3.5" /> Found
                       </span>
                     ) : sec.name.includes('Social Profiles') ? (
-                      <span className="font-semibold text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-[11px] bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-900/40">
+                      <span className="shrink-0 font-semibold text-amber-700 dark:text-amber-400 inline-flex items-center gap-1 text-[11px] bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-900/50 whitespace-nowrap">
                         Recommended to add
                       </span>
                     ) : sec.importance === 'Recommended' ? (
-                      <span className="font-semibold text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-[11px]">
+                      <span className="shrink-0 font-semibold text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-[11px] whitespace-nowrap">
                         Recommended
                       </span>
                     ) : (
-                      <span className="font-bold text-rose-600 inline-flex items-center gap-1">
-                        <XCircle className="h-3 w-3" /> Missing
+                      <span className="shrink-0 font-bold text-rose-600 inline-flex items-center gap-1 text-xs whitespace-nowrap">
+                        <XCircle className="h-3.5 w-3.5" /> Missing
                       </span>
                     )}
                   </div>

@@ -32,27 +32,31 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
           {contactItems.length > 0 && (
             <div className="mt-1.5 text-[11.5px] sm:text-[12.5px] text-gray-800 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
-              {contactItems.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <span className="text-gray-400 font-bold">&#9671;</span>}
-                  {item.includes('@') ? (
-                    <a href={`mailto:${item}`} className="text-blue-700 hover:underline">
-                      {item}
-                    </a>
-                  ) : /linkedin\.com|github\.com/i.test(item) ? (
-                    <a
-                      href={item.startsWith('http') ? item : `https://${item}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-700 hover:underline"
-                    >
-                      {item}
-                    </a>
-                  ) : (
-                    <span>{item}</span>
-                  )}
-                </React.Fragment>
-              ))}
+              {contactItems.map((rawItem, idx) => {
+                const item = rawItem.replace(/%Ç|⋄|◇/g, '').trim();
+                if (!item) return null;
+                return (
+                  <React.Fragment key={idx}>
+                    {idx > 0 && <span className="text-gray-400 font-bold mx-1">|</span>}
+                    {item.includes('@') ? (
+                      <a href={`mailto:${item}`} className="text-blue-700 hover:underline">
+                        {item}
+                      </a>
+                    ) : /linkedin\.com|github\.com/i.test(item) ? (
+                      <a
+                        href={item.startsWith('http') ? item : `https://${item}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-700 hover:underline"
+                      >
+                        {item}
+                      </a>
+                    ) : (
+                      <span>{item}</span>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
           )}
         </div>
