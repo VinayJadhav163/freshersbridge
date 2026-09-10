@@ -284,15 +284,29 @@ export default function ATSResumeMatcher() {
     }
   };
 
+  const scrollToElementWithOffset = (elementId: string, offset = 100) => {
+    const doScroll = () => {
+      const elem = document.getElementById(elementId);
+      if (elem) {
+        const elementPosition = elem.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: 'smooth',
+        });
+      }
+    };
+    requestAnimationFrame(() => {
+      setTimeout(doScroll, 20);
+    });
+  };
+
   const handleAnalyze = () => {
     if (!resumeText.trim()) return;
 
     // If score is already calculated for these exact inputs, scroll directly without redundant reprocessing
     if (isScoreAlreadyCalculated) {
-      const resultsElem = document.getElementById('ats-results-dashboard');
-      if (resultsElem) {
-        resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      scrollToElementWithOffset('ats-results-dashboard', 100);
       return;
     }
 
@@ -327,13 +341,10 @@ export default function ATSResumeMatcher() {
           body: JSON.stringify({ type: 'scan' }),
         }).catch(() => { });
 
-        // Smooth scroll down to results on mobile
+        // Smooth scroll down to results with navbar offset
         setTimeout(() => {
-          const resultsElem = document.getElementById('ats-results-dashboard');
-          if (resultsElem) {
-            resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+          scrollToElementWithOffset('ats-results-dashboard', 100);
+        }, 80);
       } catch (err: any) {
         console.error('Analysis error:', err);
         setErrorMessage('Failed to complete ATS analysis. Please check your resume text and try again.');
@@ -353,25 +364,19 @@ export default function ATSResumeMatcher() {
       return;
     }
 
-    // If already tailored for this exact same Resume and JD, don't re-tailor again
+    // If already tailored for this exact same Resume and JD, scroll to section directly
     if (tailoredResult && !hasInputChangedSinceTailoring) {
-      const elem = document.getElementById('tailored-resume-section');
-      if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      scrollToElementWithOffset('tailored-resume-section', 100);
       return;
     }
 
     setIsTailoring(true);
     setErrorMessage(null);
 
-    // Immediately smooth scroll down to the generating card section
+    // Immediately smooth scroll down to the loading card section
     setTimeout(() => {
-      const elem = document.getElementById('tailored-resume-section');
-      if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 50);
+      scrollToElementWithOffset('tailored-resume-section', 100);
+    }, 60);
 
     // Keep ATS scorecard synchronized automatically
     try {
@@ -422,11 +427,8 @@ export default function ATSResumeMatcher() {
           console.warn('Auto score analysis warning:', e);
         }
         setTimeout(() => {
-          const elem = document.getElementById('tailored-resume-section');
-          if (elem) {
-            elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+          scrollToElementWithOffset('tailored-resume-section', 100);
+        }, 120);
       } else {
         throw new Error(data.error || 'Failed to tailor resume.');
       }
@@ -445,10 +447,7 @@ export default function ATSResumeMatcher() {
     const analysis = analyzeResumeATS(tailoredResult.tailored_resume, jobDescription);
     setResults(analysis);
     setTimeout(() => {
-      const elem = document.getElementById('ats-results-dashboard');
-      if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      scrollToElementWithOffset('ats-results-dashboard', 100);
     }, 100);
   };
 
@@ -875,7 +874,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {results && (
         <div
           id="ats-results-dashboard"
-          className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-8 animate-in fade-in-50 duration-300"
+          className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-8 animate-in fade-in-50 duration-300"
         >
           {/* Top Score Showcase */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-border pb-6">
@@ -1072,7 +1071,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
       {isTailoring && (
         <div
           id="tailored-resume-section"
-          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
+          className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[260px] animate-in fade-in-50 duration-300"
         >
           <div
             className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-[9px] pr-8 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
@@ -1092,7 +1091,7 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
       {/* Generated Tailored Resume Output */}
       {tailoredResult && !isTailoring && (
-        <div id="tailored-resume-section" className="rounded-2xl border-2 border-[#275df5]/40 bg-card p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div id="tailored-resume-section" className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-[#275df5]/40 bg-card p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
           {/* Top Decorative Background Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 

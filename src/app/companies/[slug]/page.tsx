@@ -254,7 +254,7 @@ export default async function CompanyDetailPage({ params }: Props) {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
               <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-[#275df5] shrink-0" />
+                <Briefcase className="h-5 w-5 text-[#275df5] shrink-0 translate-y-[1.5px]" />
                 <span>Latest {company.shortName} Off-Campus Drives & Jobs</span>
               </h2>
               <span className="text-xs font-semibold text-muted-foreground shrink-0 self-start sm:self-auto">

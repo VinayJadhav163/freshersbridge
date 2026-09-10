@@ -245,7 +245,7 @@ export default async function Home() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="space-y-1">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5">
-              <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600 shrink-0" />
+              <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-[#275df5] shrink-0 translate-y-[1.5px]" />
               <span>Featured & Latest Job Openings</span>
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-medium">

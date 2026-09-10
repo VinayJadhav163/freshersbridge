@@ -66,8 +66,8 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-border/60 space-y-2">
             <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-              <Briefcase className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              Latest Job & Internship Listings
+              <Briefcase className="h-4 w-4 text-[#275df5] shrink-0 translate-y-[1px]" />
+              <span>Latest Job & Internship Listings</span>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               We curate and share job openings, internships, and career opportunities across various domains including software development, cybersecurity, cloud, data analytics, and more. Our listings are sourced from company websites and trusted platforms.
