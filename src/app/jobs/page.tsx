@@ -8,7 +8,7 @@ import Pagination from '@/components/Pagination';
 import Link from 'next/link';
 import { Briefcase } from 'lucide-react';
 import { Job, Category } from '@/types';
-import { resolveCategory } from '@/lib/categoryResolver';
+import { resolveCategory, sortCategories } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
 
 interface SearchParams {
@@ -73,11 +73,11 @@ export async function generateMetadata({ searchParams }: JobsPageProps): Promise
   };
 }
 
-// Cached category lookup
+// Cached category lookup with strict sorting
 const getCachedCategories = cache(async (): Promise<Category[]> => {
   return fetchWithCache<Category[]>('all_categories', async () => {
-    const { data } = await supabase.from('categories').select('*').order('name');
-    return (data || []) as Category[];
+    const { data } = await supabase.from('categories').select('*');
+    return sortCategories((data || []) as Category[]);
   }, 300);
 });
 

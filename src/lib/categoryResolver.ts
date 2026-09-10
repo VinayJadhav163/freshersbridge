@@ -48,3 +48,34 @@ export function resolveCategory(categories: Category[], slugOrAlias: string): Ca
       clean.includes(c.name.toLowerCase())
   );
 }
+
+/**
+ * Strictly ordered category sequence requested:
+ * 1. Software Development
+ * 2. Web Development
+ * 3. Data Science & Analytics
+ * 4. QA & Testing
+ * 5. DevOps & Cloud
+ * 6. Database Administration
+ */
+export function getCategorySortOrder(cat: Category): number {
+  const slug = (cat.slug || '').toLowerCase();
+  const name = (cat.name || '').toLowerCase();
+
+  if (slug.includes('software') || name.includes('software')) return 1;
+  if (slug.includes('web') || name.includes('web') || slug.includes('frontend') || name.includes('frontend')) return 2;
+  if (slug.includes('data') || name.includes('data') || slug.includes('analytics') || name.includes('analytics')) return 3;
+  if (slug.includes('qa') || slug.includes('test') || name.includes('qa') || name.includes('test')) return 4;
+  if (slug.includes('devops') || slug.includes('cloud') || name.includes('devops') || name.includes('cloud')) return 5;
+  if (slug.includes('database') || slug.includes('dba') || name.includes('database') || name.includes('admin')) return 6;
+  return 99;
+}
+
+export function sortCategories(categories: Category[]): Category[] {
+  return [...categories].sort((a, b) => {
+    const diff = getCategorySortOrder(a) - getCategorySortOrder(b);
+    if (diff !== 0) return diff;
+    return a.name.localeCompare(b.name);
+  });
+}
+

@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { GraduationCap, Briefcase } from 'lucide-react';
 import { Metadata } from 'next';
 import { Job, Category } from '@/types';
-import { resolveCategory } from '@/lib/categoryResolver';
+import { resolveCategory, sortCategories } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
 
 interface SearchParams {
@@ -24,7 +24,7 @@ interface InternshipsPageProps {
   searchParams: Promise<SearchParams>;
 }
 
-export const revalidate = 60;
+export const revalidate = 60; // 60s background ISR cache
 
 // Dynamic SEO Metadata for /internships
 export async function generateMetadata({ searchParams }: InternshipsPageProps): Promise<Metadata> {
@@ -41,10 +41,10 @@ export async function generateMetadata({ searchParams }: InternshipsPageProps): 
 
   const baseTitle = activeCat
     ? `${activeCat.name} Internships for Students & Freshers 2026 | FreshersBridge`
-    : 'Tech Internships for Freshers & College Graduates 2026 | FreshersBridge';
+    : 'Browse Latest Tech & Software Internships for Freshers 2026 | FreshersBridge';
   const baseDesc = activeCat
-    ? `Explore verified ${activeCat.name} internships, summer training programs, and software apprentice opportunities across India.`
-    : 'Explore verified software engineering, web development, data science, and cloud internships for college students and fresh graduates in India.';
+    ? `Find verified ${activeCat.name} internship opportunities, summer training roles, and student internships across India on FreshersBridge.`
+    : 'Apply for verified software engineering internships, developer roles, and tech trainee programs for college students & 2026 graduates.';
 
   return {
     title: baseTitle,
@@ -54,6 +54,7 @@ export async function generateMetadata({ searchParams }: InternshipsPageProps): 
         ? `https://freshersbridge.in/internships?category=${activeCat.slug}` 
         : 'https://freshersbridge.in/internships',
     },
+    // Protect crawl budget from parameter bloat: noindex query combos while following internal links
     robots: hasFilterParams
       ? {
           index: false,
@@ -72,11 +73,11 @@ export async function generateMetadata({ searchParams }: InternshipsPageProps): 
   };
 }
 
-// Cached category lookup
+// Cached category lookup with strict sorting
 const getCachedCategories = cache(async (): Promise<Category[]> => {
   return fetchWithCache<Category[]>('all_categories', async () => {
-    const { data } = await supabase.from('categories').select('*').order('name');
-    return (data || []) as Category[];
+    const { data } = await supabase.from('categories').select('*');
+    return sortCategories((data || []) as Category[]);
   }, 300);
 });
 

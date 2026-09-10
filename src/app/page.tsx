@@ -17,6 +17,8 @@ import {
   Check
 } from 'lucide-react';
 import { Job, Category } from '@/types';
+import { sortCategories } from '@/lib/categoryResolver';
+import { fetchWithCache } from '@/lib/dataCache';
 
 // Fast dynamic server-side rendering so each visitor gets fresh rotated listings
 export const dynamic = 'force-dynamic';
@@ -43,24 +45,6 @@ function getCategoryIcon(slug: string) {
       return <Code className="h-6 w-6 text-[#275df5]" />;
   }
 }
-
-// Strictly ordered category sequence:
-// 1. Software Development, 2. Web Development, 3. Data Science & Analytics,
-// 4. QA & Testing, 5. DevOps & Cloud, 6. Database Administration
-function getCategorySortOrder(cat: Category): number {
-  const slug = (cat.slug || '').toLowerCase();
-  const name = (cat.name || '').toLowerCase();
-
-  if (slug.includes('software') || name.includes('software')) return 1;
-  if (slug.includes('web') || name.includes('web') || slug.includes('frontend') || name.includes('frontend')) return 2;
-  if (slug.includes('data') || name.includes('data') || slug.includes('analytics') || name.includes('analytics')) return 3;
-  if (slug.includes('qa') || slug.includes('test') || name.includes('qa') || name.includes('test')) return 4;
-  if (slug.includes('devops') || slug.includes('cloud') || name.includes('devops') || name.includes('cloud')) return 5;
-  if (slug.includes('database') || slug.includes('dba') || name.includes('database') || name.includes('admin')) return 6;
-  return 99;
-}
-
-import { fetchWithCache } from '@/lib/dataCache';
 
 export default async function Home() {
   // Parallel fetch cached categories & pools of jobs/internships
@@ -105,11 +89,7 @@ export default async function Home() {
   // Strictly sort categories according to requested sequence:
   // 1. Software Development, 2. Web Development, 3. Data Science & Analytics,
   // 4. QA & Testing, 5. DevOps & Cloud, 6. Database Administration
-  const sortedCategories = [...categories].sort((a, b) => {
-    const diff = getCategorySortOrder(a) - getCategorySortOrder(b);
-    if (diff !== 0) return diff;
-    return a.name.localeCompare(b.name);
-  });
+  const sortedCategories = sortCategories(categories);
 
   // Structured Data for Google Sitelinks Searchbox & Organization
   const homepageJsonLd = {

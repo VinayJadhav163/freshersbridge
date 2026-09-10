@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Category } from '@/types';
 import { Check, RotateCcw, X, SlidersHorizontal } from 'lucide-react';
+import { sortCategories } from '@/lib/categoryResolver';
 
 interface JobFiltersProps {
   categories: Category[];
@@ -15,6 +16,11 @@ export default function JobFilters({ categories }: JobFiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // Strictly order categories:
+  // 1. Software Development, 2. Web Development, 3. Data Science & Analytics,
+  // 4. QA & Testing, 5. DevOps & Cloud, 6. Database Administration
+  const sortedCategories = useMemo(() => sortCategories(categories), [categories]);
 
   const activeCategory = searchParams.get('category') || '';
   const activeFeatured = searchParams.get('featured') === 'true';
@@ -27,11 +33,11 @@ export default function JobFilters({ categories }: JobFiltersProps) {
 
   // 🚀 Pre-warm Next.js browser router cache for all category filters on load for 0ms instant shifts
   useEffect(() => {
-    categories.forEach((cat) => {
+    sortedCategories.forEach((cat) => {
       router.prefetch(`${targetBasePath}?category=${cat.slug}`);
     });
     router.prefetch(targetBasePath);
-  }, [categories, targetBasePath, router]);
+  }, [sortedCategories, targetBasePath, router]);
 
   const getCategoryUrl = (categorySlug: string) => {
     const isCurrentlySelected = activeCategory === categorySlug;
@@ -71,7 +77,7 @@ export default function JobFilters({ categories }: JobFiltersProps) {
       <div>
         <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Category</h4>
         <div className="space-y-1.5">
-          {categories.map((category) => {
+          {sortedCategories.map((category) => {
             const isSelected = activeCategory === category.slug;
             const href = getCategoryUrl(category.slug);
 
@@ -81,13 +87,13 @@ export default function JobFilters({ categories }: JobFiltersProps) {
                 href={href}
                 prefetch={true}
                 onClick={() => setIsMobileOpen(false)}
-                className={`w-full text-left rounded-lg px-3 py-2.5 text-sm transition-all flex items-center justify-between cursor-pointer ${
+                className={`w-full text-left rounded-lg px-3 py-2.5 text-sm transition-all flex items-center justify-between gap-2 cursor-pointer ${
                   isSelected
                     ? 'bg-indigo-600/10 text-indigo-600 font-bold'
                     : 'text-foreground/90 hover:bg-secondary'
                 }`}
               >
-                <span>{category.name}</span>
+                <span className="leading-snug break-words">{category.name}</span>
                 {isSelected && <Check className="h-4 w-4 shrink-0" />}
               </Link>
             );
