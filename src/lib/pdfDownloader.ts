@@ -44,52 +44,76 @@ export async function downloadDirectResumePdf(resumeText: string) {
   const startY = isVeryDense ? 12 : isDense ? 14 : 16;
   const nameSize = isVeryDense ? 19 : isDense ? 20 : 21;
   const nameToContactGap = isVeryDense ? 4.8 : isDense ? 5.6 : 6.2;
-  const contactSize = isVeryDense ? 8.8 : isDense ? 9.2 : 9.6;
+  const contactSize = isVeryDense ? 8.5 : isDense ? 9.0 : 9.4;
   const headerSectionGap = isVeryDense ? 4.0 : isDense ? 4.8 : 5.6;
   const headerFontSize = isVeryDense ? 10 : 10.5;
-  const bodyFontSize = isVeryDense ? 9.0 : isDense ? 9.4 : 9.8;
-  const lineHeight = isVeryDense ? 3.9 : isDense ? 4.3 : 4.7;
-  const bulletGap = isVeryDense ? 0.9 : isDense ? 1.2 : 1.6;
+  const bodyFontSize = isVeryDense ? 8.8 : isDense ? 9.2 : 9.5;
+  const lineHeight = isVeryDense ? 3.9 : isDense ? 4.3 : 4.6;
+  const bulletGap = isVeryDense ? 0.9 : isDense ? 1.2 : 1.5;
   const itemGap = isVeryDense ? 1.8 : isDense ? 2.5 : 3.2;
-  const skillsRowGap = isVeryDense ? 0.6 : 1.2;
+  const skillsRowGap = isVeryDense ? 0.6 : 1.1;
 
   let y = startY;
 
-  // 1. Candidate Name (Centered, Bold, Times)
-  doc.setFont('times', 'bold');
+  // 1. Candidate Name (Centered, Bold, Helvetica Sans-Serif)
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(nameSize);
   doc.setTextColor(0, 0, 0);
   const safeName = (structured.name || 'Candidate').trim();
   doc.text(safeName.toUpperCase(), pageWidth / 2, y, { align: 'center' });
   y += nameToContactGap;
 
-  // 2. Contact Line (Centered, cleanly separated with standard ASCII pipe)
+  // 2. Contact Line (Centered, cleanly separated, with blue accent for email and social profiles)
   if (structured.contactLines.length > 0) {
     const rawContact = structured.contactLines.join(' | ');
-    // Filter out corrupted artifacts like %Ç or odd unicode
     const parts = rawContact
       .split(/[|⋄◇•·]/)
       .map((p) => p.replace(/%Ç|⋄|◇/g, '').trim())
       .filter(Boolean);
 
-    doc.setFont('times', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(contactSize);
-    doc.setTextColor(30, 30, 30);
 
-    const fullContactStr = parts.join('   |   ');
-    const fullWidth = doc.getTextWidth(fullContactStr);
+    const pipeStr = '  |  ';
+    const pipeWidth = doc.getTextWidth(pipeStr);
 
-    if (fullWidth <= contentWidth) {
-      doc.text(fullContactStr, pageWidth / 2, y, { align: 'center' });
+    const renderContactLine = (items: string[], currentY: number) => {
+      let totalLineW = 0;
+      const itemWidths = items.map((it) => {
+        const w = doc.getTextWidth(it);
+        totalLineW += w;
+        return w;
+      });
+      totalLineW += Math.max(0, items.length - 1) * pipeWidth;
+
+      let curX = (pageWidth - totalLineW) / 2;
+      items.forEach((it, i) => {
+        const isLink = it.includes('@') || /linkedin\.com|github\.com/i.test(it);
+        if (isLink) {
+          doc.setTextColor(29, 78, 216); // Royal blue accent matching portal preview
+        } else {
+          doc.setTextColor(50, 50, 50);
+        }
+        doc.text(it, curX, currentY);
+        curX += itemWidths[i];
+
+        if (i < items.length - 1) {
+          doc.setTextColor(150, 150, 150);
+          doc.text(pipeStr, curX, currentY);
+          curX += pipeWidth;
+        }
+      });
+    };
+
+    let totalAllWidth = parts.reduce((acc, it) => acc + doc.getTextWidth(it), 0) + Math.max(0, parts.length - 1) * pipeWidth;
+    if (totalAllWidth <= contentWidth) {
+      renderContactLine(parts, y);
       y += isVeryDense ? 5.2 : isDense ? 5.8 : 6.5;
     } else {
-      // If contact information is very long, split across 2 centered lines cleanly
       const mid = Math.ceil(parts.length / 2);
-      const line1 = parts.slice(0, mid).join('   |   ');
-      const line2 = parts.slice(mid).join('   |   ');
-      doc.text(line1, pageWidth / 2, y, { align: 'center' });
-      y += 4.2;
-      doc.text(line2, pageWidth / 2, y, { align: 'center' });
+      renderContactLine(parts.slice(0, mid), y);
+      y += 4.5;
+      renderContactLine(parts.slice(mid), y);
       y += isVeryDense ? 5.0 : isDense ? 5.6 : 6.2;
     }
   }
@@ -110,7 +134,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   const drawSectionHeader = (title: string) => {
     ensureSpace(headerSectionGap + 16); // Prevent orphaned headers at the bottom of a page
     y += headerSectionGap;
-    doc.setFont('times', 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(headerFontSize);
     doc.setTextColor(0, 0, 0);
     doc.text(title, marginX, y);
@@ -128,13 +152,13 @@ export async function downloadDirectResumePdf(resumeText: string) {
     const lines = doc.splitTextToSize(text, contentWidth - 6);
     ensureSpace(lines.length * lineHeight + bulletGap);
 
-    doc.setFont('times', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(bodyFontSize);
     doc.setTextColor(0, 0, 0);
 
     // Draw solid bullet dot
-    doc.setFillColor(30, 30, 30);
-    doc.circle(marginX + 2.2, y - 0.9, 0.5, 'F');
+    doc.setFillColor(50, 50, 50);
+    doc.circle(marginX + 2.2, y - 0.9, 0.45, 'F');
 
     doc.text(lines, marginX + 5.5, y);
     y += lines.length * lineHeight + bulletGap;
@@ -143,7 +167,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   // 3. OBJECTIVE
   if (structured.objective) {
     drawSectionHeader('OBJECTIVE');
-    doc.setFont('times', 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(bodyFontSize);
     const objLines = doc.splitTextToSize(structured.objective, contentWidth);
     ensureSpace(objLines.length * lineHeight);
@@ -156,21 +180,23 @@ export async function downloadDirectResumePdf(resumeText: string) {
     drawSectionHeader('EDUCATION');
     structured.education.forEach((edu) => {
       ensureSpace(lineHeight * 2 + itemGap);
-      doc.setFont('times', 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(edu.institution, marginX, y);
 
       if (edu.date) {
-        doc.setFont('times', 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.setFontSize(bodyFontSize);
         doc.text(edu.date, pageWidth - marginX, y, { align: 'right' });
       }
       y += lineHeight;
 
       if (edu.details) {
-        doc.setFont('times', 'italic');
-        doc.setFontSize(bodyFontSize - 0.5);
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(bodyFontSize - 0.3);
+        doc.setTextColor(60, 60, 60);
         doc.text(edu.details, marginX, y);
+        doc.setTextColor(0, 0, 0);
         y += lineHeight;
       }
       y += itemGap * 0.5;
@@ -180,18 +206,18 @@ export async function downloadDirectResumePdf(resumeText: string) {
   // 5. SKILLS (Two-column layout)
   if (structured.skills.length > 0) {
     drawSectionHeader('SKILLS');
-    const catColWidth = 54;
+    const catColWidth = 50;
     const itemsWidth = contentWidth - catColWidth;
 
     structured.skills.forEach((sk) => {
       const itemLines = doc.splitTextToSize(sk.items, itemsWidth);
       ensureSpace(Math.max(1, itemLines.length) * lineHeight + skillsRowGap);
 
-      doc.setFont('times', 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(bodyFontSize);
       doc.text(`${sk.category}:`, marginX, y);
 
-      doc.setFont('times', 'normal');
+      doc.setFont('helvetica', 'normal');
       doc.setFontSize(bodyFontSize);
       doc.text(itemLines, marginX + catColWidth, y);
       y += Math.max(1, itemLines.length) * lineHeight + skillsRowGap;
@@ -203,24 +229,26 @@ export async function downloadDirectResumePdf(resumeText: string) {
     drawSectionHeader('EXPERIENCE');
     structured.experience.forEach((exp) => {
       ensureSpace(lineHeight * 2 + 10);
-      doc.setFont('times', 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(exp.role, marginX, y);
 
       if (exp.date) {
-        doc.setFont('times', 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.setFontSize(bodyFontSize);
         doc.text(exp.date, pageWidth - marginX, y, { align: 'right' });
       }
       y += lineHeight;
 
       if (exp.company || exp.location) {
-        doc.setFont('times', 'italic');
+        doc.setFont('helvetica', 'italic');
         doc.setFontSize(bodyFontSize);
+        doc.setTextColor(60, 60, 60);
         doc.text(exp.company, marginX, y);
         if (exp.location) {
           doc.text(exp.location, pageWidth - marginX, y, { align: 'right' });
         }
+        doc.setTextColor(0, 0, 0);
         y += lineHeight;
       }
 
@@ -236,7 +264,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
     drawSectionHeader('PROJECTS');
     structured.projects.forEach((proj) => {
       ensureSpace(lineHeight + 10);
-      doc.setFont('times', 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(bodyFontSize + 0.5);
       doc.text(proj.title, marginX, y);
       y += lineHeight;
@@ -263,7 +291,7 @@ export async function downloadDirectResumePdf(resumeText: string) {
   if (totalPages > 1) {
     for (let p = 1; p <= totalPages; p++) {
       doc.setPage(p);
-      doc.setFont('times', 'italic');
+      doc.setFont('helvetica', 'italic');
       doc.setFontSize(8.5);
       doc.setTextColor(110, 110, 110);
       doc.text(`${safeName} — Page ${p} of ${totalPages}`, pageWidth - marginX, 290, { align: 'right' });

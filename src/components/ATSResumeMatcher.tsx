@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Upload,
   FileText,
@@ -28,7 +28,8 @@ import {
   Mail,
   Code2,
   ExternalLink,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react';
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
@@ -157,6 +158,14 @@ export default function ATSResumeMatcher() {
   const [copiedTailored, setCopiedTailored] = useState(false);
   const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const [copiedLatex, setCopiedLatex] = useState(false);
+  const [analyzedInputSnapshot, setAnalyzedInputSnapshot] = useState<{ resumeText: string; jobDescription: string } | null>(null);
+
+  const isScoreAlreadyCalculated = Boolean(
+    results &&
+    analyzedInputSnapshot &&
+    resumeText.trim() === analyzedInputSnapshot.resumeText.trim() &&
+    jobDescription.trim() === analyzedInputSnapshot.jobDescription.trim()
+  );
 
   const hasInputChangedSinceTailoring = Boolean(
     tailoredResult &&
@@ -166,6 +175,51 @@ export default function ATSResumeMatcher() {
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Restore persisted ATS state on mount across tab navigation
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = sessionStorage.getItem('fb_ats_session_state');
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (saved.resumeText) setResumeText(saved.resumeText);
+        if (saved.jobDescription) setJobDescription(saved.jobDescription);
+        if (saved.uploadedFileName) setUploadedFileName(saved.uploadedFileName);
+        if (saved.activeTab) setActiveTab(saved.activeTab);
+        if (saved.results) setResults(saved.results);
+        if (saved.analyzedInputSnapshot) setAnalyzedInputSnapshot(saved.analyzedInputSnapshot);
+        if (saved.tailoredResult) setTailoredResult(saved.tailoredResult);
+        if (saved.tailoredInputSnapshot) setTailoredInputSnapshot(saved.tailoredInputSnapshot);
+      }
+    } catch (e) {
+      console.warn('Could not restore ATS session state:', e);
+    }
+  }, []);
+
+  // Sync state to sessionStorage whenever inputs or results change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      if (resumeText.trim() || jobDescription.trim() || results || tailoredResult) {
+        sessionStorage.setItem(
+          'fb_ats_session_state',
+          JSON.stringify({
+            resumeText,
+            jobDescription,
+            uploadedFileName,
+            activeTab,
+            results,
+            analyzedInputSnapshot,
+            tailoredResult,
+            tailoredInputSnapshot,
+          })
+        );
+      }
+    } catch (e) {
+      console.warn('Could not persist ATS session state:', e);
+    }
+  }, [resumeText, jobDescription, uploadedFileName, activeTab, results, analyzedInputSnapshot, tailoredResult, tailoredInputSnapshot]);
 
   // File Upload Handler (PDF, TXT, DOCX)
   const handleFileUpload = async (file: File) => {
@@ -216,16 +270,31 @@ export default function ATSResumeMatcher() {
     setResumeText('');
     setUploadedFileName(null);
     setResults(null);
+    setAnalyzedInputSnapshot(null);
     setTailoredResult(null);
     setTailoredInputSnapshot(null);
     setErrorMessage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.removeItem('fb_ats_session_state');
+      } catch {}
+    }
   };
 
   const handleAnalyze = () => {
     if (!resumeText.trim()) return;
+
+    // If score is already calculated for these exact inputs, scroll directly without redundant reprocessing
+    if (isScoreAlreadyCalculated) {
+      const resultsElem = document.getElementById('ats-results-dashboard');
+      if (resultsElem) {
+        resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
 
     setIsAnalyzing(true);
     setErrorMessage(null);
@@ -235,6 +304,7 @@ export default function ATSResumeMatcher() {
       try {
         const analysis = analyzeResumeATS(resumeText, jobDescription);
         setResults(analysis);
+        setAnalyzedInputSnapshot({ resumeText, jobDescription });
 
         // Record scan event in client local storage and server analytics
         try {
@@ -760,50 +830,40 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           </div>
         )}
 
-        {/* Primary CTA Buttons: 1-Click Scan & Tailor for JD */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
+        {/* Primary CTA Buttons: Check ATS Score */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-border">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
             <span>Privacy Guaranteed: Your resume is processed strictly client-side. Zero server storage.</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
             <button
               type="button"
               onClick={handleAnalyze}
               disabled={!resumeText.trim() || isAnalyzing || isTailoring}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground px-5 py-3.5 text-xs font-bold border border-border transition-all cursor-pointer shrink-0"
-              title="Check ATS match score only without tailoring"
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                isScoreAlreadyCalculated
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  : 'bg-[#275df5] hover:bg-[#1d4ed8] text-white hover:shadow-md'
+              }`}
+              title={isScoreAlreadyCalculated ? 'Score already calculated for current inputs (click to view)' : 'Evaluate your ATS score'}
             >
               {isAnalyzing ? (
                 <>
-                  <RefreshCw className="h-3.5 w-3.5 animate-spin text-[#275df5]" />
+                  <RefreshCw className="h-4 w-4 animate-spin text-white" />
                   <span>Checking Score...</span>
                 </>
-              ) : (
-                <span>Check ATS Score</span>
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleTailorResume}
-              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-8 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
-            >
-              {isTailoring ? (
+              ) : isScoreAlreadyCalculated ? (
                 <>
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>{tailoredResult ? 'Re-tailoring Resume to JD...' : 'Scanning & Tailoring for JD...'}</span>
+                  <CheckCircle2 className="h-4 w-4 text-white" />
+                  <span>Score Checked (View Below)</span>
                 </>
               ) : (
-                <span>
-                  {tailoredResult
-                    ? hasInputChangedSinceTailoring
-                      ? 'Re-tailor Resume for JD'
-                      : 'View Tailored Resume'
-                    : 'Scan & Tailor Resume for JD'}
-                </span>
+                <>
+                  <BarChart3 className="h-4 w-4 text-white" />
+                  <span>Check ATS Score</span>
+                </>
               )}
             </button>
           </div>
@@ -968,6 +1028,49 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               </div>
             </div>
 
+          </div>
+
+          {/* Prompt / Call-To-Action Banner: Re-Tailor Resume for JD */}
+          <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/70 dark:from-[#275df5]/10 dark:via-indigo-950/20 dark:to-[#275df5]/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xs">
+            <div className="space-y-1 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <Sparkles className="h-4 w-4 text-[#275df5]" />
+                <span className="text-xs font-bold uppercase tracking-wider text-[#275df5]">
+                  AI Role Tailoring Engine
+                </span>
+              </div>
+              <h5 className="text-base sm:text-lg font-black text-foreground">
+                {tailoredResult ? 'Re-align Your Resume to Target Requirements' : 'Instantly Boost Your ATS Match Score to 85%+'}
+              </h5>
+              <p className="text-xs text-muted-foreground max-w-xl">
+                Our Gemini AI intelligently embeds missing keywords into your actual experiences and projects, matching the JD requirements without fabricating skills.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleTailorResume}
+              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+            >
+              {isTailoring ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin text-white" />
+                  <span>Tailoring Resume to JD...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <span>
+                    {tailoredResult
+                      ? hasInputChangedSinceTailoring
+                        ? 'Re-tailor Resume for JD'
+                        : 'View Tailored Resume'
+                      : 'Scan & Tailor Resume for JD'}
+                  </span>
+                </>
+              )}
+            </button>
           </div>
 
         </div>

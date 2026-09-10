@@ -22,7 +22,7 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
       {/* Document Sheet (Calibrated to exact A4 1-page proportions: 210mm x 297mm) */}
       <div
         style={{ width: '100%', maxWidth: '820px', minHeight: '1100px' }}
-        className="relative mx-auto rounded-lg border border-border bg-white text-black p-8 sm:p-12 shadow-lg font-serif selection:bg-blue-100 flex flex-col justify-start"
+        className="relative mx-auto rounded-lg border border-border bg-white text-black p-8 sm:p-12 shadow-lg font-sans selection:bg-blue-100 flex flex-col justify-start"
       >
         {/* 1. Header (Centered Name + Diamond separated contacts) */}
         <div className="text-center mb-3">
