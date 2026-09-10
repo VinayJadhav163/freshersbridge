@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Category, Job, Subscriber } from '@/types';
@@ -53,7 +53,9 @@ import {
   Activity,
   Cpu,
   CheckCircle2,
-  FileText
+  FileText,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { ATSAnalyticsData } from '@/lib/atsAnalytics';
 
@@ -226,6 +228,66 @@ export default function AdminDashboard({
   const [adminCategoryFilter, setAdminCategoryFilter] = useState<string>('');
   const [adminTypeFilter, setAdminTypeFilter] = useState<'all' | 'job' | 'internship'>('all');
   const [adminSortBy, setAdminSortBy] = useState<'newest' | 'oldest' | 'most-views' | 'title-asc' | 'deadline'>('newest');
+
+  // Pagination state for admin table
+  const [adminPage, setAdminPage] = useState<number>(1);
+  const [adminPageSize, setAdminPageSize] = useState<number | 'all'>(50);
+
+  // Reset pagination to page 1 on filter or search change
+  useEffect(() => {
+    setAdminPage(1);
+  }, [adminSearchQuery, adminCategoryFilter, adminTypeFilter, adminSortBy]);
+
+  // Memoized filtered and sorted jobs (scales to thousands of records smoothly)
+  const filteredJobs = useMemo(() => {
+    const query = adminSearchQuery.trim().toLowerCase();
+    return jobs
+      .filter((job) => {
+        const matchesSearch =
+          !query ||
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query);
+        const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
+        const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
+        const matchesType =
+          adminTypeFilter === 'all'
+            ? true
+            : adminTypeFilter === 'internship'
+            ? isIntern
+            : !isIntern;
+        return matchesSearch && matchesCategory && matchesType;
+      })
+      .sort((a, b) => {
+        if (adminSortBy === 'newest') {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+        if (adminSortBy === 'oldest') {
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        }
+        if (adminSortBy === 'most-views') {
+          return (b.views_count || 0) - (a.views_count || 0);
+        }
+        if (adminSortBy === 'title-asc') {
+          return a.title.localeCompare(b.title);
+        }
+        if (adminSortBy === 'deadline') {
+          if (!a.application_deadline) return 1;
+          if (!b.application_deadline) return -1;
+          return new Date(a.application_deadline).getTime() - new Date(b.application_deadline).getTime();
+        }
+        return 0;
+      });
+  }, [jobs, adminSearchQuery, adminCategoryFilter, adminTypeFilter, adminSortBy]);
+
+  const totalFilteredJobs = filteredJobs.length;
+  const totalAdminPages = adminPageSize === 'all' ? 1 : Math.ceil(totalFilteredJobs / (adminPageSize as number)) || 1;
+  const safeAdminPage = Math.min(Math.max(1, adminPage), totalAdminPages);
+
+  const paginatedJobs = useMemo(() => {
+    if (adminPageSize === 'all') return filteredJobs;
+    const startIndex = (safeAdminPage - 1) * (adminPageSize as number);
+    return filteredJobs.slice(startIndex, startIndex + (adminPageSize as number));
+  }, [filteredJobs, safeAdminPage, adminPageSize]);
 
   // Multi-select & Batch Delete States
   const [selectedJobRowIds, setSelectedJobRowIds] = useState<string[]>([]);
@@ -1652,42 +1714,13 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                       <th className="p-4 w-10 text-center">
                         <input
                           type="checkbox"
-                          checked={(() => {
-                            const filtered = jobs.filter((job) => {
-                              const matchesSearch =
-                                job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
-                                job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                              const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
-                              const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
-                              const matchesType =
-                                adminTypeFilter === 'all'
-                                  ? true
-                                  : adminTypeFilter === 'internship'
-                                  ? isIntern
-                                  : !isIntern;
-                              return matchesSearch && matchesCategory && matchesType;
-                            });
-                            return filtered.length > 0 && filtered.every((j) => selectedJobRowIds.includes(j.id));
-                          })()}
+                          checked={paginatedJobs.length > 0 && paginatedJobs.every((j) => selectedJobRowIds.includes(j.id))}
                           onChange={() => {
-                            const filtered = jobs.filter((job) => {
-                              const matchesSearch =
-                                job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
-                                job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                              const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
-                              const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
-                              const matchesType =
-                                adminTypeFilter === 'all'
-                                  ? true
-                                  : adminTypeFilter === 'internship'
-                                  ? isIntern
-                                  : !isIntern;
-                              return matchesSearch && matchesCategory && matchesType;
-                            });
-                            handleSelectAllFiltered(filtered.map((j) => j.id));
+                            const visibleIds = paginatedJobs.map((j) => j.id);
+                            handleSelectAllFiltered(visibleIds);
                           }}
                           className="rounded border-border text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
-                          title="Select all visible postings"
+                          title="Select all visible postings on this page"
                         />
                       </th>
                       <th className="p-4">Job Title</th>
@@ -1700,137 +1733,180 @@ FreshersBridge 🚀 | Jobs • Internships • Career Tools`;
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {(() => {
-                      const filteredJobs = jobs
-                        .filter((job) => {
-                          const matchesSearch =
-                            job.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
-                            job.company.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                          const matchesCategory = adminCategoryFilter ? job.category_id === adminCategoryFilter : true;
-                          const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
-                          const matchesType =
-                            adminTypeFilter === 'all'
-                              ? true
-                              : adminTypeFilter === 'internship'
-                              ? isIntern
-                              : !isIntern;
-                          return matchesSearch && matchesCategory && matchesType;
-                        })
-                        .sort((a, b) => {
-                          if (adminSortBy === 'newest') {
-                            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                          }
-                          if (adminSortBy === 'oldest') {
-                            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-                          }
-                          if (adminSortBy === 'most-views') {
-                            return (b.views_count || 0) - (a.views_count || 0);
-                          }
-                          if (adminSortBy === 'title-asc') {
-                            return a.title.localeCompare(b.title);
-                          }
-                          if (adminSortBy === 'deadline') {
-                            if (!a.application_deadline) return 1;
-                            if (!b.application_deadline) return -1;
-                            return new Date(a.application_deadline).getTime() - new Date(b.application_deadline).getTime();
-                          }
-                          return 0;
-                        });
+                    {paginatedJobs.length > 0 ? (
+                      paginatedJobs.map((job) => {
+                        const isSelected = selectedJobRowIds.includes(job.id);
+                        const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
 
-                      return filteredJobs.length > 0 ? (
-                        filteredJobs.map((job) => {
-                          const isSelected = selectedJobRowIds.includes(job.id);
-                          const isIntern = job.title.toLowerCase().includes('intern') || job.job_type === 'internship';
-
-                          return (
-                            <tr
-                              key={job.id}
-                              className={`transition-colors ${
-                                isSelected ? 'bg-indigo-50/60 dark:bg-indigo-950/30' : 'hover:bg-secondary/25'
-                              }`}
-                            >
-                              <td className="p-4 text-center">
-                                <input
-                                  type="checkbox"
-                                  checked={isSelected}
-                                  onChange={() => toggleSelectJobRow(job.id)}
-                                  className="rounded border-border text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
-                                />
-                              </td>
-                              <td className="p-4 font-semibold text-foreground">
-                                <Link
-                                  href={`/jobs/${job.slug}`}
-                                  target="_blank"
-                                  className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1"
-                                >
-                                  {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                                </Link>
-                              </td>
-                              <td className="p-4 text-muted-foreground">{job.company}</td>
-                              <td className="p-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
-                                {new Date(job.created_at).toLocaleDateString('en-IN', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric',
-                                })}
-                              </td>
-                              <td className="p-4">
-                                <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
-                                  {job.categories?.name || 'Uncategorized'}
+                        return (
+                          <tr
+                            key={job.id}
+                            className={`transition-colors ${
+                              isSelected ? 'bg-indigo-50/60 dark:bg-indigo-950/30' : 'hover:bg-secondary/25'
+                            }`}
+                          >
+                            <td className="p-4 text-center">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => toggleSelectJobRow(job.id)}
+                                className="rounded border-border text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
+                              />
+                            </td>
+                            <td className="p-4 font-semibold text-foreground">
+                              <Link
+                                href={`/jobs/${job.slug}`}
+                                target="_blank"
+                                className="hover:underline hover:text-indigo-600 inline-flex items-center gap-1"
+                              >
+                                {job.title} <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                              </Link>
+                            </td>
+                            <td className="p-4 text-muted-foreground">{job.company}</td>
+                            <td className="p-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                              {new Date(job.created_at).toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })}
+                            </td>
+                            <td className="p-4">
+                              <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground border border-border">
+                                {job.categories?.name || 'Uncategorized'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-center">
+                              {isIntern ? (
+                                <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                  Internship
                                 </span>
-                              </td>
-                              <td className="p-4 text-center">
-                                {isIntern ? (
-                                  <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                                    Internship
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                                    Full-Time
-                                  </span>
-                                )}
-                              </td>
-                              <td className="p-4 text-center font-medium text-foreground/80">
-                                <span className="inline-flex items-center gap-1">
-                                  <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                              ) : (
+                                <span className="inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                                  Full-Time
                                 </span>
-                              </td>
-                              <td className="p-4 text-right space-x-2">
-                                <button
-                                  onClick={() => handleCloneJobClick(job)}
-                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
-                                  title="Duplicate/Clone Job"
-                                >
-                                  <Copy className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleEditJobClick(job)}
-                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
-                                  title="Edit Job"
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteJob(job.id)}
-                                  className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
-                                  title="Delete Job"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={8} className="p-12 text-center text-muted-foreground">
-                            No matching postings found. Try adjusting your filters.
-                          </td>
-                        </tr>
-                      );
-                    })()}
+                              )}
+                            </td>
+                            <td className="p-4 text-center font-medium text-foreground/80">
+                              <span className="inline-flex items-center gap-1">
+                                <Eye className="h-3.5 w-3.5 text-muted-foreground" /> {job.views_count}
+                              </span>
+                            </td>
+                            <td className="p-4 text-right space-x-2 whitespace-nowrap">
+                              <button
+                                onClick={() => handleCloneJobClick(job)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                title="Duplicate/Clone Job"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleEditJobClick(job)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-indigo-600 transition-colors"
+                                title="Edit Job"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteJob(job.id)}
+                                className="inline-flex items-center justify-center rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-secondary hover:text-rose-500 transition-colors"
+                                title="Delete Job"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={8} className="p-12 text-center text-muted-foreground">
+                          No matching postings found. Try adjusting your filters.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Pagination Controls Bar */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border bg-card shadow-2xs">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                  <span>
+                    Showing{' '}
+                    <strong className="text-foreground">
+                      {totalFilteredJobs === 0
+                        ? 0
+                        : adminPageSize === 'all'
+                        ? 1
+                        : (safeAdminPage - 1) * (adminPageSize as number) + 1}
+                    </strong>{' '}
+                    to{' '}
+                    <strong className="text-foreground">
+                      {adminPageSize === 'all'
+                        ? totalFilteredJobs
+                        : Math.min(safeAdminPage * (adminPageSize as number), totalFilteredJobs)}
+                    </strong>{' '}
+                    of <strong className="text-foreground">{totalFilteredJobs.toLocaleString()}</strong> results
+                    {totalFilteredJobs !== jobs.length && (
+                      <span className="ml-1 opacity-75">
+                        (filtered from {jobs.length.toLocaleString()} total)
+                      </span>
+                    )}
+                  </span>
+
+                  <span className="text-border">|</span>
+
+                  <div className="flex items-center gap-1.5">
+                    <span>Rows per page:</span>
+                    <select
+                      value={adminPageSize}
+                      onChange={(e) => {
+                        const val = e.target.value === 'all' ? 'all' : Number(e.target.value);
+                        setAdminPageSize(val);
+                        setAdminPage(1);
+                      }}
+                      className="rounded-lg border border-border bg-background px-2 py-1 text-xs font-semibold text-foreground outline-none focus:border-indigo-600 cursor-pointer"
+                    >
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                      <option value={200}>200</option>
+                      <option value="all">All ({totalFilteredJobs})</option>
+                    </select>
+                  </div>
+                </div>
+
+                {adminPageSize !== 'all' && totalAdminPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setAdminPage((p) => Math.max(1, p - 1))}
+                      disabled={safeAdminPage <= 1}
+                      className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                      <span>Previous</span>
+                    </button>
+
+                    <div className="flex items-center gap-1 px-2 text-xs font-bold text-foreground">
+                      <span>Page</span>
+                      <span className="inline-flex h-6 min-w-6 items-center justify-center rounded bg-indigo-600 text-white px-1.5 text-[11px]">
+                        {safeAdminPage}
+                      </span>
+                      <span className="text-muted-foreground font-normal">of {totalAdminPages}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setAdminPage((p) => Math.min(totalAdminPages, p + 1))}
+                      disabled={safeAdminPage >= totalAdminPages}
+                      className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
