@@ -38,8 +38,8 @@ export default function CompaniesPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
 
         <div className="relative mx-auto max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 dark:border-blue-900/50 bg-white/90 dark:bg-slate-900/90 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs backdrop-blur-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
             <span>MNC Off-Campus Hiring Directory</span>
           </div>
 

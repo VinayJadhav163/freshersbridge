@@ -1116,14 +1116,11 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#275df5]/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
           {/* Section Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-border pb-6 relative z-10">
-            <div className="space-y-1.5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4 relative z-10">
+            <div>
               <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
                 <span>Tailored ATS Resume</span>
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
-                Optimized specifically for this target job description without inventing skills or inflated metrics. Factual work history, dates, and institutions are strictly preserved.
-              </p>
             </div>
 
             {/* Quick Actions */}
