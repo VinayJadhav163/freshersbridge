@@ -13,21 +13,21 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Free ATS Resume Scanner, Salary Calculator & Career Tools | FreshersBridge',
+  title: 'Free ATS Resume Builder, Salary Calculator & Career Tools | FreshersBridge',
   description:
-    '100% free interactive career tools for tech freshers: ATS resume keyword matcher, Indian fresher in-hand CTC calculator, and 12 copy-ready HR email templates.',
+    '100% free interactive career tools for tech freshers: ATS resume builder & score checker, Indian fresher in-hand CTC calculator, and 12 copy-ready HR email templates.',
   openGraph: {
-    title: 'Free ATS Resume Scanner & Career Tools for Freshers | FreshersBridge',
+    title: 'Free ATS Resume Builder & Career Tools for Freshers | FreshersBridge',
     description:
-      'Evaluate your resume ATS score, compute monthly in-hand CTC salary, and copy professional HR email scripts.',
+      'Build ATS-optimized resumes, evaluate your ATS score, compute monthly in-hand CTC salary, and copy professional HR email scripts.',
     url: 'https://freshersbridge.in/career-tools',
   },
 };
 
 const CAREER_TOOLS_FAQS: FAQItem[] = [
   {
-    question: 'What is an ATS Resume Scanner and why is it important for freshers?',
-    answer: 'An Applicant Tracking System (ATS) is automated software used by recruiters to parse, filter, and rank resumes before a human reads them. Our scanner tests your resume against target job roles to detect missing technical keywords, skill gaps, and ATS readability issues.',
+    question: 'What is an ATS Resume Builder & Score Checker and why is it important for freshers?',
+    answer: 'An Applicant Tracking System (ATS) is automated software used by recruiters to parse, filter, and rank resumes before a human reads them. Our ATS Resume Builder checks your resume score against target job roles, detects missing keywords, and automatically builds an ATS-optimized tailored resume formatted to maximize recruiter shortlists.',
   },
   {
     question: 'How is monthly in-hand take-home salary calculated from annual CTC in India?',
@@ -77,14 +77,14 @@ export default function CareerToolsPage() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Free ATS Resume Scanner, <br className="hidden sm:inline" />
+            Free ATS Resume Builder, <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
               Salary Calculator & HR Scripts
             </span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium">
-            Boost your interview shortlist rate with our instant ATS compatibility checker, calculate your exact monthly in-hand take-home salary, and copy 12 professional HR email templates.
+            Boost your interview shortlist rate with our instant ATS Score checker, calculate your exact monthly in-hand take-home salary, and copy 12 professional HR email templates.
           </p>
 
           {/* Quick Feature Chips */}
@@ -95,7 +95,7 @@ export default function CareerToolsPage() {
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 shadow-2xs">
               <FileCheck className="h-4 w-4 text-[#275df5]" />
-              Real-Time ATS Keyword Matcher
+              AI ATS Resume Builder & Keyword Matcher
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 shadow-2xs">
               <IndianRupee className="h-4 w-4 text-emerald-600" />

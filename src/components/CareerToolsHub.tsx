@@ -53,7 +53,7 @@ export default function CareerToolsHub() {
               }`}
             >
               <FileCheck2 className="h-4 w-4 shrink-0" />
-              <span>ATS Resume Scanner</span>
+              <span>ATS Resume Builder</span>
             </button>
 
             <button

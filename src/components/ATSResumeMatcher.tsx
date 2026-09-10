@@ -625,10 +625,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
             <h3 className="text-xl sm:text-2xl font-bold text-foreground">
-              ATS Resume Scanner &amp; Role Tailor
+              ATS Resume Builder &amp; Score Checker
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-              Upload your PDF resume to detect missing keywords, section gaps, and Google XYZ impact metrics.
+              Upload your PDF resume to check your ATS score, detect missing keywords, and automatically build a tailored ATS-friendly resume.
             </p>
           </div>
 

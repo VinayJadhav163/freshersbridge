@@ -67,7 +67,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/career-tools" className="text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">
-                  ATS Resume Scanner
+                  ATS Resume Builder
                 </Link>
               </li>
               <li>
