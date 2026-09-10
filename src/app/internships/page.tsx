@@ -158,7 +158,7 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-4 sm:py-5 sm:px-6 lg:px-8 w-full space-y-5">
+    <div className="mx-auto max-w-6xl px-4 pt-4 sm:pt-6 pb-16 sm:pb-24 sm:px-6 lg:px-8 w-full space-y-5">
       {/* Header & Search Bar Section */}
       <div className="flex flex-col gap-2 items-center md:items-start">
         <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-400">

@@ -383,7 +383,7 @@ export default async function JobDetailsPage({ params }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
+    <div className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:pb-24 sm:px-6 lg:px-8 w-full space-y-6">
       {/* JSON-LD Script for Google Jobs & Breadcrumbs */}
       <script
         type="application/ld+json"

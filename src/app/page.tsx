@@ -125,7 +125,7 @@ export default async function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-background text-foreground pb-16 sm:pb-24">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
