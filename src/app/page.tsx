@@ -152,7 +152,7 @@ export default async function Home() {
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Your Bridge from College <br />
-            To Your{' '}
+            to your{' '}
             <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
               First Tech Job
             </span>
