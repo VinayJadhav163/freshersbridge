@@ -143,7 +143,7 @@ export function generateJobNotificationHTML(job: Job): { subject: string; html: 
               <a href="${cleanSiteUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
                 <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
                   <tr>
-                    <td style="font-size: 26px; font-weight: 900; letter-spacing: -0.5px; color: #ffffff; font-family: 'Satoshi', 'Segoe UI', sans-serif;">
+                    <td style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; font-family: 'Plus Jakarta Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;">
                       Freshers<span style="color: #275df5;">Bridge</span>
                     </td>
                   </tr>
@@ -378,7 +378,7 @@ export function generateMultipleJobsDigestHTML(
               <a href="${cleanSiteUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
                 <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
                   <tr>
-                    <td style="font-size: 26px; font-weight: 900; letter-spacing: -0.5px; color: #ffffff; font-family: 'Satoshi', 'Segoe UI', sans-serif;">
+                    <td style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; font-family: 'Plus Jakarta Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;">
                       Freshers<span style="color: #275df5;">Bridge</span>
                     </td>
                   </tr>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -6,6 +7,13 @@ import Footer from '@/components/Footer';
 import JobAlertsBanner from '@/components/JobAlertsBanner';
 import PageNavigationLoader from '@/components/PageNavigationLoader';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+});
 
 
 export const metadata: Metadata = {
@@ -61,10 +69,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="h-full antialiased"
+      className={`h-full antialiased ${plusJakartaSans.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans" suppressHydrationWarning>
+      <body className={`min-h-full flex flex-col bg-background text-foreground font-sans ${plusJakartaSans.className}`} suppressHydrationWarning>
         <Suspense fallback={null}>
           <PageNavigationLoader />
         </Suspense>
