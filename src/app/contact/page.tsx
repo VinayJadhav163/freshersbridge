@@ -372,10 +372,11 @@ export default function ContactPage() {
 
                 {/* Name Input */}
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Name
+                  <label htmlFor="contact-name" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 ml-1">
+                    Your Name
                   </label>
                   <input
+                    id="contact-name"
                     type="text"
                     value={formData.name}
                     onChange={(e) => {
@@ -390,16 +391,17 @@ export default function ContactPage() {
                     }`}
                   />
                   {formErrors.name && (
-                    <p className="text-[11px] font-medium text-rose-500">{formErrors.name}</p>
+                    <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.name}</p>
                   )}
                 </div>
 
                 {/* Email Input */}
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Email
+                  <label htmlFor="contact-email" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 ml-1">
+                    Email Address
                   </label>
                   <input
+                    id="contact-email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => {
@@ -414,16 +416,17 @@ export default function ContactPage() {
                     }`}
                   />
                   {formErrors.email && (
-                    <p className="text-[11px] font-medium text-rose-500">{formErrors.email}</p>
+                    <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.email}</p>
                   )}
                 </div>
 
                 {/* Message Textarea */}
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Message
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 ml-1">
+                    Your Message
                   </label>
                   <textarea
+                    id="contact-message"
                     rows={3}
                     value={formData.message}
                     onChange={(e) => {
@@ -438,7 +441,7 @@ export default function ContactPage() {
                     }`}
                   />
                   {formErrors.message && (
-                    <p className="text-[11px] font-medium text-rose-500">{formErrors.message}</p>
+                    <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.message}</p>
                   )}
                 </div>
 
