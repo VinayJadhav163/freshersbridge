@@ -31,10 +31,12 @@ function getValidSalary(salary?: string | null): string | null {
 }
 
 export default function JobCard({ job }: JobCardProps) {
-  const isFeatured = job.featured_job;
   const isInternship =
     job.job_type === 'internship' ||
-    /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title);
+    /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title) ||
+    (job.apply_url && job.apply_url.toLowerCase().includes('/internship/')) ||
+    (job.source_url && job.source_url.toLowerCase().includes('/internship/')) ||
+    (job.eligibility && job.eligibility.toLowerCase().includes('(internship)'));
 
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
   const packageText = getValidSalary(job.salary);

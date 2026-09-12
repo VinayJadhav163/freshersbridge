@@ -17,9 +17,9 @@ export default function JobAlertsBanner({
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
         {/* Heading */}
-        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center gap-2.5 sm:gap-3.5 drop-shadow-[0_4px_16px_rgba(255,255,255,0.2)]">
-          <span className="inline-flex items-center justify-center shrink-0 text-indigo-400">
-            <Smartphone className="h-[0.85em] w-[0.85em] translate-y-[2px]" />
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center gap-2 sm:gap-3.5 drop-shadow-[0_4px_16px_rgba(255,255,255,0.2)]">
+          <span className="inline-flex items-center justify-center shrink-0 text-indigo-400 self-center">
+            <Smartphone className="h-6 w-6 sm:h-9 sm:w-9 md:h-11 md:w-11 shrink-0" />
           </span>
           <span className="bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent leading-normal">
             Get Instant Job Alerts

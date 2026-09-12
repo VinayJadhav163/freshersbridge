@@ -14,6 +14,21 @@ export default function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open to prevent behind-screen scrolling
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isOpen]);
+
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Find Jobs', href: '/jobs' },
@@ -79,27 +94,48 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Full-Screen Mobile Menu Drawer with Scroll Lock */}
       {isOpen && (
         <div
-          className="md:hidden border-b border-border bg-background/98 backdrop-blur-lg shadow-xl"
+          className="fixed inset-x-0 top-16 sm:top-20 bottom-0 z-50 md:hidden bg-background/98 backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 py-6 border-t border-border/70 animate-in fade-in slide-in-from-top-4 duration-200"
           id="mobile-menu"
         >
-          <div className="space-y-1.5 px-4 pb-5 pt-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`flex items-center rounded-xl px-4 py-3 text-base font-bold transition-all active:scale-[0.98] ${
-                  isActive(link.href)
-                    ? 'bg-indigo-600/10 text-indigo-600 font-extrabold border border-indigo-500/20'
-                    : 'text-foreground hover:bg-secondary'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          <div className="space-y-2">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground px-3 pb-1">
+              Navigation
+            </p>
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-bold transition-all active:scale-[0.98] ${
+                    active
+                      ? 'bg-indigo-600/10 text-indigo-600 font-extrabold border border-indigo-500/20'
+                      : 'text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  <span>{link.name}</span>
+                  {active && <span className="h-2 w-2 rounded-full bg-indigo-600 shrink-0" />}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Bottom Quick Call-To-Action inside Menu */}
+          <div className="pt-6 border-t border-border/80 space-y-3 mt-6">
+            <Link
+              href="/career-tools"
+              onClick={() => setIsOpen(false)}
+              className="w-full inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-3.5 text-sm font-bold text-white shadow-md active:scale-[0.98]"
+            >
+              🚀 Free ATS Resume Builder
+            </Link>
+            <p className="text-center text-[11px] font-medium text-muted-foreground">
+              © {new Date().getFullYear()} FreshersBridge · Verified Off-Campus Drives
+            </p>
           </div>
         </div>
       )}

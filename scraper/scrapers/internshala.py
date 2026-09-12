@@ -101,19 +101,27 @@ def fetch_internshala_jobs(max_items_per_category: int = 15) -> List[Dict[str, A
 - **Location:** {clean_location}
 """.strip()
 
+                # Ensure unambiguous internship classification
+                is_internship_entry = job_type == 'internship' or '/internship/' in full_url.lower()
+                final_job_type = 'internship' if is_internship_entry else 'full-time'
+                
+                final_title = title
+                if is_internship_entry and 'intern' not in final_title.lower():
+                    final_title = f"{final_title} Internship"
+
                 jobs_list.append({
-                    'title': title,
+                    'title': final_title,
                     'company': company,
                     'location': clean_location,
                     'query_location': clean_location,
                     'description': desc_body,
-                    'skills': f"{title}, Programming, Software Development",
+                    'skills': f"{final_title}, Programming, Software Development",
                     'salary': stipend if stipend else 'Competitive / Stipend Provided',
-                    'eligibility': 'Any Graduate / BE / B.Tech / BCA (2024, 2025, 2026 Batch)',
+                    'eligibility': 'Any Graduate / BE / B.Tech / BCA (2024, 2025, 2026 Batch) (Internship)' if is_internship_entry else 'Any Graduate / BE / B.Tech / BCA (2024, 2025, 2026 Batch)',
                     'apply_url': full_url,
                     'source_name': 'Internshala',
                     'source_url': full_url,
-                    'job_type': job_type,
+                    'job_type': final_job_type,
                     'is_remote': is_remote
                 })
                 count += 1

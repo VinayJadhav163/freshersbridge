@@ -76,9 +76,16 @@ export default async function Home() {
     }, 60),
   ]);
 
-  // Deterministic latest listings (featured first, then most recent)
-  const featuredJobs = allJobsPool.filter((j) => j.featured_job);
-  const regularJobs = allJobsPool.filter((j) => !j.featured_job);
+  // Deterministic latest listings (featured first, then most recent, strictly excluding internships)
+  const filteredJobsPool = allJobsPool.filter((j) => {
+    const jt = (j.job_type || '').toLowerCase();
+    const t = (j.title || '').toLowerCase();
+    const u = (j.apply_url || '').toLowerCase();
+    return jt !== 'internship' && !t.includes('intern') && !u.includes('/internship/');
+  });
+
+  const featuredJobs = filteredJobsPool.filter((j) => j.featured_job);
+  const regularJobs = filteredJobsPool.filter((j) => !j.featured_job);
   const displayJobs = [
     ...featuredJobs.slice(0, 2),
     ...regularJobs,

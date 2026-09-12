@@ -143,6 +143,8 @@ export default function ATSResumeMatcher() {
   const [jobDescription, setJobDescription] = useState('');
   const [selectedPresetIndex, setSelectedPresetIndex] = useState<number | ''>('');
   const [isExtracting, setIsExtracting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatusText, setUploadStatusText] = useState('Uploading your resume...');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [copiedMissing, setCopiedMissing] = useState(false);
   const [copiedReport, setCopiedReport] = useState(false);
@@ -175,13 +177,13 @@ export default function ATSResumeMatcher() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Restore persisted ATS state on mount across tab navigation
+  // Restore state from sessionStorage on initial page load
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
-      const raw = sessionStorage.getItem('fb_ats_session_state');
-      if (raw) {
-        const saved = JSON.parse(raw);
+      const stored = sessionStorage.getItem('fb_ats_session_state');
+      if (stored) {
+        const saved = JSON.parse(stored);
         if (saved.resumeText) setResumeText(saved.resumeText);
         if (saved.jobDescription) setJobDescription(saved.jobDescription);
         if (saved.uploadedFileName) setUploadedFileName(saved.uploadedFileName);
@@ -220,19 +222,36 @@ export default function ATSResumeMatcher() {
     }
   }, [resumeText, jobDescription, uploadedFileName, activeTab, results, analyzedInputSnapshot, tailoredResult, tailoredInputSnapshot]);
 
-  // File Upload Handler (PDF, TXT, DOCX)
+  // File Upload Handler (PDF, TXT, DOCX) with simulated progress steps
   const handleFileUpload = async (file: File) => {
     if (!file) return;
 
     setErrorMessage(null);
     setIsExtracting(true);
+    setUploadProgress(15);
+    setUploadStatusText('Uploading your resume...');
     setUploadedFileName(file.name);
+
+    const progressTimer = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev < 45) {
+          setUploadStatusText('Reading & extracting resume contents...');
+          return prev + 15;
+        } else if (prev < 85) {
+          setUploadStatusText('Parsing skills, education & experience...');
+          return prev + 10;
+        }
+        return prev;
+      });
+    }, 200);
 
     try {
       const extracted = await extractTextFromFile(file);
       if (!extracted || extracted.trim().length < 50) {
         throw new Error('Extracted text seems too short or unreadable. If this is a scanned PDF image, please paste your text.');
       }
+      setUploadProgress(100);
+      setUploadStatusText('Resume parsed successfully!');
       setResumeText(extracted);
       setActiveTab('upload');
     } catch (err: any) {
@@ -240,7 +259,11 @@ export default function ATSResumeMatcher() {
       setErrorMessage(err?.message || 'Could not parse the uploaded file. Please paste your resume text directly.');
       setUploadedFileName(null);
     } finally {
-      setIsExtracting(false);
+      clearInterval(progressTimer);
+      setTimeout(() => {
+        setIsExtracting(false);
+        setUploadProgress(0);
+      }, 350);
     }
   };
 
@@ -726,10 +749,26 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     className="flex-1 min-h-[220px] rounded-xl border-2 border-dashed border-border hover:border-[#275df5]/60 bg-background/50 hover:bg-blue-50/10 dark:hover:bg-blue-950/10 transition-all flex flex-col items-center justify-center p-6 text-center cursor-pointer group"
                   >
                     {isExtracting ? (
-                      <div className="space-y-3 flex flex-col items-center">
-                        <RefreshCw className="h-8 w-8 text-[#275df5] animate-spin" />
-                        <p className="text-xs font-bold text-foreground">Reading &amp; Parsing PDF in Browser...</p>
-                        <p className="text-[11px] text-muted-foreground">Zero bytes uploaded to any server</p>
+                      <div className="w-full max-w-sm space-y-3 flex flex-col items-center px-4 py-2">
+                        <div className="flex items-center justify-between w-full text-xs font-bold text-foreground">
+                          <span className="flex items-center gap-1.5">
+                            <FileText className="h-4 w-4 text-[#275df5] shrink-0" />
+                            <span>{uploadStatusText}</span>
+                          </span>
+                          <span className="text-[#275df5] font-mono font-black">{uploadProgress}%</span>
+                        </div>
+
+                        {/* Animated Linear Progress Bar */}
+                        <div className="w-full bg-secondary rounded-full h-2.5 overflow-hidden border border-border/50">
+                          <div
+                            className="bg-gradient-to-r from-[#275df5] via-blue-500 to-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-out shadow-xs"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+
+                        <p className="text-[11px] text-muted-foreground truncate max-w-xs">
+                          {uploadedFileName || 'Processing document securely in your browser'}
+                        </p>
                       </div>
                     ) : (
                       <>

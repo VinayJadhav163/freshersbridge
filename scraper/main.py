@@ -360,11 +360,11 @@ def run_pipeline(use_ai: bool = False):
 
     df = pd.DataFrame(clean_final_jobs)
     
-    # Enforce standard column ordering
+    # Enforce standard column ordering (including job_type for internships/full-time separation)
     columns_order = [
         'title', 'company', 'location', 'eligibility', 'skills', 
         'description', 'apply_url', 'salary', 'category_slug', 
-        'source_name', 'source_url', 'featured_job', 'application_deadline'
+        'job_type', 'source_name', 'source_url', 'featured_job', 'application_deadline'
     ]
     
     for col in columns_order:

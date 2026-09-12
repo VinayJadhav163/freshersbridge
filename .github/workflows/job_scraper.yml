@@ -2,9 +2,9 @@ name: FreshersBridge 3x Daily Job Scraper & Broadcast Automation
 
 on:
   schedule:
-    - cron: '15 3 * * *'  # ~08:45-09:00 AM IST (Morning Curated Digest - Zero Queue Delay)
-    - cron: '15 8 * * *'  # ~01:45-02:00 PM IST (Afternoon Curated Digest - Zero Queue Delay)
-    - cron: '45 13 * * *' # ~07:15-07:30 PM IST (Evening Curated Digest - Zero Queue Delay)
+    - cron: '7 3 * * *'   # ~08:37 AM IST (Morning Curated Digest - Zero Queue Contention)
+    - cron: '23 8 * * *'  # ~01:53 PM IST (Afternoon Curated Digest - Zero Queue Contention)
+    - cron: '37 13 * * *' # ~07:07 PM IST (Evening Curated Digest - Zero Queue Contention)
   workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
 
 jobs:

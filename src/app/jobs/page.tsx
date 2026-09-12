@@ -108,11 +108,12 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     async () => {
       let queryBuilder = supabase
         .from('jobs')
-        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)', { count: 'exact' })
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, job_type, apply_url, source_url, categories(id, name, slug)', { count: 'exact' })
         .not('title', 'ilike', '%intern%')
         .not('title', 'ilike', '%internship%')
         .not('title', 'ilike', '%apprentice%')
-        .not('title', 'ilike', '%fellowship%');
+        .not('title', 'ilike', '%fellowship%')
+        .not('apply_url', 'ilike', '%/internship/%');
 
       if (q) {
         queryBuilder = queryBuilder.or(`title.ilike.%${q}%,company.ilike.%${q}%,eligibility.ilike.%${q}%`);
@@ -136,8 +137,16 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           .range(from, to);
 
         if (error) throw error;
+        // In-memory safety filter to ensure no internship ever slips through
+        const cleanJobs = (data || []).filter((j: any) => {
+          const jt = (j.job_type || '').toLowerCase();
+          const t = (j.title || '').toLowerCase();
+          const u = (j.apply_url || '').toLowerCase();
+          return jt !== 'internship' && !t.includes('intern') && !u.includes('/internship/');
+        });
+
         return {
-          jobs: (data || []) as unknown as Job[],
+          jobs: cleanJobs as unknown as Job[],
           totalCount: count || 0,
         };
       } catch (err) {

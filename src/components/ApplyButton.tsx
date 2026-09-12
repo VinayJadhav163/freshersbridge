@@ -18,12 +18,20 @@ export default function ApplyButton({
 }: ApplyButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [hasApplied, setHasApplied] = useState(false);
 
   const safeUrl = applyUrl && applyUrl.trim() && applyUrl.trim() !== '#' ? applyUrl.trim() : '#';
 
   const handleOpenModal = () => {
     if (safeUrl === '#') {
       alert('Application link is currently not available for this posting.');
+      return;
+    }
+    // If the countdown already finished previously, open the application portal directly!
+    if (hasApplied) {
+      if (typeof window !== 'undefined') {
+        window.open(safeUrl, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
     setCountdown(5);
@@ -39,9 +47,14 @@ export default function ApplyButton({
       }, 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      // Direct navigation on timer completion (NEVER blocked by browser popup blockers)
+      setHasApplied(true);
+      // Attempt safe pop-up / window open once countdown finishes without blocking the user
       if (typeof window !== 'undefined' && safeUrl !== '#') {
-        window.location.href = safeUrl;
+        try {
+          window.open(safeUrl, '_blank', 'noopener,noreferrer');
+        } catch (e) {
+          console.warn('Popup blocked or direct tab open fallback:', e);
+        }
       }
     }
   }, [isOpen, countdown, safeUrl]);
@@ -57,7 +70,7 @@ export default function ApplyButton({
         className={className || defaultClasses}
         title={`Apply for ${title} at ${company}`}
       >
-        <span>Apply Now</span>
+        <span>{hasApplied ? 'Open Application Link' : 'Apply Now'}</span>
         <ExternalLink className="h-4 w-4 shrink-0" />
       </button>
 
@@ -136,10 +149,17 @@ export default function ApplyButton({
                 href={safeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => setIsOpen(false)}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 py-3 text-xs font-bold text-white shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+                onClick={() => {
+                  setHasApplied(true);
+                  setIsOpen(false);
+                }}
+                className={`w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-white shadow-md transition-all active:scale-[0.99] cursor-pointer ${
+                  countdown === 0
+                    ? 'bg-emerald-600 hover:bg-emerald-500 ring-2 ring-emerald-400/50'
+                    : 'bg-indigo-600 hover:bg-indigo-500'
+                }`}
               >
-                <span>{countdown > 0 ? 'Proceed to Apply Now' : '🚀 Open Application Portal'}</span>
+                <span>{countdown > 0 ? 'Proceed to Apply Now' : '🚀 Open Application Portal (Click to Apply)'}</span>
                 <ArrowRight className="h-4 w-4" />
               </a>
 

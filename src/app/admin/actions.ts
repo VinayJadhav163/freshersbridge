@@ -418,22 +418,39 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
         ? item.skills
         : ['Freshers', 'Graduate'];
 
-      const isIntern = title.toLowerCase().includes('intern');
+      const rawJobType = (item.job_type || '').toLowerCase();
+      const isIntern =
+        rawJobType === 'internship' ||
+        rawJobType.includes('intern') ||
+        title.toLowerCase().includes('intern') ||
+        title.toLowerCase().includes('internship') ||
+        title.toLowerCase().includes('apprentice') ||
+        title.toLowerCase().includes('trainee') ||
+        applyUrl.toLowerCase().includes('/internship/') ||
+        (item.source_url && String(item.source_url).toLowerCase().includes('/internship/'));
+
+      const finalJobType = isIntern ? 'internship' : 'full-time';
+      let finalTitle = title;
+      if (isIntern && !finalTitle.toLowerCase().includes('intern')) {
+        finalTitle = `${finalTitle} (Internship)`;
+      }
+
       let finalEligibility = item.eligibility?.trim() || 'Any Graduate (2024, 2025, 2026 Batch)';
       if (isIntern && !finalEligibility.toLowerCase().includes('intern')) {
         finalEligibility = `${finalEligibility} (Internship)`;
       }
 
       payloads.push({
-        title,
+        title: finalTitle,
         slug,
         company,
         location: location || 'India / Remote',
         category_id: catId,
         salary: item.salary?.trim() || 'Best in Industry',
         eligibility: finalEligibility,
+        job_type: finalJobType,
         skills: skillsArray.length > 0 ? skillsArray : ['Engineering', 'Fresher'],
-        description: item.description?.trim() || `${title} opening at ${company}. Apply online.`,
+        description: item.description?.trim() || `${finalTitle} opening at ${company}. Apply online.`,
         apply_url: applyUrl,
         source_name: item.source_name?.trim() || 'Campus Drive',
         source_url: item.source_url?.trim() || applyUrl,
