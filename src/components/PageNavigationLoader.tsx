@@ -38,10 +38,33 @@ export default function PageNavigationLoader() {
     return () => clearTimeout(timer);
   };
 
-  // When pathname or searchParams change, finish the loading bar
+  // When pathname or searchParams change, finish the loading bar and ensure scroll to top
   useEffect(() => {
     finishLoading();
+    if (typeof window !== 'undefined' && !window.location.hash) {
+      window.scrollTo(0, 0);
+    }
   }, [pathname, searchParams]);
+
+  // Ensure refresh always loads page from top
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
+      }
+
+      const handleBeforeUnload = () => {
+        if (!window.location.hash) {
+          window.scrollTo(0, 0);
+        }
+      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, []);
 
   // Global click interceptor to start loading in 0ms on any internal navigation
   useEffect(() => {

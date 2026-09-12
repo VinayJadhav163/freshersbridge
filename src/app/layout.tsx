@@ -72,6 +72,13 @@ export default function RootLayout({
       className={`h-full antialiased ${plusJakartaSans.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);`,
+          }}
+        />
+      </head>
       <body className={`min-h-full flex flex-col bg-background text-foreground font-sans ${plusJakartaSans.className}`} suppressHydrationWarning>
         <Suspense fallback={null}>
           <PageNavigationLoader />
