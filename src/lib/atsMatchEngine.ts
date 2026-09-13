@@ -130,12 +130,13 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
   const matchedSoftSkills = effectiveSoftSkills.filter((s) => lowerResume.includes(s));
   const missingSoftSkills = effectiveSoftSkills.filter((s) => !matchedSoftSkills.includes(s));
 
-  // 4. Contact Information Audit
+  // 4. Contact Information & Social Profiles Audit
   const contactInfo = {
     email: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(cleanResume),
     phone: /(\+91[\s-]?)?[6-9]\d{9}|\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/.test(cleanResume),
-    linkedin: /linkedin\.com\/in\/[a-zA-Z0-9_-]+/i.test(cleanResume),
-    github: /github\.com\/[a-zA-Z0-9_-]+/i.test(cleanResume),
+    linkedin: /\b(linkedin(\.com)?(\/in\/[^\s|⋄◇•·]+)?)\b/i.test(cleanResume),
+    github: /\b(github(\.com)?(\/[^\s|⋄◇•·]+)?)\b/i.test(cleanResume),
+    portfolio: /\b(portfolio|leetcode|kaggle|hackerrank|codeforces|behance|medium\.com)\b/i.test(cleanResume),
   };
 
   // 5. Standard ATS Sections Audit
@@ -180,7 +181,7 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     },
     {
       name: 'Social Profiles (LinkedIn & GitHub)',
-      found: contactInfo.linkedin || contactInfo.github,
+      found: Boolean(contactInfo.linkedin || contactInfo.github || contactInfo.portfolio),
       importance: 'Recommended' as const,
       feedback: 'Links to your GitHub repositories or LinkedIn profile boost credibility.',
     },
@@ -290,7 +291,7 @@ export function analyzeResumeATS(resumeText: string, jobDescriptionText: string)
     });
   }
 
-  if (!contactInfo.github || !contactInfo.linkedin) {
+  if (!contactInfo.github && !contactInfo.linkedin && !contactInfo.portfolio) {
     actionableFeedback.push({
       title: 'Recommended to add Profiles (LinkedIn & GitHub)',
       description:

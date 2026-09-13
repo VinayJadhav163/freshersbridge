@@ -93,7 +93,7 @@ export default function ContactPage() {
     const recent = [...getRecentSubmissions(), Date.now()];
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
-    } catch {}
+    } catch { }
 
     setCooldownRemaining(COOLDOWN_SECONDS);
     if (recent.length >= MAX_DAILY_MESSAGES) {
@@ -228,7 +228,7 @@ export default function ContactPage() {
       {/* Main Contact Card Container */}
       <div ref={contactCardRef} className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg scroll-mt-16">
         <div className="grid grid-cols-1 md:grid-cols-12">
-          
+
           {/* Left Column: Contact Details */}
           <div className="md:col-span-4 bg-slate-950 text-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
             {/* Background Accent Glows */}
@@ -268,7 +268,7 @@ export default function ContactPage() {
 
             {/* Footer text */}
             <div className="relative z-10 pt-2 text-[11px] text-slate-400 !text-slate-400 font-medium">
-              FreshersBridge Support Team • Reply within 24h
+              FreshersBridge Support Team • Reply within 24 hours
             </div>
           </div>
 
@@ -346,8 +346,8 @@ export default function ContactPage() {
                       {isDailyLimitReached
                         ? 'Message limit reached for today'
                         : cooldownRemaining > 0
-                        ? `Send Another Message (wait ${formatCountdown(cooldownRemaining)})`
-                        : 'Send Another Message'}
+                          ? `Send Another Message (wait ${formatCountdown(cooldownRemaining)})`
+                          : 'Send Another Message'}
                     </button>
                   </div>
                 </div>
@@ -380,11 +380,10 @@ export default function ContactPage() {
                       if (formErrors.name) setFormErrors({ ...formErrors, name: undefined });
                     }}
                     placeholder="Enter your name"
-                    className={`w-full rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-medium ${
-                      formErrors.name
+                    className={`w-full rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-medium ${formErrors.name
                         ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
                         : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
-                    }`}
+                      }`}
                   />
                   {formErrors.name && (
                     <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.name}</p>
@@ -405,11 +404,10 @@ export default function ContactPage() {
                       if (formErrors.email) setFormErrors({ ...formErrors, email: undefined });
                     }}
                     placeholder="Enter your email"
-                    className={`w-full rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-medium ${
-                      formErrors.email
+                    className={`w-full rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-medium ${formErrors.email
                         ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
                         : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
-                    }`}
+                      }`}
                   />
                   {formErrors.email && (
                     <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.email}</p>
@@ -430,11 +428,10 @@ export default function ContactPage() {
                       if (formErrors.message) setFormErrors({ ...formErrors, message: undefined });
                     }}
                     placeholder="Write message here..."
-                    className={`w-full h-20 sm:h-24 rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-sans font-medium resize-none overflow-y-auto ${
-                      formErrors.message
+                    className={`w-full h-20 sm:h-24 rounded-lg border bg-slate-50 dark:bg-slate-900/50 px-3.5 py-2 text-xs sm:text-sm text-foreground outline-none transition-all font-sans font-medium resize-none overflow-y-auto ${formErrors.message
                         ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
                         : 'border-border focus:border-indigo-600 focus:bg-background focus:ring-2 focus:ring-indigo-600/20'
-                    }`}
+                      }`}
                   />
                   {formErrors.message && (
                     <p className="text-[11px] font-medium text-rose-500 ml-1">{formErrors.message}</p>
