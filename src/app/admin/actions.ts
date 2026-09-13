@@ -448,7 +448,6 @@ export async function bulkUploadJobsAction(rawJobs: any[], adminKey: string) {
         category_id: catId,
         salary: item.salary?.trim() || 'Best in Industry',
         eligibility: finalEligibility,
-        job_type: finalJobType,
         skills: skillsArray.length > 0 ? skillsArray : ['Engineering', 'Fresher'],
         description: item.description?.trim() || `${finalTitle} opening at ${company}. Apply online.`,
         apply_url: applyUrl,

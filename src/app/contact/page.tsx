@@ -275,10 +275,6 @@ export default function ContactPage() {
           {/* Right Column: Interactive Form & Anti-Spam Protected States */}
           <div className="md:col-span-8 p-5 sm:p-7 bg-card flex flex-col justify-center">
             <div className="space-y-1 mb-3 sm:mb-4">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600/10 px-2.5 py-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
-                <MessageSquare className="h-3 w-3" />
-                <span>Contact Us</span>
-              </div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Contact Us
               </h2>

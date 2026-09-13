@@ -286,7 +286,11 @@ export default async function JobDetailsPage({ params }: Props) {
 
   const isInternship =
     job.job_type === 'internship' ||
-    /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title);
+    /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title) ||
+    (job.apply_url && job.apply_url.toLowerCase().includes('/internship/')) ||
+    (job.source_url && job.source_url.toLowerCase().includes('/internship/')) ||
+    (job.eligibility && (job.eligibility.toLowerCase().includes('(internship)') || job.eligibility.toLowerCase().includes('intern'))) ||
+    (job.salary && (job.salary.toLowerCase().includes('/ month') || job.salary.toLowerCase().includes('/month') || job.salary.toLowerCase().includes('stipend')));
 
   // Expiration calculation
   const isExpired = job.application_deadline

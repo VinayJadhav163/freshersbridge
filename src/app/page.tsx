@@ -56,11 +56,12 @@ export default async function Home() {
     fetchWithCache<Job[]>('home:jobsPool', async () => {
       const { data } = await supabase
         .from('jobs')
-        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, apply_url, source_url, categories(id, name, slug)')
         .not('title', 'ilike', '%intern%')
         .not('title', 'ilike', '%internship%')
         .not('title', 'ilike', '%apprentice%')
         .not('title', 'ilike', '%fellowship%')
+        .not('apply_url', 'ilike', '%/internship/%')
         .order('created_at', { ascending: false })
         .limit(30);
       return (data || []) as unknown as Job[];
@@ -68,8 +69,8 @@ export default async function Home() {
     fetchWithCache<Job[]>('home:internshipsPool', async () => {
       const { data } = await supabase
         .from('jobs')
-        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
-        .or('title.ilike.%intern%,title.ilike.%internship%,title.ilike.%apprentice%,title.ilike.%fellowship%')
+        .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, apply_url, source_url, categories(id, name, slug)')
+        .or('title.ilike.%intern%,title.ilike.%internship%,title.ilike.%apprentice%,title.ilike.%fellowship%,apply_url.ilike.%/internship/%')
         .order('created_at', { ascending: false })
         .limit(20);
       return (data || []) as unknown as Job[];
@@ -78,10 +79,20 @@ export default async function Home() {
 
   // Deterministic latest listings (featured first, then most recent, strictly excluding internships)
   const filteredJobsPool = allJobsPool.filter((j) => {
-    const jt = (j.job_type || '').toLowerCase();
     const t = (j.title || '').toLowerCase();
     const u = (j.apply_url || '').toLowerCase();
-    return jt !== 'internship' && !t.includes('intern') && !u.includes('/internship/');
+    const su = (j.source_url || '').toLowerCase();
+    const el = (j.eligibility || '').toLowerCase();
+    const sal = (j.salary || '').toLowerCase();
+    const isIntern =
+      /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(t) ||
+      u.includes('/internship/') ||
+      su.includes('/internship/') ||
+      el.includes('intern') ||
+      sal.includes('/ month') ||
+      sal.includes('/month') ||
+      sal.includes('stipend');
+    return !isIntern;
   });
 
   const featuredJobs = filteredJobsPool.filter((j) => j.featured_job);

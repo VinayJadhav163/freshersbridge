@@ -145,30 +145,37 @@ export default function ApplyButton({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              <a
-                href={safeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setHasApplied(true);
-                  setIsOpen(false);
-                }}
-                className={`w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-white shadow-md transition-all active:scale-[0.99] cursor-pointer ${
-                  countdown === 0
-                    ? 'bg-emerald-600 hover:bg-emerald-500 ring-2 ring-emerald-400/50'
-                    : 'bg-indigo-600 hover:bg-indigo-500'
-                }`}
-              >
-                <span>{countdown > 0 ? 'Proceed to Apply Now' : '🚀 Open Application Portal (Click to Apply)'}</span>
-                <ArrowRight className="h-4 w-4" />
-              </a>
+              {countdown > 0 ? (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-not-allowed select-none opacity-80"
+                >
+                  <Clock className="h-4 w-4 animate-spin text-indigo-500" />
+                  <span>Unlocking Application Link in {countdown}s...</span>
+                </button>
+              ) : (
+                <a
+                  href={safeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    setHasApplied(true);
+                    setIsOpen(false);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-white shadow-md transition-all active:scale-[0.99] cursor-pointer bg-emerald-600 hover:bg-emerald-500 ring-2 ring-emerald-400/50"
+                >
+                  <span>🚀 Open Application Portal (Click to Apply)</span>
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              )}
 
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1 block w-full"
               >
-                Cancel & stay on FreshersBridge
+                Cancel &amp; stay on FreshersBridge
               </button>
             </div>
           </div>
