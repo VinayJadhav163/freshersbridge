@@ -65,6 +65,7 @@ The Reviewer checks:
 ### STAGE 3 — REVISION & JSON OUTPUT:
 Output ONLY a valid JSON object matching this exact schema (no markdown blocks or text outside JSON):
 {
+  "target_job_role": "Clean 2-4 word job title (e.g. Data Analyst, Software Engineer, Java Developer, Full Stack Developer)",
   "hard_requirements": ["list of explicit hard requirements from JD"],
   "nice_to_have": ["list of nice to have / preferred skills"],
   "core_responsibilities": ["list of core day-to-day duties"],
@@ -391,6 +392,7 @@ ${contactLine}`;
   ];
 
   return {
+    target_job_role: targetRole,
     hard_requirements: targetLabels.slice(0, 6),
     nice_to_have: ['Generative AI', 'DBT', 'Performance Tuning'],
     core_responsibilities: ['Dashboard development and reporting', 'Complex SQL data validation', 'ETL/ELT data preparation'],

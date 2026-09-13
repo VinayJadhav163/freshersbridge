@@ -36,8 +36,10 @@ import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
 import FaangPathResumeView from '@/components/FaangPathResumeView';
 import { generateFaangPathResumeHtml, parseResumeToStructured } from '@/lib/resumeFormatters';
 import { downloadDirectResumePdf, downloadDirectCoverLetterPdf } from '@/lib/pdfDownloader';
+import { ThinkingOrb } from '@/components/ui/thinking-orbs';
 
 export interface TailoredResumeResult {
+  target_job_role?: string;
   hard_requirements: string[];
   nice_to_have: string[];
   core_responsibilities: string[];
@@ -511,20 +513,70 @@ export default function ATSResumeMatcher() {
   };
 
   const getExtractedJobRole = () => {
+    // 1. If AI returned a clean target_job_role, use it
+    if (tailoredResult?.target_job_role && tailoredResult.target_job_role.trim()) {
+      const role = tailoredResult.target_job_role.trim();
+      if (!/^(key\s*responsibilities|requirements|about\s*the\s*job|job\s*description|overview|summary)/i.test(role)) {
+        return role;
+      }
+    }
+
+    // 2. If a preset was selected, use the clean role part after the hyphen
     if (selectedPresetIndex !== '' && SAMPLE_JOB_PRESETS[selectedPresetIndex as number]) {
       const preset = SAMPLE_JOB_PRESETS[selectedPresetIndex as number];
       const match = preset.label.match(/-\s*(.+)/);
       if (match && match[1]) return match[1].trim();
       return preset.label;
     }
+
+    // 3. Extract from job description if explicitly defined
     if (jobDescription) {
       const roleMatch = jobDescription.match(/(?:role|position|job\s*title|title)\s*:\s*([^\n\r,]+)/i);
       if (roleMatch && roleMatch[1]) {
-        return roleMatch[1].trim();
+        const candidate = roleMatch[1].trim();
+        if (!/^(key\s*responsibilities|requirements|about|overview|summary)/i.test(candidate)) {
+          return candidate;
+        }
       }
-      const firstLine = jobDescription.trim().split('\n')[0];
-      if (firstLine && firstLine.length < 50 && !firstLine.includes(':')) {
-        return firstLine.trim();
+
+      // Check common tech role patterns in JD
+      const commonRoles = [
+        'Data Analyst',
+        'Software Engineer',
+        'Frontend Developer',
+        'Front-End Developer',
+        'Backend Developer',
+        'Back-End Developer',
+        'Full Stack Developer',
+        'Full-Stack Developer',
+        'Java Developer',
+        'Python Developer',
+        'DevOps Engineer',
+        'Cloud Engineer',
+        'Quality Assurance Engineer',
+        'QA Engineer',
+        'UI/UX Designer',
+        'Associate Software Engineer',
+        'System Engineer',
+        'Graduate Engineer Trainee',
+        'Business Analyst',
+        'Machine Learning Engineer',
+        'AI Engineer'
+      ];
+      for (const cr of commonRoles) {
+        if (new RegExp(`\\b${cr.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i').test(jobDescription)) {
+          return cr;
+        }
+      }
+
+      const firstLine = jobDescription.trim().split('\n')[0].trim();
+      if (
+        firstLine &&
+        firstLine.length < 40 &&
+        !firstLine.includes(':') &&
+        !/^(key\s*responsibilities|responsibilities|requirements|about|job\s*description|overview|qualifications)/i.test(firstLine)
+      ) {
+        return firstLine;
       }
     }
     return '';
@@ -1128,15 +1180,20 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 type="button"
                 onClick={handleTailorResume}
                 disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
               >
                 {isTailoring ? (
                   <>
-                    <RefreshCw className="h-4 w-4 animate-spin text-white" />
-                    <span>Tailoring Resume to JD...</span>
+                    <span className="[&_canvas]:!size-5 shrink-0">
+                      <ThinkingOrb state="composing" size={20} theme="dark" />
+                    </span>
+                    <span>Tailoring ATS Resume...</span>
                   </>
                 ) : (
-                  <span>Scan & Tailor Resume for JD</span>
+                  <>
+                    <Wand2 className="h-4 w-4" />
+                    <span>Make ATS Resume</span>
+                  </>
                 )}
               </button>
             </div>
@@ -1157,12 +1214,14 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[220px] animate-in fade-in-50 duration-300"
         >
           <div
-            className="inline-flex items-center gap-3 rounded-full px-6 py-3.5 border border-border bg-secondary/70 dark:bg-[#121216] shadow-sm transition-all"
+            className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-3 pr-8 border border-border bg-secondary/80 dark:bg-[#121216] shadow-sm transition-all"
             style={{
               boxShadow: "inset 0 0 0 1px rgba(120,120,120,0.1), 0 4px 20px -2px rgba(0,0,0,0.05)",
             }}
           >
-            <RefreshCw className="h-5 w-5 text-[#275df5] animate-spin shrink-0" />
+            <span className="[&_canvas]:!size-14 shrink-0">
+              <ThinkingOrb state="composing" size={64} theme="auto" />
+            </span>
             <span className="whitespace-nowrap text-base sm:text-lg font-semibold text-foreground tracking-tight">
               Generating Tailored ATS Resume...
             </span>
