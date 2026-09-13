@@ -256,6 +256,11 @@ export default function ATSResumeMatcher() {
       setUploadStatusText('Resume parsed successfully!');
       setResumeText(extracted);
       setActiveTab('upload');
+      // Invalidate stale scores & stale tailored output when a new resume is uploaded
+      setResults(null);
+      setAnalyzedInputSnapshot(null);
+      setTailoredResult(null);
+      setTailoredInputSnapshot(null);
     } catch (err: any) {
       console.error(err);
       setErrorMessage(err?.message || 'Could not parse the uploaded file. Please paste your resume text directly.');
@@ -279,12 +284,20 @@ export default function ATSResumeMatcher() {
   const handleSelectPreset = (idx: number) => {
     setSelectedPresetIndex(idx);
     setJobDescription(SAMPLE_JOB_PRESETS[idx].jd);
+    setResults(null);
+    setAnalyzedInputSnapshot(null);
+    setTailoredResult(null);
+    setTailoredInputSnapshot(null);
   };
 
   const handleLoadSampleResume = () => {
     setResumeText(SAMPLE_RESUME_TEXT.trim());
     setUploadedFileName('rahul-sharma-sample-resume.pdf');
     setActiveTab('upload');
+    setResults(null);
+    setAnalyzedInputSnapshot(null);
+    setTailoredResult(null);
+    setTailoredInputSnapshot(null);
     if (!jobDescription.trim()) {
       handleSelectPreset(0);
     }
@@ -891,6 +904,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   value={resumeText}
                   onChange={(e) => {
                     setResumeText(e.target.value);
+                    setResults(null);
+                    setAnalyzedInputSnapshot(null);
+                    setTailoredResult(null);
+                    setTailoredInputSnapshot(null);
                     if (!e.target.value.trim() && uploadedFileName) {
                       handleClearResume();
                     }
@@ -933,6 +950,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 onChange={(e) => {
                   setJobDescription(e.target.value);
                   setSelectedPresetIndex('');
+                  setResults(null);
+                  setAnalyzedInputSnapshot(null);
+                  setTailoredResult(null);
+                  setTailoredInputSnapshot(null);
                 }}
                 placeholder="Paste the target job description or requirements here to match keywords, skills, and qualifications..."
                 className="w-full flex-1 min-h-[220px] rounded-xl border border-border bg-background p-3.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#275df5] focus:outline-hidden focus:ring-1 focus:ring-[#275df5] leading-relaxed resize-none"
@@ -946,6 +967,10 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     onClick={() => {
                       setJobDescription('');
                       setSelectedPresetIndex('');
+                      setResults(null);
+                      setAnalyzedInputSnapshot(null);
+                      setTailoredResult(null);
+                      setTailoredInputSnapshot(null);
                     }}
                     className="text-rose-600 hover:underline cursor-pointer"
                   >

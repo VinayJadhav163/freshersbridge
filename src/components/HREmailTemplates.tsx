@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Copy, 
-  Check, 
-  X, 
+import {
+  Copy,
+  Check,
+  X,
   ArrowUpRight,
   User,
   Building2,
@@ -288,7 +288,7 @@ export default function HREmailTemplates() {
       if (saved) {
         setUserInputs(JSON.parse(saved));
       }
-    } catch {}
+    } catch { }
   }, []);
 
   const handleInputChange = (field: keyof typeof userInputs, value: string) => {
@@ -296,7 +296,7 @@ export default function HREmailTemplates() {
       const updated = { ...prev, [field]: value };
       try {
         localStorage.setItem('freshersbridge_hr_inputs', JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
   };
@@ -306,7 +306,7 @@ export default function HREmailTemplates() {
     setUserInputs(empty);
     try {
       localStorage.removeItem('freshersbridge_hr_inputs');
-    } catch {}
+    } catch { }
   };
 
   const hasAnyInput = Boolean(
@@ -413,11 +413,10 @@ export default function HREmailTemplates() {
                 key={cat.value}
                 onClick={() => setActiveCategory(cat.value)}
                 type="button"
-                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer select-none active:scale-95 ${
-                  isActive
+                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer select-none active:scale-95 ${isActive
                     ? 'bg-indigo-600 text-white shadow-sm'
                     : 'bg-secondary text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-800 border border-border'
-                }`}
+                  }`}
               >
                 {cat.name}
               </button>
@@ -471,7 +470,7 @@ export default function HREmailTemplates() {
               type="text"
               value={userInputs.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="e.g. Vinay Jadhav"
+              placeholder="e.g. Rahul Sharma"
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
             />
           </div>

@@ -2,12 +2,12 @@ import React from 'react';
 import { Metadata } from 'next';
 import CareerToolsHub from '@/components/CareerToolsHub';
 import FAQAccordion, { FAQItem } from '@/components/FAQAccordion';
-import { 
-  Sparkles, 
-  ShieldCheck, 
-  FileCheck, 
+import {
+  Sparkles,
+  ShieldCheck,
+  FileCheck,
   Send,
-  IndianRupee, 
+  IndianRupee,
   Layers,
   HelpCircle
 } from 'lucide-react';
@@ -35,7 +35,7 @@ const CAREER_TOOLS_FAQS: FAQItem[] = [
   },
   {
     question: 'How do I customize and copy the HR Email scripts?',
-    answer: 'Enter your name, role, target company, and university in the Quick Input Customizer at the top of the templates. Every email script automatically updates in real-time. Then simply click "Copy Script" to paste directly into your email client or LinkedIn message.',
+    answer: 'Enter your name, target company,target role,and phone number in the Quick Input Customizer at the top of the templates. Every email script automatically updates in real-time. Then simply click "Copy Script" to paste directly into your email client or LinkedIn message.',
   },
   {
     question: 'Is my resume data stored or shared with external servers?',
