@@ -358,12 +358,6 @@ export default function ATSResumeMatcher() {
   const handleAnalyze = () => {
     if (!resumeText.trim()) return;
 
-    // If score is already calculated for these exact inputs, scroll directly without redundant reprocessing
-    if (isScoreAlreadyCalculated) {
-      scrollToElementWithOffset('ats-results-dashboard', 160);
-      return;
-    }
-
     setIsAnalyzing(true);
     setErrorMessage(null);
 
@@ -415,12 +409,6 @@ export default function ATSResumeMatcher() {
     }
     if (!jobDescription.trim()) {
       setErrorMessage('Please provide a target job description or select a quick-fill drive to tailor your resume against.');
-      return;
-    }
-
-    // If already tailored for this exact same Resume and JD, scroll to section directly
-    if (tailoredResult && !hasInputChangedSinceTailoring) {
-      scrollToElementWithOffset('tailored-resume-section', 160);
       return;
     }
 
@@ -1003,27 +991,18 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
               type="button"
               onClick={handleAnalyze}
               disabled={!resumeText.trim() || isAnalyzing || isTailoring}
-              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                isScoreAlreadyCalculated
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                  : 'bg-[#275df5] hover:bg-[#1d4ed8] text-white hover:shadow-md'
-              }`}
-              title={isScoreAlreadyCalculated ? 'Score already calculated for current inputs (click to view)' : 'Evaluate your ATS score'}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-7 py-3 text-sm font-bold shadow-sm hover:shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Evaluate your ATS score"
             >
               {isAnalyzing ? (
                 <>
                   <RefreshCw className="h-4 w-4 animate-spin text-white" />
                   <span>Checking Score...</span>
                 </>
-              ) : isScoreAlreadyCalculated ? (
-                <>
-                  <CheckCircle2 className="h-4 w-4 text-white" />
-                  <span>Score Checked (View Below)</span>
-                </>
               ) : (
                 <>
                   <BarChart3 className="h-4 w-4 text-white" />
-                  <span>Check ATS Score</span>
+                  <span>{results ? 'Re-check ATS Score' : 'Check ATS Score'}</span>
                 </>
               )}
             </button>
@@ -1317,6 +1296,17 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                       </>
                     )}
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={handleTailorResume}
+                    disabled={isTailoring}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                    title="Regenerate ATS Resume & Cover Letter"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
+                    <span>Regenerate</span>
+                  </button>
                 </>
               ) : (
                 <>
@@ -1355,6 +1345,17 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                         <span>Copy Text</span>
                       </>
                     )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleTailorResume}
+                    disabled={isTailoring}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                    title="Regenerate with fresh AI tailoring"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
+                    <span>Regenerate</span>
                   </button>
                 </>
               )}
