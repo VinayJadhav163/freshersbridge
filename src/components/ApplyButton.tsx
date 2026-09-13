@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ExternalLink, CheckCircle2, ArrowRight, X, Clock } from 'lucide-react';
+import { ExternalLink, CheckCircle2, Check, ArrowRight, X, Clock } from 'lucide-react';
 
 interface ApplyButtonProps {
   applyUrl: string;
@@ -126,19 +126,42 @@ export default function ApplyButton({
             </div>
 
             {/* Application Prep Tips Card */}
-            <div className="rounded-xl border border-border bg-muted/40 p-3.5 text-left space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-indigo-600" />
-                <span>Quick Application Checklist</span>
+            <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-4 text-left space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2.5">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  </span>
+                  <span>Application Checklist</span>
+                </div>
+                <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
+                  Direct Portal
+                </span>
               </div>
-              <ul className="text-[11px] text-muted-foreground space-y-1.5">
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                  <span>Resume updated in clean PDF format</span>
+              <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                <li className="flex items-start gap-2.5">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mt-0.5">
+                    <Check className="h-3 w-3 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">
+                    Keep your <strong className="font-semibold text-slate-800 dark:text-slate-100">updated PDF resume</strong> ready to upload.
+                  </span>
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                  <span>Matching skills highlighted according to job requirements</span>
+                <li className="flex items-start gap-2.5">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mt-0.5">
+                    <Check className="h-3 w-3 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">
+                    Verify graduation batch (<strong className="font-semibold text-slate-800 dark:text-slate-100">2024 / 2025 / 2026</strong>) matches criteria.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mt-0.5">
+                    <Check className="h-3 w-3 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">
+                    Applying directly on the <strong className="font-semibold text-slate-800 dark:text-slate-100">official career portal</strong> &bull; 100% free.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -149,9 +172,9 @@ export default function ApplyButton({
                 <button
                   type="button"
                   disabled
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-not-allowed select-none opacity-80"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-4 text-sm font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-not-allowed select-none opacity-80"
                 >
-                  <Clock className="h-4 w-4 animate-spin text-indigo-500" />
+                  <Clock className="h-4 w-4 animate-spin text-indigo-500 shrink-0" />
                   <span>Unlocking Application Link in {countdown}s...</span>
                 </button>
               ) : (
@@ -163,10 +186,11 @@ export default function ApplyButton({
                     setHasApplied(true);
                     setIsOpen(false);
                   }}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold text-white shadow-md transition-all active:scale-[0.99] cursor-pointer bg-emerald-600 hover:bg-emerald-500 ring-2 ring-emerald-400/50"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-5 text-sm font-bold text-white shadow-md transition-all active:scale-[0.99] cursor-pointer bg-emerald-600 hover:bg-emerald-500 ring-2 ring-emerald-400/50"
                 >
-                  <span>🚀 Open Application Portal (Click to Apply)</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <span className="tracking-wide">Open Application Portal</span>
+                  <span className="text-emerald-100/90 font-medium text-xs tracking-normal ml-0.5">(Click to Apply)</span>
+                  <ArrowRight className="h-4 w-4 ml-1 shrink-0" />
                 </a>
               )}
 
