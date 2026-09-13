@@ -46,4 +46,6 @@ __pycache__/
 *$py.class
 scraper/output/
 performance/
-
+credentials/
+*service_account*.json
+*credentials*.json
