@@ -606,7 +606,7 @@ export default async function JobDetailsPage({ params }: Props) {
                 <div className="h-10 w-10 shrink-0 rounded-lg bg-white border border-slate-200 dark:border-slate-800 p-1 flex items-center justify-center">
                   <img
                     src={matchedCompany.logo}
-                    alt={matchedCompany.name}
+                    alt={`${matchedCompany.name} hiring company logo`}
                     className="h-full w-full object-contain"
                   />
                 </div>

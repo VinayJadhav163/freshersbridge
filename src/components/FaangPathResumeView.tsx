@@ -26,9 +26,9 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
       >
         {/* 1. Header (Centered Name + separated contacts) */}
         <div className="text-center mb-3">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-wider uppercase text-black m-0 leading-tight">
+          <div role="heading" aria-level={2} className="text-2xl sm:text-3xl font-bold tracking-wider uppercase text-black m-0 leading-tight">
             {structured.name.toUpperCase()}
-          </h1>
+          </div>
 
           {contactItems.length > 0 && (
             <div className="mt-1.5 text-[11.5px] sm:text-[12.5px] text-gray-800 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">

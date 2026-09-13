@@ -68,7 +68,7 @@ export default function ShareButton({
       name: 'WhatsApp',
       color: 'bg-[#25D366]/10 text-[#25D366] border-[#25D366]/30 hover:bg-[#25D366]/20',
       icon: (
-        <img src="/whatsapp.png" alt="WhatsApp" className="h-5 w-5 object-contain" />
+        <img src="/whatsapp.png" alt="Share off-campus job on WhatsApp" className="h-5 w-5 object-contain" />
       ),
       url: `https://api.whatsapp.com/send?text=${encodeURIComponent(fullSharePayload)}`,
     },

@@ -183,7 +183,7 @@ export default async function CompanyDetailPage({ params }: Props) {
               <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 p-2 shadow-xs flex items-center justify-center shrink-0">
                 <img
                   src={company.logo}
-                  alt={`${company.name} Logo`}
+                  alt={`${company.name} off-campus hiring logo`}
                   className="h-full w-full object-contain rounded-xl"
                 />
               </div>

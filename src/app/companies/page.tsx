@@ -87,7 +87,7 @@ export default function CompaniesPage() {
                     <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 dark:border-slate-800 p-1.5 shadow-2xs flex items-center justify-center shrink-0">
                       <img
                         src={company.logo}
-                        alt={`${company.name} Logo`}
+                        alt={`${company.name} off-campus hiring logo`}
                         className="h-full w-full object-contain rounded-lg"
                       />
                     </div>

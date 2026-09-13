@@ -50,7 +50,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center py-1">
               <img
                 src="/logo.png"
-                alt="FreshersBridge Logo"
+                alt="FreshersBridge - Off-Campus Tech Jobs & Internships for Freshers"
                 className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform hover:scale-105"
               />
             </Link>

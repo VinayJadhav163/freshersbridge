@@ -77,7 +77,7 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e7e7f1] dark:border-slate-700 bg-white p-1 shadow-xs">
               <img
                 src={resolvedLogo}
-                alt={job.company}
+                alt={`${job.company} hiring logo`}
                 loading="lazy"
                 decoding="async"
                 referrerPolicy="no-referrer"

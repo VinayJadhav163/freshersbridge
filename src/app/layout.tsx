@@ -40,11 +40,20 @@ export const metadata: Metadata = {
     siteName: 'FreshersBridge',
     locale: 'en_IN',
     type: 'website',
+    images: [
+      {
+        url: 'https://freshersbridge.in/icon.png',
+        width: 1200,
+        height: 630,
+        alt: 'FreshersBridge - Handpicked Off-Campus Tech Jobs & Internships for Freshers',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'FreshersBridge | Handpicked Jobs for Freshers',
     description: 'Find your first tech job. Handpicked jobs and internships for college graduates.',
+    images: ['https://freshersbridge.in/icon.png'],
   },
   icons: {
     icon: [

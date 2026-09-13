@@ -241,7 +241,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white !text-white drop-shadow-sm">Contact Us</h2>
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white !text-white drop-shadow-sm">Contact Us</h1>
                 <p className="mt-1.5 text-xs text-slate-300 !text-slate-300 leading-relaxed font-medium">
                   Have questions, feedback, or job posting inquiries? Reach out directly to our team.
                 </p>

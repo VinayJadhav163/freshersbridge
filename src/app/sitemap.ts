@@ -100,22 +100,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  // Dynamic job details routes fetched from the database
+  // Dynamic job details & internship routes fetched from the database
   try {
     const { data: jobs } = await supabase
       .from('jobs')
-      .select('slug, created_at')
+      .select('slug, created_at, category')
       .order('created_at', { ascending: false });
 
     if (jobs && jobs.length > 0) {
-      const dynamicRoutes: MetadataRoute.Sitemap = jobs.map((job) => ({
+      const dynamicJobRoutes: MetadataRoute.Sitemap = jobs.map((job) => ({
         url: `${baseUrl}/jobs/${job.slug}`,
         lastModified: new Date(job.created_at),
         changeFrequency: 'weekly',
         priority: 0.7,
       }));
 
-      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicRoutes];
+      const dynamicInternshipRoutes: MetadataRoute.Sitemap = jobs
+        .filter((job) => job.category?.toLowerCase() === 'internship')
+        .map((job) => ({
+          url: `${baseUrl}/internships/${job.slug}`,
+          lastModified: new Date(job.created_at),
+          changeFrequency: 'weekly',
+          priority: 0.7,
+        }));
+
+      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicJobRoutes, ...dynamicInternshipRoutes];
     }
   } catch (err) {
     console.error('Failed to generate sitemap dynamic routes:', err);
