@@ -177,6 +177,13 @@ export default function ATSResumeMatcher() {
       jobDescription.trim() !== tailoredInputSnapshot.jobDescription.trim())
   );
 
+  const isAlreadyTailoredForCurrentInputs = Boolean(
+    tailoredResult &&
+    tailoredInputSnapshot &&
+    resumeText.trim() === tailoredInputSnapshot.resumeText.trim() &&
+    jobDescription.trim() === tailoredInputSnapshot.jobDescription.trim()
+  );
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Restore state from sessionStorage on initial page load
@@ -409,6 +416,12 @@ export default function ATSResumeMatcher() {
     }
     if (!jobDescription.trim()) {
       setErrorMessage('Please provide a target job description or select a quick-fill drive to tailor your resume against.');
+      return;
+    }
+
+    // Smart safeguard: if resume and JD are identical to existing output, scroll down without burning API tokens
+    if (isAlreadyTailoredForCurrentInputs) {
+      scrollToElementWithOffset('tailored-resume-section', 160);
       return;
     }
 
@@ -1314,16 +1327,28 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     )}
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={handleTailorResume}
-                    disabled={isTailoring}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
-                    title="Regenerate ATS Resume & Cover Letter"
-                  >
-                    <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
-                    <span>Regenerate</span>
-                  </button>
+                  {isAlreadyTailoredForCurrentInputs ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-3.5 py-2.5 text-xs font-bold cursor-not-allowed shadow-2xs"
+                      title="Your cover letter is already tailored for these exact inputs. Modify your resume text or job description above to generate a new variation."
+                    >
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Already Tailored</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleTailorResume}
+                      disabled={isTailoring}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      title="Regenerate ATS Resume & Cover Letter"
+                    >
+                      <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
+                      <span>Regenerate</span>
+                    </button>
+                  )}
                 </>
               ) : (
                 <>
@@ -1364,16 +1389,28 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     )}
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={handleTailorResume}
-                    disabled={isTailoring}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
-                    title="Regenerate with fresh AI tailoring"
-                  >
-                    <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
-                    <span>Regenerate</span>
-                  </button>
+                  {isAlreadyTailoredForCurrentInputs ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-3.5 py-2.5 text-xs font-bold cursor-not-allowed shadow-2xs"
+                      title="Your resume is already tailored for these exact inputs. Modify your resume text or job description above to generate a new variation."
+                    >
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Already Tailored</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleTailorResume}
+                      disabled={isTailoring}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      title="Regenerate with fresh AI tailoring"
+                    >
+                      <RefreshCw className={`h-4 w-4 ${isTailoring ? 'animate-spin text-[#275df5]' : ''}`} />
+                      <span>Regenerate</span>
+                    </button>
+                  )}
                 </>
               )}
             </div>
