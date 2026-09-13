@@ -1282,38 +1282,38 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                 <>
                   <button
                     type="button"
-                    onClick={handleCopyCoverLetter}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    onClick={handleDownloadCoverLetter}
+                    disabled={isPdfGenerating}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#275df5] hover:bg-[#1d4ed8] disabled:opacity-70 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    title="Download Cover Letter as PDF"
                   >
-                    {copiedCoverLetter ? (
+                    {isPdfGenerating ? (
                       <>
-                        <Check className="h-4 w-4" />
-                        <span>Copied Letter!</span>
+                        <RefreshCw className="h-4 w-4 animate-spin text-white" />
+                        <span>Generating PDF...</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="h-4 w-4" />
-                        <span>Copy Cover Letter</span>
+                        <Download className="h-4 w-4" />
+                        <span>Download (PDF)</span>
                       </>
                     )}
                   </button>
 
                   <button
                     type="button"
-                    onClick={handleDownloadCoverLetter}
-                    disabled={isPdfGenerating}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer disabled:opacity-70"
-                    title="Download Cover Letter as PDF"
+                    onClick={handleCopyCoverLetter}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer shadow-2xs"
                   >
-                    {isPdfGenerating ? (
+                    {copiedCoverLetter ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
-                        <span>Generating PDF...</span>
+                        <Check className="h-4 w-4 text-emerald-600" />
+                        <span>Copied Letter!</span>
                       </>
                     ) : (
                       <>
-                        <Download className="h-4 w-4 text-[#275df5]" />
-                        <span>Download (PDF)</span>
+                        <Copy className="h-4 w-4" />
+                        <span>Copy Cover Letter</span>
                       </>
                     )}
                   </button>
@@ -1410,17 +1410,9 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={handleCopyCoverLetter}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
-                    >
-                      {copiedCoverLetter ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-                      <span>{copiedCoverLetter ? 'Copied' : 'Copy'}</span>
-                    </button>
-                    <button
-                      type="button"
                       onClick={handleDownloadCoverLetter}
                       disabled={isPdfGenerating}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer disabled:opacity-70"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 dark:border-blue-900 bg-blue-50/60 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 px-3 py-1.5 text-xs font-semibold text-[#275df5] transition-all shadow-2xs cursor-pointer disabled:opacity-70"
                       title="Download Cover Letter as PDF"
                     >
                       {isPdfGenerating ? (
@@ -1429,6 +1421,14 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                         <Download className="h-3.5 w-3.5 text-[#275df5]" />
                       )}
                       <span>{isPdfGenerating ? 'Generating...' : 'Download (PDF)'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCopyCoverLetter}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
+                    >
+                      {copiedCoverLetter ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span>{copiedCoverLetter ? 'Copied' : 'Copy'}</span>
                     </button>
                   </div>
                 </div>

@@ -24,7 +24,8 @@ interface JobsPageProps {
   searchParams: Promise<SearchParams>;
 }
 
-export const revalidate = 60; // 60s background ISR cache
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // Dynamic SEO Metadata for /jobs
 export async function generateMetadata({ searchParams }: JobsPageProps): Promise<Metadata> {
@@ -154,7 +155,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         return { jobs: [], totalCount: 0 };
       }
     },
-    120
+    10
   );
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);

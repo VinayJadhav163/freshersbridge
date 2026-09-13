@@ -10,12 +10,12 @@ interface FaangPathResumeViewProps {
 export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewProps) {
   const structured = useMemo(() => parseResumeToStructured(resumeText), [resumeText]);
 
-  // Format contact links
+  // Format individual contact items
   const contactItems = useMemo(() => {
-    if (structured.contactLines.length === 0) return [];
-    const rawContact = structured.contactLines.join(' | ');
-    return rawContact.split('|').map((p) => p.trim()).filter(Boolean);
-  }, [structured.contactLines]);
+    return structured.contactItems && structured.contactItems.length > 0
+      ? structured.contactItems
+      : [];
+  }, [structured]);
 
   return (
     <div className="overflow-x-auto pb-4">
@@ -24,7 +24,7 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
         style={{ width: '100%', maxWidth: '820px', minHeight: '1100px' }}
         className="relative mx-auto rounded-lg border border-border bg-white text-black p-8 sm:p-12 shadow-lg font-sans selection:bg-blue-100 flex flex-col justify-start"
       >
-        {/* 1. Header (Centered Name + Diamond separated contacts) */}
+        {/* 1. Header (Centered Name + separated contacts) */}
         <div className="text-center mb-3">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-wider uppercase text-black m-0 leading-tight">
             {structured.name.toUpperCase()}
@@ -32,31 +32,23 @@ export default function FaangPathResumeView({ resumeText }: FaangPathResumeViewP
 
           {contactItems.length > 0 && (
             <div className="mt-1.5 text-[11.5px] sm:text-[12.5px] text-gray-800 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
-              {contactItems.map((rawItem, idx) => {
-                const item = rawItem.replace(/%Ç|⋄|◇/g, '').trim();
-                if (!item) return null;
-                return (
-                  <React.Fragment key={idx}>
-                    {idx > 0 && <span className="text-gray-400 font-bold mx-1">|</span>}
-                    {item.includes('@') ? (
-                      <a href={`mailto:${item}`} className="text-blue-700 hover:underline">
-                        {item}
-                      </a>
-                    ) : /linkedin\.com|github\.com/i.test(item) ? (
-                      <a
-                        href={item.startsWith('http') ? item : `https://${item}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-700 hover:underline"
-                      >
-                        {item}
-                      </a>
-                    ) : (
-                      <span>{item}</span>
-                    )}
-                  </React.Fragment>
-                );
-              })}
+              {contactItems.map((item, idx) => (
+                <React.Fragment key={idx}>
+                  {idx > 0 && <span className="text-gray-400 font-bold mx-1">|</span>}
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target={item.type === 'email' ? undefined : '_blank'}
+                      rel={item.type === 'email' ? undefined : 'noreferrer'}
+                      className="text-blue-700 hover:underline"
+                    >
+                      {item.text}
+                    </a>
+                  ) : (
+                    <span className="text-gray-800">{item.text}</span>
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           )}
         </div>

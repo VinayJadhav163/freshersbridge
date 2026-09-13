@@ -20,8 +20,9 @@ import { Job, Category } from '@/types';
 import { sortCategories } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
 
-// Fast dynamic server-side rendering so each visitor gets fresh rotated listings
+// Fast dynamic real-time server-side rendering so each visitor gets fresh latest listings
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // Assign dynamic icons based on category slug
 function getCategoryIcon(slug: string) {
@@ -47,13 +48,13 @@ function getCategoryIcon(slug: string) {
 }
 
 export default async function Home() {
-  // Parallel fetch cached categories & pools of jobs/internships
+  // Parallel fetch categories & real-time fresh pools of jobs and internships
   const [categories, allJobsPool, allInternshipsPool] = await Promise.all([
     fetchWithCache<Category[]>('home:categories', async () => {
       const { data } = await supabase.from('categories').select('*');
       return (data || []) as Category[];
-    }, 180),
-    fetchWithCache<Job[]>('home:jobsPool', async () => {
+    }, 300),
+    (async () => {
       const { data } = await supabase
         .from('jobs')
         .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, apply_url, source_url, categories(id, name, slug)')
@@ -65,8 +66,8 @@ export default async function Home() {
         .order('created_at', { ascending: false })
         .limit(30);
       return (data || []) as unknown as Job[];
-    }, 60),
-    fetchWithCache<Job[]>('home:internshipsPool', async () => {
+    })(),
+    (async () => {
       const { data } = await supabase
         .from('jobs')
         .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, apply_url, source_url, categories(id, name, slug)')
@@ -74,7 +75,7 @@ export default async function Home() {
         .order('created_at', { ascending: false })
         .limit(20);
       return (data || []) as unknown as Job[];
-    }, 60),
+    })(),
   ]);
 
   // Deterministic latest listings (featured first, then most recent, strictly excluding internships)

@@ -1,6 +1,6 @@
 'use client';
 
-import { parseResumeToStructured } from './resumeFormatters';
+import { parseResumeToStructured, parseContactItems, ContactItem } from './resumeFormatters';
 
 /**
  * Client-side direct native vector PDF downloader for FAANGPath / LaTeX resume.
@@ -64,23 +64,22 @@ export async function downloadDirectResumePdf(resumeText: string, jobRole?: stri
   y += nameToContactGap;
 
   // 2. Contact Line (Centered, cleanly separated, with blue accent for email and social profiles)
-  if (structured.contactLines.length > 0) {
-    const rawContact = structured.contactLines.join(' | ');
-    const parts = rawContact
-      .split(/[|⋄◇•·]/)
-      .map((p) => p.replace(/%Ç|⋄|◇/g, '').trim())
-      .filter(Boolean);
+  const contactItemsList =
+    structured.contactItems && structured.contactItems.length > 0
+      ? structured.contactItems
+      : parseContactItems(structured.contactLines);
 
+  if (contactItemsList.length > 0) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(contactSize);
 
     const pipeStr = '  |  ';
     const pipeWidth = doc.getTextWidth(pipeStr);
 
-    const renderContactLine = (items: string[], currentY: number) => {
+    const renderContactLine = (items: ContactItem[], currentY: number) => {
       let totalLineW = 0;
       const itemWidths = items.map((it) => {
-        const w = doc.getTextWidth(it);
+        const w = doc.getTextWidth(it.text);
         totalLineW += w;
         return w;
       });
@@ -88,13 +87,12 @@ export async function downloadDirectResumePdf(resumeText: string, jobRole?: stri
 
       let curX = (pageWidth - totalLineW) / 2;
       items.forEach((it, i) => {
-        const isLink = it.includes('@') || /linkedin\.com|github\.com/i.test(it);
-        if (isLink) {
+        if (it.href) {
           doc.setTextColor(29, 78, 216); // Royal blue accent matching portal preview
         } else {
-          doc.setTextColor(50, 50, 50);
+          doc.setTextColor(50, 50, 50); // Dark neutral for phone & location
         }
-        doc.text(it, curX, currentY);
+        doc.text(it.text, curX, currentY);
         curX += itemWidths[i];
 
         if (i < items.length - 1) {
@@ -105,15 +103,17 @@ export async function downloadDirectResumePdf(resumeText: string, jobRole?: stri
       });
     };
 
-    let totalAllWidth = parts.reduce((acc, it) => acc + doc.getTextWidth(it), 0) + Math.max(0, parts.length - 1) * pipeWidth;
+    let totalAllWidth =
+      contactItemsList.reduce((acc, it) => acc + doc.getTextWidth(it.text), 0) +
+      Math.max(0, contactItemsList.length - 1) * pipeWidth;
     if (totalAllWidth <= contentWidth) {
-      renderContactLine(parts, y);
+      renderContactLine(contactItemsList, y);
       y += isVeryDense ? 5.2 : isDense ? 5.8 : 6.5;
     } else {
-      const mid = Math.ceil(parts.length / 2);
-      renderContactLine(parts.slice(0, mid), y);
+      const mid = Math.ceil(contactItemsList.length / 2);
+      renderContactLine(contactItemsList.slice(0, mid), y);
       y += 4.5;
-      renderContactLine(parts.slice(mid), y);
+      renderContactLine(contactItemsList.slice(mid), y);
       y += isVeryDense ? 5.0 : isDense ? 5.6 : 6.2;
     }
   }

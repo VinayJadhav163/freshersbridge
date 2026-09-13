@@ -4,9 +4,81 @@
  * 0.4-inch margins, horizontal section rules, and right-aligned dates.
  */
 
+export interface ContactItem {
+  type: 'phone' | 'email' | 'linkedin' | 'github' | 'location' | 'text';
+  text: string;
+  href?: string;
+}
+
+export function parseContactItems(contactLines: string[]): ContactItem[] {
+  if (!contactLines || contactLines.length === 0) return [];
+
+  const text = contactLines.join(' | ');
+  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+  const phoneRegex = /(?:\+?\d{1,4}[-–\s]?)?\(?\d{3,5}\)?[-–\s]?\d{3,5}[-–\s]?\d{3,5}/g;
+  const linkedinRegex = /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:in\/)?[^\s|⋄◇•·]+|\blinkedin\b/gi;
+  const githubRegex = /(?:https?:\/\/)?(?:www\.)?github\.com\/[^\s|⋄◇•·]+|\bgithub\b/gi;
+
+  let rem = text;
+  const emails: string[] = [];
+  rem = rem.replace(emailRegex, (m) => {
+    emails.push(m.trim());
+    return ' | ';
+  });
+
+  const linkedins: string[] = [];
+  rem = rem.replace(linkedinRegex, (m) => {
+    linkedins.push(m.trim());
+    return ' | ';
+  });
+
+  const githubs: string[] = [];
+  rem = rem.replace(githubRegex, (m) => {
+    githubs.push(m.trim());
+    return ' | ';
+  });
+
+  const phones: string[] = [];
+  rem = rem.replace(phoneRegex, (m) => {
+    const digits = m.replace(/\D/g, '');
+    if (digits.length >= 8) {
+      phones.push(m.trim());
+      return ' | ';
+    }
+    return m;
+  });
+
+  const locations = rem
+    .split(/[|⋄◇•·\n]/)
+    .map((s) => s.trim().replace(/^[,|•⋄◇·\s]+|[,|•⋄◇·\s]+$/g, ''))
+    .filter((s) => s.length > 1 && !/^(linkedin|github)$/i.test(s));
+
+  const items: ContactItem[] = [];
+  phones.forEach((p) => items.push({ type: 'phone', text: p }));
+  locations.forEach((l) => items.push({ type: 'location', text: l }));
+  emails.forEach((e) => items.push({ type: 'email', text: e, href: `mailto:${e}` }));
+  linkedins.forEach((l) =>
+    items.push({
+      type: 'linkedin',
+      text: l,
+      href: l.startsWith('http') ? l : l.includes('.') ? `https://${l}` : 'https://linkedin.com',
+    })
+  );
+  githubs.forEach((g) =>
+    items.push({
+      type: 'github',
+      text: g,
+      href: g.startsWith('http') ? g : g.includes('.') ? `https://${g}` : 'https://github.com',
+    })
+  );
+
+  return items;
+}
+
 export interface StructuredResume {
   name: string;
   contactLines: string[];
+  contactItems?: ContactItem[];
   objective?: string;
   education: {
     institution: string;
@@ -40,6 +112,7 @@ export function parseResumeToStructured(rawText: string): StructuredResume {
   const structured: StructuredResume = {
     name: 'CANDIDATE NAME',
     contactLines: [],
+    contactItems: [],
     education: [],
     skills: [],
     experience: [],
@@ -61,6 +134,7 @@ export function parseResumeToStructured(rawText: string): StructuredResume {
       structured.contactLines.push(cLine);
     }
   }
+  structured.contactItems = parseContactItems(structured.contactLines);
 
   // Section regexes
   const sectionHeaders: { title: string; key: string; regex: RegExp }[] = [

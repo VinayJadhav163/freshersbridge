@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { recordATSScan } from '@/lib/atsAnalytics';
 import { CANONICAL_SKILLS, matchSkillInText } from '@/lib/atsTaxonomy';
+import { parseContactItems } from '@/lib/resumeFormatters';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -37,8 +38,8 @@ CRITICAL ZERO-FABRICATION & ABSOLUTE FACTUAL FIDELITY RULES:
 
 3. ATS FORMAT & SECTION SEQUENCE:
    Format the plain text "tailored_resume" with clean headers and bullet points (•):
-   1. Contact Header: Candidate's Full Name, Phone, Location, Email, Portfolio/LinkedIn (only if provided by candidate)
-   2. OBJECTIVE: 1-2 sentence tailored objective connecting candidate's genuine background to the target role and company. (If company name is not in JD, refer to "the hiring team" or "your company", NEVER invent names like "You Will").
+   1. Contact Header: Candidate's Full Name on line 1. On line 2, list contact items separated by pipes: Phone | Location | Email | LinkedIn | GitHub. ALWAYS separate each contact item with " | " so each piece is distinct. NEVER mash contact details into a single continuous unseparated string.
+   2. OBJECTIVE: 1-2 sentence tailored professional summary or objective connecting candidate's genuine background to the target role. NEVER use generic placeholder phrases like "with your company", "for your company", "your organization", or "with the hiring team". If company name is explicitly specified in the JD, use the exact company name (e.g. "at Google" or "at Tata Consultancy Services"). If company name is not in the JD, write professionally: "seeking an entry-level [Target Role] position to apply [Target Skills] to deliver high-impact solutions, build reliable pipelines, and drive data-driven decision-making."
    3. EDUCATION: Candidate's REAL education details from their resume.
    4. SKILLS: Categorized structure explicitly including 100% of target JD keywords.
    5. EXPERIENCE: Candidate's REAL experience (if any), rephrasing bullet points to emphasize relevant action verbs and metrics.
@@ -266,14 +267,21 @@ function generateFallbackTailoredPackage(resumeText: string, jobDescription: str
   const contactLine = rawLines.slice(0, 4).find(l => /@|\+91|\d{10}/.test(l)) || (rawLines[1] || '');
 
   // Extract company name without matching stopwords like "You", "What", etc.
-  let companyName = 'your organization';
+  let companyName = '';
   const explicitComp = jobDescription.match(/(?:company|organization|at|hiring for)\s*:\s*([A-Za-z0-9&.\s]{2,35})/i);
   if (explicitComp && explicitComp[1].trim()) {
     const val = explicitComp[1].trim();
-    if (!/^(you|we|our|the|this|what|about|your)\b/i.test(val)) {
+    if (!/^(you|we|our|the|this|what|about|your|your company|your organization)\b/i.test(val)) {
       companyName = val;
     }
   }
+
+  // Format candidate's contact line cleanly separated by pipes
+  const parsedContacts = parseContactItems([contactLine]);
+  const formattedContactLine =
+    parsedContacts.length > 0
+      ? parsedContacts.map((c) => c.text).join(' | ')
+      : contactLine;
 
   // Extract target role
   const roleMatch = jobDescription.match(/(?:role|position|seeking|for|title)[:\s]+([A-Za-z\s/]{3,35})(?:\n|\b(?:batch|experienced|requirements|at)\b)/i);
@@ -322,8 +330,9 @@ function generateFallbackTailoredPackage(resumeText: string, jobDescription: str
   const aiStr = aiList.join(', ') || 'Generative AI (GenAI), LLM integrations & AI-driven analytics';
   const softStr = softList.join(', ') || 'Performance Optimization, Troubleshooting, Data Validation, Agile Collaboration';
 
-  // Build Objective tailored to role and real candidate strengths
-  const objectiveText = `Motivated professional with hands-on proficiency in ${targetLabels.slice(0, 4).join(', ') || 'data analytics and database technologies'}, seeking full-time ${targetRole} roles at ${companyName}. Dedicated to delivering accurate insights, optimizing reporting workflows, and contributing to technical excellence.`;
+  // Build Objective tailored to role and real candidate strengths without placeholder phrases
+  const companyPhrase = companyName ? ` at ${companyName}` : '';
+  const objectiveText = `Motivated professional with hands-on proficiency in ${targetLabels.slice(0, 4).join(', ') || 'data analytics and database technologies'}, seeking an entry-level ${targetRole} position${companyPhrase} to apply analytical problem-solving, build robust reporting workflows, and deliver impactful business insights.`;
 
   // Preserve Education section from candidate's resume
   const educationPlainText = sections.education.length > 0
@@ -347,7 +356,7 @@ function generateFallbackTailoredPackage(resumeText: string, jobDescription: str
 
   // Build tailored resume strictly preserving original credentials without hallucinations
   const tailoredResumeText = `${candidateName.toUpperCase()}
-${contactLine}
+${formattedContactLine}
 
 OBJECTIVE
 ${objectiveText}
@@ -366,17 +375,19 @@ PROJECTS
 ${projectsPlainText}
 ${certsPlainText}`.trim();
 
-  const coverLetterText = `Dear Hiring Manager at ${companyName},
+  const compRef = companyName || 'your esteemed organization';
+  const compSalutation = companyName ? ` at ${companyName}` : '';
+  const coverLetterText = `Dear Hiring Manager${compSalutation},
 
-I am writing to express my enthusiastic interest in the ${targetRole} position at ${companyName}. With hands-on proficiency in ${targetLabels.slice(0, 3).join(', ') || 'data analysis, SQL, and reporting'} along with practical experience delivering structured engineering solutions, I am eager to contribute effectively to your team.
+I am writing to express my enthusiastic interest in the ${targetRole} position${companyName ? ` at ${companyName}` : ''}. With hands-on proficiency in ${targetLabels.slice(0, 3).join(', ') || 'data analysis, SQL, and reporting'} along with practical experience delivering structured engineering solutions, I am eager to contribute effectively to your team.
 
-Throughout my academic tenure and project work, I have focused on solving real-world challenges—from designing interactive dashboards to executing complex data validation, SQL joins, and ETL-style transformations. My experience reflects an unwavering commitment to data accuracy, clean documentation, and rapid adaptation to modern industry workflows.
+Throughout my academic tenure and project work, I have focused on solving real-world challenges—from designing interactive dashboards to executing complex data validation, SQL joins, and data engineering workflows. My experience reflects an unwavering commitment to quality, clean documentation, and rapid adaptation to modern industry standards.
 
-I am particularly inspired by ${companyName}'s commitment to quality and technical innovation. Having completed my coursework, I am available to join immediately and dedicate my energy to creating measurable impact from day one. Thank you for your time and consideration, and I look forward to the opportunity to discuss my qualifications in an interview.
+I am particularly inspired by ${compRef}'s commitment to technical innovation. Having completed my coursework, I am available to join immediately and dedicate my energy to creating measurable impact from day one. Thank you for your time and consideration, and I look forward to the opportunity to discuss my qualifications in an interview.
 
 Sincerely,
 ${candidateName}
-${contactLine}`;
+${formattedContactLine}`;
 
   const gapSummary = [
     missingLabels.length > 0
@@ -388,7 +399,7 @@ ${contactLine}`;
   const changeLog = [
     `Preserved 100% of candidate factual credentials, institutions, project titles, and contact details.`,
     `Injected target JD keywords (${targetLabels.slice(0, 5).join(', ')}) into technical skills categories for ATS compliance.`,
-    `Structured objective and cover letter tailored to ${companyName} for the ${targetRole} position.`,
+    `Structured objective and cover letter tailored for the ${targetRole} position.`,
   ];
 
   return {
