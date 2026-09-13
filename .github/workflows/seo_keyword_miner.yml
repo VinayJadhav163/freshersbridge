@@ -1,0 +1,30 @@
+name: FreshersBridge Weekly SEO Keyword Miner
+
+on:
+  schedule:
+    - cron: '0 2 * * 0' # Every Sunday at 02:00 UTC (~07:30 AM IST)
+  workflow_dispatch:     # Allows manual 1-click execution from GitHub Actions tab
+
+jobs:
+  mine-keywords:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Free SEO Keyword Miner
+        run: |
+          python scraper/seo_keyword_miner.py
+
+      - name: Commit and Push Updated Keywords
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/seo_keywords.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(seo): update weekly mined search keywords [skip ci]" && git push)
