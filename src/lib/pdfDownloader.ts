@@ -8,7 +8,7 @@ import { parseResumeToStructured } from './resumeFormatters';
  * Ensures 100% ATS parser compatibility, crisp vector rendering at any zoom level,
  * zero browser headers/footers, and precise mathematical underlines.
  */
-export async function downloadDirectResumePdf(resumeText: string) {
+export async function downloadDirectResumePdf(resumeText: string, jobRole?: string) {
   if (typeof window === 'undefined') return;
 
   const structured = parseResumeToStructured(resumeText);
@@ -298,7 +298,118 @@ export async function downloadDirectResumePdf(resumeText: string) {
     }
   }
 
-  // Direct download clean PDF
-  const cleanFilename = safeName.replace(/[^a-zA-Z0-9]/g, '_') || 'Candidate';
-  doc.save(`${cleanFilename}_ATS_Resume.pdf`);
+  // Direct download clean PDF with role suffix: Fname_Lname_ATS_Resume_Job_role
+  const nameParts = safeName
+    .split(/\s+/)
+    .map((s) => s.replace(/[^a-zA-Z0-9]/g, ''))
+    .filter(Boolean);
+  const cleanName = nameParts.length > 0 ? nameParts.join('_') : 'Candidate';
+
+  let roleSuffix = '';
+  if (jobRole && jobRole.trim()) {
+    const cleanRole = jobRole
+      .replace(/[^a-zA-Z0-9\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join('');
+    if (cleanRole) {
+      roleSuffix = `_${cleanRole}`;
+    }
+  }
+
+  doc.save(`${cleanName}_ATS_Resume${roleSuffix}.pdf`);
+}
+
+/**
+ * Client-side direct native vector PDF downloader for Cover Letter.
+ * Renders professional formatted letterhead and formatted text cleanly onto A4 PDF.
+ */
+export async function downloadDirectCoverLetterPdf(
+  coverLetterText: string,
+  candidateName?: string,
+  jobRole?: string
+) {
+  if (typeof window === 'undefined') return;
+
+  const jsPDFModule = (await import('jspdf')).default;
+  const doc = new jsPDFModule({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const marginX = 20;
+  const contentWidth = pageWidth - marginX * 2; // 170 mm
+  const lineHeight = 5.2;
+  let y = 24;
+
+  const safeName = (candidateName || '').trim();
+  const nameParts = safeName
+    .split(/\s+/)
+    .map((s) => s.replace(/[^a-zA-Z0-9]/g, ''))
+    .filter(Boolean);
+  const cleanName = nameParts.length > 0 ? nameParts.join('_') : 'Candidate';
+
+  let roleSuffix = '';
+  if (jobRole && jobRole.trim()) {
+    const cleanRole = jobRole
+      .replace(/[^a-zA-Z0-9\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join('');
+    if (cleanRole) {
+      roleSuffix = `_${cleanRole}`;
+    }
+  }
+
+  // Document Title / Header
+  if (safeName) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(15, 23, 42); // slate-900
+    doc.text(safeName.toUpperCase(), marginX, y);
+    y += 5.5;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text('Job Application Cover Letter', marginX, y);
+    y += 4;
+
+    doc.setDrawColor(203, 213, 225); // slate-300
+    doc.setLineWidth(0.4);
+    doc.line(marginX, y, pageWidth - marginX, y);
+    y += 8;
+  }
+
+  // Letter Body Content
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10.5);
+  doc.setTextColor(30, 41, 59); // slate-800
+
+  // Split text by lines and paragraphs
+  const rawParagraphs = coverLetterText.split('\n');
+  for (const para of rawParagraphs) {
+    const trimmed = para.trim();
+    if (!trimmed) {
+      y += 4; // paragraph gap
+      continue;
+    }
+
+    const wrappedLines = doc.splitTextToSize(trimmed, contentWidth);
+    if (y + wrappedLines.length * lineHeight > 275) {
+      doc.addPage();
+      y = 20;
+    }
+
+    wrappedLines.forEach((line: string) => {
+      doc.text(line, marginX, y);
+      y += lineHeight;
+    });
+  }
+
+  doc.save(`${cleanName}_Cover_Letter${roleSuffix}.pdf`);
 }

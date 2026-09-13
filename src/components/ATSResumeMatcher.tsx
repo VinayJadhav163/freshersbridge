@@ -34,8 +34,8 @@ import {
 import { extractTextFromFile } from '@/lib/pdfTextExtractor';
 import { analyzeResumeATS, ATSAnalysisResult } from '@/lib/atsMatchEngine';
 import FaangPathResumeView from '@/components/FaangPathResumeView';
-import { generateFaangPathResumeHtml } from '@/lib/resumeFormatters';
-import { downloadDirectResumePdf } from '@/lib/pdfDownloader';
+import { generateFaangPathResumeHtml, parseResumeToStructured } from '@/lib/resumeFormatters';
+import { downloadDirectResumePdf, downloadDirectCoverLetterPdf } from '@/lib/pdfDownloader';
 
 export interface TailoredResumeResult {
   hard_requirements: string[];
@@ -510,11 +510,32 @@ export default function ATSResumeMatcher() {
     URL.revokeObjectURL(url);
   };
 
+  const getExtractedJobRole = () => {
+    if (selectedPresetIndex !== '' && SAMPLE_JOB_PRESETS[selectedPresetIndex as number]) {
+      const preset = SAMPLE_JOB_PRESETS[selectedPresetIndex as number];
+      const match = preset.label.match(/-\s*(.+)/);
+      if (match && match[1]) return match[1].trim();
+      return preset.label;
+    }
+    if (jobDescription) {
+      const roleMatch = jobDescription.match(/(?:role|position|job\s*title|title)\s*:\s*([^\n\r,]+)/i);
+      if (roleMatch && roleMatch[1]) {
+        return roleMatch[1].trim();
+      }
+      const firstLine = jobDescription.trim().split('\n')[0];
+      if (firstLine && firstLine.length < 50 && !firstLine.includes(':')) {
+        return firstLine.trim();
+      }
+    }
+    return '';
+  };
+
   const handleDownloadPdf = async () => {
     if (!tailoredResult?.tailored_resume) return;
     setIsPdfGenerating(true);
+    const targetRole = getExtractedJobRole();
     try {
-      await downloadDirectResumePdf(tailoredResult.tailored_resume);
+      await downloadDirectResumePdf(tailoredResult.tailored_resume, targetRole);
     } catch (e) {
       console.error('Direct PDF export error, falling back to clean print:', e);
       const htmlContent = generateFaangPathResumeHtml(tailoredResult.tailored_resume);
@@ -535,17 +556,26 @@ export default function ATSResumeMatcher() {
     setTimeout(() => setCopiedCoverLetter(false), 2000);
   };
 
-  const handleDownloadCoverLetter = () => {
+  const handleDownloadCoverLetter = async () => {
     if (!tailoredResult?.cover_letter) return;
-    const blob = new Blob([tailoredResult.cover_letter], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'tailored-cover-letter.txt';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    setIsPdfGenerating(true);
+    const targetRole = getExtractedJobRole();
+    let candidateName = 'Candidate';
+    try {
+      const parsed = parseResumeToStructured(tailoredResult.tailored_resume || resumeText);
+      if (parsed.name && parsed.name !== 'CANDIDATE NAME') {
+        candidateName = parsed.name;
+      }
+    } catch {}
+
+    try {
+      await downloadDirectCoverLetterPdf(tailoredResult.cover_letter, candidateName, targetRole);
+    } catch (e) {
+      console.error('Cover letter PDF download error, falling back to print:', e);
+      handlePrintCoverLetter();
+    } finally {
+      setIsPdfGenerating(false);
+    }
   };
 
   const handlePrintCoverLetter = () => {
@@ -1085,36 +1115,32 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
 
           </div>
 
-          {/* Prompt / Call-To-Action Banner: Re-Tailor Resume for JD */}
-          <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/70 dark:from-[#275df5]/10 dark:via-indigo-950/20 dark:to-[#275df5]/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xs">
-            <div className="text-center sm:text-left">
-              <h5 className="text-base sm:text-lg font-black text-foreground">
-                {tailoredResult ? 'Re-align Your Resume to Target Requirements' : 'Instantly Boost Your ATS Match Score to 90%+'}
-              </h5>
-            </div>
+          {/* Prompt / Call-To-Action Banner: Scan & Tailor Resume for JD (Hidden once tailored result is generated) */}
+          {!tailoredResult && (
+            <div className="rounded-2xl border-2 border-[#275df5]/30 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/70 dark:from-[#275df5]/10 dark:via-indigo-950/20 dark:to-[#275df5]/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xs">
+              <div className="text-center sm:text-left">
+                <h5 className="text-base sm:text-lg font-black text-foreground">
+                  Instantly Boost Your ATS Match Score to 90%+
+                </h5>
+              </div>
 
-            <button
-              type="button"
-              onClick={handleTailorResume}
-              disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
-            >
-              {isTailoring ? (
-                <>
-                  <RefreshCw className="h-4 w-4 animate-spin text-white" />
-                  <span>Tailoring Resume to JD...</span>
-                </>
-              ) : (
-                <span>
-                  {tailoredResult
-                    ? hasInputChangedSinceTailoring
-                      ? 'Re-tailor Resume for JD'
-                      : 'View Tailored Resume'
-                    : 'Scan & Tailor Resume for JD'}
-                </span>
-              )}
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={handleTailorResume}
+                disabled={!resumeText.trim() || !jobDescription.trim() || isTailoring || isAnalyzing}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] hover:opacity-95 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shrink-0"
+              >
+                {isTailoring ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 animate-spin text-white" />
+                    <span>Tailoring Resume to JD...</span>
+                  </>
+                ) : (
+                  <span>Scan & Tailor Resume for JD</span>
+                )}
+              </button>
+            </div>
+          )}
 
         </div>
       )}
@@ -1158,7 +1184,11 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4 relative z-10">
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
-                <span>Tailored ATS Resume</span>
+                <span>
+                  {activeTailorTab === 'cover_letter'
+                    ? 'Tailored Cover Letter'
+                    : 'Tailored ATS Resume'}
+                </span>
               </h3>
             </div>
 
@@ -1187,11 +1217,21 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                   <button
                     type="button"
                     onClick={handleDownloadCoverLetter}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer"
-                    title="Download Cover Letter"
+                    disabled={isPdfGenerating}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background hover:bg-secondary text-foreground px-4 py-2.5 text-xs font-bold transition-all cursor-pointer disabled:opacity-70"
+                    title="Download Cover Letter as PDF"
                   >
-                    <Download className="h-4 w-4 text-[#275df5]" />
-                    <span>Download</span>
+                    {isPdfGenerating ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 animate-spin text-[#275df5]" />
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="h-4 w-4 text-[#275df5]" />
+                        <span>Download (PDF)</span>
+                      </>
+                    )}
                   </button>
                 </>
               ) : (
@@ -1295,11 +1335,16 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
                     <button
                       type="button"
                       onClick={handleDownloadCoverLetter}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer"
-                      title="Download Cover Letter"
+                      disabled={isPdfGenerating}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/90 hover:bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-all shadow-2xs cursor-pointer disabled:opacity-70"
+                      title="Download Cover Letter as PDF"
                     >
-                      <Download className="h-3.5 w-3.5 text-[#275df5]" />
-                      <span>Download</span>
+                      {isPdfGenerating ? (
+                        <RefreshCw className="h-3.5 w-3.5 animate-spin text-[#275df5]" />
+                      ) : (
+                        <Download className="h-3.5 w-3.5 text-[#275df5]" />
+                      )}
+                      <span>{isPdfGenerating ? 'Generating...' : 'Download (PDF)'}</span>
                     </button>
                   </div>
                 </div>
