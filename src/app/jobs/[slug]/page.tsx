@@ -102,11 +102,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? new Date(job.application_deadline).getTime() < Date.now()
     : false;
 
+  const isInternship = job.job_type === 'internship' || /\b(intern|internship|interns)\b/i.test(job.title);
+  const roleType = isInternship ? 'Internship' : 'Freshers Job';
   const titlePrefix = isExpired ? '[Closed] ' : '';
-  const title = `${titlePrefix}${job.title} at ${job.company} | FreshersBridge`;
-  const description = `Apply for ${job.title} vacancy at ${job.company} in ${job.location}. Eligibility: ${
+  const title = `${titlePrefix}${job.title} at ${job.company} - ${roleType} (2026 Batch) | FreshersBridge`;
+  const description = `Apply for ${job.title} at ${job.company} in ${job.location}. Verified entry-level ${roleType.toLowerCase()} opportunity. Eligibility: ${
     job.eligibility
-  }. Required skills: ${job.skills.join(', ')}. Find more entry-level tech opportunities on FreshersBridge.in.`;
+  }. Required skills: ${job.skills.join(', ')}. Apply on FreshersBridge.in.`;
   const ogImageUrl = `https://freshersbridge.in/api/og/job?slug=${job.slug}`;
 
   return {
@@ -349,13 +351,20 @@ export default async function JobDetailsPage({ params }: Props) {
     ],
   };
 
+  const isRemote = job.location?.toLowerCase().includes('remote') || job.location?.toLowerCase().includes('work from home');
+
   const jobPostingJsonLd = {
     '@type': 'JobPosting',
-    'title': job.title,
+    'title': `${job.title} (Freshers / Entry Level)`,
     'description': job.description,
     'datePosted': job.created_at,
     'validThrough': validThroughDate,
     'employmentType': isInternship ? 'INTERN' : 'FULL_TIME',
+    'directApply': true,
+    'experienceRequirements': {
+      '@type': 'OccupationalExperienceRequirements',
+      'monthsOfExperience': 0,
+    },
     'hiringOrganization': {
       '@type': 'Organization',
       'name': job.company,
@@ -370,6 +379,15 @@ export default async function JobDetailsPage({ params }: Props) {
         'addressCountry': 'IN',
       },
     },
+    ...(isRemote
+      ? {
+          'jobLocationType': 'TELECOMMUTE',
+          'applicantLocationRequirements': {
+            '@type': 'Country',
+            'name': 'India',
+          },
+        }
+      : {}),
     'baseSalary': job.salary ? {
       '@type': 'MonetaryAmount',
       'currency': 'INR',

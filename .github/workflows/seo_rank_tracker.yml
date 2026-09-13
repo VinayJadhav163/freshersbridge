@@ -1,0 +1,30 @@
+name: FreshersBridge Weekly SEO Rank Tracker
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # Every Monday at 03:00 UTC (~08:30 AM IST)
+  workflow_dispatch:     # Allows manual 1-click execution from GitHub Actions tab
+
+jobs:
+  track-rankings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Free SEO Rank Tracker
+        run: |
+          python scraper/seo_rank_tracker.py
+
+      - name: Commit and Push Updated Rank Reports
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/seo_rank_report.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(seo): update weekly search rankings report [skip ci]" && git push)
