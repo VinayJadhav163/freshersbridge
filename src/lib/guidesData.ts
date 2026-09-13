@@ -132,19 +132,19 @@ Candidates clearing the written test are invited to a 3-panel interview (Technic
   {
     id: '2',
     slug: 'accenture-recruitment-process-syllabus-coding-questions-freshers',
-    title: 'Accenture Recruitment Process 2026: Cognitive, Technical & Coding Questions',
-    subtitle: 'Everything you need to crack the Associate Software Engineer (4.5 LPA) and Advanced ASE (6.5 LPA) roles.',
-    description: 'Detailed walkthrough of Accenture recruitment rounds, including Cognitive Assessment, Technical MCQ, Coding Round, and Communication Assessment.',
+    title: 'Accenture Recruitment Process 2026: Exam Pattern, Syllabus & Solved Coding Questions',
+    subtitle: 'Everything you need to crack the Associate Software Engineer (4.5 LPA) and Advanced ASE (6.5 LPA) roles with real exam patterns.',
+    description: 'Complete Accenture recruitment 2026 blueprint: Cognitive & Technical assessment syllabus, test pattern, solved coding questions, communication tips, and technical interview questions for freshers.',
     category: 'Company Patterns',
     readTime: '11 min read',
     publishedAt: '2026-08-21',
-    updatedAt: '2026-08-25',
+    updatedAt: '2026-09-13',
     author: {
       name: 'FreshersBridge Career Team',
       role: 'Career Tech Lead at FreshersBridge',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
-    tags: ['Accenture', 'ASE', 'Off-Campus', 'Coding Round', 'Aptitude'],
+    tags: ['Accenture', 'ASE', 'Off-Campus', 'Coding Round', 'Aptitude', 'Accenture Exam Pattern', 'Accenture Technical Questions 2026', 'Packaged App Development Associate'],
     tableOfContents: [
       { id: 'hiring-tracks', title: '1. Accenture Hiring Roles & Packages' },
       { id: 'selection-process', title: '2. Four-Stage Selection Process' },
@@ -1053,31 +1053,39 @@ Candidates clearing the online assessment advance to the combined Technical + HR
   {
     id: '12',
     slug: 'infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide',
-    title: 'Infosys SP & DSE 2026: Specialist Programmer & DSE Hiring Guide',
-    subtitle: 'How freshers can crack the ₹9.5 LPA Specialist Programmer (SP) and ₹6.25 LPA Digital Specialist Engineer (DSE) roles.',
-    description: 'Complete guide for cracking Infosys high-package hiring through HackWithInfy and online assessments, with syllabus, algorithmic coding patterns, and interview strategies.',
+    title: 'Infosys SP & DSE Package, Roles & Exam Pattern 2026: Complete Hiring Guide',
+    subtitle: 'How freshers can crack the ₹9.5 LPA Specialist Programmer (SP) and ₹6.25 LPA Digital Specialist Engineer (DSE) roles with syllabus & coding questions.',
+    description: 'Complete breakdown of Infosys SP & DSE package, roles, syllabus, HackWithInfy coding problems, and technical interview questions for 2026 freshers.',
     category: 'Company Patterns',
     readTime: '13 min read',
     publishedAt: '2026-08-28',
-    updatedAt: '2026-09-02',
+    updatedAt: '2026-09-13',
     author: {
       name: 'FreshersBridge Career Team',
       role: 'Career Tech Lead at FreshersBridge',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
-    tags: ['Infosys', 'Specialist Programmer', 'DSE', 'Coding', 'Freshers 2026'],
+    tags: ['Infosys', 'Specialist Programmer', 'DSE', 'Coding', 'Freshers 2026', 'Infosys SP DSE Package', 'Digital Specialist Engineer (DSE)', 'Infosys SP and DSE Role Package'],
     tableOfContents: [
-      { id: 'roles-overview', title: '1. SE vs DSE vs SP Packages & Differences' },
+      { id: 'roles-overview', title: '1. Infosys SP and DSE Package, Roles & Salary Differences' },
       { id: 'exam-structure', title: '2. HackWithInfy & SP Exam Structure' },
       { id: 'coding-problems', title: '3. Advanced Algorithmic Patterns' },
       { id: 'interview-prep', title: '4. System Design & Technical Interview' },
     ],
     content: `
-### 1. SE vs DSE vs SP Packages & Differences
-Infosys offers three distinct tiers of entry-level engineering roles:
-* **Systems Engineer (SE):** ₹3.6 LPA – Core software maintenance and baseline technology enablement.
+### 1. Infosys SP and DSE Package, Roles & Salary Differences
+Infosys offers three distinct tiers of entry-level engineering roles through off-campus drives and HackWithInfy:
+
+* **Systems Engineer (SE):** ₹3.60 LPA – Core software maintenance and baseline technology enablement.
 * **Digital Specialist Engineer (DSE):** ₹6.25 LPA – Full-stack engineering, microservices, and cloud architectures.
-* **Specialist Programmer (SP):** ₹9.5 LPA – Elite competitive programming and systems engineering.
+* **Specialist Programmer (SP):** ₹9.50 LPA – Elite competitive programming and distributed systems engineering.
+
+#### Detailed Infosys SP and DSE Package Breakdown:
+| Role Designation | Total CTC | In-Hand Monthly (Approx) | Probation Period | Target Tech Stack |
+| :--- | :---: | :---: | :---: | :--- |
+| **Systems Engineer (SE)** | ₹3.60 LPA | ₹24,000 – ₹26,000 | 6 Months (Mysore Training) | Java, Testing, Maintenance |
+| **Digital Specialist Engineer (DSE)** | ₹6.25 LPA | ₹44,000 – ₹47,000 | 3 Months | Full Stack, Cloud, Microservices |
+| **Specialist Programmer (SP)** | ₹9.50 LPA | ₹68,000 – ₹72,000 | Direct Project | AI/ML, Distributed Systems, Comp Algo |
 
 ---
 
