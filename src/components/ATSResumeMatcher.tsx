@@ -1215,18 +1215,35 @@ Evaluated on FreshersBridge (https://freshersbridge.in/career-tools)`;
         <div
           id="tailored-resume-section"
           style={{ scrollMarginTop: '160px' }}
-          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[220px] animate-in fade-in-50 duration-300"
+          className="rounded-2xl border border-border bg-card/80 p-8 sm:p-14 shadow-md backdrop-blur-sm flex flex-col items-center justify-center min-h-[220px] animate-in fade-in-50 duration-300 relative overflow-hidden"
         >
+          {/* Atmospheric Blue Smoke Plumes Behind the Pill */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* Primary blue smoke cloud */}
+            <div className="w-[320px] sm:w-[480px] h-[100px] sm:h-[130px] rounded-full bg-gradient-to-r from-[#275df5]/35 via-[#38bdf8]/30 to-[#6366f1]/25 blur-3xl animate-smoke-1" />
+            {/* Secondary cyan vapor cloud drifting counter */}
+            <div className="w-[280px] sm:w-[420px] h-[90px] sm:h-[120px] rounded-full bg-gradient-to-l from-[#38bdf8]/30 via-[#275df5]/25 to-transparent blur-2xl animate-smoke-2 -mt-2" />
+          </div>
+
+          {/* Pill Container with Smoky Halo & Internal Misty Shimmer */}
           <div
-            className="inline-flex h-[74px] items-center gap-3.5 rounded-full pl-3 pr-8 border border-border bg-secondary/80 dark:bg-[#121216] shadow-sm transition-all"
-            style={{
-              boxShadow: "inset 0 0 0 1px rgba(120,120,120,0.1), 0 4px 20px -2px rgba(0,0,0,0.05)",
-            }}
+            className="relative z-10 inline-flex h-[74px] items-center gap-3.5 rounded-full pl-3 pr-8 border border-[#275df5]/30 bg-secondary/90 dark:bg-[#121216]/95 backdrop-blur-md shadow-sm transition-all animate-smoke-halo overflow-hidden"
           >
-            <span className="[&_canvas]:!size-14 shrink-0">
-              <ThinkingOrb state="composing" size={64} theme="auto" />
-            </span>
-            <span className="whitespace-nowrap text-base sm:text-lg font-semibold text-foreground tracking-tight">
+            {/* Internal Misty Smoke Pass / Shimmer */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full">
+              <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#38bdf8]/15 dark:via-[#38bdf8]/20 to-transparent animate-smoke-shimmer" />
+            </div>
+
+            {/* Orb with localized misty core glow */}
+            <div className="relative shrink-0 flex items-center justify-center">
+              {/* Localized blue smoke mist behind the orb */}
+              <div className="absolute -inset-2 rounded-full bg-[#275df5]/40 dark:bg-[#38bdf8]/45 blur-lg animate-smoke-orb pointer-events-none" />
+              <span className="[&_canvas]:!size-14 relative z-10">
+                <ThinkingOrb state="composing" size={64} theme="auto" />
+              </span>
+            </div>
+
+            <span className="relative z-10 whitespace-nowrap text-base sm:text-lg font-semibold text-foreground tracking-tight">
               Generating Tailored ATS Resume...
             </span>
           </div>
