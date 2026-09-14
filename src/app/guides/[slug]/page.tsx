@@ -79,29 +79,56 @@ export default async function GuideArticlePage({ params }: Props) {
 
   const relatedGuides = getRelatedGuides(guide.slug, guide.category, 3);
 
-  // Structured JSON-LD for Google Rich Results
+  // Structured JSON-LD for Google Rich Results (Article + BreadcrumbList)
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'TechArticle',
-    'headline': guide.title,
-    'description': guide.description,
-    'image': 'https://freshersbridge.in/logo.png',
-    'author': {
-      '@type': 'Person',
-      'name': guide.author.name,
-      'jobTitle': guide.author.role,
-    },
-    'publisher': {
-      '@type': 'Organization',
-      'name': 'FreshersBridge',
-      'logo': {
-        '@type': 'ImageObject',
-        'url': 'https://freshersbridge.in/logo.png',
+    '@graph': [
+      {
+        '@type': 'TechArticle',
+        'headline': guide.title,
+        'description': guide.description,
+        'image': 'https://freshersbridge.in/logo.png',
+        'author': {
+          '@type': 'Person',
+          'name': guide.author.name,
+          'jobTitle': guide.author.role,
+        },
+        'publisher': {
+          '@type': 'Organization',
+          'name': 'FreshersBridge',
+          'logo': {
+            '@type': 'ImageObject',
+            'url': 'https://freshersbridge.in/logo.png',
+          },
+        },
+        'datePublished': guide.publishedAt,
+        'dateModified': guide.updatedAt,
+        'mainEntityOfPage': `https://freshersbridge.in/guides/${guide.slug}`,
       },
-    },
-    'datePublished': guide.publishedAt,
-    'dateModified': guide.updatedAt,
-    'mainEntityOfPage': `https://freshersbridge.in/guides/${guide.slug}`,
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': 'https://freshersbridge.in',
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Career Guides',
+            'item': 'https://freshersbridge.in/guides',
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': guide.title,
+            'item': `https://freshersbridge.in/guides/${guide.slug}`,
+          },
+        ],
+      },
+    ],
   };
 
   return (

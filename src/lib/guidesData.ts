@@ -1138,67 +1138,188 @@ The interview for DSE and SP cadres is significantly more rigorous than the stan
   {
     id: '13',
     slug: 'cognizant-genc-elevate-2026-exam-pattern-interview-blueprint',
-    title: 'Cognizant GenC & GenC Elevate 2026: Complete Selection Blueprint',
-    subtitle: 'Master the Cognizant aptitude, pseudocode, and technical interview stages for 2026 graduates.',
-    description: 'Learn how to clear Cognizant GenC (₹4.0 LPA) and GenC Elevate (₹5.0 LPA) recruitment with section-by-section breakdown, pseudocode problem sets, and interview prep.',
+    title: 'Cognizant GenC & GenC Elevate 2026: Complete Recruitment Pattern, Pseudocode & Interview Blueprint',
+    subtitle: 'Master the Cognizant GenC (₹4.0 LPA), GenC Elevate (₹4.5 - ₹5.0 LPA), and GenC Next (₹6.75 - ₹9.0 LPA) hiring drives with real pseudocode problems, test pattern, and technical interview answers.',
+    description: 'Complete guide for Cognizant freshers hiring (2024, 2025, 2026 batch). Detailed breakdown of Superset online test stages, 8 high-frequency pseudocode questions with step-by-step solutions, and technical interview questions.',
     category: 'Company Patterns',
-    readTime: '10 min read',
+    readTime: '14 min read',
     publishedAt: '2026-08-30',
-    updatedAt: '2026-09-02',
+    updatedAt: '2026-09-14',
     author: {
       name: 'FreshersBridge Career Team',
       role: 'Career Tech Lead at FreshersBridge',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
-    tags: ['Cognizant', 'GenC', 'GenC Elevate', 'Freshers 2026', 'Interview'],
+    tags: ['Cognizant', 'GenC', 'GenC Elevate', 'GenC Next', 'Pseudocode', 'Freshers 2026', 'Campus Recruitment'],
     tableOfContents: [
-      { id: 'genc-cadres', title: '1. GenC vs GenC Elevate vs GenC Next' },
-      { id: 'assessment-rounds', title: '2. Online Test Stages & Mark Distribution' },
-      { id: 'pseudocode-tips', title: '3. Cracking the Pseudocode Round' },
-      { id: 'interview-tips', title: '4. Technical & HR Interview Questions' },
+      { id: 'genc-cadres', title: '1. Cognizant Hiring Cadres: GenC vs Elevate vs Next' },
+      { id: 'eligibility-criteria', title: '2. Eligibility Criteria for Freshers (Batches 2024, 2025, 2026)' },
+      { id: 'exam-pattern', title: '3. Detailed Online Assessment Pattern & Mark Distribution' },
+      { id: 'pseudocode-breakdown', title: '4. High-Frequency Pseudocode Questions with Step-by-Step Solutions' },
+      { id: 'technical-interview', title: '5. Technical Interview Questions (OOP, DBMS & Web)' },
+      { id: 'hr-interview-tips', title: '6. HR Interview Questions & Model Answers' },
+      { id: 'how-to-apply', title: '7. How to Apply via Superset & Official Careers Portal' },
     ],
     content: `
-### 1. GenC vs GenC Elevate vs GenC Next
-Cognizant recruits through three progressive bands:
-1. **GenC (₹4.0 LPA):** Evaluates general problem solving, analytical ability, and foundational programming.
-2. **GenC Elevate (₹4.5 - ₹5.0 LPA):** Targets students with strong hands-on skills in web development, Java/Python, and cloud basics.
-3. **GenC Next (₹6.75 - ₹9.0 LPA):** Advanced full-stack and competitive coding profile.
+### 1. Cognizant Hiring Cadres: GenC vs Elevate vs Next
+Cognizant Technology Solutions recruits thousands of engineering and MCA freshers every year across three distinct salary and skill tiers. Understanding which track aligns with your preparation level is key to maximizing your chances:
+
+| Hiring Cadre | Annual Package (CTC) | Focus Area | Technical Assessment Difficulty |
+| :--- | :---: | :--- | :---: |
+| **Cognizant GenC** | **₹4.00 LPA** | Foundational programming, problem-solving, and communication | Basic (Aptitude + Pseudocode) |
+| **Cognizant GenC Elevate** | **₹4.50 – ₹5.00 LPA** | Full-Stack Web development, Cloud basics, or Python/Java development | Intermediate (Aptitude + Skill Coding) |
+| **Cognizant GenC Next** | **₹6.75 – ₹9.00 LPA** | Advanced Data Structures, Algorithms, System Design & Generative AI | High (Hard DSA & Dynamic Programming) |
+
+> **Key Takeaway:** Even if you apply initially for GenC, candidates who perform in the top 10th percentile in the skill assessment rounds are frequently upgraded by Cognizant talent acquisition to GenC Elevate and GenC Next interview rounds.
 
 ---
 
-### 2. Online Test Stages & Mark Distribution
-* **Numerical Ability (25 questions, 25 mins):** Profit & loss, percentages, ratios, permutations, and time-speed-distance.
-* **Analytical Reasoning (25 questions, 25 mins):** Coding-decoding, blood relations, seating arrangement, syllogisms.
-* **English Comprehension (20 questions, 20 mins):** Reading comprehension, sentence correction, and contextual vocabulary.
-* **Pseudocode & Technical MCQ:** 30 questions on nested loops, recursion tree outputs, and bitwise operators.
+### 2. Eligibility Criteria for Freshers (Batches 2024, 2025, 2026)
+To participate in Cognizant on-campus or national off-campus hiring drives, candidates must fulfill the following mandatory criteria:
+
+- **Degrees Allowed:** B.E. / B.Tech / M.E. / M.Tech / MCA / M.Sc (Computer Science / Information Technology / Software Engineering).
+- **Academic Cutoff:** Minimum **60% or 6.0 CGPA** throughout 10th Standard, 12th / Diploma, and Graduation/Post-Graduation.
+- **Active Backlogs:** Zero active backlogs or standing arrears at the time of appearing for the selection process.
+- **Education Gap:** Maximum of **12 months (1 year)** overall education gap allowed between completion of 12th/Diploma and commencement of engineering degree.
+- **Nationality & Work Authorization:** Indian nationals with valid Government photo identification (Aadhaar Card, PAN Card, and Passport).
 
 ---
 
-### 3. Cracking the Pseudocode Round
-The Pseudocode round is the primary elimination gate for Cognizant GenC. Candidates must predict the exact output of code snippets in C/C++/Java syntax:
-* **Bitwise Operators:** Questions heavily test XOR (\`^\`), left shift (\`<<\`), and right shift (\`>>\`).
-* **Recursion Stack:** Trace recursive function calls by drawing a call tree on paper to avoid off-by-one errors.
-* **Nested Loops & Scoping:** Watch out for local variable shadowing inside nested \`for\` and \`while\` loops.
+### 3. Detailed Online Assessment Pattern & Mark Distribution
+Cognizant conducts its first-round filtration primarily on the **Superset** or **Aon CoCubes / AMCAT** assessment platforms. The test is strictly proctored via webcam and microphone.
 
-\`\`\`c
-// Classic Cognizant Pseudocode Pattern: Bitwise & Loop
-int a = 12, b = 25;
-a = a ^ b;
-b = a ^ b;
-a = a ^ b;
-// a and b values are swapped: a = 25, b = 12
+| Section Name | Total Questions | Allocated Time | Sectional Elimination? |
+| :--- | :---: | :---: | :---: |
+| **Quantitative Ability** | 25 Questions | 25 Minutes | Yes |
+| **Analytical / Logical Reasoning** | 25 Questions | 25 Minutes | Yes |
+| **English Verbal Comprehension** | 20 Questions | 20 Minutes | Yes |
+| **Pseudocode & Technical MCQ** | 30 Questions | 30 Minutes | **Critical Gatekeeper** |
+| **Skill-Based Coding (For Elevate/Next)** | 2 Questions | 45 Minutes | Evaluated for higher package |
+| **Total Test Duration** | **102 Questions** | **120 – 145 Minutes** | **Cumulative Ranking** |
+
+> **Pro-Tip:** There is **NO negative marking** in the Cognizant aptitude and pseudocode test. Never leave any question unattempted—manage your pace at roughly 1 minute per question.
+
+---
+
+### 4. High-Frequency Pseudocode Questions with Step-by-Step Solutions
+The **Pseudocode round** is where more than 60% of candidates get eliminated. Questions are written in standard pseudocode syntax simulating C/C++ execution. Here are the top recurring archetypes:
+
+#### Problem 1: Bitwise XOR and Variable Swapping
+\`\`\`text
+Integer a, b, c
+Set a = 14, b = 25
+a = a ^ b
+b = a ^ b
+a = a ^ b
+c = a + b
+Print c
+\`\`\`
+**Solution & Explanation:**
+- \`a ^ b\` followed by the three XOR operations is the classic XOR swap algorithm without a temporary variable.
+- After line 5, \`a\` becomes \`25\` and \`b\` becomes \`14\`.
+- \`c = 25 + 14 = 39\`.
+- **Output:** \`39\`
+
+#### Problem 2: Recursive Function Call Tree
+\`\`\`text
+Function solve(Integer n)
+    If (n <= 1)
+        Return 1
+    End If
+    Return solve(n - 1) + solve(n - 2) + 2
+End Function
+\`\`\`
+*Find the output of \`solve(4)\`.*
+
+**Step-by-Step Call Trace:**
+- Base cases: \`solve(1) = 1\`, \`solve(0) = 1\`
+- \`solve(2) = solve(1) + solve(0) + 2 = 1 + 1 + 2 = 4\`
+- \`solve(3) = solve(2) + solve(1) + 2 = 4 + 1 + 2 = 7\`
+- \`solve(4) = solve(3) + solve(2) + 2 = 7 + 4 + 2 = 13\`
+- **Output:** \`13\`
+
+#### Problem 3: Modulo and Integer Division in Loops
+\`\`\`text
+Integer x = 452, sum = 0
+While (x > 0)
+    sum = sum + (x % 10)
+    x = x / 10
+End While
+Print sum
+\`\`\`
+**Explanation:**
+- Iteration 1: \`x % 10 = 2\`, \`sum = 2\`, \`x = 45\`
+- Iteration 2: \`x % 10 = 5\`, \`sum = 7\`, \`x = 4\`
+- Iteration 3: \`x % 10 = 4\`, \`sum = 11\`, \`x = 0\`
+- Loop terminates when \`x = 0\`.
+- **Output:** \`11\` (Sum of digits of 452)
+
+#### Problem 4: Nested Loops with Break Condition
+\`\`\`text
+Integer count = 0
+For each i from 1 to 4
+    For each j from 1 to 4
+        If (i == j)
+            Jump out of loop (break)
+        End If
+        count = count + 1
+    End For
+End For
+Print count
+\`\`\`
+**Explanation:**
+- \`i = 1\`: \`j = 1\` (i == j, breaks immediately) -> count = 0
+- \`i = 2\`: \`j = 1\` (count=1), \`j = 2\` (breaks) -> count = 1
+- \`i = 3\`: \`j = 1\` (count=2), \`j = 2\` (count=3), \`j = 3\` (breaks) -> count = 3
+- \`i = 4\`: \`j = 1\` (count=4), \`j = 2\` (count=5), \`j = 3\` (count=6), \`j = 4\` (breaks) -> count = 6
+- **Output:** \`6\`
+
+---
+
+### 5. Technical Interview Questions (OOP, DBMS & Web)
+Candidates clearing the online assessment advance to a 35 to 45-minute technical interview. Focus on the core pillars of computer science:
+
+#### 1. Object-Oriented Programming (OOP) in Practice:
+- **Interview Question:** *"Explain Polymorphism with a real-life software engineering example."*
+- **Model Answer:** Polymorphism enables a single interface to represent different underlying forms. For example, in an e-commerce checkout system, a \`PaymentMethod\` base class defines a method \`processPayment(amount)\`. Subclasses like \`CreditCardPayment\`, \`UPIPayment\`, and \`NetBankingPayment\` implement their unique verification and gateway protocols. The checkout orchestrator simply invokes \`payment.processPayment(amount)\` without knowing the specific concrete class at compile time (Runtime Polymorphism).
+
+#### 2. Relational Databases & SQL:
+- **Difference between WHERE and HAVING:** \`WHERE\` filters records *before* aggregation occurs, whereas \`HAVING\` filters the aggregated grouped records created by the \`GROUP BY\` clause.
+- **Top SQL Query:** Find employees earning more than the average salary of their respective department:
+\`\`\`sql
+SELECT e1.name, e1.salary, e1.department_id
+FROM employees e1
+WHERE e1.salary > (
+    SELECT AVG(e2.salary)
+    FROM employees e2
+    WHERE e2.department_id = e1.department_id
+);
 \`\`\`
 
+#### 3. Web Fundamentals & Data Structures:
+- Be ready to explain the differences between **Stack** (LIFO, used in function call stacks and undo operations) and **Queue** (FIFO, used in CPU process scheduling and message brokers).
+- Explain **Primary Key vs Unique Key**: A table can only have one Primary Key (which cannot accept NULL values), while it can have multiple Unique Keys (which permit a single NULL in standard SQL databases).
+
 ---
 
-### 4. Technical & HR Interview Questions
-Once shortlisted, candidates face a 30-45 minute technical interview:
-* **Data Structures:** Explain Singly Linked List vs Doubly Linked List. How does a Stack differ from a Queue?
-* **Web Basics:** What happens under the hood when you type a URL into a browser? Difference between GET and POST HTTP methods.
-* **Database Queries:** Write an SQL query to count the number of employees in each department using \`GROUP BY\` and \`HAVING\`.
-* **Behavioral & HR:** Describe a challenge you overcame in your final year project. How do you handle tight deadlines?
+### 6. HR Interview Questions & Model Answers
+The HR interview verifies your cultural fit, adaptability, and long-term commitment.
+
+#### Q1: "Are you willing to relocate to any Cognizant office across India and work in rotational shifts?"
+- **Recommended Response:** *"Yes, absolutely. As a fresher, my primary objective is to gain maximum technical exposure and contribute to live client projects. Cognizant has world-class delivery centers in Chennai, Bengaluru, Pune, Hyderabad, and Kolkata, and I am fully flexible with location and working hours."*
+
+#### Q2: "Why Cognizant over other IT firms like TCS or Infosys?"
+- **Recommended Response:** *"Cognizant stands out for its strong emphasis on continuous learning through platforms like Cognizant Academy and its leadership in healthcare and financial digital transformation. The transparent career progression path from GenC to GenC Elevate motivates me to build a high-impact engineering career here."*
+
+---
+
+### 7. How to Apply via Superset & Official Careers Portal
+1. **On-Campus Drives:** Register on the **Superset Platform** when Cognizant activates its campus drive link. Ensure your 10th, 12th, and degree percentages match your academic mark sheets verbatim.
+2. **Off-Campus Drives:** Track the official [Cognizant Global Careers Portal](https://careers.cognizant.com/global/en) and apply directly under the *Students & Graduates* tab for roles like *Programmer Analyst Trainee (PAT)*.
+3. **Resume Optimization:** Make sure your resume passes automated filters using the [FreshersBridge Free ATS Resume Scanner](/career-tools).
     `,
   },
+
   {
     id: '14',
     slug: 'top-50-python-interview-questions-coding-challenges-freshers-2026',
@@ -1573,6 +1694,179 @@ def max_subarray_sum(nums: list[int]) -> int:
         current_max = max(num, current_max + num)
         max_so_far = max(max_so_far, current_max)
     return max_so_far
+\`\`\`
+    `,
+  },
+  {
+    id: '15',
+    slug: 'data-analyst-roadmap-fresher-jobs-salary-interview-guide-2026',
+    title: 'Data Analyst Roadmap 2026: Skills, Projects, Interview Questions & Jobs for Freshers',
+    subtitle: 'A complete 90-day step-by-step blueprint to land high-paying fresher Data Analyst jobs (₹4.5 - ₹9 LPA) with SQL, Python, Power BI, and portfolio projects.',
+    description: 'Master the 2026 Data Analyst roadmap for freshers. Learn essential skills (SQL, Excel, Python, Power BI/Tableau), top 15 interview questions with SQL queries, portfolio project blueprints, and off-campus application strategies.',
+    category: 'Career Roadmaps',
+    readTime: '16 min read',
+    publishedAt: '2026-09-14',
+    updatedAt: '2026-09-14',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Data Analyst', 'SQL', 'Power BI', 'Python', 'Excel', 'Roadmap', 'Freshers 2026'],
+    tableOfContents: [
+      { id: 'role-overview', title: '1. What Does an Entry-Level Data Analyst Do in 2026?' },
+      { id: 'salary-landscape', title: '2. Fresher Salary Landscape in India (₹4.5 to ₹9 LPA)' },
+      { id: '90-day-roadmap', title: '3. The 90-Day Structured Learning Roadmap' },
+      { id: 'portfolio-projects', title: '4. 3 Portfolio Projects That Actually Impress Recruiters' },
+      { id: 'interview-questions', title: '5. Top 15 Technical Interview Questions & Real SQL Queries' },
+      { id: 'job-application-strategy', title: '6. Off-Campus Application Strategy & Outreach Templates' },
+    ],
+    content: `
+### 1. What Does an Entry-Level Data Analyst Do in 2026?
+A **Data Analyst** bridges the gap between raw corporate data and executive business decision-making. Unlike a Data Scientist who builds complex machine learning predictive algorithms, a Data Analyst answers crucial business questions:
+- *Why did user drop-off increase by 14% on the checkout page last week?*
+- *Which marketing channel has the highest Customer Lifetime Value (LTV) relative to Customer Acquisition Cost (CAC)?*
+- *How can delivery logistics routes be optimized to reduce grocery delivery times under 15 minutes?*
+
+#### Clarifying the Roles:
+- **Data Analyst:** Focuses on SQL querying, data cleaning, statistical analysis, and interactive dashboarding (Excel, SQL, Power BI/Tableau, Python/Pandas).
+- **Business Analyst:** Focuses on requirement gathering, business workflow documentation, stakeholder management, and functional specifications.
+- **Data Engineer:** Builds distributed pipelines, data warehouses, ETL processes, and database infrastructure (Spark, Airflow, Snowflake, AWS).
+- **Data Scientist:** Focuses on statistical modeling, deep learning, NLP, and machine learning models (Scikit-Learn, PyTorch, TensorFlow).
+
+---
+
+### 2. Fresher Salary Landscape in India (₹4.5 to ₹9 LPA)
+Demand for data-literate freshers has skyrocketed across Indian tech hubs (Bengaluru, Hyderabad, Pune, Gurgaon, and Chennai):
+
+| Company Tier | Typical CTC (Freshers) | Example Recruiters | Primary Interview Focus |
+| :--- | :---: | :--- | :--- |
+| **IT Services & Tech Consulting** | **₹4.0 – ₹5.5 LPA** | TCS Analytics, Accenture, Cognizant, Wipro, Capgemini | Advanced Excel, SQL Joins, Basic Aptitude |
+| **Pure-Play Analytics Firms** | **₹6.0 – ₹8.5 LPA** | Fractal Analytics, Mu Sigma, Tiger Analytics, LatentView | Case Studies, SQL Window Functions, Guesstimates |
+| **Product Tech & Quick-Commerce** | **₹7.0 – ₹11.0 LPA** | Swiggy, Zomato, Zepto, Flipkart, Meesho, Razorpay | Python EDA, Complex SQL, Metric Definitions, A/B Testing |
+
+---
+
+### 3. The 90-Day Structured Learning Roadmap
+Follow this month-by-month framework if you are starting from zero or transitioning from engineering/commerce backgrounds:
+
+#### Month 1: Advanced Excel & SQL Mastery
+- **Weeks 1–2 (Advanced Excel):** Master \`XLOOKUP\`, \`INDEX/MATCH\`, Pivot Tables, Calculated Fields, and conditional formatting. Learn **Power Query** to automate repetitive data cleaning and CSV merging.
+- **Weeks 3–4 (SQL Fundamentals to Advanced):**
+  - DDL & DML operations.
+  - Multi-table \`INNER JOIN\`, \`LEFT JOIN\`, and \`FULL OUTER JOIN\`.
+  - Grouping data with \`GROUP BY\` and filtering aggregates with \`HAVING\`.
+  - **Window Functions (Mandatory):** \`ROW_NUMBER()\`, \`RANK()\`, \`DENSE_RANK()\`, \`LEAD()\`, \`LAG()\`, and running totals using \`SUM() OVER()\`.
+  - Common Table Expressions (\`WITH cte AS (...)\`) to write readable modular SQL.
+
+#### Month 2: Business Intelligence Dashboarding (Power BI or Tableau)
+- **Weeks 5–6 (Data Modeling & Star Schema):** Understand Fact tables vs Dimension tables, One-to-Many relationships, and active/inactive relationships.
+- **Weeks 7–8 (DAX & Interactive Dashboards):**
+  - Essential DAX formulas: \`CALCULATE()\`, \`FILTER()\`, \`SUMX()\`, \`DATEDIFF()\`, and Time Intelligence (\`TOTALYTD\`, \`SAMEPERIODLASTYEAR\`).
+  - Design user-centric dashboards following visual hierarchy (KPI cards on top, trends in the middle, granular breakdown tables at the bottom).
+
+#### Month 3: Python for Exploratory Data Analysis (EDA) & Portfolio Building
+- **Weeks 9–10 (Pandas & NumPy):** Handling missing values (\`fillna()\`, \`dropna()\`), filtering with boolean indexing, grouping with \`groupby().agg()\`, and reshaping with \`melt()\` and \`pivot_table()\`.
+- **Weeks 11–12 (Data Storytelling & Case Studies):** Plotting with Seaborn and Matplotlib. Building 2 end-to-end projects with documented business takeaways published on GitHub.
+
+---
+
+### 4. 3 Portfolio Projects That Actually Impress Recruiters
+Generic projects like *Titanic Survival Prediction* or *Iris Flower Classification* get rejected instantly. Build business-centric projects with verifiable business impact:
+
+#### Project 1: E-Commerce Retention & Cohort Churn Dashboard
+- **The Problem:** Analyze monthly customer cohorts to identify when customers stop repurchasing.
+- **Tools:** PostgreSQL + Power BI.
+- **Key Metric Delivered:** Heatmap showing MoM (Month-over-Month) retention drop-off and identification that customers who apply a coupon on their second purchase have 40% higher 12-month LTV.
+
+#### Project 2: Blinkit / Zepto Delivery Fleet SLA Performance Analyzer
+- **The Problem:** Optimize order dispatch times and identify bottlenecks across warehouse dark stores.
+- **Tools:** Python (Pandas) + Tableau.
+- **Key Insight:** Identified that order picking delays in 3 specific pin codes accounted for 72% of delivery SLA breaches during peak dinner hours (8 PM – 10 PM).
+
+#### Project 3: Financial Loan Default Risk & Credit Scoring EDA
+- **The Problem:** Clean and explore 50,000+ real-world loan application records to discover leading indicators of customer defaults.
+- **Tools:** Python (Seaborn, Pandas, Scipy).
+- **Key Insight:** Borrowers with credit utilization > 65% and less than 2 years of employment history were 4.8x more likely to default on unsecured personal loans.
+
+---
+
+### 5. Top 15 Technical Interview Questions & Real SQL Queries
+
+#### Q1: How do you find the Second Highest Salary from an Employee table without using LIMIT/TOP?
+\`\`\`sql
+WITH RankedSalaries AS (
+    SELECT 
+        name, 
+        salary, 
+        DENSE_RANK() OVER (ORDER BY salary DESC) as salary_rank
+    FROM employees
+)
+SELECT name, salary
+FROM RankedSalaries
+WHERE salary_rank = 2;
+\`\`\`
+> **Why DENSE_RANK()?** Unlike \`RANK()\`, which creates gaps when duplicate salaries exist (1, 2, 2, 4), \`DENSE_RANK()\` produces contiguous ranks (1, 2, 2, 3), guaranteeing you find the true second-highest tier.
+
+#### Q2: Calculate the 7-day Rolling Average Revenue for each day.
+\`\`\`sql
+SELECT 
+    order_date,
+    daily_revenue,
+    AVG(daily_revenue) OVER (
+        ORDER BY order_date
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) as rolling_7d_avg
+FROM daily_sales_summary;
+\`\`\`
+
+#### Q3: Identify duplicate email addresses in a Users table and keep only the oldest record.
+\`\`\`sql
+DELETE FROM users
+WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT 
+            id,
+            ROW_NUMBER() OVER (PARTITION BY email ORDER BY created_at ASC) as row_num
+        FROM users
+    ) t
+    WHERE t.row_num > 1
+);
+\`\`\`
+
+#### Q4: What is the difference between WHERE and HAVING clauses?
+- \`WHERE\` filters raw rows **before** any aggregation happens. It cannot contain aggregate functions like \`SUM()\` or \`COUNT()\`.
+- \`HAVING\` filters the aggregated results **after** the \`GROUP BY\` operation executes.
+
+#### Q5: Explain the difference between INNER JOIN, LEFT JOIN, and CROSS JOIN.
+- **INNER JOIN:** Returns only matching records from both tables.
+- **LEFT JOIN:** Returns all records from the left table, plus matched records from the right table (unmatched fields populate as NULL).
+- **CROSS JOIN:** Produces a Cartesian product, pairing every row of table A with every row of table B.
+
+---
+
+### 6. Off-Campus Application Strategy & Outreach Templates
+
+1. **GitHub Repository as a Live Portfolio:**
+   - Every project repository must include: a clean \`README.md\`, clear problem statement, interactive screenshots or dashboard PDF, and step-by-step SQL scripts.
+2. **Optimized Resume:** Format your resume using the [FreshersBridge ATS Resume Scanner](/career-tools). Highlight quantitative achievements: *"Optimized inventory queries reducing dashboard load time by 35%."*
+3. **Targeted Cold Outreach Template on LinkedIn:**
+\`\`\`text
+Subject: Aspirant Data Analyst | Impressed by [Company Name]'s Data Engineering & Analytics
+
+Hi [Hiring Manager / Team Lead Name],
+
+I came across your work on scaling [Company's] analytics infrastructure and was really inspired. 
+
+As a 2026 graduate passionate about business intelligence, I recently built an end-to-end E-Commerce Cohort Retention Dashboard using PostgreSQL and Power BI that uncovered a 22% improvement in MoM customer repurchase rates. 
+
+Here is my interactive GitHub walkthrough: [Your GitHub Project Link]
+
+I would love to contribute to entry-level analytics openings at [Company Name]. I would be grateful for 5 minutes of your guidance or a referral. 
+
+Best regards,
+[Your Name] | [Your Portfolio Link] | [Your Phone Number]
 \`\`\`
     `,
   },
