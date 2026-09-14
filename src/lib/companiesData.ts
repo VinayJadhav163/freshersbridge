@@ -40,8 +40,8 @@ export const COMPANIES_DATA: CompanyProfile[] = [
     hiringTracks: [
       {
         title: 'TCS Ninja',
-        package: '₹3.36 LPA (UG) / ₹3.53 LPA (PG)',
-        description: 'Entry-level engineering track focusing on software maintenance, testing, and full-stack development.',
+        package: '₹3.36 - ₹3.53 LPA',
+        description: 'Entry-level engineering track (₹3.36 LPA for B.E/B.Tech, ₹3.53 LPA for M.E/M.Tech/MCA) focusing on software maintenance, testing, and full-stack development.',
       },
       {
         title: 'TCS Digital',
@@ -201,8 +201,8 @@ export const COMPANIES_DATA: CompanyProfile[] = [
       },
       {
         title: 'Wipro WILP (Work Integrated Learning Program)',
-        package: 'Stipend + M.Tech sponsorship from BITS Pilani',
-        description: 'Exclusive 4-year higher education and employment program for BCA and B.Sc graduates.',
+        package: 'M.Tech + Stipend',
+        description: 'Exclusive 4-year higher education and employment program for BCA and B.Sc graduates with employer-sponsored M.Tech from BITS Pilani.',
       },
     ],
     selectionProcess: [

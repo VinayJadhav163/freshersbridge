@@ -286,22 +286,44 @@ export default async function CompanyDetailPage({ params }: Props) {
           </div>
 
           {/* Hiring Tracks & Packages Breakdown */}
-          <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-5">
-            <h2 className="text-lg font-bold text-foreground">
-              {company.shortName} Fresher Hiring Cadres & Salary Breakdown
-            </h2>
-            <div className="grid grid-cols-1 gap-4">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-4">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">
+                  {company.shortName} Fresher Hiring Cadres & Salary Breakdown
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                  Compensation packages offered to entry-level campus and off-campus recruits.
+                </p>
+              </div>
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-muted-foreground self-start sm:self-auto shrink-0">
+                {company.hiringTracks.length} Hiring Bands
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3.5">
               {company.hiringTracks.map((track, idx) => (
-                <div key={idx} className="p-4 rounded-xl border border-border/70 bg-background space-y-1.5">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <h3 className="text-base font-bold text-indigo-600 dark:text-indigo-400">
-                      {track.title}
-                    </h3>
-                    <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                      {track.package}
-                    </span>
+                <div
+                  key={idx}
+                  className="group relative p-4 sm:p-5 rounded-xl border border-border/80 bg-background/80 hover:border-indigo-500/40 hover:bg-card transition-all duration-200 space-y-2 shadow-2xs"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs border border-indigo-100 dark:border-indigo-900/50">
+                        {idx + 1}
+                      </span>
+                      <h3 className="text-base font-bold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                        {track.title}
+                      </h3>
+                    </div>
+
+                    {/* Uniform-sized, perfectly centered salary pill badge */}
+                    <div className="shrink-0 self-start sm:self-auto inline-flex items-center justify-center min-w-[140px] px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 text-xs sm:text-sm font-extrabold shadow-2xs whitespace-nowrap">
+                      <span>{track.package}</span>
+                    </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pl-0 sm:pl-[34px]">
                     {track.description}
                   </p>
                 </div>
