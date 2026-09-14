@@ -1,0 +1,68 @@
+name: Daily YouTube Shorts Autoposter
+
+on:
+  schedule:
+    # Runs daily at 03:00 UTC (08:30 AM IST - Peak morning job browsing hours)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      privacy:
+        description: 'Privacy status for uploaded Short (public, unlisted, private)'
+        required: true
+        default: 'public'
+        type: choice
+        options:
+          - public
+          - unlisted
+          - private
+
+permissions:
+  contents: write
+
+jobs:
+  post-daily-short:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Dependencies (FFmpeg & Fonts)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scraper/requirements.txt
+
+      - name: Setup YouTube API Credentials
+        env:
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
+          YOUTUBE_TOKEN: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+        run: |
+          mkdir -p credentials
+          echo "$YOUTUBE_CLIENT_SECRET" > credentials/youtube_client_secret.json
+          echo "$YOUTUBE_TOKEN" > credentials/youtube_token.json
+
+      - name: Generate & Publish Daily YouTube Short
+        run: |
+          PRIVACY="${{ github.event.inputs.privacy || 'public' }}"
+          python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY"
+
+      - name: Commit & Push Updated Shorts History
+        run: |
+          git config --global user.name "FreshersBridge Shorts Bot"
+          git config --global user.email "bot@freshersbridge.in"
+          git add data/posted_youtube_shorts.json
+          git commit -m "chore(social): update YouTube Shorts publishing history [skip ci]" || echo "No changes to commit"
+          git push origin main

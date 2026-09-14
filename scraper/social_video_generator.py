@@ -39,10 +39,14 @@ HEIGHT = 1920
 FPS = 30
 DURATION = 8.0  # 8.0 seconds optimal for 100% completion rate & loop replay
 
-# Fonts
-FONT_BOLD = "C:\\Windows\\Fonts\\segoeuib.ttf"
-FONT_REGULAR = "C:\\Windows\\Fonts\\segoeui.ttf"
-FONT_HEAVY = "C:\\Windows\\Fonts\\arialbd.ttf"
+# Fonts (Uses bundled TrueType fonts first for 100% cross-platform Ubuntu/Windows parity)
+FONTS_DIR = os.path.join(ASSETS_DIR, "fonts")
+BUNDLED_BOLD = os.path.join(FONTS_DIR, "font_bold.ttf")
+BUNDLED_REGULAR = os.path.join(FONTS_DIR, "font_regular.ttf")
+
+FONT_BOLD = BUNDLED_BOLD if os.path.exists(BUNDLED_BOLD) else "C:\\Windows\\Fonts\\segoeuib.ttf"
+FONT_REGULAR = BUNDLED_REGULAR if os.path.exists(BUNDLED_REGULAR) else "C:\\Windows\\Fonts\\segoeui.ttf"
+FONT_HEAVY = BUNDLED_BOLD if os.path.exists(BUNDLED_BOLD) else "C:\\Windows\\Fonts\\arialbd.ttf"
 FONT_EMOJI = "C:\\Windows\\Fonts\\seguiemj.ttf"
 
 # Brand Colors & Badges for Major Companies
@@ -60,7 +64,12 @@ COMPANY_THEMES = {
 
 def get_font(path, size):
     try:
-        return ImageFont.truetype(path, size)
+        if os.path.exists(path):
+            return ImageFont.truetype(path, size)
+        # Fallback to bundled
+        if os.path.exists(BUNDLED_BOLD):
+            return ImageFont.truetype(BUNDLED_BOLD, size)
+        return ImageFont.load_default()
     except Exception:
         return ImageFont.load_default()
 

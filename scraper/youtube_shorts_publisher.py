@@ -14,6 +14,11 @@ import sys
 import json
 import time
 import argparse
+
+# Force UTF-8 on Windows console output to prevent charmap codec errors
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import google.auth
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -41,15 +46,15 @@ def get_authenticated_service():
     if os.path.exists(TOKEN_FILE):
         try:
             creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
-            print("Loaded cached YouTube authentication token.")
+            print("Loaded cached YouTube authentication token.", flush=True)
         except Exception as e:
-            print(f"Failed to load cached token: {e}")
+            print(f"Failed to load cached token: {e}", flush=True)
             creds = None
 
     # 2. Refresh expired token or initiate 1-time OAuth flow
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            print("Refreshing expired YouTube access token...")
+            print("Refreshing expired YouTube access token...", flush=True)
             creds.refresh(Request())
         else:
             if not os.path.exists(CLIENT_SECRET_FILE):
@@ -62,16 +67,16 @@ def get_authenticated_service():
                     f"4. Download the JSON and save it as: credentials/youtube_client_secret.json\n"
                 )
             
-            print("\nInitiating one-time YouTube OAuth authorization...")
+            print("\nInitiating one-time YouTube OAuth authorization...", flush=True)
             flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-            # Run local server to capture user authorization
-            creds = flow.run_local_server(port=0, prompt="consent")
+            
+            # Using port 8080 (standard Google loopback)
+            creds = flow.run_local_server(port=8080, prompt="consent", open_browser=True)
 
-        # Save credentials for future headless runs
         os.makedirs(CREDENTIALS_DIR, exist_ok=True)
         with open(TOKEN_FILE, "w") as token:
             token.write(creds.to_json())
-        print(f"Saved persistent YouTube authentication token to: {TOKEN_FILE}")
+        print(f"Saved persistent YouTube authentication token to: {TOKEN_FILE}", flush=True)
 
     return build("youtube", "v3", credentials=creds)
 
