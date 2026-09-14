@@ -64,84 +64,107 @@ def get_font(path, size):
     except Exception:
         return ImageFont.load_default()
 
-def draw_vector_icon(draw, icon_type, x, y, size=24, color="#ffffff"):
-    """Draws sharp vector icons directly using PIL geometric primitives."""
+def render_supersampled_icon(icon_type, target_size=42, bg_color=(16, 185, 129), fg_color="#ffffff"):
+    """
+    Renders crystal-clear, silky-smooth vector icons using 4x supersampling + Lanczos filtering.
+    Guarantees zero pixelation, jagged edges, or aliasing.
+    """
+    scale = 4
+    s = target_size * scale
+    canvas = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(canvas)
+    
+    # Outer circle with soft border
+    d.ellipse([2, 2, s - 3, s - 3], fill=bg_color)
+    d.ellipse([2, 2, s - 3, s - 3], outline=(255, 255, 255, 120), width=max(2, int(s * 0.03)))
+    
+    # Render crystal clear inner vectors
     if icon_type == "check":
-        # Two-line checkmark
-        points = [(x + size * 0.2, y + size * 0.55), (x + size * 0.42, y + size * 0.78), (x + size * 0.82, y + size * 0.25)]
-        draw.line(points, fill=color, width=max(2, int(size * 0.12)), joint="curve")
+        pts = [(s * 0.26, s * 0.52), (s * 0.44, s * 0.70), (s * 0.76, s * 0.32)]
+        d.line(pts, fill=fg_color, width=int(s * 0.09), joint="curve")
     elif icon_type == "lightning":
-        # Sharp lightning bolt polygon
         pts = [
-            (x + size * 0.55, y + size * 0.1),
-            (x + size * 0.15, y + size * 0.52),
-            (x + size * 0.48, y + size * 0.52),
-            (x + size * 0.35, y + size * 0.9),
-            (x + size * 0.85, y + size * 0.42),
-            (x + size * 0.52, y + size * 0.42)
+            (s * 0.54, s * 0.13),
+            (s * 0.22, s * 0.50),
+            (s * 0.48, s * 0.50),
+            (s * 0.36, s * 0.87),
+            (s * 0.78, s * 0.44),
+            (s * 0.52, s * 0.44)
         ]
-        draw.polygon(pts, fill=color)
-    elif icon_type == "arrow":
-        # Right arrow polygon
-        pts = [
-            (x + size * 0.25, y + size * 0.2),
-            (x + size * 0.75, y + size * 0.5),
-            (x + size * 0.25, y + size * 0.8)
-        ]
-        draw.polygon(pts, fill=color)
+        d.polygon(pts, fill=fg_color)
     elif icon_type == "star":
-        # 5-pointed star
-        cx, cy = x + size / 2, y + size / 2
-        r_out, r_in = size * 0.48, size * 0.22
+        cx, cy = s / 2, s / 2
+        r_out, r_in = s * 0.35, s * 0.16
         pts = []
         for i in range(10):
             angle = i * math.pi / 5 - math.pi / 2
             r = r_out if i % 2 == 0 else r_in
             pts.append((cx + r * math.cos(angle), cy + r * math.sin(angle)))
-        draw.polygon(pts, fill=color)
+        d.polygon(pts, fill=fg_color)
     elif icon_type == "pin":
-        # Map location pin
-        cx, cy = x + size / 2, y + size * 0.38
-        draw.ellipse([cx - size * 0.28, cy - size * 0.28, cx + size * 0.28, cy + size * 0.28], fill=color)
-        draw.polygon([(cx - size * 0.25, cy + size * 0.1), (cx + size * 0.25, cy + size * 0.1), (cx, y + size * 0.88)], fill=color)
-        draw.ellipse([cx - size * 0.1, cy - size * 0.1, cx + size * 0.1, cy + size * 0.1], fill=(13, 20, 36))
-    elif icon_type == "bullet":
-        cx, cy = x + size / 2, y + size / 2
-        draw.ellipse([cx - size * 0.22, cy - size * 0.22, cx + size * 0.22, cy + size * 0.22], fill=color)
+        cx, cy = s / 2, s * 0.39
+        d.ellipse([cx - s * 0.20, cy - s * 0.20, cx + s * 0.20, cy + s * 0.20], fill=fg_color)
+        d.polygon([(cx - s * 0.18, cy + s * 0.08), (cx + s * 0.18, cy + s * 0.08), (cx, s * 0.82)], fill=fg_color)
+        d.ellipse([cx - s * 0.08, cy - s * 0.08, cx + s * 0.08, cy + s * 0.08], fill=bg_color)
+    elif icon_type == "rupee":
+        font = ImageFont.truetype(FONT_BOLD, int(s * 0.54))
+        bb = font.getbbox("₹")
+        w, h = bb[2] - bb[0], bb[3] - bb[1]
+        d.text(((s - w) // 2, (s - h) // 2 - bb[1]), "₹", font=font, fill=fg_color)
+    elif icon_type == "degree":
+        # Graduation cap icon
+        pts_cap = [(s * 0.18, s * 0.42), (s * 0.50, s * 0.26), (s * 0.82, s * 0.42), (s * 0.50, s * 0.58)]
+        d.polygon(pts_cap, fill=fg_color)
+        # Lower skullcap curve
+        d.polygon([(s * 0.30, s * 0.50), (s * 0.70, s * 0.50), (s * 0.65, s * 0.68), (s * 0.35, s * 0.68)], fill=fg_color)
+        # Tassel line
+        d.line([(s * 0.80, s * 0.43), (s * 0.84, s * 0.65)], fill=fg_color, width=int(s * 0.04))
+    elif icon_type == "arrow":
+        pts = [(s * 0.30, s * 0.22), (s * 0.72, s * 0.50), (s * 0.30, s * 0.78)]
+        d.polygon(pts, fill=fg_color)
     else:
-        # Default circle
-        draw.ellipse([x + 2, y + 2, x + size - 2, y + size - 2], fill=color)
+        d.ellipse([s * 0.35, s * 0.35, s * 0.65, s * 0.65], fill=fg_color)
+        
+    return canvas.resize((target_size, target_size), Image.Resampling.LANCZOS)
 
-def draw_pill_badge(draw, x, y, icon_type, label_text, font, bg_color, text_color, border_color=None, icon_bg=(37, 99, 235), icon_fg="#ffffff", radius=20, padding_x=20, padding_y=12):
+def draw_pill_badge(card_img, x, y, icon_type, label_prefix, label_val, font_prefix, font_val, prefix_color, val_color, icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=18, padding_x=16, padding_y=10):
     """
-    Renders a pill with a crisp circular icon badge on the left, followed by text.
-    Uses vector primitives to guarantee 100% crispness across all platforms.
+    Renders an elegant, desaturated modern glassmorphism pill with crystal-clear supersampled icon.
     """
-    bbox = font.getbbox(label_text)
-    tw = bbox[2] - bbox[0]
-    th = bbox[3] - bbox[1]
+    draw = ImageDraw.Draw(card_img)
+    
+    # Calculate widths
+    bb_p = font_prefix.getbbox(label_prefix)
+    pw = bb_p[2] - bb_p[0]
+    
+    bb_v = font_val.getbbox(label_val)
+    vw = bb_v[2] - bb_v[0]
+    th = max(bb_p[3] - bb_p[1], bb_v[3] - bb_v[1])
 
-    icon_size = th + 18
-    w = icon_size + 14 + tw + padding_x * 2
-    h = th + padding_y * 2 + 6
+    icon_size = 40
+    w = icon_size + 14 + pw + 8 + vw + padding_x * 2
+    h = icon_size + padding_y * 2
     
-    # Outer Pill
-    draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=bg_color, outline=border_color, width=2)
+    # Refined Glassmorphic Pill Background (dark, harmonious, non-screaming)
+    draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=(20, 29, 49, 235), outline=(47, 63, 94, 255), width=1)
     
-    # Icon Circle Container
+    # Render and Paste 4x Supersampled Icon
+    icon_img = render_supersampled_icon(icon_type, target_size=icon_size, bg_color=icon_bg, fg_color=icon_fg)
     ix = x + 10
-    iy = y + (h - icon_size) // 2
-    draw.ellipse([ix, iy, ix + icon_size, iy + icon_size], fill=icon_bg)
-    
-    # Render Vector Icon inside Circle
-    pad = int(icon_size * 0.2)
-    draw_vector_icon(draw, icon_type, ix + pad, iy + pad, size=icon_size - pad * 2, color=icon_fg)
+    iy = y + padding_y
+    card_img.paste(icon_img, (ix, iy), icon_img)
 
-    # Label Text
+    # Prefix Text (e.g. "CTC: ")
     tx = ix + icon_size + 14
-    ty = y + (h - th) // 2 - bbox[1]
-    draw.text((tx, ty), label_text, font=font, fill=text_color)
+    ty_p = y + (h - (bb_p[3] - bb_p[1])) // 2 - bb_p[1]
+    draw.text((tx, ty_p), label_prefix, font=font_prefix, fill=prefix_color)
+
+    # Value Text (e.g. "₹4.5 - ₹6.5 LPA")
+    vx = tx + pw + 8
+    ty_v = y + (h - (bb_v[3] - bb_v[1])) // 2 - bb_v[1]
+    draw.text((vx, ty_v), label_val, font=font_val, fill=val_color)
     return w, h
+
 
 
 def render_background_base():
@@ -188,11 +211,8 @@ def render_job_card(job):
     card = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(card)
     
-    # Glassmorphic Card Container
+    # Glassmorphic Card Container (Pure, clean rounded rect - NO extraneous top line)
     draw.rounded_rectangle([0, 0, card_w, card_h], radius=36, fill=(13, 20, 36, 245), outline=(56, 189, 248, 210), width=3)
-    
-    # Subtle top edge reflection
-    draw.rounded_rectangle([4, 4, card_w - 4, 10], radius=8, fill=(255, 255, 255, 45))
 
     # Company Theme determination
     company = str(job.get("company", "Tech Global")).strip()
@@ -217,11 +237,19 @@ def render_job_card(job):
     font_comp = get_font(FONT_BOLD, 46)
     draw.text((avatar_x + 130, avatar_y + 8), company.upper(), font=font_comp, fill="#ffffff")
     
-    # Verified Badge Pill
+    # Verified Badge Pill with Supersampled Checkmark
     font_badge = get_font(FONT_BOLD, 22)
-    draw_pill_badge(draw, avatar_x + 130, avatar_y + 64, "check", "VERIFIED HIRING DRIVE", font_badge,
-                    bg_color=(6, 78, 59, 230), text_color="#34d399", border_color=(16, 185, 129, 255),
-                    icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=12, padding_x=12, padding_y=4)
+    v_text = "VERIFIED HIRING DRIVE"
+    v_bb = font_badge.getbbox(v_text)
+    v_tw = v_bb[2] - v_bb[0]
+    v_th = v_bb[3] - v_bb[1]
+    v_h = 36
+    v_w = 26 + 10 + v_tw + 20
+    v_x, v_y = avatar_x + 130, avatar_y + 64
+    draw.rounded_rectangle([v_x, v_y, v_x + v_w, v_y + v_h], radius=12, fill=(6, 78, 59, 230), outline=(16, 185, 129, 255), width=1)
+    check_icon = render_supersampled_icon("check", target_size=24, bg_color=(16, 185, 129), fg_color="#ffffff")
+    card.paste(check_icon, (v_x + 8, v_y + (v_h - 24) // 2), check_icon)
+    draw.text((v_x + 38, v_y + (v_h - v_th) // 2 - v_bb[1]), v_text, font=font_badge, fill="#34d399")
 
     # Horizontal Divider Line
     draw.line([(50, 180), (card_w - 50, 180)], fill=(51, 65, 85, 180), width=2)
@@ -249,9 +277,10 @@ def render_job_card(job):
         draw.text((50, ty), line, font=font_title, fill="#38bdf8")
         ty += 52
 
-    # Highlight Badges Grid
+    # Highlight Badges Grid (Crisp Supersampled Modern Pills)
     pills_y = max(ty + 18, 325)
-    font_pill_label = get_font(FONT_BOLD, 26)
+    font_pill_prefix = get_font(FONT_BOLD, 26)
+    font_pill_val = get_font(FONT_BOLD, 26)
 
     # 1. Salary CTC Pill
     salary_raw = str(job.get("salary", "")).strip()
@@ -259,40 +288,35 @@ def render_job_card(job):
         salary_text = "Competitive (₹4.5 - ₹7.5 LPA)"
     else:
         salary_text = salary_raw
-    draw_pill_badge(draw, 50, pills_y, "bullet", f"CTC: {salary_text}", font_pill_label,
-                    bg_color=(6, 78, 59, 235), text_color="#a7f3d0", border_color=(16, 185, 129, 255),
-                    icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+    draw_pill_badge(card, 50, pills_y, "rupee", "CTC:", salary_text, font_pill_prefix, font_pill_val,
+                    prefix_color="#34d399", val_color="#f8fafc", icon_bg=(16, 185, 129))
 
     # 2. Batch Pill
     pills_y += 68
-    batch_text = "Batch: 2024, 2025 & 2026 Passouts"
-    draw_pill_badge(draw, 50, pills_y, "star", batch_text, font_pill_label,
-                    bg_color=(30, 58, 138, 235), text_color="#bae6fd", border_color=(56, 189, 248, 255),
-                    icon_bg=(37, 99, 235), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+    batch_text = "2024, 2025 & 2026 Passouts"
+    draw_pill_badge(card, 50, pills_y, "star", "Batch:", batch_text, font_pill_prefix, font_pill_val,
+                    prefix_color="#38bdf8", val_color="#f8fafc", icon_bg=(14, 165, 233))
 
     # 3. Location Pill
     pills_y += 68
     location_text = str(job.get("location", "Pan-India / Remote")).strip()
     if len(location_text) > 34:
         location_text = location_text[:32] + "..."
-    draw_pill_badge(draw, 50, pills_y, "pin", f"Location: {location_text}", font_pill_label,
-                    bg_color=(59, 7, 100, 235), text_color="#f3e8ff", border_color=(168, 85, 247, 255),
-                    icon_bg=(147, 51, 234), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+    draw_pill_badge(card, 50, pills_y, "pin", "Location:", location_text, font_pill_prefix, font_pill_val,
+                    prefix_color="#c084fc", val_color="#f8fafc", icon_bg=(139, 92, 246))
 
     # 4. Eligibility Degree Pill
     pills_y += 68
     eligibility_text = str(job.get("eligibility", "B.E / B.Tech / BCA / MCA / B.Sc")).strip()
     if len(eligibility_text) > 36:
         eligibility_text = eligibility_text[:34] + "..."
-    draw_pill_badge(draw, 50, pills_y, "bullet", f"Degree: {eligibility_text}", font_pill_label,
-                    bg_color=(30, 41, 59, 235), text_color="#e2e8f0", border_color=(71, 85, 105, 255),
-                    icon_bg=(71, 85, 105), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+    draw_pill_badge(card, 50, pills_y, "degree", "Degree:", eligibility_text, font_pill_prefix, font_pill_val,
+                    prefix_color="#93c5fd", val_color="#f8fafc", icon_bg=(99, 102, 241))
 
     # 5. Experience / Freshers
     pills_y += 68
-    draw_pill_badge(draw, 50, pills_y, "lightning", "Experience: 0 - 1 Years (Freshers Eligible)", font_pill_label,
-                    bg_color=(67, 20, 7, 235), text_color="#fed7aa", border_color=(249, 115, 22, 255),
-                    icon_bg=(234, 88, 12), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+    draw_pill_badge(card, 50, pills_y, "lightning", "Experience:", "0 - 1 Years (Freshers Eligible)", font_pill_prefix, font_pill_val,
+                    prefix_color="#fcd34d", val_color="#f8fafc", icon_bg=(245, 158, 11))
 
     # Skills Row
     skills_y = pills_y + 80
@@ -328,13 +352,14 @@ def render_job_card(job):
     btw = bb[2] - bb[0]
     bth = bb[3] - bb[1]
     
-    arrow_size = 22
+    arrow_size = 28
     total_content_w = btw + 16 + arrow_size
     content_x = 50 + (btn_w - total_content_w) // 2
     content_y = btn_y + (80 - bth) // 2 - bb[1]
     
     draw.text((content_x, content_y), btn_text, font=font_btn, fill="#ffffff")
-    draw_vector_icon(draw, "arrow", content_x + btw + 16, btn_y + (80 - arrow_size) // 2, size=arrow_size, color="#ffffff")
+    arrow_icon = render_supersampled_icon("arrow", target_size=arrow_size, bg_color=(59, 130, 246), fg_color="#ffffff")
+    card.paste(arrow_icon, (content_x + btw + 16, btn_y + (80 - arrow_size) // 2), arrow_icon)
 
     return card
 
@@ -393,8 +418,9 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     bx = (WIDTH - bw) // 2
     by = 105
     hdraw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=20, fill=(30, 58, 138, 230), outline=(56, 189, 248, 255), width=2)
-    # Vector lightning on the left
-    draw_vector_icon(hdraw, "lightning", bx + 16, by + 12, size=24, color="#38bdf8")
+    # Top Brand Pill with Supersampled Lightning Icon
+    icon_lightning = render_supersampled_icon("lightning", target_size=26, bg_color=(37, 99, 235), fg_color="#38bdf8")
+    header_img.paste(icon_lightning, (bx + 14, by + (bh - 26) // 2), icon_lightning)
     hdraw.text((bx + 48, by + 12 - bb_b[1]), brand_text, font=font_brand, fill="#ffffff")
 
     # Attention Title
@@ -426,14 +452,17 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     hdraw.text((cta_box_x + 40, cta_box_y + 35), "COMMENT 'APPLY' TO GET DIRECT LINK IN DM!", font=font_dm_hook, fill="#fbbf24")
     hdraw.line([(cta_box_x + 40, cta_box_y + 90), (cta_box_x + cta_box_w - 40, cta_box_y + 90)], fill=(75, 85, 99, 180), width=1)
     
-    # Link in bio details with vector arrows
-    draw_vector_icon(hdraw, "arrow", cta_box_x + 40, cta_box_y + 120, size=20, color="#38bdf8")
+    # Link in bio details with supersampled icons
+    icon_cta_arrow1 = render_supersampled_icon("arrow", target_size=24, bg_color=(14, 165, 233), fg_color="#ffffff")
+    header_img.paste(icon_cta_arrow1, (cta_box_x + 36, cta_box_y + 118), icon_cta_arrow1)
     hdraw.text((cta_box_x + 72, cta_box_y + 115), "Apply Link is active on: FreshersBridge.in", font=font_cta_bold, fill="#ffffff")
 
-    draw_vector_icon(hdraw, "arrow", cta_box_x + 40, cta_box_y + 180, size=18, color="#38bdf8")
+    icon_cta_arrow2 = render_supersampled_icon("arrow", target_size=22, bg_color=(56, 189, 248), fg_color="#ffffff")
+    header_img.paste(icon_cta_arrow2, (cta_box_x + 38, cta_box_y + 178), icon_cta_arrow2)
     hdraw.text((cta_box_x + 72, cta_box_y + 175), "Link in Bio & Instagram Stories (Direct Apply)", font=font_cta_sub, fill="#38bdf8")
 
-    draw_vector_icon(hdraw, "star", cta_box_x + 40, cta_box_y + 235, size=18, color="#a3e635")
+    icon_cta_star = render_supersampled_icon("star", target_size=22, bg_color=(132, 204, 22), fg_color="#ffffff")
+    header_img.paste(icon_cta_star, (cta_box_x + 38, cta_box_y + 233), icon_cta_star)
     hdraw.text((cta_box_x + 72, cta_box_y + 230), "Save this Reel & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
 
     # Composite static frame
@@ -480,14 +509,28 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
 
     # Save Cover Thumbnail at t=1.8s
     cover_np = make_frame(1.8)
-    Image.fromarray(cover_np).save(cover_image_path, quality=95)
-    print(f"Saved Cover Thumbnail: {cover_image_path}")
+    try:
+        if os.path.exists(cover_image_path):
+            try:
+                os.remove(cover_image_path)
+            except Exception:
+                pass
+        Image.fromarray(cover_np).save(cover_image_path, quality=95)
+        print(f"Saved Cover Thumbnail: {cover_image_path}")
+    except Exception as e:
+        alt_cover = cover_image_path.replace(".png", "_v2.png")
+        Image.fromarray(cover_np).save(alt_cover, quality=95)
+        cover_image_path = alt_cover
+        print(f"Saved Cover Thumbnail (alt): {cover_image_path}")
 
     # Save Social Caption & Hashtags
     caption_text = generate_social_caption(job_data)
-    with open(caption_path, "w", encoding="utf-8") as f:
-        f.write(caption_text)
-    print(f"Saved Social Caption: {caption_path}")
+    try:
+        with open(caption_path, "w", encoding="utf-8") as f:
+            f.write(caption_text)
+        print(f"Saved Social Caption: {caption_path}")
+    except Exception as e:
+        print(f"Caption save warning: {e}")
 
     # 4. Generate Video Clip
     clip = VideoClip(make_frame, duration=DURATION)
