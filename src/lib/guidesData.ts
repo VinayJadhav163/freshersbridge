@@ -622,7 +622,7 @@ Cognizant offers three primary hiring streams for college freshers:
 ---
 
 ### 2. Assessment Structure & Platform Details
-- **GenC Aptitude & Communication:** Quantitative aptitude (25 Qs), Analytical reasoning (25 Qs), and Verbal ability (20 Qs) conducted on Superset or AMCAT.
+- **GenC Aptitude & Communication:** Quantitative aptitude (25 Qs), Analytical reasoning (25 Qs), and Verbal ability (20 Qs) conducted on [Superset (JoinSuperset)](https://joinsuperset.com/) or AMCAT.
 - **Skill-Based Coding (For GenC Elevate & Next):** 2 Coding problems covering String manipulation, HashMaps, Sliding Window, and Graph traversals.
 
 ---
@@ -1207,7 +1207,7 @@ To participate in Cognizant on-campus or national off-campus hiring drives, cand
 ---
 
 ### 3. Detailed Online Assessment Pattern & Mark Distribution
-Cognizant conducts its first-round filtration primarily on the **Superset** or **Aon CoCubes / AMCAT** assessment platforms. The test is strictly proctored via webcam and microphone.
+Cognizant conducts its first-round filtration primarily on the [**Superset Platform (JoinSuperset)**](https://joinsuperset.com/) or **Aon CoCubes / AMCAT** assessment platforms. The test is strictly proctored via webcam and microphone.
 
 | Section Name | Total Questions | Allocated Time | Sectional Elimination? |
 | :--- | :---: | :---: | :---: |
@@ -1335,7 +1335,7 @@ The HR interview verifies your cultural fit, adaptability, and long-term commitm
 ---
 
 ### 7. How to Apply via Superset & Official Careers Portal
-1. **On-Campus Drives:** Register on the **Superset Platform** when Cognizant activates its campus drive link. Ensure your 10th, 12th, and degree percentages match your academic mark sheets verbatim.
+1. **On-Campus Drives:** Register on the [**Superset Platform (JoinSuperset)**](https://joinsuperset.com/) when Cognizant activates its campus drive link. Ensure your 10th, 12th, and degree percentages match your academic mark sheets verbatim.
 2. **Off-Campus Drives:** Track the official [Cognizant Global Careers Portal](https://careers.cognizant.com/global/en) and apply directly under the *Students & Graduates* tab for roles like *Programmer Analyst Trainee (PAT)*.
 3. **Resume Optimization:** Make sure your resume passes automated filters using the [FreshersBridge Free ATS Resume Scanner](/career-tools).
     `,
