@@ -1,0 +1,269 @@
+{
+  "site_url": "https://www.freshersbridge.in/",
+  "period": "2026-08-15 to 2026-09-12",
+  "generated_at": "2026-09-14 12:34:03 UTC",
+  "total_queries_tracked": 76,
+  "total_clicks": 0,
+  "total_impressions": 150,
+  "avg_ctr_percent": 0.0,
+  "avg_position": 39.5,
+  "top_queries_by_clicks": [
+    {
+      "query": "1 yes",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "query": "accenture aptitude syllabus",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 49
+    },
+    {
+      "query": "accenture coding questions",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 31
+    },
+    {
+      "query": "accenture coding questions 2023",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 44.3
+    },
+    {
+      "query": "accenture eligibility criteria for freshers",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 70
+    },
+    {
+      "query": "accenture placement process",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 47
+    },
+    {
+      "query": "accenture technical assessment questions 2026",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "query": "after:2025-12-31 \"java\" technical reference exception -wikipedia -britannica -quizlet -linkedin -facebook",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "application support engineer",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "associate software engineer",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "query": "ats friendly resume for freshers",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 89.5
+    },
+    {
+      "query": "ats resume",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 70.4
+    },
+    {
+      "query": "ats resume for freshers",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 90.5
+    },
+    {
+      "query": "cognizant careers for freshers",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 27.8
+    },
+    {
+      "query": "cognizant careers for freshers genc",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "cognizant drive for freshers",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 32
+    },
+    {
+      "query": "cognizant fresher hiring",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 28.5
+    },
+    {
+      "query": "cognizant freshers",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 20.5
+    },
+    {
+      "query": "cognizant freshers careers",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 29
+    },
+    {
+      "query": "cognizant freshers jobs",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 21
+    }
+  ],
+  "striking_distance_opportunities": [
+    {
+      "query": "infosys sp dse package",
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 8.7,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    }
+  ],
+  "top_pages": [
+    {
+      "url": "https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers",
+      "clicks": 6,
+      "impressions": 307,
+      "ctr": 1.95,
+      "position": 6.9
+    },
+    {
+      "url": "https://www.freshersbridge.in/",
+      "clicks": 2,
+      "impressions": 6,
+      "ctr": 33.33,
+      "position": 4.3
+    },
+    {
+      "url": "https://www.freshersbridge.in/about",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "url": "https://www.freshersbridge.in/career-tools",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 7.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/companies",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "url": "https://www.freshersbridge.in/companies/cognizant",
+      "clicks": 0,
+      "impressions": 30,
+      "ctr": 0,
+      "position": 24.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/companies/infosys",
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 36
+    },
+    {
+      "url": "https://www.freshersbridge.in/contact",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "url": "https://www.freshersbridge.in/disclaimer",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/ats-friendly-resume-guide-tech-freshers-with-examples",
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 66.3
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/cognizant-genc-elevate-2026-exam-pattern-interview-blueprint",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 24
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/full-stack-web-development-roadmap-college-students",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 44
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/hr-interview-questions-answers-for-freshers-with-best-responses",
+      "clicks": 0,
+      "impressions": 17,
+      "ctr": 0,
+      "position": 63.8
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide",
+      "clicks": 0,
+      "impressions": 102,
+      "ctr": 0,
+      "position": 11.5
+    }
+  ]
+}
