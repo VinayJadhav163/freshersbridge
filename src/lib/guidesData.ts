@@ -1337,7 +1337,7 @@ The HR interview verifies your cultural fit, adaptability, and long-term commitm
 ### 7. How to Apply via Superset & Official Careers Portal
 1. **On-Campus Drives:** Register on the [**Superset Platform (JoinSuperset)**](https://joinsuperset.com/) when Cognizant activates its campus drive link. Ensure your 10th, 12th, and degree percentages match your academic mark sheets verbatim.
 2. **Off-Campus Drives:** Track the official [Cognizant Global Careers Portal](https://careers.cognizant.com/global/en) and apply directly under the *Students & Graduates* tab for roles like *Programmer Analyst Trainee (PAT)*.
-3. **Resume Optimization:** Make sure your resume passes automated filters using the [FreshersBridge Free ATS Resume Scanner](/career-tools).
+3. **Resume Optimization:** Make sure your resume passes automated filters using the [FreshersBridge Free ATS Resume Builder](/career-tools).
     `,
   },
 
