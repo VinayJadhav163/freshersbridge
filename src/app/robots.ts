@@ -16,6 +16,32 @@ export default function robots(): MetadataRoute.Robots {
           '/*?*eligibility=',
         ],
       },
+      // Explicitly allow AI Search Engines & RAG Crawlers for GEO / AEO
+      {
+        userAgent: [
+          'GPTBot',
+          'ChatGPT-User',
+          'PerplexityBot',
+          'ClaudeBot',
+          'Google-Extended',
+          'Googlebot',
+          'Bingbot',
+        ],
+        allow: [
+          '/',
+          '/jobs',
+          '/jobs/*',
+          '/companies',
+          '/companies/*',
+          '/guides',
+          '/guides/*',
+          '/career-tools',
+        ],
+        disallow: [
+          '/admin',
+          '/api/admin/',
+        ],
+      },
     ],
     sitemap: 'https://freshersbridge.in/sitemap.xml',
   };

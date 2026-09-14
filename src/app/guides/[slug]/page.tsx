@@ -12,11 +12,13 @@ import {
   ChevronRight, 
   Sparkles,
   ArrowRight,
-  Tag
+  Tag,
+  HelpCircle
 } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import GuideContentRenderer from '@/components/GuideContentRenderer';
 import TableOfContents from '@/components/TableOfContents';
+import FAQAccordion from '@/components/FAQAccordion';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -79,7 +81,7 @@ export default async function GuideArticlePage({ params }: Props) {
 
   const relatedGuides = getRelatedGuides(guide.slug, guide.category, 3);
 
-  // Structured JSON-LD for Google Rich Results (Article + BreadcrumbList)
+  // Structured JSON-LD for Google Rich Results (Article + BreadcrumbList + FAQPage for GEO/AEO)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -128,6 +130,21 @@ export default async function GuideArticlePage({ params }: Props) {
           },
         ],
       },
+      ...(guide.faqs && guide.faqs.length > 0
+        ? [
+            {
+              '@type': 'FAQPage',
+              mainEntity: guide.faqs.map((faq) => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: faq.answer,
+                },
+              })),
+            },
+          ]
+        : []),
     ],
   };
 
@@ -206,6 +223,19 @@ export default async function GuideArticlePage({ params }: Props) {
             </div>
           </div>
 
+          {/* AEO / AI Overview Quick Direct Answer Card (GEO & Featured Snippet Booster) */}
+          {guide.directAnswerSummary && (
+            <div className="relative overflow-hidden rounded-2xl border border-indigo-200/90 dark:border-indigo-900/70 bg-gradient-to-br from-indigo-50/80 via-white to-sky-50/70 dark:from-indigo-950/40 dark:via-slate-900/60 dark:to-slate-900/80 p-5 sm:p-6 shadow-xs">
+              <div className="flex items-center gap-2 mb-2 text-indigo-700 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
+                <Sparkles className="h-4 w-4" />
+                <span>Key Takeaways & Quick Answer (AI Overview)</span>
+              </div>
+              <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+                {guide.directAnswerSummary}
+              </p>
+            </div>
+          )}
+
           {/* Table of Contents Component (Smooth Scroll without History Pollution) */}
           <TableOfContents items={guide.tableOfContents} />
 
@@ -216,6 +246,17 @@ export default async function GuideArticlePage({ params }: Props) {
               tableOfContents={guide.tableOfContents}
             />
           </article>
+
+          {/* Structured Frequently Asked Questions for GEO / AEO */}
+          {guide.faqs && guide.faqs.length > 0 && (
+            <section className="space-y-4 pt-6 border-t border-border" aria-label="Frequently Asked Questions">
+              <div className="flex items-center gap-2">
+                <HelpCircle className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                <h2 className="text-lg sm:text-xl font-black text-foreground">Frequently Asked Questions</h2>
+              </div>
+              <FAQAccordion items={guide.faqs} />
+            </section>
+          )}
 
           {/* Tags */}
           <div className="pt-6 border-t border-border flex flex-wrap items-center gap-2">

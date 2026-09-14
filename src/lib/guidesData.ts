@@ -16,6 +16,8 @@ export interface GuideArticle {
   tags: string[];
   tableOfContents: { id: string; title: string }[];
   content: string; // Markdown or rich HTML formatted content
+  directAnswerSummary?: string; // 40-60 word authoritative answer for AEO / Google AI Overviews & Perplexity
+  faqs?: { question: string; answer: string }[];
 }
 
 export const GUIDE_ARTICLES: GuideArticle[] = [
@@ -1151,6 +1153,25 @@ The interview for DSE and SP cadres is significantly more rigorous than the stan
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
     tags: ['Cognizant', 'GenC', 'GenC Elevate', 'GenC Next', 'Pseudocode', 'Freshers 2026', 'Campus Recruitment'],
+    directAnswerSummary: 'Cognizant hires engineering freshers across three cadres: GenC (₹4.0 LPA, foundational aptitude & pseudocode), GenC Elevate (₹4.50–₹5.00 LPA, intermediate web/cloud coding), and GenC Next (₹6.75–₹9.00 LPA, advanced DSA). Eligible candidates require a minimum 60% throughout academics with up to 1 year education gap.',
+    faqs: [
+      {
+        question: 'What is the salary difference between Cognizant GenC and GenC Elevate?',
+        answer: 'Cognizant GenC offers ₹4.00 LPA focusing on foundational programming, while GenC Elevate offers ₹4.50 to ₹5.00 LPA for candidates proficient in full-stack web technologies or cloud fundamentals.'
+      },
+      {
+        question: 'What is the eligibility criteria for Cognizant freshers hiring?',
+        answer: 'B.E./B.Tech/M.E./M.Tech/MCA/M.Sc graduates from 2024, 2025, and 2026 batches with a minimum of 60% or 6.0 CGPA across 10th, 12th, and degree, with zero active backlogs.'
+      },
+      {
+        question: 'Is there negative marking in Cognizant online test?',
+        answer: 'No, there is no negative marking in the Cognizant aptitude and pseudocode assessment conducted on Superset/AMCAT.'
+      },
+      {
+        question: 'Which round eliminates the most candidates in Cognizant GenC?',
+        answer: 'The Pseudocode round (30 questions, 30 minutes) has the highest elimination rate, testing bitwise operators, recursion call stacks, and nested loops.'
+      }
+    ],
     tableOfContents: [
       { id: 'genc-cadres', title: '1. Cognizant Hiring Cadres: GenC vs Elevate vs Next' },
       { id: 'eligibility-criteria', title: '2. Eligibility Criteria for Freshers (Batches 2024, 2025, 2026)' },
@@ -1713,6 +1734,25 @@ def max_subarray_sum(nums: list[int]) -> int:
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
     tags: ['Data Analyst', 'SQL', 'Power BI', 'Python', 'Excel', 'Roadmap', 'Freshers 2026'],
+    directAnswerSummary: 'A Data Analyst transforms raw corporate metrics into actionable business strategies using Excel, SQL, Power BI/Tableau, and Python. Entry-level fresher salaries in India range from ₹4.5 LPA in IT services to ₹9+ LPA in analytics firms and product startups, with SQL window functions and dashboard portfolios being the #1 hiring criteria.',
+    faqs: [
+      {
+        question: 'What is the average fresher salary for a Data Analyst in India?',
+        answer: 'Entry-level Data Analyst freshers in India earn between ₹4.0 LPA and ₹5.5 LPA at IT consultancies, ₹6.0 to ₹8.5 LPA at pure-play analytics firms (like Fractal and Mu Sigma), and ₹7.0 to ₹11.0 LPA at product companies.'
+      },
+      {
+        question: 'Do I need Python to get a fresher Data Analyst job?',
+        answer: 'Advanced SQL and Power BI/Tableau are the primary mandatory requirements for entry-level analyst roles. Python (Pandas/NumPy) gives you a strong competitive edge for exploratory data analysis and product tech companies.'
+      },
+      {
+        question: 'Which projects should a fresher put on a Data Analyst resume?',
+        answer: 'Avoid generic datasets like Titanic or Iris. Instead, build real-world business projects: E-Commerce Cohort Retention Dashboards, Quick-Commerce Delivery SLA Trackers, or Financial Loan Default Risk EDA.'
+      },
+      {
+        question: 'What are the most asked SQL questions in Data Analyst interviews?',
+        answer: 'Top recurring topics include DENSE_RANK() for Nth highest salary, rolling 7-day average revenue using window frames, removing duplicate records with ROW_NUMBER(), and WHERE vs HAVING distinctions.'
+      }
+    ],
     tableOfContents: [
       { id: 'role-overview', title: '1. What Does an Entry-Level Data Analyst Do in 2026?' },
       { id: 'salary-landscape', title: '2. Fresher Salary Landscape in India (₹4.5 to ₹9 LPA)' },
