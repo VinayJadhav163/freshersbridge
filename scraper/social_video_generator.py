@@ -396,20 +396,41 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     """
     Assembles a full 9:16 vertical video reel with motion, card entrance,
     dynamic progress bar, and synced audio.
+    Automatically adapts video duration to match the audio track length!
     """
     output_path = os.path.join(REELS_OUTPUT_DIR, output_filename)
     cover_image_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_cover.png"))
     caption_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_caption.txt"))
     
-    # 1. Prepare Base Backdrop and Job Card
+    # 1. Resolve Audio First & Auto-Adapt Duration
+    audio_clip = None
+    if not audio_path or not os.path.exists(audio_path):
+        audio_files = glob.glob(os.path.join(AUDIO_DIR, "*.wav")) + glob.glob(os.path.join(AUDIO_DIR, "*.mp3"))
+        if audio_files:
+            audio_path = random.choice(audio_files)
+            print(f"Selected audio track: {os.path.basename(audio_path)}")
+
+    if audio_path and os.path.exists(audio_path):
+        try:
+            audio_clip = AudioFileClip(audio_path)
+            duration = round(audio_clip.duration, 2)
+            print(f"Auto-adapting video reel duration to match audio length: {duration}s ({os.path.basename(audio_path)})")
+        except Exception as e:
+            print(f"Audio load warning: {e}")
+            duration = DURATION
+    else:
+        duration = DURATION
+        print(f"No audio file provided; using default duration: {duration}s")
+
+    # 2. Prepare Base Backdrop and Job Card
     base_bg = render_background_base()
     card_img = render_job_card(job_data)
     
-    # 2. Header & Static Elements
+    # 3. Header & Static Elements
     header_img = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
     hdraw = ImageDraw.Draw(header_img)
     
-    # Top Brand Pill
+    # Top Brand Pill with Supersampled Lightning Icon
     font_brand = get_font(FONT_BOLD, 26)
     brand_text = "FRESHERSBRIDGE.IN | DAILY JOBS"
     bb_b = font_brand.getbbox(brand_text)
@@ -418,7 +439,6 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     bx = (WIDTH - bw) // 2
     by = 105
     hdraw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=20, fill=(30, 58, 138, 230), outline=(56, 189, 248, 255), width=2)
-    # Top Brand Pill with Supersampled Lightning Icon
     icon_lightning = render_supersampled_icon("lightning", target_size=26, bg_color=(37, 99, 235), fg_color="#38bdf8")
     header_img.paste(icon_lightning, (bx + 14, by + (bh - 26) // 2), icon_lightning)
     hdraw.text((bx + 48, by + 12 - bb_b[1]), brand_text, font=font_brand, fill="#ffffff")
@@ -469,7 +489,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     static_frame = base_bg.copy().convert("RGBA")
     static_frame = Image.alpha_composite(static_frame, header_img)
 
-    # 3. Dynamic Frame Rendering Function for MoviePy
+    # 4. Dynamic Frame Rendering Function for MoviePy
     target_card_x = 60
     target_card_y = 355
 
@@ -498,17 +518,18 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
         font_live = get_font(FONT_HEAVY, 22)
         draw_dynamic.text((WIDTH - 165, 40), "LIVE", font=font_live, fill="#ef4444")
 
-        # Bottom Progress Bar
+        # Bottom Progress Bar dynamically timed to exact audio duration
         bar_y = 1885
         bar_h = 10
         draw_dynamic.rectangle([0, bar_y, WIDTH, bar_y + bar_h], fill=(30, 41, 59, 220))
-        bar_progress = min(max(t / DURATION, 0.0), 1.0)
+        bar_progress = min(max(t / duration, 0.0), 1.0)
         draw_dynamic.rectangle([0, bar_y, int(WIDTH * bar_progress), bar_y + bar_h], fill=(56, 189, 248, 255))
 
         return np.array(frame.convert("RGB"))
 
-    # Save Cover Thumbnail at t=1.8s
-    cover_np = make_frame(1.8)
+    # Save Cover Thumbnail at t=min(1.8, duration / 2)
+    cover_time = min(1.8, duration / 2.0)
+    cover_np = make_frame(cover_time)
     try:
         if os.path.exists(cover_image_path):
             try:
@@ -532,28 +553,13 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     except Exception as e:
         print(f"Caption save warning: {e}")
 
-    # 4. Generate Video Clip
-    clip = VideoClip(make_frame, duration=DURATION)
-
-    # 5. Mux Audio
-    if not audio_path or not os.path.exists(audio_path):
-        audio_files = glob.glob(os.path.join(AUDIO_DIR, "*.wav")) + glob.glob(os.path.join(AUDIO_DIR, "*.mp3"))
-        if audio_files:
-            audio_path = random.choice(audio_files)
-            print(f"Randomly picked audio track: {os.path.basename(audio_path)}")
-
-    if audio_path and os.path.exists(audio_path):
-        try:
-            audio_clip = AudioFileClip(audio_path)
-            if audio_clip.duration > DURATION:
-                audio_clip = audio_clip.subclipped(0, DURATION)
-            clip = clip.with_audio(audio_clip)
-            print(f"Muxed audio track: {os.path.basename(audio_path)}")
-        except Exception as e:
-            print(f"Audio mux warning: {e}")
+    # 5. Generate Video Clip with Exact Audio Duration
+    clip = VideoClip(make_frame, duration=duration)
+    if audio_clip:
+        clip = clip.with_audio(audio_clip)
 
     # 6. Render MP4
-    print(f"Rendering {DURATION}s 9:16 Reel ({output_filename})...")
+    print(f"Rendering {duration}s 9:16 Reel ({output_filename})...")
     clip.write_videofile(
         output_path,
         fps=FPS,
@@ -562,7 +568,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
         preset="fast",
         logger="bar"
     )
-    print(f"Completed Video Reel: {output_path}")
+    print(f"Completed Video Reel: {output_path} ({duration}s)")
     return output_path, cover_image_path, caption_path
 
 def get_jobs_from_csv(count=1):

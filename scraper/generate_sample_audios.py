@@ -137,6 +137,8 @@ if __name__ == "__main__":
     
     track1 = os.path.join(audio_dir, "trending_beat_synthwave.wav")
     track2 = os.path.join(audio_dir, "trending_beat_tech_house.wav")
+    track3 = os.path.join(audio_dir, "trending_beat_15s.wav")
     
     generate_beat_track(track1, tempo_bpm=128, duration_sec=8.0, style="synthwave")
     generate_beat_track(track2, tempo_bpm=126, duration_sec=8.0, style="tech_house")
+    generate_beat_track(track3, tempo_bpm=124, duration_sec=15.0, style="synthwave")
