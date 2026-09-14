@@ -307,16 +307,55 @@ export default async function JobDetailsPage({ params }: Props) {
   // 2. Fast parallel related jobs query
   const relatedJobs = await getRelatedJobs(job.category_id, job.id);
 
-  // 3. Smart contextual guides matching for internal topic clusters
-  const jobText = `${job.title} ${job.company} ${job.skills.join(' ')}`.toLowerCase();
-  const relevantGuides = GUIDE_ARTICLES.filter((g) => {
-    return (
-      g.tags.some((tag) => jobText.includes(tag.toLowerCase())) ||
-      g.title.toLowerCase().includes(job.company.toLowerCase()) ||
-      g.tags.includes('Aptitude') ||
-      g.tags.includes('Coding')
-    );
-  }).slice(0, 2);
+  // 3. High-precision contextual guide matching for internal topic clusters
+  const jobText = `${job.title} ${job.company} ${(job.skills || []).join(' ')} ${job.eligibility || ''}`.toLowerCase();
+  const scoredGuides = GUIDE_ARTICLES.map((guide) => {
+    let score = 0;
+    const gTitle = guide.title.toLowerCase();
+    const gSlug = guide.slug.toLowerCase();
+    const jComp = job.company.toLowerCase();
+
+    // Direct company match (Accenture, Cognizant, TCS, Infosys, Wipro, etc.)
+    if (jComp.length > 2 && (gTitle.includes(jComp) || gSlug.includes(jComp))) {
+      score += 100;
+    }
+
+    // Role-specific match
+    if (/\b(data analyst|analytics|business intelligence|bi|sql)\b/i.test(jobText) && gSlug.includes('data-analyst')) {
+      score += 85;
+    }
+    if (/\b(sql|database|dbms|query)\b/i.test(jobText) && gSlug.includes('sql-interview')) {
+      score += 65;
+    }
+    if (/\b(python|django|fastapi|pandas)\b/i.test(jobText) && gSlug.includes('python')) {
+      score += 60;
+    }
+    if (/\b(java|spring|springboot)\b/i.test(jobText) && gSlug.includes('java')) {
+      score += 60;
+    }
+    if (/\b(web|frontend|react|node|fullstack|full-stack)\b/i.test(jobText) && gSlug.includes('full-stack')) {
+      score += 60;
+    }
+
+    // Tag overlaps
+    for (const tag of guide.tags) {
+      if (jobText.includes(tag.toLowerCase())) {
+        score += 20;
+      }
+    }
+
+    // Baseline fallbacks for freshers
+    if (gSlug.includes('ats-friendly-resume')) score += 10;
+    if (gSlug.includes('hr-interview-questions')) score += 5;
+
+    return { guide, score };
+  });
+
+  const relevantGuides = scoredGuides
+    .sort((a, b) => b.score - a.score)
+    .filter((item) => item.score > 0)
+    .slice(0, 2)
+    .map((item) => item.guide);
 
   // 4. Match company for bidirectional internal linking
   const matchedCompany = COMPANIES_DATA.find((c) => {

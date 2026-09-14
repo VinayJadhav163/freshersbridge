@@ -68,6 +68,11 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/site.webmanifest',
+  other: {
+    ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
+      ? { 'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID }
+      : {}),
+  },
 };
 
 export default function RootLayout({
@@ -75,6 +80,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+
   return (
     <html
       lang="en"
@@ -87,6 +94,13 @@ export default function RootLayout({
             __html: `if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);`,
           }}
         />
+        {adsenseId && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </head>
       <body className={`min-h-full flex flex-col bg-background text-foreground font-sans ${plusJakartaSans.className}`} suppressHydrationWarning>
         <Suspense fallback={null}>
