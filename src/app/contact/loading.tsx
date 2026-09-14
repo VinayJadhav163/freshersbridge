@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export default function ContactLoading() {
-  return <PageLoader text="Loading contact page..." />;
+  return <PageSkeleton title={true} cardsCount={2} />;
 }

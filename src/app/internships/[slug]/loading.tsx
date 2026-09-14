@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { JobDetailSkeleton } from '@/components/skeletons/JobDetailSkeleton';
 
 export default function InternshipDetailLoading() {
-  return <PageLoader text="Loading internship details..." />;
+  return <JobDetailSkeleton isInternship={true} />;
 }

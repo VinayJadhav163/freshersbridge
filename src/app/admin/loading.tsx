@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export default function AdminLoading() {
-  return <PageLoader text="Loading admin panel..." />;
+  return <PageSkeleton title={true} cardsCount={3} />;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
-import { InfinityLoop } from '@/components/ui/infinity';
+import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export interface LoaderProps {
   className?: string;
@@ -8,52 +9,34 @@ export interface LoaderProps {
 }
 
 /**
- * Classic single ring spinner loader component
+ * Modern minimal inline spinner for buttons and interactive controls
  */
 export function ClassicLoader({ className = '', size = 'md' }: LoaderProps) {
   const sizeClasses = {
-    sm: 'h-5 w-8',
-    md: 'h-8 w-14',
-    lg: 'h-12 w-20',
-  }[size];
-
-  return <InfinityLoop className={cn(sizeClasses, 'text-indigo-600 dark:text-indigo-400', className)} />;
-}
-
-/**
- * Concentric dual-ring spinner loader component (Powered by InfinityLoop)
- */
-export function ConcentricLoader({ className = '', size = 'md' }: LoaderProps) {
-  const sizeClasses = {
-    sm: 'h-6 w-10',
-    md: 'h-10 w-16',
-    lg: 'h-14 w-24',
+    sm: 'h-4 w-4',
+    md: 'h-6 w-6',
+    lg: 'h-8 w-8',
   }[size];
 
   return (
-    <div className={cn("flex w-full items-center justify-center", className)} role="status">
-      <InfinityLoop className={cn(sizeClasses, "text-indigo-600 dark:text-indigo-400")} />
-      <span className="sr-only">Loading...</span>
-    </div>
+    <Loader2
+      className={cn('animate-spin text-indigo-600 dark:text-indigo-400', sizeClasses, className)}
+    />
   );
 }
 
 /**
- * Full page or full container loader with brand electric indigo Infinity Loop (No logo inside)
+ * Concentric spinner loader alias
  */
-export function PageLoader({ text = 'Loading FreshersBridge...' }: { text?: string }) {
-  return (
-    <div className="min-h-[calc(100dvh-64px)] w-full flex flex-col items-center justify-center gap-4 p-8">
-      <div className="flex items-center justify-center p-2">
-        <InfinityLoop className="h-12 w-20 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
-      </div>
-      {text && (
-        <p className="text-xs font-bold text-muted-foreground/80 animate-pulse tracking-wider uppercase font-sans">
-          {text}
-        </p>
-      )}
-    </div>
-  );
+export function ConcentricLoader(props: LoaderProps) {
+  return <ClassicLoader {...props} />;
+}
+
+/**
+ * Modern PageLoader fallback rendering polished Skeleton screens
+ */
+export function PageLoader() {
+  return <PageSkeleton />;
 }
 
 export default PageLoader;

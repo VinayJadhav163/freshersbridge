@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
-export default function NandiniAdminLoading() {
-  return <PageLoader text="Loading secure admin panel..." />;
+export default function NandiniLoading() {
+  return <PageSkeleton title={true} cardsCount={3} />;
 }

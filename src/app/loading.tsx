@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export default function RootLoading() {
-  return <PageLoader text="Loading page..." />;
+  return <PageSkeleton />;
 }

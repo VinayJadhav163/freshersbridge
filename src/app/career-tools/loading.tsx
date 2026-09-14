@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export default function CareerToolsLoading() {
-  return <PageLoader text="Loading career tools..." />;
+  return <PageSkeleton title={true} cardsCount={4} />;
 }

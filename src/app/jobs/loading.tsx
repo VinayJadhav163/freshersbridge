@@ -1,5 +1,5 @@
-import { PageLoader } from '@/components/Loader';
+import { JobListSkeleton } from '@/components/skeletons/JobCardSkeleton';
 
 export default function JobsLoading() {
-  return <PageLoader text="Loading job drives..." />;
+  return <JobListSkeleton title="Off-Campus Tech Job Drives" isInternship={false} count={6} />;
 }
