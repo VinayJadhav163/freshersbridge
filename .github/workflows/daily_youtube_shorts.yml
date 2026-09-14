@@ -55,6 +55,9 @@ jobs:
           echo "$YOUTUBE_TOKEN" > credentials/youtube_token.json
 
       - name: Generate & Publish Daily YouTube Short
+        env:
+          YOUTUBE_CLIENT_SECRET_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
         run: |
           PRIVACY="${{ github.event.inputs.privacy || 'public' }}"
           python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY"

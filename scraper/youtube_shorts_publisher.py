@@ -42,6 +42,17 @@ def get_authenticated_service():
     """
     creds = None
     
+    # Check if credentials are provided via environment variables (e.g., GitHub Actions CI)
+    if (not os.path.exists(TOKEN_FILE) or os.path.getsize(TOKEN_FILE) == 0) and os.environ.get("YOUTUBE_TOKEN_JSON"):
+        os.makedirs(CREDENTIALS_DIR, exist_ok=True)
+        with open(TOKEN_FILE, "w", encoding="utf-8") as f:
+            f.write(os.environ["YOUTUBE_TOKEN_JSON"].strip())
+
+    if (not os.path.exists(CLIENT_SECRET_FILE) or os.path.getsize(CLIENT_SECRET_FILE) == 0) and os.environ.get("YOUTUBE_CLIENT_SECRET_JSON"):
+        os.makedirs(CREDENTIALS_DIR, exist_ok=True)
+        with open(CLIENT_SECRET_FILE, "w", encoding="utf-8") as f:
+            f.write(os.environ["YOUTUBE_CLIENT_SECRET_JSON"].strip())
+
     # 1. Check for existing cached token
     if os.path.exists(TOKEN_FILE):
         try:
