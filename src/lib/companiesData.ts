@@ -75,6 +75,14 @@ export const COMPANIES_DATA: CompanyProfile[] = [
         question: 'What is the maximum allowed academic gap for TCS?',
         answer: 'TCS typically permits up to 24 months (2 years) of overall education gap with valid justification.',
       },
+      {
+        question: 'Does TCS have a service agreement or bond for freshers?',
+        answer: 'TCS requires candidates joining the Ninja and Digital streams to sign a 1-year service agreement (bond) of ₹50,000 applicable from the date of joining.',
+      },
+      {
+        question: 'Can a candidate upgrade from TCS Ninja to TCS Digital after joining?',
+        answer: 'Yes! TCS holds internal qualification tests like Elevate Wings 1 and digital competency assessments twice a year, enabling Ninja engineers to double their package to Digital/Prime within 12-18 months.',
+      },
     ],
     relatedGuideSlug: 'tcs-nqt-2026-complete-syllabus-exam-pattern-preparation-guide',
   },
@@ -123,6 +131,14 @@ export const COMPANIES_DATA: CompanyProfile[] = [
       {
         question: 'Does Infosys require previous work experience for Systems Engineer?',
         answer: 'No, Systems Engineer is strictly an entry-level role designed for final-year college students and recent graduates.',
+      },
+      {
+        question: 'What is the passing criteria for Mysore campus training?',
+        answer: 'Trainees must score a minimum of 65% across Generic and Stream-specific assessments. You get two re-attempts if you fail a module.',
+      },
+      {
+        question: 'What is the bond and service agreement duration at Infosys?',
+        answer: 'Infosys typically mandates a 1-year service agreement from the date of joining with a nominal recovery clause if broken during probation.',
       },
     ],
     relatedGuideSlug: 'infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide',
@@ -173,6 +189,14 @@ export const COMPANIES_DATA: CompanyProfile[] = [
         question: 'Can 2024 and 2025 passouts apply for Accenture off-campus drives?',
         answer: 'Yes, Accenture regularly launches national off-campus hiring drives for recent batch graduates.',
       },
+      {
+        question: 'How is a candidate selected for AASE (₹6.5 LPA) instead of ASE (₹4.5 LPA)?',
+        answer: 'Candidates who score exceptionally high in the cognitive assessment and solve both coding questions with optimal time complexity are shortlisted for the AASE track.',
+      },
+      {
+        question: 'Does Accenture allow changing job locations after selection?',
+        answer: 'Job location preference is taken during onboarding, but initial allocation depends on project demand across major hubs like Bengaluru, Hyderabad, Pune, Gurgaon, and Chennai.',
+      },
     ],
     relatedGuideSlug: 'accenture-recruitment-process-syllabus-coding-questions-freshers',
   },
@@ -222,6 +246,14 @@ export const COMPANIES_DATA: CompanyProfile[] = [
         question: 'Can BCA students apply for Wipro?',
         answer: 'Yes! BCA and B.Sc students can apply for the Wipro WILP program which includes an employer-sponsored M.Tech degree from BITS Pilani.',
       },
+      {
+        question: 'What is the service agreement duration at Wipro for Elite freshers?',
+        answer: 'Wipro Project Engineers have a 12-month service agreement of ₹75,000 applicable upon starting full-time onboarding.',
+      },
+      {
+        question: 'Which programming languages are supported in the Wipro coding assessment?',
+        answer: 'Candidates can write code in Java, Python, C++, or C. Python and Java are the most popular choices among candidates.',
+      },
     ],
     relatedGuideSlug: 'wipro-elite-nth-2026-syllabus-exam-pattern-coding-preparation',
   },
@@ -267,6 +299,18 @@ export const COMPANIES_DATA: CompanyProfile[] = [
         question: 'What is the difference between Cognizant GenC and GenC Next?',
         answer: 'GenC focuses on fundamental programming at 4.0 LPA, while GenC Next tests advanced data structures and algorithms offering packages up to 9.0 LPA.',
       },
+      {
+        question: 'What is covered in the Cognizant technical interview?',
+        answer: 'The interviewer tests OOP concepts (Inheritance, Polymorphism), basic SQL queries (JOINs, Group By), data structure fundamentals (Arrays, Linked Lists), and questions about your academic final-year project.',
+      },
+      {
+        question: 'Can candidates from non-IT branches apply for Cognizant GenC?',
+        answer: 'Yes, graduates from Mechanical, Civil, Electrical, and other non-CS engineering branches are eligible provided they have basic coding proficiency and meet the minimum CGPA criterion.',
+      },
+      {
+        question: 'Does Cognizant offer internships before full-time joining?',
+        answer: 'Yes, Cognizant regularly rolls out paid 3 to 6-month pre-onboarding internships with stipends ranging from ₹12,000 to ₹18,000/month for selected college freshers.',
+      },
     ],
     relatedGuideSlug: 'cognizant-genc-elevate-2026-exam-pattern-interview-blueprint',
   },
@@ -307,6 +351,18 @@ export const COMPANIES_DATA: CompanyProfile[] = [
       {
         question: 'What is Capgemini Game-Based Aptitude?',
         answer: 'Capgemini tests memory, inductive reasoning, motion challenge, and grid challenge through 4 gamified modules instead of traditional math MCQs.',
+      },
+      {
+        question: 'How do I prepare for the Capgemini Pseudocode round?',
+        answer: 'Focus on recursion tracing, bitwise operations (AND, OR, XOR), loop invariants, and operator precedence in C/C++ pseudo-syntax.',
+      },
+      {
+        question: 'What is the passing score for the Capgemini online assessment?',
+        answer: 'Each section (Pseudocode, English, Game Aptitude, Coding) has sectional cutoffs (typically around 65-70%). Clearing all sections without negative marking is required.',
+      },
+      {
+        question: 'What is the package difference between Analyst and Senior Analyst at Capgemini?',
+        answer: 'Analysts receive ₹4.25 LPA, while candidates who clear the secondary advanced coding round receive Senior Analyst offers at ₹7.5 LPA.',
       },
     ],
   },

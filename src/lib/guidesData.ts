@@ -1921,3 +1921,261 @@ export function getRelatedGuides(currentSlug: string, category: string, limit = 
     .sort((a, b) => (a.category === category ? -1 : 1))
     .slice(0, limit);
 }
+
+export function getGuideFaqs(guide: GuideArticle): { question: string; answer: string }[] {
+  if (guide.faqs && guide.faqs.length > 0) {
+    return guide.faqs;
+  }
+
+  const slug = guide.slug.toLowerCase();
+
+  if (slug.includes('tcs-nqt')) {
+    return [
+      {
+        question: 'Is the TCS NQT score card valid for companies other than TCS?',
+        answer: 'Yes, your official TCS NQT score card is recognized by hundreds of corporate hiring partners on the TCS iON portal in addition to TCS Ninja, Digital, and Prime hiring.',
+      },
+      {
+        question: 'Can non-CS or IT engineering students qualify for TCS Digital (7 LPA)?',
+        answer: 'Yes, graduates from all engineering streams (Mechanical, Civil, Electrical, etc.) are eligible for TCS Digital provided they score high percentiles in the Advanced Coding section.',
+      },
+      {
+        question: 'Is there negative marking in TCS NQT online cognitive test?',
+        answer: 'No, there is no negative marking in the TCS NQT foundation or advanced sections. Candidates should attempt all questions within the allocated sectional timer.',
+      },
+      {
+        question: 'What is the maximum allowable education gap for TCS freshers hiring?',
+        answer: 'TCS permits up to 24 months (2 years) of overall education gap with genuine documentation and no active academic arrears.',
+      },
+    ];
+  }
+
+  if (slug.includes('accenture')) {
+    return [
+      {
+        question: 'What is the difference between Accenture ASE and AASE roles?',
+        answer: 'Associate Software Engineer (ASE) offers ₹4.5 LPA focusing on application development and support, while Advanced ASE (AASE) offers ₹6.5 LPA with higher coding and cloud architecture expectations.',
+      },
+      {
+        question: 'Is the Accenture Communication Assessment an elimination round?',
+        answer: 'Yes, the AI-proctored communication assessment tests sentence mastery, fluency, and pronunciation, and is mandatory to clear before the final technical and HR interview.',
+      },
+      {
+        question: 'What programming languages are allowed in the Accenture coding test?',
+        answer: 'Accenture allows candidates to solve coding questions in C, C++, Java, and Python on the assessment platform.',
+      },
+      {
+        question: 'Can 2024 and 2025 batch passouts apply for Accenture off-campus drives?',
+        answer: 'Yes, Accenture frequently launches national off-campus hiring drives for recent college graduates with a minimum of 65% or 6.5 CGPA.',
+      },
+    ];
+  }
+
+  if (slug.includes('infosys')) {
+    return [
+      {
+        question: 'What is the salary difference between Infosys SE, DSE, and SP?',
+        answer: 'Systems Engineer (SE) offers ₹3.6 LPA, Digital Specialist Engineer (DSE) offers ₹6.25 LPA, and Specialist Programmer (SP) offers ₹9.5 LPA.',
+      },
+      {
+        question: 'How can freshers qualify directly for the ₹9.5 LPA Infosys SP role?',
+        answer: 'Students can participate in HackWithInfy or excel in the Advanced Coding round of the national recruitment drive by solving complex graph and dynamic programming challenges.',
+      },
+      {
+        question: 'Does Infosys provide training for freshers before project allocation?',
+        answer: 'Yes, all selected freshers undergo 3 to 5 months of foundational training at the Infosys Mysore Global Education Centre.',
+      },
+      {
+        question: 'What is the minimum eligibility criteria for Infosys off-campus drives?',
+        answer: 'B.E./B.Tech/M.E./M.Tech/MCA graduates with a minimum of 65% or 6.5 CGPA throughout 10th, 12th, and degree, with no active backlogs.',
+      },
+    ];
+  }
+
+  if (slug.includes('wipro')) {
+    return [
+      {
+        question: 'What is the Wipro Elite National Talent Hunt (NTH) exam pattern?',
+        answer: 'Wipro Elite assessment consists of three sections: Aptitude (Logical, Quantitative, English), Written Communication (Essay Writing), and Online Coding (2 programming questions).',
+      },
+      {
+        question: 'How is the Wipro Essay Writing round evaluated?',
+        answer: 'The essay is automatically evaluated by NLP algorithms based on vocabulary, grammatical correctness, sentence structure, and topical coherence within a 20-minute window.',
+      },
+      {
+        question: 'Can BCA and B.Sc graduates apply for Wipro?',
+        answer: 'Yes, BCA and B.Sc graduates can apply through the Wipro WILP program, which includes an employer-sponsored M.Tech degree from BITS Pilani alongside a monthly stipend.',
+      },
+      {
+        question: 'What is the compensation package for Wipro Turbo?',
+        answer: 'Wipro Turbo offers ₹6.5 LPA to candidates who qualify for the upgraded technical track or demonstrate top percentiles during foundational training.',
+      },
+    ];
+  }
+
+  if (slug.includes('java')) {
+    return [
+      {
+        question: 'Why is Java the most popular language for IT fresher placement drives?',
+        answer: 'Enterprise MNCs (TCS, Infosys, Cognizant, Accenture) build large-scale backend systems in Java and prioritize candidates who master OOP principles, JVM memory management, and Collections.',
+      },
+      {
+        question: 'What is the difference between String, StringBuilder, and StringBuffer in Java?',
+        answer: 'String is immutable. StringBuilder is mutable and faster for single-threaded operations. StringBuffer is mutable and thread-safe because its methods are synchronized.',
+      },
+      {
+        question: 'Should freshers learn Spring Boot before applying for Java developer jobs?',
+        answer: 'Mastering Core Java (OOP, Collections, Exception Handling) is mandatory for interviews. Having basic Spring Boot and REST API project experience significantly boosts your shortlist rate.',
+      },
+      {
+        question: 'What are the most asked Java coding problems in campus recruitments?',
+        answer: 'Common questions include String anagrams, reversing words in a sentence, detecting cycles in a LinkedList, and custom sorting with Comparable/Comparator.',
+      },
+    ];
+  }
+
+  if (slug.includes('python')) {
+    return [
+      {
+        question: 'Is Python accepted in all campus placement coding rounds?',
+        answer: 'Yes, almost all modern assessment platforms (HackerRank, Superset, Mettl, TCS iON, Aon CoCubes) support Python 3 for coding evaluations.',
+      },
+      {
+        question: 'How are lists different from tuples in Python?',
+        answer: 'Lists are mutable (elements can be modified, appended, or removed) and use square brackets []. Tuples are immutable (cannot be altered once created), consume less memory, and use parentheses ().',
+      },
+      {
+        question: 'What are Python decorators and where are they used?',
+        answer: 'A decorator is a function that takes another function as an argument and extends its behavior without modifying the original code, commonly used for logging, authorization, and caching.',
+      },
+      {
+        question: 'What is the Global Interpreter Lock (GIL) in Python?',
+        answer: 'The GIL is a mutex that prevents multiple native threads from executing Python bytecodes at once, ensuring thread-safe CPython memory management at the cost of multi-core CPU bound parallelism.',
+      },
+    ];
+  }
+
+  if (slug.includes('sql')) {
+    return [
+      {
+        question: 'What are the top 3 SQL queries asked in every fresher technical interview?',
+        answer: '1) Finding the Nth highest salary using DENSE_RANK(), 2) Identifying and deleting duplicate records using ROW_NUMBER(), and 3) Employee-Manager self joins.',
+      },
+      {
+        question: 'What is the core difference between WHERE and HAVING in SQL?',
+        answer: 'WHERE filters individual records before aggregation takes place, whereas HAVING filters grouped summary rows after the GROUP BY clause executes.',
+      },
+      {
+        question: 'When should you use a Common Table Expression (CTE) over a subquery?',
+        answer: 'CTEs (WITH clause) enhance readability, allow recursive querying, and can be referenced multiple times within the same main query unlike inline subqueries.',
+      },
+      {
+        question: 'What is database normalization and why is it important?',
+        answer: 'Normalization is the process of organizing relational database tables to reduce data redundancy, prevent insertion/deletion anomalies, and ensure ACID integrity (typically 1NF to 3NF).',
+      },
+    ];
+  }
+
+  if (slug.includes('resume')) {
+    return [
+      {
+        question: 'What is an ATS-friendly resume format for freshers?',
+        answer: 'A single-column layout formatted in clean PDF without tables, multi-column text boxes, graphics, or icons, using standard headers like Education, Skills, Projects, and Experience.',
+      },
+      {
+        question: 'Should freshers use a 1-page or 2-page resume?',
+        answer: 'Freshers and college graduates with under 3 years of work experience should strictly keep their resume to a single high-impact page.',
+      },
+      {
+        question: 'How can I check if my resume passes ATS scanners?',
+        answer: 'You can test your resume score for free using the FreshersBridge ATS Resume Scanner tool at /career-tools, which benchmarks your keywords against real tech job descriptions.',
+      },
+      {
+        question: 'What should freshers without internship experience highlight?',
+        answer: 'Focus on 2 to 3 detailed technical projects with live demo and GitHub links, hackathon participations, competitive programming rankings, and verified certifications.',
+      },
+    ];
+  }
+
+  if (slug.includes('full-stack')) {
+    return [
+      {
+        question: 'Which tech stack is best for a fresher to get hired in 2026?',
+        answer: 'The MERN/Next.js stack (React, Next.js, Node.js, Express, PostgreSQL/MongoDB) or Java Full Stack (Spring Boot + React) have the highest volume of entry-level job openings in India.',
+      },
+      {
+        question: 'How many projects does a fresher need to get shortlisted for web developer roles?',
+        answer: 'Two well-architected, full-stack deployed applications (with user authentication, database persistence, and a responsive UI) are far more effective than 10 tutorial clones.',
+      },
+      {
+        question: 'Is DSA required for Full-Stack Web Developer fresher jobs?',
+        answer: 'Yes, most product startups and MNCs include a round of basic-to-medium Data Structures (Arrays, Strings, HashMaps) alongside practical web architecture and API questions.',
+      },
+      {
+        question: 'Where should freshers host their full-stack portfolio projects for free?',
+        answer: 'Vercel, Render, or Railway for web applications, and Supabase or Neon for PostgreSQL databases provide generous free tiers with instant deployment.',
+      },
+    ];
+  }
+
+  if (slug.includes('hr-interview')) {
+    return [
+      {
+        question: 'How should a fresher answer "Tell me about yourself"?',
+        answer: 'Follow the Present-Past-Future framework: 1) Who you are academically, 2) Key technical projects and achievements you built, and 3) Why you are excited about this specific company and role.',
+      },
+      {
+        question: 'How should freshers answer the salary expectation question?',
+        answer: 'State that you are looking for compensation aligned with company standards and industry benchmarks for entry-level engineering graduates, prioritizing learning and growth.',
+      },
+      {
+        question: 'Are service bonds legal in Indian IT companies?',
+        answer: 'Most MNCs include a 1 to 2-year service agreement (e.g. ₹50,000 to ₹1,00,000) to cover initial training costs. Always read employment contracts carefully before signing.',
+      },
+      {
+        question: 'What is the best answer to "Where do you see yourself in 5 years"?',
+        answer: 'Explain that you see yourself growing into a senior engineering or technical specialist role, mentoring juniors, and having end-to-end ownership of critical production systems.',
+      },
+    ];
+  }
+
+  if (slug.includes('off-campus')) {
+    return [
+      {
+        question: 'How do Tier-3 college students find genuine off-campus drives?',
+        answer: 'Track specialized fresher portals like FreshersBridge, monitor employer careers pages directly (TCS NextStep, InfyTQ, Superset), and leverage LinkedIn referral outreach.',
+      },
+      {
+        question: 'What is the biggest mistake freshers make when applying off-campus?',
+        answer: 'Submitting generic resumes via "Easy Apply" without tailoring keywords or reaching out directly to recruiters and team leads with personalized portfolio links.',
+      },
+      {
+        question: 'How long does the off-campus recruitment process typically take?',
+        answer: 'From initial registration to the final offer letter, national off-campus hiring drives usually take between 4 to 8 weeks across testing and interview stages.',
+      },
+      {
+        question: 'Do off-campus drives have higher cutoffs than on-campus placements?',
+        answer: 'Off-campus applicant pools are larger, so having an ATS-optimized resume, 60%+ academic aggregate, and strong performance in online test rounds is critical to stand out.',
+      },
+    ];
+  }
+
+  return [
+    {
+      question: `What are the key prerequisites to master ${guide.title}?`,
+      answer: `Candidates should have basic knowledge of computer science fundamentals, structured problem-solving skills, and familiarity with entry-level tech interview patterns.`,
+    },
+    {
+      question: `How does this guide help freshers prepare for campus and off-campus placements?`,
+      answer: `This blueprint breaks down the exact syllabus, frequently asked interview questions, recurring coding patterns, and strategic preparation roadmaps verified against recent recruitment trends.`,
+    },
+    {
+      question: `Where can freshers practice coding and aptitude questions for this topic?`,
+      answer: `Students can practice on platforms like LeetCode, HackerRank, and GeeksforGeeks, while testing their resumes on the FreshersBridge ATS Resume Scanner.`,
+    },
+    {
+      question: `Are the questions and strategies in this guide relevant for 2026 batch graduates?`,
+      answer: `Yes, all topics, cutoff guidelines, and test formats in this guide are curated and regularly updated for the 2024, 2025, and 2026 batch freshers.`,
+    },
+  ];
+}

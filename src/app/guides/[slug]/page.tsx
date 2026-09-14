@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { GUIDE_ARTICLES, getGuideBySlug, getRelatedGuides } from '@/lib/guidesData';
+import { GUIDE_ARTICLES, getGuideBySlug, getRelatedGuides, getGuideFaqs } from '@/lib/guidesData';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -80,6 +80,7 @@ export default async function GuideArticlePage({ params }: Props) {
   }
 
   const relatedGuides = getRelatedGuides(guide.slug, guide.category, 3);
+  const guideFaqs = getGuideFaqs(guide);
 
   // Structured JSON-LD for Google Rich Results (Article + BreadcrumbList + FAQPage for GEO/AEO)
   const jsonLd = {
@@ -130,11 +131,11 @@ export default async function GuideArticlePage({ params }: Props) {
           },
         ],
       },
-      ...(guide.faqs && guide.faqs.length > 0
+      ...(guideFaqs && guideFaqs.length > 0
         ? [
             {
               '@type': 'FAQPage',
-              mainEntity: guide.faqs.map((faq) => ({
+              mainEntity: guideFaqs.map((faq) => ({
                 '@type': 'Question',
                 name: faq.question,
                 acceptedAnswer: {
@@ -248,13 +249,13 @@ export default async function GuideArticlePage({ params }: Props) {
           </article>
 
           {/* Structured Frequently Asked Questions for GEO / AEO */}
-          {guide.faqs && guide.faqs.length > 0 && (
+          {guideFaqs && guideFaqs.length > 0 && (
             <section className="space-y-4 pt-6 border-t border-border" aria-label="Frequently Asked Questions">
               <div className="flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                 <h2 className="text-lg sm:text-xl font-black text-foreground">Frequently Asked Questions</h2>
               </div>
-              <FAQAccordion items={guide.faqs} />
+              <FAQAccordion items={guideFaqs} defaultOpenIndex={0} />
             </section>
           )}
 
