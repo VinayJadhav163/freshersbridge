@@ -1,0 +1,6 @@
+id,title,artist,audio_filename_or_url,category,active
+1,Trending Synthwave Pulse,FreshersBridge Beats,trending_beat_synthwave.wav,tech,true
+2,Tech House High Energy,FreshersBridge Beats,trending_beat_tech_house.wav,energy,true
+# Add your 50-100 trending audios below.
+# You can place MP3 or WAV files into scraper/assets/audio/ and refer to their filenames here.
+# Example: 3,Vibe Phonk 2026,Trending Sound,phonk_drive.mp3,viral,true

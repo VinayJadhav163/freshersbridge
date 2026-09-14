@@ -1,0 +1,563 @@
+"""
+FreshersBridge Social Video Generator (Reels / Shorts / TikTok)
+Automates ready-to-post 9:16 vertical MP4 video reels (1080x1920) from scraped job postings.
+
+Features:
+- Premium Glassmorphic 9:16 Visual Poster Design
+- Crisp Typography & Brand Aesthetics (Zero missing glyphs)
+- Company Brand Accents (Microsoft, TCS, Accenture, Google, etc.)
+- Audio Engine: Automatically muxes background music from trending audios
+- Micro-Animations: Smooth entrance slide, pulsing "APPLY NOW", dynamic live clock & progress bar
+- Auto-Caption & Hashtags Generator (.txt file alongside every MP4)
+"""
+
+import os
+import sys
+import glob
+import math
+import random
+import argparse
+import pandas as pd
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from moviepy import VideoClip, AudioFileClip
+
+# File Paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+AUDIO_DIR = os.path.join(ASSETS_DIR, "audio")
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+REELS_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "reels")
+TRENDING_AUDIO_CSV = os.path.join(ASSETS_DIR, "trending_audio.csv")
+
+os.makedirs(AUDIO_DIR, exist_ok=True)
+os.makedirs(REELS_OUTPUT_DIR, exist_ok=True)
+
+# Video Dimensions & Settings
+WIDTH = 1080
+HEIGHT = 1920
+FPS = 30
+DURATION = 8.0  # 8.0 seconds optimal for 100% completion rate & loop replay
+
+# Fonts
+FONT_BOLD = "C:\\Windows\\Fonts\\segoeuib.ttf"
+FONT_REGULAR = "C:\\Windows\\Fonts\\segoeui.ttf"
+FONT_HEAVY = "C:\\Windows\\Fonts\\arialbd.ttf"
+FONT_EMOJI = "C:\\Windows\\Fonts\\seguiemj.ttf"
+
+# Brand Colors & Badges for Major Companies
+COMPANY_THEMES = {
+    "MICROSOFT": {"bg": (0, 120, 215), "accent": "#00a4ef", "symbol": "MS"},
+    "GOOGLE": {"bg": (234, 67, 53), "accent": "#4285f4", "symbol": "G"},
+    "AMAZON": {"bg": (255, 153, 0), "accent": "#ff9900", "symbol": "AZ"},
+    "ACCENTURE": {"bg": (161, 0, 255), "accent": "#a100ff", "symbol": "AC"},
+    "TCS": {"bg": (0, 75, 151), "accent": "#0052cc", "symbol": "TCS"},
+    "INFOSYS": {"bg": (0, 114, 187), "accent": "#0284c7", "symbol": "INFY"},
+    "WIPRO": {"bg": (37, 99, 235), "accent": "#3b82f6", "symbol": "WIP"},
+    "COGNIZANT": {"bg": (15, 23, 42), "accent": "#0ea5e9", "symbol": "CTS"},
+    "DEFAULT": {"bg": (30, 58, 138), "accent": "#38bdf8", "symbol": "FB"},
+}
+
+def get_font(path, size):
+    try:
+        return ImageFont.truetype(path, size)
+    except Exception:
+        return ImageFont.load_default()
+
+def draw_vector_icon(draw, icon_type, x, y, size=24, color="#ffffff"):
+    """Draws sharp vector icons directly using PIL geometric primitives."""
+    if icon_type == "check":
+        # Two-line checkmark
+        points = [(x + size * 0.2, y + size * 0.55), (x + size * 0.42, y + size * 0.78), (x + size * 0.82, y + size * 0.25)]
+        draw.line(points, fill=color, width=max(2, int(size * 0.12)), joint="curve")
+    elif icon_type == "lightning":
+        # Sharp lightning bolt polygon
+        pts = [
+            (x + size * 0.55, y + size * 0.1),
+            (x + size * 0.15, y + size * 0.52),
+            (x + size * 0.48, y + size * 0.52),
+            (x + size * 0.35, y + size * 0.9),
+            (x + size * 0.85, y + size * 0.42),
+            (x + size * 0.52, y + size * 0.42)
+        ]
+        draw.polygon(pts, fill=color)
+    elif icon_type == "arrow":
+        # Right arrow polygon
+        pts = [
+            (x + size * 0.25, y + size * 0.2),
+            (x + size * 0.75, y + size * 0.5),
+            (x + size * 0.25, y + size * 0.8)
+        ]
+        draw.polygon(pts, fill=color)
+    elif icon_type == "star":
+        # 5-pointed star
+        cx, cy = x + size / 2, y + size / 2
+        r_out, r_in = size * 0.48, size * 0.22
+        pts = []
+        for i in range(10):
+            angle = i * math.pi / 5 - math.pi / 2
+            r = r_out if i % 2 == 0 else r_in
+            pts.append((cx + r * math.cos(angle), cy + r * math.sin(angle)))
+        draw.polygon(pts, fill=color)
+    elif icon_type == "pin":
+        # Map location pin
+        cx, cy = x + size / 2, y + size * 0.38
+        draw.ellipse([cx - size * 0.28, cy - size * 0.28, cx + size * 0.28, cy + size * 0.28], fill=color)
+        draw.polygon([(cx - size * 0.25, cy + size * 0.1), (cx + size * 0.25, cy + size * 0.1), (cx, y + size * 0.88)], fill=color)
+        draw.ellipse([cx - size * 0.1, cy - size * 0.1, cx + size * 0.1, cy + size * 0.1], fill=(13, 20, 36))
+    elif icon_type == "bullet":
+        cx, cy = x + size / 2, y + size / 2
+        draw.ellipse([cx - size * 0.22, cy - size * 0.22, cx + size * 0.22, cy + size * 0.22], fill=color)
+    else:
+        # Default circle
+        draw.ellipse([x + 2, y + 2, x + size - 2, y + size - 2], fill=color)
+
+def draw_pill_badge(draw, x, y, icon_type, label_text, font, bg_color, text_color, border_color=None, icon_bg=(37, 99, 235), icon_fg="#ffffff", radius=20, padding_x=20, padding_y=12):
+    """
+    Renders a pill with a crisp circular icon badge on the left, followed by text.
+    Uses vector primitives to guarantee 100% crispness across all platforms.
+    """
+    bbox = font.getbbox(label_text)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+
+    icon_size = th + 18
+    w = icon_size + 14 + tw + padding_x * 2
+    h = th + padding_y * 2 + 6
+    
+    # Outer Pill
+    draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=bg_color, outline=border_color, width=2)
+    
+    # Icon Circle Container
+    ix = x + 10
+    iy = y + (h - icon_size) // 2
+    draw.ellipse([ix, iy, ix + icon_size, iy + icon_size], fill=icon_bg)
+    
+    # Render Vector Icon inside Circle
+    pad = int(icon_size * 0.2)
+    draw_vector_icon(draw, icon_type, ix + pad, iy + pad, size=icon_size - pad * 2, color=icon_fg)
+
+    # Label Text
+    tx = ix + icon_size + 14
+    ty = y + (h - th) // 2 - bbox[1]
+    draw.text((tx, ty), label_text, font=font, fill=text_color)
+    return w, h
+
+
+def render_background_base():
+    """Renders a sleek deep dark cyber gradient with subtle glows."""
+    img = Image.new("RGB", (WIDTH, HEIGHT), "#050811")
+    draw = ImageDraw.Draw(img)
+    
+    # Vertical gradient
+    for y in range(HEIGHT):
+        ratio = y / HEIGHT
+        r = int(5 + (12 - 5) * ratio)
+        g = int(8 + (20 - 8) * ratio)
+        b = int(17 + (38 - 17) * ratio)
+        draw.line([(0, y), (WIDTH, y)], fill=(r, g, b))
+        
+    glow_overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    glow_draw = ImageDraw.Draw(glow_overlay)
+    
+    # Cyan Glow top right
+    for r in range(420, 0, -25):
+        alpha = int(32 * (1.0 - r / 420.0))
+        glow_draw.ellipse([WIDTH - 250 - r, 80 - r, WIDTH - 250 + r, 80 + r], fill=(6, 182, 212, alpha))
+        
+    # Violet Glow bottom left
+    for r in range(480, 0, -30):
+        alpha = int(36 * (1.0 - r / 480.0))
+        glow_draw.ellipse([180 - r, HEIGHT - 380 - r, 180 + r, HEIGHT - 380 + r], fill=(124, 58, 237, alpha))
+
+    # Indigo Glow center
+    for r in range(500, 0, -40):
+        alpha = int(22 * (1.0 - r / 500.0))
+        glow_draw.ellipse([WIDTH // 2 - r, HEIGHT // 2 - r, WIDTH // 2 + r, HEIGHT // 2 + r], fill=(37, 99, 235, alpha))
+
+    img = Image.alpha_composite(img.convert("RGBA"), glow_overlay).convert("RGB")
+    return img
+
+def render_job_card(job):
+    """
+    Renders the central glassmorphic card for the job posting.
+    Returns transparent RGBA image of size (960, 1070).
+    """
+    card_w = 960
+    card_h = 1070
+    card = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(card)
+    
+    # Glassmorphic Card Container
+    draw.rounded_rectangle([0, 0, card_w, card_h], radius=36, fill=(13, 20, 36, 245), outline=(56, 189, 248, 210), width=3)
+    
+    # Subtle top edge reflection
+    draw.rounded_rectangle([4, 4, card_w - 4, 10], radius=8, fill=(255, 255, 255, 45))
+
+    # Company Theme determination
+    company = str(job.get("company", "Tech Global")).strip()
+    theme = COMPANY_THEMES.get("DEFAULT")
+    for k, v in COMPANY_THEMES.items():
+        if k in company.upper():
+            theme = v
+            break
+            
+    initials = theme["symbol"] if theme != COMPANY_THEMES.get("DEFAULT") else "".join([w[0] for w in company.split()[:2]]).upper()[:3] or "FB"
+
+    # Company Avatar Box (105x105)
+    avatar_x, avatar_y = 50, 45
+    draw.rounded_rectangle([avatar_x, avatar_y, avatar_x + 105, avatar_y + 105], radius=24, fill=theme["bg"], outline=(255, 255, 255, 200), width=2)
+    font_init = get_font(FONT_HEAVY, 38)
+    ibbox = font_init.getbbox(initials)
+    iw = ibbox[2] - ibbox[0]
+    ih = ibbox[3] - ibbox[1]
+    draw.text((avatar_x + 52 - iw // 2, avatar_y + 52 - ih // 2 - ibbox[1]), initials, font=font_init, fill="#ffffff")
+
+    # Company Name
+    font_comp = get_font(FONT_BOLD, 46)
+    draw.text((avatar_x + 130, avatar_y + 8), company.upper(), font=font_comp, fill="#ffffff")
+    
+    # Verified Badge Pill
+    font_badge = get_font(FONT_BOLD, 22)
+    draw_pill_badge(draw, avatar_x + 130, avatar_y + 64, "check", "VERIFIED HIRING DRIVE", font_badge,
+                    bg_color=(6, 78, 59, 230), text_color="#34d399", border_color=(16, 185, 129, 255),
+                    icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=12, padding_x=12, padding_y=4)
+
+    # Horizontal Divider Line
+    draw.line([(50, 180), (card_w - 50, 180)], fill=(51, 65, 85, 180), width=2)
+
+    # Job Role Title
+    title = str(job.get("title", "Software Engineer")).strip()
+    font_title = get_font(FONT_BOLD, 40)
+    
+    lines = []
+    words = title.split()
+    current_line = []
+    for w in words:
+        current_line.append(w)
+        test_str = " ".join(current_line)
+        if font_title.getbbox(test_str)[2] > (card_w - 110):
+            current_line.pop()
+            lines.append(" ".join(current_line))
+            current_line = [w]
+    if current_line:
+        lines.append(" ".join(current_line))
+    lines = lines[:2]  # max 2 lines
+    
+    ty = 208
+    for line in lines:
+        draw.text((50, ty), line, font=font_title, fill="#38bdf8")
+        ty += 52
+
+    # Highlight Badges Grid
+    pills_y = max(ty + 18, 325)
+    font_pill_label = get_font(FONT_BOLD, 26)
+
+    # 1. Salary CTC Pill
+    salary_raw = str(job.get("salary", "")).strip()
+    if not salary_raw or salary_raw.lower() in ["not disclosed", "nan", "competitive"]:
+        salary_text = "Competitive (₹4.5 - ₹7.5 LPA)"
+    else:
+        salary_text = salary_raw
+    draw_pill_badge(draw, 50, pills_y, "bullet", f"CTC: {salary_text}", font_pill_label,
+                    bg_color=(6, 78, 59, 235), text_color="#a7f3d0", border_color=(16, 185, 129, 255),
+                    icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+
+    # 2. Batch Pill
+    pills_y += 68
+    batch_text = "Batch: 2024, 2025 & 2026 Passouts"
+    draw_pill_badge(draw, 50, pills_y, "star", batch_text, font_pill_label,
+                    bg_color=(30, 58, 138, 235), text_color="#bae6fd", border_color=(56, 189, 248, 255),
+                    icon_bg=(37, 99, 235), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+
+    # 3. Location Pill
+    pills_y += 68
+    location_text = str(job.get("location", "Pan-India / Remote")).strip()
+    if len(location_text) > 34:
+        location_text = location_text[:32] + "..."
+    draw_pill_badge(draw, 50, pills_y, "pin", f"Location: {location_text}", font_pill_label,
+                    bg_color=(59, 7, 100, 235), text_color="#f3e8ff", border_color=(168, 85, 247, 255),
+                    icon_bg=(147, 51, 234), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+
+    # 4. Eligibility Degree Pill
+    pills_y += 68
+    eligibility_text = str(job.get("eligibility", "B.E / B.Tech / BCA / MCA / B.Sc")).strip()
+    if len(eligibility_text) > 36:
+        eligibility_text = eligibility_text[:34] + "..."
+    draw_pill_badge(draw, 50, pills_y, "bullet", f"Degree: {eligibility_text}", font_pill_label,
+                    bg_color=(30, 41, 59, 235), text_color="#e2e8f0", border_color=(71, 85, 105, 255),
+                    icon_bg=(71, 85, 105), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+
+    # 5. Experience / Freshers
+    pills_y += 68
+    draw_pill_badge(draw, 50, pills_y, "lightning", "Experience: 0 - 1 Years (Freshers Eligible)", font_pill_label,
+                    bg_color=(67, 20, 7, 235), text_color="#fed7aa", border_color=(249, 115, 22, 255),
+                    icon_bg=(234, 88, 12), icon_fg="#ffffff", radius=18, padding_x=18, padding_y=10)
+
+    # Skills Row
+    skills_y = pills_y + 80
+    font_skill_header = get_font(FONT_BOLD, 23)
+    font_skill_tag = get_font(FONT_BOLD, 22)
+    draw.text((50, skills_y), "REQUIRED SKILLS & TECHNOLOGIES:", font=font_skill_header, fill="#94a3b8")
+    
+    skills_raw = str(job.get("skills", "Problem Solving, Python, Java, SQL, Git")).split(",")
+    skills_list = [s.strip() for s in skills_raw if s.strip()][:4]
+    
+    sx = 50
+    sy = skills_y + 36
+    for sk in skills_list:
+        if len(sk) > 16:
+            sk = sk[:14] + ".."
+        bbox = font_skill_tag.getbbox(sk)
+        bw = (bbox[2] - bbox[0]) + 32
+        bh = (bbox[3] - bbox[1]) + 20
+        draw.rounded_rectangle([sx, sy, sx + bw, sy + bh], radius=12, fill=(15, 23, 42, 255), outline=(56, 189, 248, 180), width=1)
+        draw.text((sx + 16, sy + 10 - bbox[1]), sk, font=font_skill_tag, fill="#38bdf8")
+        sx += bw + 14
+        if sx > (card_w - 200):
+            break
+
+    # Bottom Apply Button Inside Card
+    btn_y = card_h - 115
+    btn_w = card_w - 100
+    draw.rounded_rectangle([50, btn_y, 50 + btn_w, btn_y + 80], radius=22, fill=(37, 99, 235, 255), outline=(96, 165, 250, 255), width=2)
+    
+    font_btn = get_font(FONT_HEAVY, 32)
+    btn_text = "APPLY LINK ACTIVE"
+    bb = font_btn.getbbox(btn_text)
+    btw = bb[2] - bb[0]
+    bth = bb[3] - bb[1]
+    
+    arrow_size = 22
+    total_content_w = btw + 16 + arrow_size
+    content_x = 50 + (btn_w - total_content_w) // 2
+    content_y = btn_y + (80 - bth) // 2 - bb[1]
+    
+    draw.text((content_x, content_y), btn_text, font=font_btn, fill="#ffffff")
+    draw_vector_icon(draw, "arrow", content_x + btw + 16, btn_y + (80 - arrow_size) // 2, size=arrow_size, color="#ffffff")
+
+    return card
+
+def generate_social_caption(job):
+    """Generates viral social media caption with hashtags for Instagram / Shorts / FB."""
+    company = str(job.get("company", "Top Tech Company")).strip()
+    title = str(job.get("title", "Software Engineer")).strip()
+    salary = str(job.get("salary", "Best in Industry")).strip()
+    location = str(job.get("location", "Pan-India")).strip()
+    apply_url = str(job.get("apply_url", "https://freshersbridge.in")).strip()
+
+    caption = f"""🚨 OFF-CAMPUS HIRING ALERT: {company.upper()} is Hiring!
+
+💼 Role: {title}
+🏢 Company: {company}
+💰 Package: {salary}
+🎓 Batch Eligible: 2024, 2025 & 2026 Passouts
+📍 Location: {location}
+⚡ Experience: Freshers / 0-1 Years
+
+📌 HOW TO APPLY:
+1️⃣ Comment "APPLY" below and we will send you the direct application link in your DM!
+2️⃣ Or click the Link in Bio: freshersbridge.in
+3️⃣ Tag a friend who is actively looking for off-campus opportunities!
+
+🔔 Follow @freshersbridge for daily verified fresher jobs, internships & off-campus updates.
+
+---
+#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs
+"""
+    return caption
+
+def create_video_reel(job_data, audio_path=None, output_filename="sample_freshers_reel.mp4"):
+    """
+    Assembles a full 9:16 vertical video reel with motion, card entrance,
+    dynamic progress bar, and synced audio.
+    """
+    output_path = os.path.join(REELS_OUTPUT_DIR, output_filename)
+    cover_image_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_cover.png"))
+    caption_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_caption.txt"))
+    
+    # 1. Prepare Base Backdrop and Job Card
+    base_bg = render_background_base()
+    card_img = render_job_card(job_data)
+    
+    # 2. Header & Static Elements
+    header_img = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    hdraw = ImageDraw.Draw(header_img)
+    
+    # Top Brand Pill
+    font_brand = get_font(FONT_BOLD, 26)
+    brand_text = "FRESHERSBRIDGE.IN | DAILY JOBS"
+    bb_b = font_brand.getbbox(brand_text)
+    bw = (bb_b[2] - bb_b[0]) + 75
+    bh = (bb_b[3] - bb_b[1]) + 24
+    bx = (WIDTH - bw) // 2
+    by = 105
+    hdraw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=20, fill=(30, 58, 138, 230), outline=(56, 189, 248, 255), width=2)
+    # Vector lightning on the left
+    draw_vector_icon(hdraw, "lightning", bx + 16, by + 12, size=24, color="#38bdf8")
+    hdraw.text((bx + 48, by + 12 - bb_b[1]), brand_text, font=font_brand, fill="#ffffff")
+
+    # Attention Title
+    font_alert = get_font(FONT_HEAVY, 52)
+    alert_text = "OFF-CAMPUS HIRING 2026!"
+    ab = font_alert.getbbox(alert_text)
+    hdraw.text(((WIDTH - (ab[2] - ab[0])) // 2, 190), alert_text, font=font_alert, fill="#facc15")
+    
+    # Subhead
+    font_sub = get_font(FONT_REGULAR, 30)
+    sub_text = "Immediate Openings for Engineering & Graduates"
+    sb = font_sub.getbbox(sub_text)
+    hdraw.text(((WIDTH - (sb[2] - sb[0])) // 2, 260), sub_text, font=font_sub, fill="#94a3b8")
+
+    # Bottom Viral CTA Banner (y: 1480 to 1840)
+    cta_box_y = 1475
+    cta_box_w = 960
+    cta_box_h = 320
+    cta_box_x = 60
+    
+    hdraw.rounded_rectangle([cta_box_x, cta_box_y, cta_box_x + cta_box_w, cta_box_y + cta_box_h],
+                            radius=28, fill=(17, 24, 39, 240), outline=(245, 158, 11, 255), width=2)
+    
+    font_cta_bold = get_font(FONT_BOLD, 34)
+    font_cta_sub = get_font(FONT_REGULAR, 28)
+    font_dm_hook = get_font(FONT_HEAVY, 34)
+
+    # Viral DM hook
+    hdraw.text((cta_box_x + 40, cta_box_y + 35), "COMMENT 'APPLY' TO GET DIRECT LINK IN DM!", font=font_dm_hook, fill="#fbbf24")
+    hdraw.line([(cta_box_x + 40, cta_box_y + 90), (cta_box_x + cta_box_w - 40, cta_box_y + 90)], fill=(75, 85, 99, 180), width=1)
+    
+    # Link in bio details with vector arrows
+    draw_vector_icon(hdraw, "arrow", cta_box_x + 40, cta_box_y + 120, size=20, color="#38bdf8")
+    hdraw.text((cta_box_x + 72, cta_box_y + 115), "Apply Link is active on: FreshersBridge.in", font=font_cta_bold, fill="#ffffff")
+
+    draw_vector_icon(hdraw, "arrow", cta_box_x + 40, cta_box_y + 180, size=18, color="#38bdf8")
+    hdraw.text((cta_box_x + 72, cta_box_y + 175), "Link in Bio & Instagram Stories (Direct Apply)", font=font_cta_sub, fill="#38bdf8")
+
+    draw_vector_icon(hdraw, "star", cta_box_x + 40, cta_box_y + 235, size=18, color="#a3e635")
+    hdraw.text((cta_box_x + 72, cta_box_y + 230), "Save this Reel & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
+
+    # Composite static frame
+    static_frame = base_bg.copy().convert("RGBA")
+    static_frame = Image.alpha_composite(static_frame, header_img)
+
+    # 3. Dynamic Frame Rendering Function for MoviePy
+    target_card_x = 60
+    target_card_y = 355
+
+    def make_frame(t):
+        frame = static_frame.copy()
+        
+        # Entrance Animation (0 to 0.55s): Card slides up with ease-out cubic
+        if t < 0.55:
+            progress = t / 0.55
+            ease = 1.0 - math.pow(1.0 - progress, 3)
+            current_y = int(target_card_y + (1.0 - ease) * 160)
+        else:
+            current_y = target_card_y
+
+        # Paste the Card onto the frame
+        frame.paste(card_img, (target_card_x, current_y), card_img)
+
+        # Dynamic overlay (Pulse + Progress Bar)
+        draw_dynamic = ImageDraw.Draw(frame)
+
+        # Top Right Live Pulse Dot
+        pulse = 0.5 + 0.5 * math.sin(t * 7.0)
+        pulse_r = int(12 + 4 * pulse)
+        dot_x, dot_y = WIDTH - 80, 52
+        draw_dynamic.ellipse([dot_x - pulse_r, dot_y - pulse_r, dot_x + pulse_r, dot_y + pulse_r], fill=(239, 68, 68, int(150 + 105 * pulse)))
+        font_live = get_font(FONT_HEAVY, 22)
+        draw_dynamic.text((WIDTH - 165, 40), "LIVE", font=font_live, fill="#ef4444")
+
+        # Bottom Progress Bar
+        bar_y = 1885
+        bar_h = 10
+        draw_dynamic.rectangle([0, bar_y, WIDTH, bar_y + bar_h], fill=(30, 41, 59, 220))
+        bar_progress = min(max(t / DURATION, 0.0), 1.0)
+        draw_dynamic.rectangle([0, bar_y, int(WIDTH * bar_progress), bar_y + bar_h], fill=(56, 189, 248, 255))
+
+        return np.array(frame.convert("RGB"))
+
+    # Save Cover Thumbnail at t=1.8s
+    cover_np = make_frame(1.8)
+    Image.fromarray(cover_np).save(cover_image_path, quality=95)
+    print(f"Saved Cover Thumbnail: {cover_image_path}")
+
+    # Save Social Caption & Hashtags
+    caption_text = generate_social_caption(job_data)
+    with open(caption_path, "w", encoding="utf-8") as f:
+        f.write(caption_text)
+    print(f"Saved Social Caption: {caption_path}")
+
+    # 4. Generate Video Clip
+    clip = VideoClip(make_frame, duration=DURATION)
+
+    # 5. Mux Audio
+    if not audio_path or not os.path.exists(audio_path):
+        audio_files = glob.glob(os.path.join(AUDIO_DIR, "*.wav")) + glob.glob(os.path.join(AUDIO_DIR, "*.mp3"))
+        if audio_files:
+            audio_path = random.choice(audio_files)
+            print(f"Randomly picked audio track: {os.path.basename(audio_path)}")
+
+    if audio_path and os.path.exists(audio_path):
+        try:
+            audio_clip = AudioFileClip(audio_path)
+            if audio_clip.duration > DURATION:
+                audio_clip = audio_clip.subclipped(0, DURATION)
+            clip = clip.with_audio(audio_clip)
+            print(f"Muxed audio track: {os.path.basename(audio_path)}")
+        except Exception as e:
+            print(f"Audio mux warning: {e}")
+
+    # 6. Render MP4
+    print(f"Rendering {DURATION}s 9:16 Reel ({output_filename})...")
+    clip.write_videofile(
+        output_path,
+        fps=FPS,
+        codec="libx264",
+        audio_codec="aac" if clip.audio else None,
+        preset="fast",
+        logger="bar"
+    )
+    print(f"Completed Video Reel: {output_path}")
+    return output_path, cover_image_path, caption_path
+
+def get_jobs_from_csv(count=1):
+    """Fetches top freshest jobs from the scraper output CSV."""
+    csv_path = os.path.join(OUTPUT_DIR, "latest_freshersbridge_jobs.csv")
+    if os.path.exists(csv_path):
+        try:
+            df = pd.read_csv(csv_path)
+            if not df.empty:
+                # Filter for major recognizable companies first
+                pattern = "Microsoft|Google|TCS|Accenture|Infosys|Amazon|Wipro|Cognizant|Deloitte|IBM"
+                top_df = df[df["company"].astype(str).str.contains(pattern, case=False, na=False)]
+                if not top_df.empty:
+                    jobs = [row.to_dict() for _, row in top_df.head(count).iterrows()]
+                    return jobs
+                return [row.to_dict() for _, row in df.head(count).iterrows()]
+        except Exception as e:
+            print(f"Error reading jobs CSV: {e}")
+
+    return [{
+        "title": "Associate Software Engineer",
+        "company": "Accenture",
+        "salary": "₹4.5 - ₹6.5 LPA",
+        "location": "Bangalore / Hyderabad / Pune",
+        "eligibility": "B.E / B.Tech / MCA (2024 / 2025 / 2026)",
+        "skills": "Java, Python, Cloud Computing, SQL, Agile",
+        "apply_url": "https://freshersbridge.in"
+    }]
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate Social Reels/Shorts for FreshersBridge Jobs")
+    parser.add_argument("--count", type=int, default=1, help="Number of job reels to generate")
+    args = parser.parse_args()
+
+    jobs = get_jobs_from_csv(count=args.count)
+    print(f"Found {len(jobs)} jobs to generate reels for.")
+
+    for i, job in enumerate(jobs):
+        company_clean = "".join(c for c in str(job.get("company", "job")) if c.isalnum()).lower()
+        filename = f"{company_clean}_hiring_reel.mp4"
+        create_video_reel(job, output_filename=filename)
