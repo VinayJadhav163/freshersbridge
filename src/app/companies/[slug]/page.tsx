@@ -365,7 +365,7 @@ export default async function CompanyDetailPage({ params }: Props) {
         </div>
 
         {/* Right Sidebar: Guide Link & Company Overview */}
-        <aside className="space-y-6">
+        <aside className="space-y-6 self-start">
           
           {/* Related Guide CTA Card */}
           {relatedGuide && (
