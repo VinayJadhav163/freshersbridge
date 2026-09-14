@@ -5,13 +5,20 @@ on:
     - cron: '0 2 * * 0' # Every Sunday at 02:00 UTC (~07:30 AM IST)
   workflow_dispatch:     # Allows manual 1-click execution from GitHub Actions tab
 
+permissions:
+  contents: write
+
 jobs:
   mine-keywords:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
