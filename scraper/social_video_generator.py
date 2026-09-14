@@ -601,6 +601,8 @@ def get_jobs_from_csv(count=1):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate Social Reels/Shorts for FreshersBridge Jobs")
     parser.add_argument("--count", type=int, default=1, help="Number of job reels to generate")
+    parser.add_argument("--publish-youtube", action="store_true", help="Auto-publish generated reels to YouTube Shorts")
+    parser.add_argument("--privacy", type=str, default="public", choices=["public", "unlisted", "private"], help="Privacy status on YouTube")
     args = parser.parse_args()
 
     jobs = get_jobs_from_csv(count=args.count)
@@ -609,4 +611,15 @@ if __name__ == "__main__":
     for i, job in enumerate(jobs):
         company_clean = "".join(c for c in str(job.get("company", "job")) if c.isalnum()).lower()
         filename = f"{company_clean}_hiring_reel.mp4"
-        create_video_reel(job, output_filename=filename)
+        out_video, out_cover, out_caption = create_video_reel(job, output_filename=filename)
+
+        if args.publish_youtube:
+            try:
+                from youtube_shorts_publisher import upload_short
+                company_name = str(job.get("company", "Company")).strip()
+                title = f"🚨 {company_name} is Hiring Freshers 2026! 💼 #Shorts"
+                with open(out_caption, "r", encoding="utf-8") as f:
+                    caption_content = f.read()
+                upload_short(out_video, title=title, description=caption_content, privacy_status=args.privacy)
+            except Exception as e:
+                print(f"YouTube upload error: {e}")
