@@ -255,7 +255,7 @@ export default async function GuideArticlePage({ params }: Props) {
                 <HelpCircle className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                 <h2 className="text-lg sm:text-xl font-black text-foreground">Frequently Asked Questions</h2>
               </div>
-              <FAQAccordion items={guideFaqs} defaultOpenIndex={0} />
+              <FAQAccordion items={guideFaqs} />
             </section>
           )}
 

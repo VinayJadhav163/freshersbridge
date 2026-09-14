@@ -359,7 +359,7 @@ export default async function CompanyDetailPage({ params }: Props) {
               </p>
             </div>
             
-            <FAQAccordion items={company.frequentlyAsked} defaultOpenIndex={0} />
+            <FAQAccordion items={company.frequentlyAsked} />
           </div>
 
         </div>
