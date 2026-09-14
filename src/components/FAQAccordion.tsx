@@ -44,10 +44,10 @@ export default function FAQAccordion({ items, defaultOpenIndex }: FAQAccordionPr
               aria-expanded={isOpen}
             >
               <span
-                className={`text-sm sm:text-base transition-colors duration-300 ${
+                className={`text-sm sm:text-base font-semibold transition-colors duration-200 ${
                   isOpen
-                    ? 'font-bold text-[#275df5] dark:text-[#3b82f6]'
-                    : 'font-semibold text-foreground group-hover:text-[#275df5]'
+                    ? 'text-[#275df5] dark:text-[#3b82f6]'
+                    : 'text-foreground group-hover:text-[#275df5]'
                 }`}
               >
                 {item.question}
