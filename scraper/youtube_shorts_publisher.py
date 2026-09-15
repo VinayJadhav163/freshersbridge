@@ -32,8 +32,12 @@ CREDENTIALS_DIR = os.path.join(BASE_DIR, "credentials")
 CLIENT_SECRET_FILE = os.path.join(CREDENTIALS_DIR, "youtube_client_secret.json")
 TOKEN_FILE = os.path.join(CREDENTIALS_DIR, "youtube_token.json")
 
-# Scopes required to upload and manage YouTube videos
-SCOPES = ["https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube"]
+# Scopes required to upload videos and manage/reply to comments
+SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/youtube.force-ssl"
+]
 
 def get_authenticated_service():
     """
@@ -56,8 +60,16 @@ def get_authenticated_service():
     # 1. Check for existing cached token
     if os.path.exists(TOKEN_FILE):
         try:
-            creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
-            print("Loaded cached YouTube authentication token.", flush=True)
+            with open(TOKEN_FILE, "r", encoding="utf-8") as f:
+                raw_token_data = json.load(f)
+            granted_scopes = raw_token_data.get("scopes", [])
+            # Verify that all required scopes (including youtube.force-ssl for comments) are present
+            if not set(SCOPES).issubset(set(granted_scopes)):
+                print("Existing token lacks comment permissions (youtube.force-ssl). Re-authorizing...", flush=True)
+                creds = None
+            else:
+                creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
+                print("Loaded cached YouTube authentication token.", flush=True)
         except Exception as e:
             print(f"Failed to load cached token: {e}", flush=True)
             creds = None
@@ -176,6 +188,36 @@ def upload_short(video_path, title=None, description=None, tags=None, privacy_st
         "title": title,
         "status": privacy_status
     }
+
+def post_first_comment(video_id, comment_text):
+    """
+    Posts an official top-level comment on a video (e.g. direct apply link).
+    """
+    if not video_id:
+        return None
+
+    try:
+        youtube = get_authenticated_service()
+        body = {
+            "snippet": {
+                "videoId": video_id,
+                "topLevelComment": {
+                    "snippet": {
+                        "textOriginal": comment_text
+                    }
+                }
+            }
+        }
+        response = youtube.commentThreads().insert(
+            part="snippet",
+            body=body
+        ).execute()
+        comment_id = response.get("id")
+        print(f"✅ Posted official first comment on video {video_id} (ID: {comment_id})")
+        return response
+    except Exception as e:
+        print(f"⚠️ Warning: Could not post first comment on {video_id}: {e}")
+        return None
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload a 9:16 Video to YouTube Shorts")

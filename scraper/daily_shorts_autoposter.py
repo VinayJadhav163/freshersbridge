@@ -27,7 +27,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # Add scraper dir to sys.path for internal imports
 sys.path.insert(0, os.path.join(BASE_DIR, "scraper"))
 from social_video_generator import create_video_reel
-from youtube_shorts_publisher import upload_short
+from youtube_shorts_publisher import upload_short, post_first_comment
 
 def load_history():
     """Loads records of previously posted jobs."""
@@ -145,7 +145,19 @@ def run_daily_autoposter(privacy_status="public"):
         privacy_status=privacy_status
     )
 
-    # 4. Record to Posting History
+    # 4. Automatically Post Official First Comment (0-sec instant link for all viewers)
+    first_comment_text = (
+        f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
+        f"🔗 {apply_url}\n\n"
+        f"💼 Role: {title}\n"
+        f"💰 Package: {salary}\n"
+        f"📍 Location: {location}\n"
+        f"🎓 Eligibility: Batch 2024 / 2025 / 2026\n\n"
+        f"📌 Tip: Save & share with friends! Drop a comment if you have questions."
+    )
+    post_first_comment(upload_res.get("video_id"), first_comment_text)
+
+    # 5. Record to Posting History
     record = {
         "id": len(history) + 1,
         "company": company,
