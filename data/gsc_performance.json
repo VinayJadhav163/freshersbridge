@@ -1,12 +1,12 @@
 {
   "site_url": "https://www.freshersbridge.in/",
-  "period": "2026-08-15 to 2026-09-12",
-  "generated_at": "2026-09-14 12:34:03 UTC",
-  "total_queries_tracked": 76,
+  "period": "2026-08-16 to 2026-09-13",
+  "generated_at": "2026-09-15 09:03:40 UTC",
+  "total_queries_tracked": 79,
   "total_clicks": 0,
-  "total_impressions": 150,
+  "total_impressions": 161,
   "avg_ctr_percent": 0.0,
-  "avg_position": 39.5,
+  "avg_position": 38.2,
   "top_queries_by_clicks": [
     {
       "query": "1 yes",
@@ -79,6 +79,13 @@
       "position": 3
     },
     {
+      "query": "ate accenture",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
       "query": "ats friendly resume for freshers",
       "clicks": 0,
       "impressions": 2,
@@ -140,13 +147,6 @@
       "impressions": 1,
       "ctr": 0,
       "position": 29
-    },
-    {
-      "query": "cognizant freshers jobs",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 21
     }
   ],
   "striking_distance_opportunities": [
@@ -162,87 +162,94 @@
   "top_pages": [
     {
       "url": "https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers",
-      "clicks": 6,
-      "impressions": 307,
-      "ctr": 1.95,
-      "position": 6.9
+      "clicks": 8,
+      "impressions": 375,
+      "ctr": 2.13,
+      "position": 6.3
     },
     {
       "url": "https://www.freshersbridge.in/",
-      "clicks": 2,
-      "impressions": 6,
-      "ctr": 33.33,
-      "position": 4.3
+      "clicks": 3,
+      "impressions": 11,
+      "ctr": 27.27,
+      "position": 6
     },
     {
       "url": "https://www.freshersbridge.in/about",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 5,
       "ctr": 0,
-      "position": 3
+      "position": 2.8
+    },
+    {
+      "url": "https://www.freshersbridge.in/affiliate-disclosure",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
     },
     {
       "url": "https://www.freshersbridge.in/career-tools",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 4,
       "ctr": 0,
-      "position": 7.7
+      "position": 7.5
     },
     {
       "url": "https://www.freshersbridge.in/companies",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
       "position": 5
     },
     {
       "url": "https://www.freshersbridge.in/companies/cognizant",
       "clicks": 0,
-      "impressions": 30,
+      "impressions": 32,
       "ctr": 0,
-      "position": 24.7
+      "position": 24.8
     },
     {
       "url": "https://www.freshersbridge.in/companies/infosys",
       "clicks": 0,
-      "impressions": 9,
+      "impressions": 11,
       "ctr": 0,
-      "position": 36
+      "position": 34.1
     },
     {
       "url": "https://www.freshersbridge.in/contact",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
-      "position": 2
+      "position": 3
     },
     {
       "url": "https://www.freshersbridge.in/disclaimer",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
-      "position": 7
+      "position": 9
     },
     {
       "url": "https://www.freshersbridge.in/guides",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 3,
       "ctr": 0,
-      "position": 6
+      "position": 7.7
     },
     {
       "url": "https://www.freshersbridge.in/guides/ats-friendly-resume-guide-tech-freshers-with-examples",
       "clicks": 0,
-      "impressions": 13,
+      "impressions": 14,
       "ctr": 0,
-      "position": 66.3
+      "position": 61.8
     },
     {
       "url": "https://www.freshersbridge.in/guides/cognizant-genc-elevate-2026-exam-pattern-interview-blueprint",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 5,
       "ctr": 0,
-      "position": 24
+      "position": 22.2
     },
     {
       "url": "https://www.freshersbridge.in/guides/full-stack-web-development-roadmap-college-students",
@@ -257,13 +264,6 @@
       "impressions": 17,
       "ctr": 0,
       "position": 63.8
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides/infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide",
-      "clicks": 0,
-      "impressions": 102,
-      "ctr": 0,
-      "position": 11.5
     }
   ]
 }

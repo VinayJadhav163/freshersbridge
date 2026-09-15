@@ -1,15 +1,15 @@
 # Google Search Console Automated Performance Report
 
 **Property**: `https://www.freshersbridge.in/`  
-**Period**: 2026-08-15 to 2026-09-12  
-**Updated At**: 2026-09-14 12:34:03 UTC  
+**Period**: 2026-08-16 to 2026-09-13  
+**Updated At**: 2026-09-15 09:03:40 UTC  
 
 ### 📊 Overall Performance
 - **Total Clicks**: **0**
-- **Total Impressions**: **150**
+- **Total Impressions**: **161**
 - **Average CTR**: **0.0%**
-- **Average Position**: **39.5**
-- **Total Ranking Queries**: **76**
+- **Average Position**: **38.2**
+- **Total Ranking Queries**: **79**
 
 ### 🚀 High-Impact 'Striking Distance' Keywords (Positions 4 – 20)
 These queries are already ranking on Page 1 or 2 with high impressions. Optimizing their titles/content will drive immediate traffic:
@@ -37,13 +37,13 @@ These queries are already ranking on Page 1 or 2 with high impressions. Optimizi
 
 | Page URL | Clicks | Impressions | CTR |
 |---|---|---|---|
-| `https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers` | **6** | 307 | 1.95% |
-| `https://www.freshersbridge.in/` | **2** | 6 | 33.33% |
-| `https://www.freshersbridge.in/about` | **0** | 4 | 0% |
-| `https://www.freshersbridge.in/career-tools` | **0** | 3 | 0% |
-| `https://www.freshersbridge.in/companies` | **0** | 1 | 0% |
-| `https://www.freshersbridge.in/companies/cognizant` | **0** | 30 | 0% |
-| `https://www.freshersbridge.in/companies/infosys` | **0** | 9 | 0% |
-| `https://www.freshersbridge.in/contact` | **0** | 1 | 0% |
-| `https://www.freshersbridge.in/disclaimer` | **0** | 1 | 0% |
-| `https://www.freshersbridge.in/guides` | **0** | 1 | 0% |
+| `https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers` | **8** | 375 | 2.13% |
+| `https://www.freshersbridge.in/` | **3** | 11 | 27.27% |
+| `https://www.freshersbridge.in/about` | **0** | 5 | 0% |
+| `https://www.freshersbridge.in/affiliate-disclosure` | **0** | 1 | 0% |
+| `https://www.freshersbridge.in/career-tools` | **0** | 4 | 0% |
+| `https://www.freshersbridge.in/companies` | **0** | 2 | 0% |
+| `https://www.freshersbridge.in/companies/cognizant` | **0** | 32 | 0% |
+| `https://www.freshersbridge.in/companies/infosys` | **0** | 11 | 0% |
+| `https://www.freshersbridge.in/contact` | **0** | 2 | 0% |
+| `https://www.freshersbridge.in/disclaimer` | **0** | 2 | 0% |
