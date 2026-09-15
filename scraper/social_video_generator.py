@@ -441,13 +441,28 @@ def render_job_card(job):
 
     return card
 
-def generate_social_caption(job):
-    """Generates viral social media caption with hashtags for Instagram / Shorts / FB."""
+def generate_social_caption(job, platform="youtube"):
+    """Generates viral social media caption with hashtags for YouTube / Instagram / FB."""
     company = str(job.get("company", "Top Tech Company")).strip()
     title = str(job.get("title", "Software Engineer")).strip()
     salary = str(job.get("salary", "Best in Industry")).strip()
     location = str(job.get("location", "Pan-India")).strip()
     apply_url = str(job.get("apply_url", "https://freshersbridge.in")).strip()
+
+    if platform.lower() == "youtube":
+        apply_instructions = f"""📌 HOW TO APPLY:
+1️⃣ Direct application link is pinned in the TOP COMMENT below!
+2️⃣ Direct Link: {apply_url}
+3️⃣ Share this Short with batchmates looking for off-campus jobs!"""
+        cta_footer = "🔔 Subscribe to @FreshersBridge for daily verified fresher jobs & hiring alerts!"
+        tags = f"#Shorts #FreshersJobs #OffCampusHiring #{company.lower().replace(' ', '')} #Batch2026 #Batch2025 #FreshersBridge #SoftwareEngineer #JobAlerts #HiringAlert"
+    else:
+        apply_instructions = f"""📌 HOW TO APPLY:
+1️⃣ Comment "APPLY" below and we will send you the direct application link in DM!
+2️⃣ Or click the Link in Bio: freshersbridge.in
+3️⃣ Tag a friend who is actively looking for off-campus opportunities!"""
+        cta_footer = "🔔 Follow @freshersbridge for daily verified fresher jobs, internships & off-campus updates."
+        tags = f"#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs"
 
     caption = f"""🚨 OFF-CAMPUS HIRING ALERT: {company.upper()} is Hiring!
 
@@ -458,15 +473,12 @@ def generate_social_caption(job):
 📍 Location: {location}
 ⚡ Experience: Freshers / 0-1 Years
 
-📌 HOW TO APPLY:
-1️⃣ Comment "APPLY" below and we will send you the direct application link in your DM!
-2️⃣ Or click the Link in Bio: freshersbridge.in
-3️⃣ Tag a friend who is actively looking for off-campus opportunities!
+{apply_instructions}
 
-🔔 Follow @freshersbridge for daily verified fresher jobs, internships & off-campus updates.
+{cta_footer}
 
 ---
-#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs
+{tags}
 """
     return caption
 
@@ -558,22 +570,38 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     font_cta_sub = get_font(FONT_REGULAR, 28)
     font_dm_hook = get_font(FONT_HEAVY, 34)
 
-    # Viral DM hook
-    hdraw.text((cta_box_x + 40, cta_box_y + 35), "COMMENT 'APPLY' TO GET DIRECT LINK IN DM!", font=font_dm_hook, fill="#fbbf24")
-    hdraw.line([(cta_box_x + 40, cta_box_y + 90), (cta_box_x + cta_box_w - 40, cta_box_y + 90)], fill=(75, 85, 99, 180), width=1)
-    
-    # Link in bio details with supersampled icons
-    icon_cta_arrow1 = render_supersampled_icon("arrow", target_size=24, bg_color=(14, 165, 233), fg_color="#ffffff")
-    header_img.paste(icon_cta_arrow1, (cta_box_x + 36, cta_box_y + 118), icon_cta_arrow1)
-    hdraw.text((cta_box_x + 72, cta_box_y + 115), "Apply Link is active on: FreshersBridge.in", font=font_cta_bold, fill="#ffffff")
+    if platform.lower() == "youtube":
+        # YouTube Shorts specific CTA (Points directly to Comments)
+        hdraw.text((cta_box_x + 40, cta_box_y + 35), "DIRECT APPLY LINK PINNED IN COMMENTS!", font=font_dm_hook, fill="#fbbf24")
+        hdraw.line([(cta_box_x + 40, cta_box_y + 90), (cta_box_x + cta_box_w - 40, cta_box_y + 90)], fill=(75, 85, 99, 180), width=1)
+        
+        icon_cta_arrow1 = render_supersampled_icon("arrow", target_size=24, bg_color=(14, 165, 233), fg_color="#ffffff")
+        header_img.paste(icon_cta_arrow1, (cta_box_x + 36, cta_box_y + 118), icon_cta_arrow1)
+        hdraw.text((cta_box_x + 72, cta_box_y + 115), "Apply Link is active on: FreshersBridge.in", font=font_cta_bold, fill="#ffffff")
 
-    icon_cta_arrow2 = render_supersampled_icon("arrow", target_size=22, bg_color=(56, 189, 248), fg_color="#ffffff")
-    header_img.paste(icon_cta_arrow2, (cta_box_x + 38, cta_box_y + 178), icon_cta_arrow2)
-    hdraw.text((cta_box_x + 72, cta_box_y + 175), "Link in Bio & Instagram Stories (Direct Apply)", font=font_cta_sub, fill="#38bdf8")
+        icon_cta_arrow2 = render_supersampled_icon("arrow", target_size=22, bg_color=(56, 189, 248), fg_color="#ffffff")
+        header_img.paste(icon_cta_arrow2, (cta_box_x + 38, cta_box_y + 178), icon_cta_arrow2)
+        hdraw.text((cta_box_x + 72, cta_box_y + 175), "Check Top Pinned Comment for Direct Apply Link", font=font_cta_sub, fill="#38bdf8")
 
-    icon_cta_star = render_supersampled_icon("star", target_size=22, bg_color=(132, 204, 22), fg_color="#ffffff")
-    header_img.paste(icon_cta_star, (cta_box_x + 38, cta_box_y + 233), icon_cta_star)
-    hdraw.text((cta_box_x + 72, cta_box_y + 230), "Save this Reel & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
+        icon_cta_star = render_supersampled_icon("star", target_size=22, bg_color=(132, 204, 22), fg_color="#ffffff")
+        header_img.paste(icon_cta_star, (cta_box_x + 38, cta_box_y + 233), icon_cta_star)
+        hdraw.text((cta_box_x + 72, cta_box_y + 230), "Save this Short & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
+    else:
+        # Instagram/Facebook specific CTA (DMs & Stories)
+        hdraw.text((cta_box_x + 40, cta_box_y + 35), "COMMENT 'APPLY' TO GET DIRECT LINK IN DM!", font=font_dm_hook, fill="#fbbf24")
+        hdraw.line([(cta_box_x + 40, cta_box_y + 90), (cta_box_x + cta_box_w - 40, cta_box_y + 90)], fill=(75, 85, 99, 180), width=1)
+        
+        icon_cta_arrow1 = render_supersampled_icon("arrow", target_size=24, bg_color=(14, 165, 233), fg_color="#ffffff")
+        header_img.paste(icon_cta_arrow1, (cta_box_x + 36, cta_box_y + 118), icon_cta_arrow1)
+        hdraw.text((cta_box_x + 72, cta_box_y + 115), "Apply Link is active on: FreshersBridge.in", font=font_cta_bold, fill="#ffffff")
+
+        icon_cta_arrow2 = render_supersampled_icon("arrow", target_size=22, bg_color=(56, 189, 248), fg_color="#ffffff")
+        header_img.paste(icon_cta_arrow2, (cta_box_x + 38, cta_box_y + 178), icon_cta_arrow2)
+        hdraw.text((cta_box_x + 72, cta_box_y + 175), "Link in Bio & Instagram Stories (Direct Apply)", font=font_cta_sub, fill="#38bdf8")
+
+        icon_cta_star = render_supersampled_icon("star", target_size=22, bg_color=(132, 204, 22), fg_color="#ffffff")
+        header_img.paste(icon_cta_star, (cta_box_x + 38, cta_box_y + 233), icon_cta_star)
+        hdraw.text((cta_box_x + 72, cta_box_y + 230), "Save this Reel & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
 
     # Composite static frame
     static_frame = base_bg.copy().convert("RGBA")
@@ -635,7 +663,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
         print(f"Saved Cover Thumbnail (alt): {cover_image_path}")
 
     # Save Social Caption & Hashtags
-    caption_text = generate_social_caption(job_data)
+    caption_text = generate_social_caption(job_data, platform=platform)
     try:
         with open(caption_path, "w", encoding="utf-8") as f:
             f.write(caption_text)
