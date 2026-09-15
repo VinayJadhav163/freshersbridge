@@ -145,16 +145,8 @@ def run_daily_autoposter(privacy_status="public"):
         privacy_status=privacy_status
     )
 
-    # 4. Automatically Post Official First Comment (0-sec instant link for all viewers)
-    first_comment_text = (
-        f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
-        f"🔗 {apply_url}\n\n"
-        f"💼 Role: {title}\n"
-        f"💰 Package: {salary}\n"
-        f"📍 Location: {location}\n"
-        f"🎓 Eligibility: Batch 2024 / 2025 / 2026\n\n"
-        f"📌 Tip: Save & share with friends! Drop a comment if you have questions."
-    )
+    # 4. Automatically Post First Comment (CTA to drive comments)
+    first_comment_text = "Drop a comment with 'LINK' to get application link 👇"
     post_first_comment(upload_res.get("video_id"), first_comment_text)
 
     # 5. Record to Posting History
