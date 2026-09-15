@@ -22,5 +22,17 @@
     "shorts_url": "https://www.youtube.com/shorts/LqoOdeBCeIQ",
     "privacy": "unlisted",
     "posted_at": "2026-09-14T18:15:30.268555+00:00"
+  },
+  {
+    "id": 3,
+    "company": "Capgemini",
+    "title": "Software Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459691188",
+    "youtube_video_id": "1D4TvCS-o7w",
+    "shorts_url": "https://www.youtube.com/shorts/1D4TvCS-o7w",
+    "privacy": "public",
+    "posted_at": "2026-09-15T08:20:09.145563+00:00"
   }
 ]
