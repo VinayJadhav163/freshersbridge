@@ -149,10 +149,6 @@ def run_daily_autoposter(privacy_status="public"):
     first_comment_text = (
         f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
         f"🔗 {apply_url}\n\n"
-        f"💼 Role: {title}\n"
-        f"💰 Package: {salary}\n"
-        f"📍 Location: {location}\n"
-        f"🎓 Eligibility: Batch 2024 / 2025 / 2026\n\n"
         f"📌 Tip: Save & share with friends! All links verified on FreshersBridge.in 🚀"
     )
     post_first_comment(upload_res.get("video_id"), first_comment_text)
