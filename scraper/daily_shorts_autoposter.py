@@ -83,15 +83,7 @@ def get_next_job_to_post(history):
         print("All jobs in current CSV have already been posted! Re-cycling top job.")
         return df.iloc[0].to_dict()
 
-    unposted_df = pd.DataFrame(unposted)
-    
-    # Priority list for high-converting brand names
-    tier1_brands = "Google|Microsoft|Amazon|TCS|Accenture|Infosys|Wipro|Cognizant|Deloitte|IBM|Oracle|Capgemini"
-    tier1_df = unposted_df[unposted_df["company"].astype(str).str.contains(tier1_brands, case=False, na=False)]
-    
-    if not tier1_df.empty:
-        return tier1_df.iloc[0].to_dict()
-
+    # Feature all diverse companies (Startups, Mid-tier IT, Product companies, Fintechs & MNCs)
     return unposted[0]
 
 def run_daily_autoposter(privacy_status="public"):

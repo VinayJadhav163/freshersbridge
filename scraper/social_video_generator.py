@@ -16,7 +16,9 @@ import sys
 import glob
 import math
 import random
+import re
 import argparse
+import requests
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -26,11 +28,13 @@ from moviepy import VideoClip, AudioFileClip
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 AUDIO_DIR = os.path.join(ASSETS_DIR, "audio")
+LOGOS_DIR = os.path.join(ASSETS_DIR, "logos")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 REELS_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "reels")
 TRENDING_AUDIO_CSV = os.path.join(ASSETS_DIR, "trending_audio.csv")
 
 os.makedirs(AUDIO_DIR, exist_ok=True)
+os.makedirs(LOGOS_DIR, exist_ok=True)
 os.makedirs(REELS_OUTPUT_DIR, exist_ok=True)
 
 # Video Dimensions & Settings
@@ -210,6 +214,62 @@ def render_background_base():
     img = Image.alpha_composite(img.convert("RGBA"), glow_overlay).convert("RGB")
     return img
 
+def get_company_logo_image(company_name, max_size=(76, 76)):
+    """
+    Retrieves or downloads the real official company logo (transparent PNG)
+    via cached assets or Google Favicon 128px API.
+    """
+    if not company_name:
+        return None
+
+    clean = company_name.lower().strip()
+    for drop in ["pvt", "ltd", "limited", "technologies", "technology", "solutions", "services", "inc", "corp", "corporation", "llc", "india"]:
+        clean = re.sub(r'\b' + drop + r'\b', '', clean).strip()
+    clean_slug = "".join(c for c in clean if c.isalnum() or c == "_").strip("_")
+    if not clean_slug:
+        clean_slug = "company"
+
+    domain_map = {
+        "tcs": "tcs.com",
+        "tataconsultancyservices": "tcs.com",
+        "infosys": "infosys.com",
+        "wipro": "wipro.com",
+        "cognizant": "cognizant.com",
+        "accenture": "accenture.com",
+        "capgemini": "capgemini.com",
+        "google": "google.com",
+        "microsoft": "microsoft.com",
+        "amazon": "amazon.com",
+        "deloitte": "deloitte.com",
+        "ibm": "ibm.com",
+        "oracle": "oracle.com",
+        "meta": "meta.com",
+        "apple": "apple.com",
+        "adobe": "adobe.com"
+    }
+    domain = domain_map.get(clean_slug, f"{clean_slug}.com")
+    cached_path = os.path.join(LOGOS_DIR, f"{clean_slug}.png")
+
+    if not os.path.exists(cached_path) or os.path.getsize(cached_path) == 0:
+        try:
+            favicon_url = f"https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://{domain}&size=128"
+            resp = requests.get(favicon_url, timeout=3)
+            if resp.status_code == 200 and len(resp.content) > 200:
+                with open(cached_path, "wb") as f:
+                    f.write(resp.content)
+        except Exception:
+            pass
+
+    if os.path.exists(cached_path) and os.path.getsize(cached_path) > 200:
+        try:
+            logo = Image.open(cached_path).convert("RGBA")
+            logo.thumbnail(max_size, Image.Resampling.LANCZOS)
+            return logo
+        except Exception:
+            pass
+
+    return None
+
 def render_job_card(job):
     """
     Renders the central glassmorphic card for the job posting.
@@ -233,14 +293,23 @@ def render_job_card(job):
             
     initials = theme["symbol"] if theme != COMPANY_THEMES.get("DEFAULT") else "".join([w[0] for w in company.split()[:2]]).upper()[:3] or "FB"
 
-    # Company Avatar Box (105x105)
+    # Company Avatar Box (105x105) - Renders Real Logo if Available
     avatar_x, avatar_y = 50, 45
-    draw.rounded_rectangle([avatar_x, avatar_y, avatar_x + 105, avatar_y + 105], radius=24, fill=theme["bg"], outline=(255, 255, 255, 200), width=2)
-    font_init = get_font(FONT_HEAVY, 38)
-    ibbox = font_init.getbbox(initials)
-    iw = ibbox[2] - ibbox[0]
-    ih = ibbox[3] - ibbox[1]
-    draw.text((avatar_x + 52 - iw // 2, avatar_y + 52 - ih // 2 - ibbox[1]), initials, font=font_init, fill="#ffffff")
+    logo_img = get_company_logo_image(company, max_size=(76, 76))
+
+    if logo_img:
+        # Clean white card background with rounded corners for maximum logo contrast
+        draw.rounded_rectangle([avatar_x, avatar_y, avatar_x + 105, avatar_y + 105], radius=24, fill=(255, 255, 255, 245), outline=(56, 189, 248, 200), width=2)
+        lw, lh = logo_img.size
+        card.paste(logo_img, (avatar_x + (105 - lw) // 2, avatar_y + (105 - lh) // 2), logo_img)
+    else:
+        # Fallback to initials if no logo available
+        draw.rounded_rectangle([avatar_x, avatar_y, avatar_x + 105, avatar_y + 105], radius=24, fill=theme["bg"], outline=(255, 255, 255, 200), width=2)
+        font_init = get_font(FONT_HEAVY, 38)
+        ibbox = font_init.getbbox(initials)
+        iw = ibbox[2] - ibbox[0]
+        ih = ibbox[3] - ibbox[1]
+        draw.text((avatar_x + 52 - iw // 2, avatar_y + 52 - ih // 2 - ibbox[1]), initials, font=font_init, fill="#ffffff")
 
     # Company Name
     font_comp = get_font(FONT_BOLD, 46)
@@ -422,6 +491,9 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     if audio_path and os.path.exists(audio_path):
         try:
             audio_clip = AudioFileClip(audio_path)
+            # Cap long audio tracks (e.g. full songs from Pixabay) to a punchy 15 seconds
+            if audio_clip.duration > 18.0:
+                audio_clip = audio_clip.subclipped(0, 15.0)
             duration = round(audio_clip.duration, 2)
             print(f"Auto-adapting video reel duration to match audio length: {duration}s ({os.path.basename(audio_path)})")
         except Exception as e:

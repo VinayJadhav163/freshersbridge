@@ -2,8 +2,11 @@ name: Daily YouTube Shorts Autoposter
 
 on:
   schedule:
-    # Runs daily at 03:00 UTC (08:30 AM IST - Peak morning job browsing hours)
-    - cron: '0 3 * * *'
+    # 3 Times Daily at peak Indian job-browsing hours:
+    # 1. 03:00 UTC = 08:30 AM IST (Morning commute / wake-up)
+    # 2. 08:00 UTC = 01:30 PM IST (Lunch break browsing)
+    # 3. 14:00 UTC = 07:30 PM IST (Evening post-college peak)
+    - cron: '0 3,8,14 * * *'
   workflow_dispatch:
     inputs:
       privacy:
