@@ -470,23 +470,32 @@ def generate_social_caption(job):
 """
     return caption
 
-def create_video_reel(job_data, audio_path=None, output_filename="sample_freshers_reel.mp4"):
+def create_video_reel(job_data, audio_path=None, output_filename="sample_freshers_reel.mp4", platform="youtube"):
     """
     Assembles a full 9:16 vertical video reel with motion, card entrance,
     dynamic progress bar, and synced audio.
     Automatically adapts video duration to match the audio track length!
+    Supports platform-specific audio: 'youtube', 'instagram', or 'facebook'.
     """
     output_path = os.path.join(REELS_OUTPUT_DIR, output_filename)
     cover_image_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_cover.png"))
     caption_path = os.path.join(REELS_OUTPUT_DIR, output_filename.replace(".mp4", "_caption.txt"))
     
-    # 1. Resolve Audio First & Auto-Adapt Duration
+    # 1. Resolve Platform Audio & Auto-Adapt Duration
     audio_clip = None
     if not audio_path or not os.path.exists(audio_path):
-        audio_files = glob.glob(os.path.join(AUDIO_DIR, "*.wav")) + glob.glob(os.path.join(AUDIO_DIR, "*.mp3"))
+        platform_audio_dir = os.path.join(AUDIO_DIR, platform.lower())
+        search_dirs = [platform_audio_dir, os.path.join(AUDIO_DIR, "youtube"), AUDIO_DIR]
+        audio_files = []
+        for sdir in search_dirs:
+            if os.path.exists(sdir):
+                found = glob.glob(os.path.join(sdir, "*.wav")) + glob.glob(os.path.join(sdir, "*.mp3"))
+                if found:
+                    audio_files = found
+                    break
         if audio_files:
             audio_path = random.choice(audio_files)
-            print(f"Selected audio track: {os.path.basename(audio_path)}")
+            print(f"Selected [{platform.upper()}] audio track: {os.path.basename(audio_path)}")
 
     if audio_path and os.path.exists(audio_path):
         try:
