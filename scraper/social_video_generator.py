@@ -157,19 +157,25 @@ def render_supersampled_icon(icon_type, target_size=42, bg_color=(16, 185, 129),
         
     return canvas.resize((target_size, target_size), Image.Resampling.LANCZOS)
 
-def draw_pill_badge(card_img, x, y, icon_type, label_prefix, label_val, font_prefix, font_val, prefix_color, val_color, icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=16, padding_x=14, padding_y=8):
+def draw_pill_badge(card_img, x, y, icon_type, label_prefix, label_val, font_prefix, font_val, prefix_color, val_color, icon_bg=(16, 185, 129), icon_fg="#ffffff", radius=16, padding_x=14, padding_y=8, fixed_width=None):
     """
     Renders an elegant, desaturated modern glassmorphism pill with crystal-clear supersampled icon.
-    Intelligently truncates text with ellipsis if it approaches card boundary.
+    Supports uniform fixed_width for aligned dashboard cards with graceful text truncation.
     """
     draw = ImageDraw.Draw(card_img)
     
-    icon_size = 40
+    icon_size = 38
     bb_p = font_prefix.getbbox(label_prefix)
     pw = bb_p[2] - bb_p[0]
     
-    max_total_w = card_img.width - x - 25
-    available_val_w = max_total_w - (icon_size + 14 + pw + 8 + padding_x * 2)
+    if fixed_width:
+        w = fixed_width
+    else:
+        bb_v_test = font_val.getbbox(str(label_val))
+        vw_test = bb_v_test[2] - bb_v_test[0]
+        w = min(icon_size + 14 + pw + 8 + vw_test + padding_x * 2, card_img.width - x - 25)
+        
+    available_val_w = w - (icon_size + 14 + pw + 8 + padding_x * 2) - 10
     
     # Gracefully truncate label_val with ellipsis if needed to prevent card overflow
     val_str = str(label_val)
@@ -177,9 +183,6 @@ def draw_pill_badge(card_img, x, y, icon_type, label_prefix, label_val, font_pre
         val_str = val_str[:-4] + "..."
         
     bb_v = font_val.getbbox(val_str)
-    vw = bb_v[2] - bb_v[0]
-    
-    w = icon_size + 14 + pw + 8 + vw + padding_x * 2
     h = icon_size + padding_y * 2
     
     # Refined Glassmorphic Pill Background (dark, harmonious, non-screaming)
@@ -317,10 +320,10 @@ def render_job_card(job):
             
     initials = theme["symbol"] if theme != COMPANY_THEMES.get("DEFAULT") else "".join([w[0] for w in company.split()[:2]]).upper()[:3] or "FB"
 
-    # Company Avatar Box (86x86) - Renders Real Logo if Available
-    avatar_x, avatar_y = 34, 26
-    avatar_size = 86
-    logo_img = get_company_logo_image(company, max_size=(60, 60))
+    # Company Avatar Box (84x84) - Renders Real Logo if Available
+    avatar_x, avatar_y = 34, 22
+    avatar_size = 84
+    logo_img = get_company_logo_image(company, max_size=(58, 58))
 
     if logo_img:
         # Clean white card background with rounded corners for maximum logo contrast
@@ -337,29 +340,29 @@ def render_job_card(job):
         draw.text((avatar_x + (avatar_size - iw) // 2, avatar_y + (avatar_size - ih) // 2 - ibbox[1]), initials, font=font_init, fill="#ffffff")
 
     # Company Name
-    font_comp = get_font(FONT_BOLD, 42)
-    draw.text((avatar_x + 104, avatar_y + 4), company.upper(), font=font_comp, fill="#ffffff")
+    font_comp = get_font(FONT_BOLD, 38)
+    draw.text((avatar_x + 100, avatar_y + 2), company.upper(), font=font_comp, fill="#ffffff")
     
-    # Verified Badge Pill with Supersampled Checkmark
-    font_badge = get_font(FONT_BOLD, 22)
+    # Verified Badge Pill with Supersampled Checkmark (Clean 16px gap below company name)
+    font_badge = get_font(FONT_BOLD, 20)
     v_text = "VERIFIED HIRING DRIVE"
     v_bb = font_badge.getbbox(v_text)
     v_tw = v_bb[2] - v_bb[0]
     v_th = v_bb[3] - v_bb[1]
-    v_h = 32
-    v_w = 22 + 8 + v_tw + 14
-    v_x, v_y = avatar_x + 104, avatar_y + 48
+    v_h = 28
+    v_w = 20 + 8 + v_tw + 14
+    v_x, v_y = avatar_x + 100, avatar_y + 50
     draw.rounded_rectangle([v_x, v_y, v_x + v_w, v_y + v_h], radius=10, fill=(6, 78, 59, 230), outline=(16, 185, 129, 255), width=1)
-    check_icon = render_supersampled_icon("check", target_size=18, bg_color=(16, 185, 129), fg_color="#ffffff")
-    card.paste(check_icon, (v_x + 6, v_y + (v_h - 18) // 2), check_icon)
-    draw.text((v_x + 28, v_y + (v_h - v_th) // 2 - v_bb[1]), v_text, font=font_badge, fill="#34d399")
+    check_icon = render_supersampled_icon("check", target_size=16, bg_color=(16, 185, 129), fg_color="#ffffff")
+    card.paste(check_icon, (v_x + 6, v_y + (v_h - 16) // 2), check_icon)
+    draw.text((v_x + 26, v_y + (v_h - v_th) // 2 - v_bb[1]), v_text, font=font_badge, fill="#34d399")
 
     # Horizontal Divider Line
-    draw.line([(34, 126), (card_w - 34, 126)], fill=(51, 65, 85, 180), width=2)
+    draw.line([(34, 120), (card_w - 34, 120)], fill=(51, 65, 85, 180), width=2)
 
     # Job Role Title
     title = str(job.get("title", "Software Engineer")).strip()
-    font_title = get_font(FONT_BOLD, 42)
+    font_title = get_font(FONT_BOLD, 40)
     
     lines = []
     words = title.split()
@@ -375,15 +378,17 @@ def render_job_card(job):
         lines.append(" ".join(current_line))
     lines = lines[:2]  # max 2 lines
     
-    ty = 144
+    ty = 136
     for line in lines:
         draw.text((34, ty), line, font=font_title, fill="#38bdf8")
-        ty += 50
+        ty += 46
 
-    # Highlight Badges Grid (Crisp Supersampled Modern Pills with Increased Font Size)
-    pills_y = max(ty + 12, 242)
+    # Highlight Badges Grid (Identical uniform full width with 14px clear gap)
+    pills_y = max(ty + 10, 236)
     font_pill_prefix = get_font(FONT_BOLD, 28)
     font_pill_val = get_font(FONT_BOLD, 28)
+    pill_uniform_w = card_w - (34 * 2)  # 752px: Every detail card has the exact same uniform width
+    pill_step = 68  # 54px card height + 14px gap
 
     # 1. Salary CTC Pill
     salary_raw = str(job.get("salary", "")).strip()
@@ -392,30 +397,30 @@ def render_job_card(job):
     else:
         salary_text = salary_raw
     draw_pill_badge(card, 34, pills_y, "rupee", "CTC:", salary_text, font_pill_prefix, font_pill_val,
-                    prefix_color="#34d399", val_color="#f8fafc", icon_bg=(16, 185, 129))
+                    prefix_color="#34d399", val_color="#f8fafc", icon_bg=(16, 185, 129), fixed_width=pill_uniform_w)
 
     # 2. Batch Pill
-    pills_y += 58
+    pills_y += pill_step
     batch_text = "2024, 2025 & 2026 Passouts"
     draw_pill_badge(card, 34, pills_y, "star", "Batch:", batch_text, font_pill_prefix, font_pill_val,
-                    prefix_color="#38bdf8", val_color="#f8fafc", icon_bg=(14, 165, 233))
+                    prefix_color="#38bdf8", val_color="#f8fafc", icon_bg=(14, 165, 233), fixed_width=pill_uniform_w)
 
     # 3. Location Pill
-    pills_y += 58
+    pills_y += pill_step
     location_text = str(job.get("location", "Pan-India / Remote")).strip()
     draw_pill_badge(card, 34, pills_y, "pin", "Location:", location_text, font_pill_prefix, font_pill_val,
-                    prefix_color="#c084fc", val_color="#f8fafc", icon_bg=(139, 92, 246))
+                    prefix_color="#c084fc", val_color="#f8fafc", icon_bg=(139, 92, 246), fixed_width=pill_uniform_w)
 
     # 4. Eligibility Degree Pill
-    pills_y += 58
+    pills_y += pill_step
     eligibility_text = str(job.get("eligibility", "B.E / B.Tech / BCA / MCA / B.Sc")).strip()
     draw_pill_badge(card, 34, pills_y, "degree", "Degree:", eligibility_text, font_pill_prefix, font_pill_val,
-                    prefix_color="#93c5fd", val_color="#f8fafc", icon_bg=(99, 102, 241))
+                    prefix_color="#93c5fd", val_color="#f8fafc", icon_bg=(99, 102, 241), fixed_width=pill_uniform_w)
 
     # 5. Experience / Freshers
-    pills_y += 58
+    pills_y += pill_step
     draw_pill_badge(card, 34, pills_y, "lightning", "Experience:", "0 - 1 Years (Freshers Eligible)", font_pill_prefix, font_pill_val,
-                    prefix_color="#fcd34d", val_color="#f8fafc", icon_bg=(245, 158, 11))
+                    prefix_color="#fcd34d", val_color="#f8fafc", icon_bg=(245, 158, 11), fixed_width=pill_uniform_w)
 
     # Skills Row
     skills_y = pills_y + 70
@@ -441,9 +446,9 @@ def render_job_card(job):
             break
 
     # Bottom Apply Button Inside Card
-    btn_y = card_h - 90
+    btn_y = card_h - 86
     btn_w = card_w - 68
-    btn_h = 68
+    btn_h = 66
     draw.rounded_rectangle([34, btn_y, 34 + btn_w, btn_y + btn_h], radius=18, fill=(37, 99, 235, 255), outline=(96, 165, 250, 255), width=2)
     
     font_btn = get_font(FONT_HEAVY, 32)
