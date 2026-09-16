@@ -536,18 +536,53 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     header_img = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
     hdraw = ImageDraw.Draw(header_img)
     
-    # Top Brand Pill with Supersampled Lightning Icon
+    # Top Brand Pill with Official FreshersBridge Logo
     font_brand = get_font(FONT_BOLD, 24)
     brand_text = "FRESHERSBRIDGE.IN | DAILY JOBS"
     bb_b = font_brand.getbbox(brand_text)
-    bw = (bb_b[2] - bb_b[0]) + 65
-    bh = (bb_b[3] - bb_b[1]) + 20
+    text_w = bb_b[2] - bb_b[0]
+    text_h = bb_b[3] - bb_b[1]
+    
+    # Load official FreshersBridge logo
+    fb_logo = None
+    logo_paths = [
+        os.path.join(ASSETS_DIR, "icon.png"),
+        os.path.join(os.path.dirname(BASE_DIR), "public", "icon.png")
+    ]
+    for lp in logo_paths:
+        if os.path.exists(lp):
+            try:
+                raw_logo = Image.open(lp).convert("RGBA")
+                lbbox = raw_logo.getbbox()
+                if lbbox:
+                    cropped_logo = raw_logo.crop(lbbox)
+                    target_h = 24
+                    target_w = int(target_h * (cropped_logo.width / cropped_logo.height))
+                    fb_logo = cropped_logo.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                break
+            except Exception:
+                pass
+
+    logo_w = fb_logo.width if fb_logo else 24
+    logo_gap = 14
+    padding_x = 22
+    padding_y = 10
+    
+    bw = padding_x * 2 + logo_w + logo_gap + text_w
+    bh = max(24, text_h) + padding_y * 2
     bx = (WIDTH - bw) // 2
     by = 75
-    hdraw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=18, fill=(30, 58, 138, 230), outline=(56, 189, 248, 255), width=2)
-    icon_lightning = render_supersampled_icon("lightning", target_size=24, bg_color=(37, 99, 235), fg_color="#38bdf8")
-    header_img.paste(icon_lightning, (bx + 12, by + (bh - 24) // 2), icon_lightning)
-    hdraw.text((bx + 44, by + 10 - bb_b[1]), brand_text, font=font_brand, fill="#ffffff")
+    hdraw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=18, fill=(15, 23, 42, 235), outline=(56, 189, 248, 255), width=2)
+    
+    if fb_logo:
+        header_img.paste(fb_logo, (bx + padding_x, by + (bh - fb_logo.height) // 2), fb_logo)
+    else:
+        icon_lightning = render_supersampled_icon("lightning", target_size=24, bg_color=(37, 99, 235), fg_color="#38bdf8")
+        header_img.paste(icon_lightning, (bx + padding_x, by + (bh - 24) // 2), icon_lightning)
+        
+    text_x = bx + padding_x + logo_w + logo_gap
+    text_y = by + (bh - text_h) // 2 - bb_b[1]
+    hdraw.text((text_x, text_y), brand_text, font=font_brand, fill="#ffffff")
 
     # Attention Title
     font_alert = get_font(FONT_HEAVY, 48)
