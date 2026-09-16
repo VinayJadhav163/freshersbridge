@@ -134,7 +134,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
               className="w-full inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-3.5 text-sm font-bold text-white shadow-md active:scale-[0.98]"
             >
-              🚀 Free ATS Resume Builder
+              Free ATS Resume Builder
             </Link>
             <p className="text-center text-[11px] font-medium text-muted-foreground">
               © {new Date().getFullYear()} FreshersBridge · Verified Off-Campus Drives
