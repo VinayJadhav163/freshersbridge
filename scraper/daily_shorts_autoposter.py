@@ -26,7 +26,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Add scraper dir to sys.path for internal imports
 sys.path.insert(0, os.path.join(BASE_DIR, "scraper"))
-from social_video_generator import create_video_reel
+from social_video_generator import create_video_reel, get_freshersbridge_job_url
 from youtube_shorts_publisher import upload_short, post_first_comment
 
 def load_history():
@@ -138,10 +138,12 @@ def run_daily_autoposter(privacy_status="public"):
     )
 
     # 4. Automatically Post Official First Comment with Direct Apply Link
+    fb_url = get_freshersbridge_job_url(job)
     first_comment_text = (
         f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
-        f"🔗 {apply_url}\n\n"
-        f"📌 Tip: Save & share with friends! All links verified on FreshersBridge.in 🚀"
+        f"🔗 {fb_url}\n\n"
+        f"🌐 Verified Off-Campus Opportunities: https://freshersbridge.in 🚀\n"
+        f"📌 Tip: Save & share with friends looking for a job!"
     )
     post_first_comment(upload_res.get("video_id"), first_comment_text)
 
@@ -153,6 +155,7 @@ def run_daily_autoposter(privacy_status="public"):
         "salary": salary,
         "location": location,
         "apply_url": apply_url,
+        "freshersbridge_url": fb_url,
         "youtube_video_id": upload_res.get("video_id"),
         "shorts_url": upload_res.get("short_url"),
         "privacy": privacy_status,
