@@ -297,9 +297,9 @@ def get_company_logo_image(company_name, max_size=(76, 76)):
 def render_job_card(job):
     """
     Renders the central glassmorphic card for the job posting.
-    Returns transparent RGBA image of size (840, 825), leaving 185px right-side margin for YouTube UI action buttons.
+    Returns transparent RGBA image of size (820, 825), symmetrically centered with 130px margins.
     """
-    card_w = 840
+    card_w = 820
     card_h = 825
     card = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(card)
@@ -621,11 +621,11 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     sub_y = 308
     hdraw.text(((WIDTH - (sb[2] - sb[0])) // 2, sub_y), sub_text, font=font_sub, fill="#94a3b8")
 
-    # Bottom Viral CTA Banner (y: 1220 to 1465, leaving 185px right margin and 75px clean breathing room above channel handle at 1540)
+    # Bottom Viral CTA Banner (y: 1220 to 1465, symmetrically centered with 130px margins)
     cta_box_y = 1220
-    cta_box_w = 840
+    cta_box_w = 820
     cta_box_h = 245
-    cta_box_x = 55
+    cta_box_x = (WIDTH - cta_box_w) // 2
     
     hdraw.rounded_rectangle([cta_box_x, cta_box_y, cta_box_x + cta_box_w, cta_box_y + cta_box_h],
                             radius=24, fill=(17, 24, 39, 245), outline=(245, 158, 11, 255), width=2)
@@ -672,7 +672,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     static_frame = Image.alpha_composite(static_frame, header_img)
 
     # 4. Dynamic Frame Rendering Function for MoviePy
-    target_card_x = 55
+    target_card_x = (WIDTH - card_img.width) // 2
     target_card_y = 365
 
     def make_frame(t):
