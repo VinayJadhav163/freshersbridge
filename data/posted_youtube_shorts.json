@@ -46,5 +46,17 @@
     "shorts_url": "https://www.youtube.com/shorts/qCtLMdyzod4",
     "privacy": "unlisted",
     "posted_at": "2026-09-16T17:55:37.296053+00:00"
+  },
+  {
+    "id": 5,
+    "company": "Marcaters",
+    "title": "PHP Developer Internship",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457226556",
+    "youtube_video_id": "iJZjWGNCU0Q",
+    "shorts_url": "https://www.youtube.com/shorts/iJZjWGNCU0Q",
+    "privacy": "public",
+    "posted_at": "2026-09-16T17:57:18.069890+00:00"
   }
 ]
