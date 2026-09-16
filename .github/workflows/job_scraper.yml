@@ -35,6 +35,7 @@ jobs:
           EVOLUTION_API_URL: ${{ secrets.EVOLUTION_API_URL || 'http://65.0.170.65:8080' }}
           EVOLUTION_API_KEY: ${{ secrets.EVOLUTION_API_KEY || 'FreshersBridgeSecret2026' }}
           WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID || '120363410671332403@g.us' }}
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
         run: |
           python scraper/main.py
 

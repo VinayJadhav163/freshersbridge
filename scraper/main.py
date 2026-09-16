@@ -398,6 +398,17 @@ def run_pipeline(use_ai: bool = False):
             )
             if resp.status_code == 200:
                 logger.info(f"🎉 Direct Auto-Publish succeeded! Response: {resp.json().get('message', 'OK')}")
+
+                # Step 6.5: Automated Instant Googlebot Crawl Notification (Google Indexing API)
+                try:
+                    from google_indexing_api import batch_notify_urls
+                    published_slugs = [j.get('slug') for j in clean_final_jobs if j.get('slug')]
+                    if published_slugs:
+                        indexing_urls = [f"https://freshersbridge.in/jobs/{s}" for s in published_slugs[:50]]
+                        logger.info(f"⚡ Notifying Google Indexing API for {len(indexing_urls)} fresh job listings...")
+                        batch_notify_urls(indexing_urls, notification_type="URL_UPDATED", dry_run=False)
+                except Exception as index_err:
+                    logger.warning(f"Google Indexing API auto-notification skipped: {index_err}")
             else:
                 logger.error(f"❌ Direct Auto-Publish failed with status code {resp.status_code}: {resp.text}")
         except Exception as e:

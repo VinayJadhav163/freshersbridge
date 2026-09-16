@@ -134,19 +134,19 @@ Candidates clearing the written test are invited to a 3-panel interview (Technic
   {
     id: '2',
     slug: 'accenture-recruitment-process-syllabus-coding-questions-freshers',
-    title: 'Accenture Recruitment Process 2026: Exam Pattern, Syllabus & Solved Coding Questions',
-    subtitle: 'Everything you need to crack the Associate Software Engineer (4.5 LPA) and Advanced ASE (6.5 LPA) roles with real exam patterns.',
-    description: 'Complete Accenture recruitment 2026 blueprint: Cognitive & Technical assessment syllabus, test pattern, solved coding questions, communication tips, and technical interview questions for freshers.',
+    title: 'Accenture Recruitment Process 2026: Technical Assessment Questions, Syllabus & Coding Blueprint',
+    subtitle: 'Everything you need to crack the Associate Software Engineer (4.5 LPA) and Advanced ASE (6.5 LPA) roles with real exam patterns and solved questions.',
+    description: 'Complete Accenture recruitment 2026 blueprint: Solved technical assessment questions (pseudocode, common applications & networking), cognitive syllabus, exam pattern, and coding questions for freshers.',
     category: 'Company Patterns',
     readTime: '11 min read',
     publishedAt: '2026-08-21',
-    updatedAt: '2026-09-13',
+    updatedAt: '2026-09-17',
     author: {
       name: 'FreshersBridge Career Team',
       role: 'Career Tech Lead at FreshersBridge',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
-    tags: ['Accenture', 'ASE', 'Off-Campus', 'Coding Round', 'Aptitude', 'Accenture Exam Pattern', 'Accenture Technical Questions 2026', 'Packaged App Development Associate'],
+    tags: ['Accenture', 'Accenture Technical Assessment Questions 2026', 'Accenture Recruitment Process 2026', 'Accenture Aptitude Syllabus', 'ASE', 'Off-Campus', 'Coding Round', 'Aptitude', 'Accenture Exam Pattern', 'Packaged App Development Associate'],
     tableOfContents: [
       { id: 'hiring-tracks', title: '1. Accenture Hiring Roles & Packages' },
       { id: 'selection-process', title: '2. Four-Stage Selection Process' },
@@ -243,6 +243,25 @@ The Accenture Technical + HR Interview (25–35 minutes) is conducted virtually 
 - "If assigned to a project involving an unfamiliar technology stack, how would you approach learning it within a 2-week deadline?"
 - "Are you comfortable working in rotational shifts and open to relocation across Accenture India delivery centers?"
     `,
+    directAnswerSummary: 'The Accenture 2026 freshers recruitment process consists of 4 successive stages: Cognitive & Technical Assessment (90 MCQs in 90 mins covering pseudocode, networking, MS Office, and cloud fundamentals), Coding Assessment (2 questions in 45 mins), Pearson Versant Communication Assessment, and a virtual Technical + HR Interview on MS Teams. Packages range from ₹4.5 LPA (ASE) to ₹6.5 LPA (Advanced ASE).',
+    faqs: [
+      {
+        question: 'What are the technical assessment questions asked in Accenture?',
+        answer: 'Accenture technical assessment consists of 40 technical MCQs: Pseudocode (bit manipulation, recursion, nested loops), Common Applications & MS Office (shortcuts, formulas, macros), and Networking, Security & Cloud fundamentals.'
+      },
+      {
+        question: 'What is the cutoff for Accenture cognitive and technical assessment?',
+        answer: 'There is a sectional cutoff of approximately 65-70% in both Cognitive (Analytical, Quantitative, English) and Technical sections. Clearing the combined assessment is mandatory to unlock the subsequent Coding Round.'
+      },
+      {
+        question: 'What programming languages are allowed in the Accenture coding round?',
+        answer: 'Candidates can write code in C, C++, Java, Python, or .NET in the online compiler. Two coding questions must be completed in 45 minutes.'
+      },
+      {
+        question: 'What packages are offered to freshers in Accenture 2026?',
+        answer: 'Accenture offers ₹4.50 LPA for Associate Software Engineer (ASE) and ₹6.50 LPA for Advanced Associate Software Engineer (AASE).'
+      }
+    ],
   },
   {
     id: '3',
@@ -1055,19 +1074,19 @@ Candidates clearing the online assessment advance to the combined Technical + HR
   {
     id: '12',
     slug: 'infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide',
-    title: 'Infosys SP & DSE Package, Roles & Exam Pattern 2026: Complete Hiring Guide',
-    subtitle: 'How freshers can crack the ₹9.5 LPA Specialist Programmer (SP) and ₹6.25 LPA Digital Specialist Engineer (DSE) roles with syllabus & coding questions.',
-    description: 'Complete breakdown of Infosys SP & DSE package, roles, syllabus, HackWithInfy coding problems, and technical interview questions for 2026 freshers.',
+    title: 'Infosys SP vs DSE Package 2026: ₹9.5 LPA vs ₹6.25 LPA In-Hand Salary, Syllabus & Exam Pattern',
+    subtitle: 'Everything freshers need to know about Infosys Specialist Programmer (₹9.5 LPA) and Digital Specialist Engineer (₹6.25 LPA) packages, in-hand breakdown, syllabus & HackWithInfy coding problems.',
+    description: 'Detailed comparison of Infosys SP and DSE package for 2026 batch freshers. Check exact in-hand salary (₹68K-₹72K vs ₹44K-₹47K), syllabus, HackWithInfy coding questions, and interview tips.',
     category: 'Company Patterns',
     readTime: '13 min read',
     publishedAt: '2026-08-28',
-    updatedAt: '2026-09-13',
+    updatedAt: '2026-09-17',
     author: {
       name: 'FreshersBridge Career Team',
       role: 'Career Tech Lead at FreshersBridge',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
     },
-    tags: ['Infosys', 'Specialist Programmer', 'DSE', 'Coding', 'Freshers 2026', 'Infosys SP DSE Package', 'Digital Specialist Engineer (DSE)', 'Infosys SP and DSE Role Package'],
+    tags: ['Infosys', 'Infosys SP DSE Package', 'Specialist Programmer', 'Digital Specialist Engineer (DSE)', 'Infosys SP and DSE Package', 'Infosys SP and DSE Role Package', 'HackWithInfy', 'Freshers 2026'],
     tableOfContents: [
       { id: 'roles-overview', title: '1. Infosys SP and DSE Package, Roles & Salary Differences' },
       { id: 'exam-structure', title: '2. HackWithInfy & SP Exam Structure' },
@@ -1136,6 +1155,25 @@ The interview for DSE and SP cadres is significantly more rigorous than the stan
 * **System Design Fundamentals:** Basic high-level architecture questions such as designing a URL Shortener (TinyURL) or an in-memory Key-Value cache.
 * **Database & Concurrency:** Explain indexing structures (B-Trees), ACID transactions, thread safety, and REST API idempotency.
     `,
+    directAnswerSummary: 'In Infosys 2026 campus and off-campus recruitment, the Specialist Programmer (SP) package is ₹9.50 LPA (approx. ₹68,000–₹72,000 monthly in-hand) and the Digital Specialist Engineer (DSE) package is ₹6.25 LPA (approx. ₹44,000–₹47,000 monthly in-hand). Both roles are hired through HackWithInfy and specialized coding rounds requiring proficiency in advanced Dynamic Programming and Graph algorithms.',
+    faqs: [
+      {
+        question: 'What is the monthly in-hand salary for Infosys SP and DSE?',
+        answer: 'For Infosys Specialist Programmer (SP at ₹9.50 LPA), the monthly in-hand salary ranges between ₹68,000 and ₹72,000 after standard PF and tax deductions. For Digital Specialist Engineer (DSE at ₹6.25 LPA), the monthly in-hand salary is approximately ₹44,000 to ₹47,000.'
+      },
+      {
+        question: 'What is the difference between Infosys SP and DSE roles?',
+        answer: 'Specialist Programmer (SP) focuses on distributed systems, competitive programming, low-latency architectures, and AI/ML algorithms. Digital Specialist Engineer (DSE) focuses on enterprise full-stack development, cloud microservices, and modern DevOps pipelines.'
+      },
+      {
+        question: 'How can freshers apply for Infosys SP and DSE roles?',
+        answer: 'Freshers can qualify for SP and DSE through HackWithInfy (national coding competition), on-campus hiring assessments with high coding percentiles, or the InfyTQ certification drive.'
+      },
+      {
+        question: 'Is there a service agreement or bond for Infosys SP/DSE?',
+        answer: 'Infosys generally does not require a financial bond for SP or DSE roles, though there is an initial probation and training phase conducted at the Infosys Mysore campus or virtually.'
+      }
+    ],
   },
   {
     id: '13',

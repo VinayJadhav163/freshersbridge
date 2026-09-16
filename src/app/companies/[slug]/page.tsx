@@ -48,12 +48,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${company.name} Jobs for Freshers 2026: Off-Campus Drives & Syllabus | FreshersBridge`;
-  const description = `Explore latest ${company.shortName} fresher job drives, salary packages (${company.salaryRange}), eligibility criteria, and interview exam pattern for college graduates.`;
+  const title = `${company.name} Careers & Freshers Hiring 2026: Drives, Packages (${company.salaryRange}) & Syllabus | FreshersBridge`;
+  const description = `Apply to verified ${company.name} careers for freshers (2026 batch). Explore off-campus recruitment drives, entry-level engineering openings, salary packages (${company.salaryRange}), eligibility, and exam pattern.`;
 
   return {
     title,
     description,
+    keywords: [
+      `${company.name} careers for freshers`,
+      `${company.name} fresher hiring 2026`,
+      `${company.name} off campus drive`,
+      `${company.shortName} freshers jobs`,
+      `${company.name} salary for freshers`,
+      `${company.shortName} recruitment 2026`,
+    ],
     alternates: {
       canonical: `https://freshersbridge.in/companies/${company.slug}`,
     },
