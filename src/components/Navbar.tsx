@@ -104,9 +104,6 @@ export default function Navbar() {
           id="mobile-menu"
         >
           <div className="space-y-2">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground px-3 pb-1">
-              Navigation
-            </p>
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
