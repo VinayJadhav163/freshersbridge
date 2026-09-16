@@ -33,16 +33,34 @@ CLIENT_SECRET_FILE = os.path.join(CREDENTIALS_DIR, "youtube_client_secret.json")
 TOKEN_FILE = os.path.join(CREDENTIALS_DIR, "youtube_token.json")
 
 # Scopes required to upload videos and manage/reply to comments
-SCOPES = [
+UPLOAD_SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube",
-    "https://www.googleapis.com/auth/youtube.force-ssl"
 ]
 
-def get_authenticated_service():
+ALL_SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
+]
+
+def is_headless():
+    """Detects whether script is running in headless CI environment (e.g. GitHub Actions)."""
+    return bool(
+        os.environ.get("GITHUB_ACTIONS")
+        or os.environ.get("CI")
+        or not (sys.stdin and sys.stdin.isatty())
+    )
+
+def get_authenticated_service(require_comment_scope=False):
     """
     Retrieves or establishes authenticated YouTube API service.
     Caches token in credentials/youtube_token.json for subsequent automated runs.
+    
+    In CI / headless environments:
+    - Never opens a local desktop browser.
+    - Uses existing token and refreshes access_token automatically via refresh_token.
+    - Does not discard valid upload tokens if optional comment permissions are absent.
     """
     creds = None
     
@@ -57,47 +75,64 @@ def get_authenticated_service():
         with open(CLIENT_SECRET_FILE, "w", encoding="utf-8") as f:
             f.write(os.environ["YOUTUBE_CLIENT_SECRET_JSON"].strip())
 
+    granted_scopes = []
     # 1. Check for existing cached token
     if os.path.exists(TOKEN_FILE):
         try:
             with open(TOKEN_FILE, "r", encoding="utf-8") as f:
                 raw_token_data = json.load(f)
             granted_scopes = raw_token_data.get("scopes", [])
-            # Verify that all required scopes (including youtube.force-ssl for comments) are present
-            if not set(SCOPES).issubset(set(granted_scopes)):
-                print("Existing token lacks comment permissions (youtube.force-ssl). Re-authorizing...", flush=True)
-                creds = None
-            else:
-                creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
-                print("Loaded cached YouTube authentication token.", flush=True)
+            creds = Credentials.from_authorized_user_file(TOKEN_FILE)
+            print("Loaded cached YouTube authentication token.", flush=True)
         except Exception as e:
             print(f"Failed to load cached token: {e}", flush=True)
             creds = None
 
-    # 2. Refresh expired token or initiate 1-time OAuth flow
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    # 2. Refresh expired token using refresh_token if possible
+    if creds and creds.expired and creds.refresh_token:
+        try:
             print("Refreshing expired YouTube access token...", flush=True)
             creds.refresh(Request())
-        else:
-            if not os.path.exists(CLIENT_SECRET_FILE):
-                raise FileNotFoundError(
-                    f"\n[ERROR] YouTube Client Secret file not found at: {CLIENT_SECRET_FILE}\n"
-                    f"To enable automated YouTube Shorts uploads:\n"
-                    f"1. Go to Google Cloud Console (https://console.cloud.google.com/)\n"
-                    f"2. Enable 'YouTube Data API v3'\n"
-                    f"3. Create an OAuth 2.0 Client ID (Desktop App)\n"
-                    f"4. Download the JSON and save it as: credentials/youtube_client_secret.json\n"
-                )
-            
-            print("\nInitiating one-time YouTube OAuth authorization...", flush=True)
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-            
-            # Using port 8080 (standard Google loopback)
-            creds = flow.run_local_server(port=8080, prompt="consent", open_browser=True)
+            # Save updated refreshed token to file
+            with open(TOKEN_FILE, "w", encoding="utf-8") as f:
+                f.write(creds.to_json())
+            print("Successfully refreshed YouTube access token.", flush=True)
+        except Exception as e:
+            print(f"Warning: Token refresh attempt failed: {e}", flush=True)
+
+    # 3. Handle comment scope check if specifically requested
+    has_comment_scope = "https://www.googleapis.com/auth/youtube.force-ssl" in (creds.scopes if creds and creds.scopes else granted_scopes)
+    if require_comment_scope and not has_comment_scope:
+        if is_headless():
+            print("⚠️ [CI/Headless] Current YouTube token lacks 'youtube.force-ssl' comment scope.", flush=True)
+            return None
+        print("Existing token lacks comment permissions (youtube.force-ssl). Upgrading scopes locally...", flush=True)
+        creds = None
+
+    # 4. If credentials missing or invalid:
+    if not creds or not creds.valid:
+        if is_headless():
+            raise RuntimeError(
+                "[ERROR] No valid YouTube credentials found in headless CI environment!\n"
+                "Please verify that YOUTUBE_CLIENT_SECRET_JSON and YOUTUBE_TOKEN_JSON secrets are configured in GitHub repository settings."
+            )
+
+        if not os.path.exists(CLIENT_SECRET_FILE):
+            raise FileNotFoundError(
+                f"\n[ERROR] YouTube Client Secret file not found at: {CLIENT_SECRET_FILE}\n"
+                f"To enable automated YouTube Shorts uploads:\n"
+                f"1. Go to Google Cloud Console (https://console.cloud.google.com/)\n"
+                f"2. Enable 'YouTube Data API v3'\n"
+                f"3. Create an OAuth 2.0 Client ID (Desktop App)\n"
+                f"4. Download the JSON and save it as: credentials/youtube_client_secret.json\n"
+            )
+        
+        print("\nInitiating YouTube OAuth authorization in your web browser...", flush=True)
+        flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, ALL_SCOPES)
+        creds = flow.run_local_server(port=8080, prompt="consent", open_browser=True)
 
         os.makedirs(CREDENTIALS_DIR, exist_ok=True)
-        with open(TOKEN_FILE, "w") as token:
+        with open(TOKEN_FILE, "w", encoding="utf-8") as token:
             token.write(creds.to_json())
         print(f"Saved persistent YouTube authentication token to: {TOKEN_FILE}", flush=True)
 
@@ -192,12 +227,17 @@ def upload_short(video_path, title=None, description=None, tags=None, privacy_st
 def post_first_comment(video_id, comment_text):
     """
     Posts an official top-level comment on a video (e.g. direct apply link).
+    Gracefully handles missing comment scope without crashing the video publishing workflow.
     """
     if not video_id:
         return None
 
     try:
-        youtube = get_authenticated_service()
+        youtube = get_authenticated_service(require_comment_scope=False)
+        if not youtube:
+            print(f"⚠️ YouTube client not available to post first comment on {video_id}.")
+            return None
+
         body = {
             "snippet": {
                 "videoId": video_id,
@@ -215,6 +255,13 @@ def post_first_comment(video_id, comment_text):
         comment_id = response.get("id")
         print(f"✅ Posted official first comment on video {video_id} (ID: {comment_id})")
         return response
+    except HttpError as e:
+        if e.resp.status == 403 and "insufficientPermissions" in str(e):
+            print(f"ℹ️ First comment skipped: Current YouTube token does not have 'youtube.force-ssl' permission.")
+            print(f"   (Video Short was published successfully! Run local re-auth to enable automated comment posting.)")
+        else:
+            print(f"⚠️ Warning: Could not post first comment on {video_id}: {e}")
+        return None
     except Exception as e:
         print(f"⚠️ Warning: Could not post first comment on {video_id}: {e}")
         return None
