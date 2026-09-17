@@ -152,7 +152,7 @@ def run_daily_autoposter(privacy_status="public"):
     print(f"\n[4/4] Cross-Publishing to Instagram & Facebook Reels...")
     meta_video_path = video_path
     ig_audio_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "instagram")
-    has_ig_audio = os.path.exists(ig_audio_dir) and any(f.endswith(('.mp3', '.wav')) for f in os.listdir(ig_audio_dir))
+    has_ig_audio = os.path.exists(ig_audio_dir) and any(f.endswith(('.mp3', '.wav', '.m4a', '.aac')) for f in os.listdir(ig_audio_dir))
 
     if has_ig_audio:
         print(f"[Meta] Detected dedicated Instagram audio pool. Rendering custom Meta Reel...")

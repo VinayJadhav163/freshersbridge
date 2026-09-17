@@ -530,7 +530,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
         audio_files = []
         for sdir in search_dirs:
             if os.path.exists(sdir):
-                found = glob.glob(os.path.join(sdir, "*.wav")) + glob.glob(os.path.join(sdir, "*.mp3"))
+                found = glob.glob(os.path.join(sdir, "*.wav")) + glob.glob(os.path.join(sdir, "*.mp3")) + glob.glob(os.path.join(sdir, "*.m4a")) + glob.glob(os.path.join(sdir, "*.aac"))
                 if found:
                     audio_files = found
                     break

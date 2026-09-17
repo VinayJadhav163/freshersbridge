@@ -80,8 +80,9 @@ def main():
 
     urls_file = args.file
     if not os.path.exists(urls_file):
-        # Also check inside data/ or current directory
-        alt_paths = [
+        # Also check for any downloaded instagram_saved_*.txt files or files inside data/
+        saved_txts = [os.path.join(BASE_DIR, f) for f in os.listdir(BASE_DIR) if f.startswith("instagram_saved_") and f.endswith(".txt")]
+        alt_paths = saved_txts + [
             os.path.join(BASE_DIR, "data", "urls.txt"),
             os.path.join(BASE_DIR, "data", "instagram_urls.txt"),
             "urls.txt"
