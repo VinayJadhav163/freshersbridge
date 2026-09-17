@@ -35,58 +35,61 @@ https://freshersbridge.in/career-tools"""
 OPPORTUNITIES_HEADER = "*🔥 Today's Fresh Opportunities:*"
 
 WHATSAPP_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
+🌐 *BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:*
 https://www.freshersbridge.in/jobs
 
-🧮 HR Email Scripts + In-Hand Salary Calculator:
+🧮 *HR Email Scripts + In-Hand Salary Calculator:*
 https://freshersbridge.in/career-tools
 
-📸 Follow FreshersBridge on Instagram:
+📸 *Follow FreshersBridge on Instagram:*
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
 
-📢 Get daily job alerts on Telegram:
+📢 *Get daily job alerts on Telegram:*
 https://t.me/freshersbridge
 
-📩 Want job alerts directly in your inbox?
+📩 *Want job alerts directly in your inbox?*
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
-📤 Share with your friends, batchmates & college groups!
+📤 *Share with your friends, batchmates & college groups!*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
+*FreshersBridge 🚀 | Jobs • Internships • Career Tools*"""
 
 TELEGRAM_FOOTER = """━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:
+🌐 <b>BROWSE ALL 50+ FRESH JOBS & INTERNSHIPS TODAY:</b>
 https://www.freshersbridge.in/jobs
 
-🧮 HR Email Scripts + In-Hand Salary Calculator:
+🧮 <b>HR Email Scripts + In-Hand Salary Calculator:</b>
 https://freshersbridge.in/career-tools
 
-📸 Follow FreshersBridge on Instagram:
+📸 <b>Follow FreshersBridge on Instagram:</b>
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
 
-💬 Join our WhatsApp Community:
+💬 <b>Join our WhatsApp Community:</b>
 https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
 
-📩 Want job alerts directly in your inbox?
+📩 <b>Want job alerts directly in your inbox?</b>
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:
 👉 https://freshersbridge.in
 
-📤 Share with your friends, batchmates & college groups!
+📤 <b>Share with your friends, batchmates & college groups!</b>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-FreshersBridge 🚀 | Jobs • Internships • Career Tools"""
+<b>FreshersBridge 🚀 | Jobs • Internships • Career Tools</b>"""
 
 def slugify(text: str) -> str:
     """Generates a clean URL slug matching FreshersBridge database standard."""
     text = re.sub(r'[^\w\s-]', '', text.lower())
     return re.sub(r'[-\s]+', '-', text).strip('-')
 
-def format_single_job_block(job: Dict[str, Any]) -> str:
-    """Formats a single job into structured WhatsApp/Telegram card strictly pointing to FreshersBridge portal."""
-    company = str(job.get('company') or 'Top Tech Company').strip()
-    title = str(job.get('title') or 'Software Engineer').strip()
-    eligibility = str(job.get('eligibility') or 'B.E / B.Tech / BCA / MCA / Any Graduate').strip()
-    location = str(job.get('location') or 'Pan-India / Remote').strip()
+def format_single_job_block(job: Dict[str, Any], platform: str = 'whatsapp') -> str:
+    """Formats a single job into structured bold WhatsApp/Telegram card strictly pointing to FreshersBridge portal."""
+    import html
+    is_telegram = platform.lower() == 'telegram'
+
+    raw_company = str(job.get('company') or 'Top Tech Company').strip()
+    raw_title = str(job.get('title') or 'Software Engineer').strip()
+    raw_eligibility = str(job.get('eligibility') or 'B.E / B.Tech / BCA / MCA / Any Graduate').strip()
+    raw_location = str(job.get('location') or 'Pan-India / Remote').strip()
     raw_sal = str(job.get('salary') or '').strip()
     lower_sal = raw_sal.lower()
     if (not raw_sal or 'not disclosed' in lower_sal or 'as per industry' in lower_sal or 
@@ -95,22 +98,34 @@ def format_single_job_block(job: Dict[str, Any]) -> str:
         salary = 'Apply'
     else:
         salary = raw_sal
+
     slug = str(job.get('slug') or '').strip()
-    
-    # Always generate FreshersBridge portal URL - never expose third party links in broadcasts
     if not slug:
-        slug = slugify(f"{title}-{company}")
+        slug = slugify(f"{raw_title}-{raw_company}")
         
-    is_internship = job.get('job_type') == 'internship' or any(k in title.lower() for k in ['intern', 'internship', 'trainee'])
+    is_internship = job.get('job_type') == 'internship' or any(k in raw_title.lower() for k in ['intern', 'internship', 'trainee'])
     section = 'internships' if is_internship else 'jobs'
     apply_link = f"https://freshersbridge.in/{section}/{slug}"
 
-    return f"""🔗 Company : {company}
-Role : {title}
-Qualification : {eligibility}
-Location : {location}
-Salary : {salary}
-📌 Apply Link : {apply_link}"""
+    if is_telegram:
+        company = html.escape(raw_company)
+        title = html.escape(raw_title)
+        eligibility = html.escape(raw_eligibility)
+        location = html.escape(raw_location)
+        salary = html.escape(salary)
+        return f"""🔗 <b>Company :</b> {company}
+<b>Role :</b> {title}
+<b>Qualification :</b> {eligibility}
+<b>Location :</b> {location}
+<b>Salary :</b> {salary}
+📌 <b>Apply Link :</b> {apply_link}"""
+    else:
+        return f"""🔗 *Company :* {raw_company}
+*Role :* {raw_title}
+*Qualification :* {raw_eligibility}
+*Location :* {raw_location}
+*Salary :* {salary}
+📌 *Apply Link :* {apply_link}"""
 
 def balance_jobs_by_source(jobs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Interleaves jobs across different sources (Unstop, Internshala, LinkedIn, Shine, Naukri) for balanced broadcast diversity."""
@@ -143,27 +158,36 @@ def generate_broadcast_messages(jobs: List[Dict[str, Any]], platform: str = 'wha
     footer = TELEGRAM_FOOTER if is_telegram else WHATSAPP_FOOTER
     slot_label = get_slot_title()
 
-    # Telegram uses ** for markdown bolding, WhatsApp uses *
-    b = "**" if is_telegram else "*"
-
-    header_top = f"""{b}📌Great Opportunities open for freshers candidates{b}
-{b}Tailor your resume. Improve your chances.{b}
-{b}👉 Check your resume with our ATS Resume Scanner:{b}
+    if is_telegram:
+        header_top = """<b>📌 Great Opportunities open for freshers candidates</b>
+<b>Tailor your resume. Improve your chances.</b>
+<b>👉 Check your resume with our ATS Resume Scanner:</b>
 https://freshersbridge.in/career-tools"""
-
-    opps_header = f"{b}🔥 Today's Fresh Opportunities:{b}"
+        opps_header = "<b>🔥 Today's Fresh Opportunities:</b>"
+    else:
+        header_top = """*📌 Great Opportunities open for freshers candidates*
+*Tailor your resume. Improve your chances.*
+*👉 Check your resume with our ATS Resume Scanner:*
+https://freshersbridge.in/career-tools"""
+        opps_header = "*🔥 Today's Fresh Opportunities:*"
     
     for i in range(0, total_jobs, chunk_size):
         chunk = balanced_jobs[i:i + chunk_size]
         batch_num = (i // chunk_size) + 1
-        job_blocks = "\n\n".join([format_single_job_block(j) for j in chunk])
+        job_blocks = "\n\n".join([format_single_job_block(j, platform=platform) for j in chunk])
         
-        # Batch #1 gets the dynamic session label (Morning/Afternoon/Evening) without ✨ emoji
-        batch_header = (
-            f"{header_top}\n\n{opps_header}\n{b}{slot_label}{b}"
-            if batch_num == 1
-            else f"{header_top}\n\n{opps_header} {b}(Batch #{batch_num}){b}"
-        )
+        if is_telegram:
+            batch_header = (
+                f"{header_top}\n\n{opps_header}\n<b>{slot_label}</b>"
+                if batch_num == 1
+                else f"{header_top}\n\n{opps_header} <b>(Batch #{batch_num})</b>"
+            )
+        else:
+            batch_header = (
+                f"{header_top}\n\n{opps_header}\n*{slot_label}*"
+                if batch_num == 1
+                else f"{header_top}\n\n{opps_header} *(Batch #{batch_num})*"
+            )
         
         msg = f"""{batch_header}
 
@@ -175,7 +199,7 @@ https://freshersbridge.in/career-tools"""
     return messages
 
 def dispatch_to_telegram(messages: List[str], bot_token: str = None, channel_id: str = None, send_all: bool = False) -> bool:
-    """Dispatches 8-job curated message block to Telegram Channel."""
+    """Dispatches 8-job curated message block to Telegram Channel with HTML parse mode."""
     token = bot_token or os.getenv("TELEGRAM_BOT_TOKEN")
     chat = channel_id or os.getenv("TELEGRAM_CHANNEL_ID") or os.getenv("TELEGRAM_CHAT_ID")
     
@@ -194,7 +218,7 @@ def dispatch_to_telegram(messages: List[str], bot_token: str = None, channel_id:
             payload = {
                 "chat_id": chat,
                 "text": msg,
-                "parse_mode": "Markdown",
+                "parse_mode": "HTML",
                 "disable_web_page_preview": False
             }
             resp = requests.post(tg_url, json=payload, timeout=20)
