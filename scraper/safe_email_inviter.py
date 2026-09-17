@@ -153,36 +153,34 @@ def build_email_content(name: str, email: str, jobs: List[Dict[str, str]]) -> Tu
     jobs_plain = "\n".join([f"• {j['company']} — {j['title']} ({j['salary']})\n  👉 {j['url']}" for j in jobs])
     
     jobs_html = "".join([f"""
-    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 12px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-        <tr>
-            <td style="padding: 14px 16px;">
-                <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td style="vertical-align: middle;">
-                            <div style="font-size: 14.5px; font-weight: 800; color: #0f172a; margin-bottom: 3px; line-height: 1.3;">
-                                {j['title']}
-                            </div>
-                            <div style="font-size: 12.5px; font-weight: 600; color: #64748b;">
-                                {j['company']} • <span style="color: #475569;">{j['location']}</span>
-                            </div>
-                        </td>
-                        <td align="right" style="vertical-align: middle; padding-left: 10px; white-space: nowrap;">
-                            <span style="display: inline-block; background-color: #edf4ff; color: #2563eb; border: 1px solid #bfdbfe; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">
-                                {j['salary']}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-top: 8px;">
-                            <a href="{j['url']}" target="_blank" style="color: #2563eb; font-weight: 700; font-size: 12.5px; text-decoration: none;">
-                                View drive details & apply &rarr;
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div style="margin-bottom: 14px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="vertical-align: middle;">
+                    <a href="{j['url']}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+                        <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px; line-height: 1.3;">
+                            {j['title']}
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #64748b;">
+                            {j['company']} • <span style="color: #475569;">{j['location']}</span>
+                        </div>
+                    </a>
+                </td>
+                <td align="right" style="vertical-align: middle; padding-left: 12px; white-space: nowrap;">
+                    <a href="{j['url']}" target="_blank" style="background-color: #2563eb; color: #ffffff; text-decoration: none; font-size: 12.5px; font-weight: 700; padding: 7px 16px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);">
+                        Apply &rarr;
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 8px;">
+                    <a href="{j['url']}" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 12.5px; text-decoration: underline;">
+                        View drive details & syllabus &rarr;
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
     """ for j in jobs])
 
     unsub_link = f"mailto:{OUTREACH_EMAIL}?subject=Unsubscribe%20{email}&body=Please%20remove%20{email}%20from%20any%20further%20invites."
@@ -199,10 +197,10 @@ I run FreshersBridge (https://freshersbridge.in), an open community platform bui
 Here are 3 top verified drives active today:
 {jobs_plain}
 
-👉 If you would like to receive our daily off-campus job digests directly in your inbox, you can subscribe with 1-click:
-https://freshersbridge.in#newsletter
+👉 Browse all 500+ verified drives:
+https://freshersbridge.in/jobs
 
-💬 Or join our student WhatsApp Community:
+💬 Join our student WhatsApp Community:
 https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75
 
 Best of luck with your placement prep!
@@ -227,16 +225,20 @@ Not looking for off-campus job alerts? Reply 'unsubscribe' or click: {unsub_link
 
         <p>I run <a href="https://freshersbridge.in" style="color: #2563eb; font-weight: 600; text-decoration: none;">FreshersBridge</a>, an open platform dedicated to helping <strong>2024, 2025 & 2026 batch freshers</strong> track verified off-campus hiring drives (TCS, Accenture, Google, High-Growth Startups) with zero fake links or consulting fees.</p>
 
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 18px 6px 18px; margin: 24px 0;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 18px 4px 18px; margin: 24px 0;">
             <p style="margin-top: 0; margin-bottom: 14px; font-weight: 800; color: #0f172a; font-size: 15px;">🔥 Fresh Verified Drives Active Today:</p>
             {jobs_html}
         </div>
 
         <p style="font-size: 15px;">If you'd like to get our verified off-campus digests automatically, you can connect directly:</p>
 
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="https://freshersbridge.in" style="background: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 10px;">👉 Browse All 50+ Verified Drives</a><br/>
-            <a href="https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75" style="background: #16a34a; color: #ffffff; padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; font-size: 14px;">💬 Join Free WhatsApp Community</a>
+        <div style="text-align: center; margin: 28px 0;">
+            <a href="https://freshersbridge.in/jobs" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14.5px; box-shadow: 0 4px 12px rgba(37,99,235,0.25); margin-bottom: 12px;">
+                👉 Browse All 500+ Verified Drives
+            </a><br/>
+            <a href="https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75" target="_blank" style="background-color: #16a34a; color: #ffffff; padding: 11px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 12px rgba(22,163,74,0.25);">
+                <img src="https://freshersbridge.in/whatsapp.png" width="18" height="18" style="vertical-align: middle; margin-right: 8px; display: inline-block;" alt="WhatsApp" />Join Free WhatsApp Community
+            </a>
         </div>
 
         <p>Wish you the absolute best with your upcoming campus & off-campus placement prep!</p>
@@ -260,11 +262,14 @@ def send_invitation_email(smtp_server, recipient_email: str, recipient_name: str
     """Sends a single personalized email via authenticated Gmail SSL SMTP."""
     subject, text_content, html_content = build_email_content(recipient_name, recipient_email, jobs)
 
+    import email.utils
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = f"{SENDER_NAME} <{OUTREACH_EMAIL}>"
     msg["To"] = recipient_email
     msg["Reply-To"] = OUTREACH_EMAIL
+    msg["Message-ID"] = email.utils.make_msgid(domain="gmail.com")
+    msg["Date"] = email.utils.formatdate(localtime=True)
 
     # Add List-Unsubscribe header (standard Gmail anti-spam compliance)
     msg["List-Unsubscribe"] = f"<mailto:{OUTREACH_EMAIL}?subject=Unsubscribe>"
