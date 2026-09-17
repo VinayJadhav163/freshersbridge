@@ -88,5 +88,33 @@
     "shorts_url": "https://www.youtube.com/shorts/kJO5Ff3Npok",
     "privacy": "public",
     "posted_at": "2026-09-17T04:53:42.510185+00:00"
+  },
+  {
+    "id": 8,
+    "company": "Joveo",
+    "title": "Backend Engineering Intern",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456914897",
+    "freshersbridge_url": "https://freshersbridge.in/internships/backend-engineering-intern-joveo",
+    "youtube_video_id": "dvyZR23AJEg",
+    "shorts_url": "https://www.youtube.com/shorts/dvyZR23AJEg",
+    "meta_results": {
+      "instagram": {
+        "status": "skipped",
+        "media_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "facebook": {
+        "status": "skipped",
+        "video_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "timestamp": "2026-09-17T13:23:50.914215+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-17T13:23:50.914270+00:00"
   }
 ]
