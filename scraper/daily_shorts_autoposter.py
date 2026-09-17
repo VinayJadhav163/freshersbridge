@@ -150,6 +150,17 @@ def run_daily_autoposter(privacy_status="public"):
 
     # 5. Cross-Post to Instagram Reels & Facebook Page Reels
     print(f"\n[4/4] Cross-Publishing to Instagram & Facebook Reels...")
+    meta_video_path = video_path
+    ig_audio_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "instagram")
+    has_ig_audio = os.path.exists(ig_audio_dir) and any(f.endswith(('.mp3', '.wav')) for f in os.listdir(ig_audio_dir))
+
+    if has_ig_audio:
+        print(f"[Meta] Detected dedicated Instagram audio pool. Rendering custom Meta Reel...")
+        meta_filename = f"{company_clean}_{timestamp_slug}_meta_reel.mp4"
+        custom_meta_video, _, _ = create_video_reel(job, output_filename=meta_filename, platform="instagram")
+        if custom_meta_video and os.path.exists(custom_meta_video):
+            meta_video_path = custom_meta_video
+
     meta_comment_text = (
         f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
         f"🔗 {fb_url}\n\n"
@@ -157,7 +168,7 @@ def run_daily_autoposter(privacy_status="public"):
         f"📌 Tip: Tag and share with batchmates looking for off-campus drives!"
     )
     meta_results = publish_to_meta_platforms(
-        video_path=video_path,
+        video_path=meta_video_path,
         caption=caption_content,
         comment_text=meta_comment_text,
         cover_path=cover_path
