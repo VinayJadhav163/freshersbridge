@@ -24,10 +24,15 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import requests
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 META_HISTORY_FILE = os.path.join(DATA_DIR, "posted_meta_reels.json")
+
+# Load local environment if available
+load_dotenv(os.path.join(BASE_DIR, ".env.local"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
