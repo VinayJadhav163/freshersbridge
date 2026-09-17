@@ -59,18 +59,21 @@ jobs:
           echo "$YOUTUBE_CLIENT_SECRET" > credentials/youtube_client_secret.json
           echo "$YOUTUBE_TOKEN" > credentials/youtube_token.json
 
-      - name: Generate & Publish Daily YouTube Short
+      - name: Generate & Publish Daily YouTube Short & Social Reels
         env:
           YOUTUBE_CLIENT_SECRET_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
         run: |
           PRIVACY="${{ github.event.inputs.privacy || 'public' }}"
           python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY"
 
-      - name: Commit & Push Updated Shorts History
+      - name: Commit & Push Updated Social Publishing History
         run: |
-          git config --global user.name "FreshersBridge Shorts Bot"
+          git config --global user.name "FreshersBridge Social Bot"
           git config --global user.email "bot@freshersbridge.in"
-          git add data/posted_youtube_shorts.json
-          git commit -m "chore(social): update YouTube Shorts publishing history [skip ci]" || echo "No changes to commit"
+          git add data/posted_youtube_shorts.json data/posted_meta_reels.json || true
+          git commit -m "chore(social): update YouTube Shorts and Meta Reels publishing history [skip ci]" || echo "No changes to commit"
           git push origin main

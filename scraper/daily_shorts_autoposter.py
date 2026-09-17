@@ -28,6 +28,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(BASE_DIR, "scraper"))
 from social_video_generator import create_video_reel, get_freshersbridge_job_url
 from youtube_shorts_publisher import upload_short, post_first_comment
+from meta_reels_publisher import publish_to_meta_platforms
 
 def load_history():
     """Loads records of previously posted jobs."""
@@ -147,7 +148,22 @@ def run_daily_autoposter(privacy_status="public"):
     )
     post_first_comment(upload_res.get("video_id"), first_comment_text)
 
-    # 5. Record to Posting History
+    # 5. Cross-Post to Instagram Reels & Facebook Page Reels
+    print(f"\n[4/4] Cross-Publishing to Instagram & Facebook Reels...")
+    meta_comment_text = (
+        f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
+        f"🔗 {fb_url}\n\n"
+        f"🌐 Explore 50+ fresh verified fresher jobs & internships: https://freshersbridge.in 🚀\n"
+        f"📌 Tip: Tag and share with batchmates looking for off-campus drives!"
+    )
+    meta_results = publish_to_meta_platforms(
+        video_path=video_path,
+        caption=caption_content,
+        comment_text=meta_comment_text,
+        cover_path=cover_path
+    )
+
+    # 6. Record to Posting History
     record = {
         "id": len(history) + 1,
         "company": company,
@@ -158,6 +174,7 @@ def run_daily_autoposter(privacy_status="public"):
         "freshersbridge_url": fb_url,
         "youtube_video_id": upload_res.get("video_id"),
         "shorts_url": upload_res.get("short_url"),
+        "meta_results": meta_results,
         "privacy": privacy_status,
         "posted_at": datetime.now(timezone.utc).isoformat()
     }
@@ -165,8 +182,12 @@ def run_daily_autoposter(privacy_status="public"):
     save_history(history)
 
     print("\n" + "=" * 60)
-    print("✅ Successfully published today's YouTube Short!")
-    print(f"🔗 View Short: {upload_res.get('short_url')}")
+    print("✅ Successfully published today's YouTube Short & Social Reel!")
+    print(f"🔗 YouTube Short: {upload_res.get('short_url')}")
+    if meta_results.get("instagram", {}).get("url"):
+        print(f"📸 Instagram Reel: {meta_results['instagram']['url']}")
+    if meta_results.get("facebook", {}).get("url"):
+        print(f"📘 Facebook Reel:  {meta_results['facebook']['url']}")
     print("=" * 60)
     return True
 
