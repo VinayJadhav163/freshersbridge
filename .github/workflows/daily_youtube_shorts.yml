@@ -75,5 +75,10 @@ jobs:
           git config --global user.name "FreshersBridge Social Bot"
           git config --global user.email "bot@freshersbridge.in"
           git add data/posted_youtube_shorts.json data/posted_meta_reels.json || true
-          git commit -m "chore(social): update YouTube Shorts and Meta Reels publishing history [skip ci]" || echo "No changes to commit"
-          git push origin main
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(social): update YouTube Shorts and Meta Reels publishing history [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No changes to commit. Working tree clean."
+          fi

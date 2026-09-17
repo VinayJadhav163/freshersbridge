@@ -67,5 +67,10 @@ jobs:
           git config --global user.name "FreshersBridge Outreach Bot"
           git config --global user.email "outreach@freshersbridge.in"
           git add data/scraped_students.csv data/sent_student_invites.json data/unsubscribed_emails.json || true
-          git commit -m "chore(outreach): update student email outreach history [skip ci]" || echo "No changes to commit"
-          git push origin main
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(outreach): update student email outreach history [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No changes to commit. Working tree clean."
+          fi
