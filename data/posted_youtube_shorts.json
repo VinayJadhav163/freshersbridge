@@ -144,5 +144,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-17T15:01:34.750296+00:00"
+  },
+  {
+    "id": 10,
+    "company": "8byte",
+    "title": "Full Stack Engineer (Internship cum Full Time Employment",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458355067",
+    "freshersbridge_url": "https://freshersbridge.in/internships/full-stack-engineer-internship-cum-full-time-employment-8byte",
+    "youtube_video_id": "VESdyAthORE",
+    "shorts_url": "https://www.youtube.com/shorts/VESdyAthORE",
+    "meta_results": {
+      "instagram": {
+        "status": "skipped",
+        "media_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "facebook": {
+        "status": "skipped",
+        "video_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "timestamp": "2026-09-17T15:04:10.266484+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-17T15:04:10.266509+00:00"
   }
 ]
