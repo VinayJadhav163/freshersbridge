@@ -368,9 +368,9 @@ def run_safe_outreach(limit: int = 20, dry_run: bool = False):
         else:
             print(f"  ❌ Failed to send.")
 
-        # Human-like delay between emails (30 to 60s) unless it's the last one
+        # Human-like delay between emails (10 to 15s) for optimal ~3-4 min workflow execution
         if idx < len(batch):
-            delay = random.randint(30, 60)
+            delay = random.randint(10, 15)
             print(f"  ⏳ Waiting {delay}s before next email (human-like pacing)...")
             time.sleep(delay)
 
