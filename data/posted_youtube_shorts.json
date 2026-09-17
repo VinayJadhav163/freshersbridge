@@ -172,5 +172,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-17T15:04:10.266509+00:00"
+  },
+  {
+    "id": 11,
+    "company": "EYFI",
+    "title": "Software Development Engineer (SDE) Intern",
+    "salary": "₹15,000 / month",
+    "location": "Bangalore, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458360558",
+    "freshersbridge_url": "https://freshersbridge.in/internships/software-development-engineer-sde-intern-eyfi",
+    "youtube_video_id": "vB1vyH6xRkc",
+    "shorts_url": "https://www.youtube.com/shorts/vB1vyH6xRkc",
+    "meta_results": {
+      "instagram": {
+        "status": "skipped",
+        "media_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "facebook": {
+        "status": "skipped",
+        "video_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "timestamp": "2026-09-17T17:46:47.992836+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-17T17:46:47.992859+00:00"
   }
 ]
