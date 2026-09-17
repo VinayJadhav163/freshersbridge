@@ -1,0 +1,71 @@
+name: Daily Student Email Outreach
+
+on:
+  schedule:
+    # Runs once every morning at 04:00 UTC = 09:30 AM IST (Prime morning student browsing time)
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+    inputs:
+      limit:
+        description: 'Number of safe emails to send (default: 20)'
+        required: true
+        default: '20'
+      dry_run:
+        description: 'Dry run mode (simulate without sending real emails)'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  daily-outreach:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scraper/requirements.txt
+          pip install dnspython
+
+      - name: Harvest & MX-Verify Fresh Student Leads
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LIMIT="${{ github.event.inputs.limit || '20' }}"
+          python scraper/student_email_harvester.py --count "$LIMIT"
+
+      - name: Dispatch Safe 1-Time Invitations
+        env:
+          OUTREACH_EMAIL: ${{ secrets.OUTREACH_EMAIL || 'freshersbridge.community@gmail.com' }}
+          OUTREACH_APP_PASSWORD: ${{ secrets.OUTREACH_APP_PASSWORD }}
+          OUTREACH_SENDER_NAME: "FreshersBridge Community"
+        run: |
+          LIMIT="${{ github.event.inputs.limit || '20' }}"
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          if [ "$DRY_RUN" = "true" ]; then
+            python scraper/safe_email_inviter.py --limit "$LIMIT" --dry-run
+          else
+            python scraper/safe_email_inviter.py --limit "$LIMIT"
+          fi
+
+      - name: Commit & Push Updated Outreach History
+        run: |
+          git config --global user.name "FreshersBridge Outreach Bot"
+          git config --global user.email "outreach@freshersbridge.in"
+          git add data/scraped_students.csv data/sent_student_invites.json data/unsubscribed_emails.json || true
+          git commit -m "chore(outreach): update student email outreach history [skip ci]" || echo "No changes to commit"
+          git push origin main
