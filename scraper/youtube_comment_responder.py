@@ -104,7 +104,16 @@ def auto_reply_to_comments(video_filter=None, max_videos=10):
 
         company = item.get("company", "Tech Company")
         title = item.get("title", "Freshers Role")
-        apply_url = item.get("apply_url", "https://freshersbridge.in")
+
+        # Always prioritize our own FreshersBridge portal URL over external direct links
+        fb_url = item.get("freshersbridge_url")
+        if not fb_url:
+            try:
+                from social_video_generator import get_freshersbridge_job_url
+                fb_url = get_freshersbridge_job_url(item)
+            except Exception:
+                fb_url = None
+        apply_url = fb_url or item.get("apply_url") or "https://freshersbridge.in"
 
         print(f"\nScanning comments for Short: [{company} - {title}] (ID: {video_id})...")
 
