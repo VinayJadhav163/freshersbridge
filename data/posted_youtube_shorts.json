@@ -200,5 +200,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-17T17:46:47.992859+00:00"
+  },
+  {
+    "id": 12,
+    "company": "8byte",
+    "title": "AI Intern (Internship cum Employment Program)",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458343813",
+    "freshersbridge_url": "https://freshersbridge.in/internships/ai-intern-internship-cum-employment-program-8byte",
+    "youtube_video_id": "XOvlf7hJNnA",
+    "shorts_url": "https://www.youtube.com/shorts/XOvlf7hJNnA",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17952870033251617",
+        "comment_id": "18215842129354410",
+        "url": "https://www.instagram.com/p/17952870033251617/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2274396526747700",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2274396526747700"
+      },
+      "timestamp": "2026-09-18T02:56:27.150233+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-18T02:57:22.992389+00:00"
   }
 ]
