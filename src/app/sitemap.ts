@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import { COMPANIES_DATA } from '@/lib/companiesData';
 
-export const revalidate = 3600; // Cache sitemap for 1 hour
+export const revalidate = 43200; // Cache sitemap for 12 hours (avoids Vercel free-tier write limits)
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://freshersbridge.in';

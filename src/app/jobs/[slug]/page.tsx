@@ -32,8 +32,8 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 5 minutes background ISR revalidation
-export const revalidate = 300;
+// 24 hours background ISR revalidation (avoids Vercel free-tier write limits)
+export const revalidate = 86400;
 export const dynamicParams = true;
 
 // Pre-render top active job pages at build/runtime for instant 0-20ms page loads

@@ -31,7 +31,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 300; // 5 min ISR
+export const revalidate = 86400; // 24 hours ISR (avoids Vercel free-tier write limits)
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
