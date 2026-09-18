@@ -312,5 +312,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-18T13:57:14.648289+00:00"
+  },
+  {
+    "id": 16,
+    "company": "FRND",
+    "title": "Machine Learning Intern",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459694334",
+    "freshersbridge_url": "https://freshersbridge.in/internships/machine-learning-intern-frnd",
+    "youtube_video_id": "VR1yIFzdg98",
+    "shorts_url": "https://www.youtube.com/shorts/VR1yIFzdg98",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18116221399977930",
+        "comment_id": "18487901821105758",
+        "url": "https://www.instagram.com/p/18116221399977930/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2276021089907771",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2276021089907771"
+      },
+      "timestamp": "2026-09-18T17:18:57.088943+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-18T17:19:50.056715+00:00"
   }
 ]
