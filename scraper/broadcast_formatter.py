@@ -66,7 +66,7 @@ https://freshersbridge.in/career-tools
 https://www.instagram.com/freshersbridge?igsi=MTVsbm50enlhNGYybg==
 
 💬 <b>Join our WhatsApp Community:</b>
-https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1
+https://chat.whatsapp.com/JjWZ0wp9rgeDphupUV45KP
 
 📩 <b>Want job alerts directly in your inbox?</b>
 Subscribe to the FreshersBridge Newsletter and get new job & internship updates directly by email:

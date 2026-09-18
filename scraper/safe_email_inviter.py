@@ -201,7 +201,7 @@ Here are 3 top verified drives active today:
 https://freshersbridge.in/jobs
 
 💬 Join our student WhatsApp Community:
-https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75
+https://chat.whatsapp.com/JjWZ0wp9rgeDphupUV45KP
 
 Best of luck with your placement prep!
 
@@ -236,7 +236,7 @@ Not looking for off-campus job alerts? Reply 'unsubscribe' or click: {unsub_link
             <a href="https://freshersbridge.in/jobs" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14.5px; box-shadow: 0 4px 12px rgba(37,99,235,0.25); margin-bottom: 12px;">
                 👉 Browse All 500+ Verified Drives
             </a><br/>
-            <a href="https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75" target="_blank" style="background-color: #16a34a; color: #ffffff; padding: 11px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 12px rgba(22,163,74,0.25);">
+            <a href="https://chat.whatsapp.com/JjWZ0wp9rgeDphupUV45KP" target="_blank" style="background-color: #16a34a; color: #ffffff; padding: 11px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 12px rgba(22,163,74,0.25);">
                 <img src="https://freshersbridge.in/whatsapp.png" width="18" height="18" style="vertical-align: middle; margin-right: 8px; display: inline-block;" alt="WhatsApp" />Join Free WhatsApp Community
             </a>
         </div>

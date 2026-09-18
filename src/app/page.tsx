@@ -19,6 +19,7 @@ import {
 import { Job, Category } from '@/types';
 import { sortCategories } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
+import { COMMUNITY_LINKS } from '@/lib/community';
 
 // Fast dynamic real-time server-side rendering so each visitor gets fresh latest listings
 export const dynamic = 'force-dynamic';
@@ -136,8 +137,8 @@ export default async function Home() {
         'url': 'https://freshersbridge.in',
         'logo': 'https://freshersbridge.in/icon.png',
         'sameAs': [
-          'https://t.me/freshersbridge',
-          'https://chat.whatsapp.com/G5yqV0rZqJm8'
+          COMMUNITY_LINKS.telegram,
+          COMMUNITY_LINKS.whatsapp
         ],
       },
     ],

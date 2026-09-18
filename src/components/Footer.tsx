@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import NewsletterForm from '@/components/NewsletterForm';
+import { COMMUNITY_LINKS } from '@/lib/community';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -24,7 +25,7 @@ export default function Footer() {
 
             <div className="pt-2 flex flex-col gap-2.5">
               <a 
-                href="https://chat.whatsapp.com/JmP90QfUMs7Jj7gYALUj75?s=cl&p=a&ilr=1" 
+                href={COMMUNITY_LINKS.whatsapp} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
