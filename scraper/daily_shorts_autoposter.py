@@ -26,7 +26,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Add scraper dir to sys.path for internal imports
 sys.path.insert(0, os.path.join(BASE_DIR, "scraper"))
-from social_video_generator import create_video_reel, get_freshersbridge_job_url
+from social_video_generator import create_video_reel, get_freshersbridge_job_url, generate_social_caption
 from youtube_shorts_publisher import upload_short, post_first_comment
 from meta_reels_publisher import publish_to_meta_platforms
 
@@ -150,16 +150,11 @@ def run_daily_autoposter(privacy_status="public"):
 
     # 5. Cross-Post to Instagram Reels & Facebook Page Reels
     print(f"\n[4/4] Cross-Publishing to Instagram & Facebook Reels...")
-    meta_video_path = video_path
-    ig_audio_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "instagram")
-    has_ig_audio = os.path.exists(ig_audio_dir) and any(f.endswith(('.mp3', '.wav', '.m4a', '.aac')) for f in os.listdir(ig_audio_dir))
-
-    if has_ig_audio:
-        print(f"[Meta] Detected dedicated Instagram audio pool. Rendering custom Meta Reel...")
-        meta_filename = f"{company_clean}_{timestamp_slug}_meta_reel.mp4"
-        custom_meta_video, _, _ = create_video_reel(job, output_filename=meta_filename, platform="instagram")
-        if custom_meta_video and os.path.exists(custom_meta_video):
-            meta_video_path = custom_meta_video
+    meta_filename = f"{company_clean}_{timestamp_slug}_meta_reel.mp4"
+    meta_video_path, meta_cover_path, _ = create_video_reel(job, output_filename=meta_filename, platform="instagram")
+    
+    # Generate dedicated Meta caption with "Follow @freshersbridge" (Never "Subscribe" or "#Shorts")
+    meta_caption = generate_social_caption(job, platform="instagram")
 
     meta_comment_text = (
         f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
@@ -168,10 +163,10 @@ def run_daily_autoposter(privacy_status="public"):
         f"📌 Tip: Tag and share with batchmates looking for off-campus drives!"
     )
     meta_results = publish_to_meta_platforms(
-        video_path=meta_video_path,
-        caption=caption_content,
+        video_path=meta_video_path if (meta_video_path and os.path.exists(meta_video_path)) else video_path,
+        caption=meta_caption,
         comment_text=meta_comment_text,
-        cover_path=cover_path
+        cover_path=meta_cover_path or cover_path
     )
 
     # 6. Record to Posting History

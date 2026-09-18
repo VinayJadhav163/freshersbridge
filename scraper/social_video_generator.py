@@ -484,14 +484,22 @@ def generate_social_caption(job, platform="youtube"):
 4️⃣ Share this Short with friends & batchmates looking for off-campus jobs!"""
         cta_footer = "🔔 Subscribe to @FreshersBridge for daily verified fresher jobs & hiring alerts!"
         tags = f"#Shorts #FreshersJobs #OffCampusHiring #{company.lower().replace(' ', '')} #Batch2026 #Batch2025 #FreshersBridge #SoftwareEngineer #JobAlerts #HiringAlert"
+    elif platform.lower() == "facebook":
+        apply_instructions = f"""📌 HOW TO APPLY:
+1️⃣ Direct application link is pinned in the FIRST COMMENT below!
+2️⃣ Direct Job Link: {fb_job_url}
+3️⃣ Website: https://freshersbridge.in
+4️⃣ Tag & share with friends looking for off-campus drives!"""
+        cta_footer = "🔔 Follow @freshersbridge on Facebook for daily verified off-campus drives & fresher hiring alerts!"
+        tags = f"#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs #reels"
     else:
         apply_instructions = f"""📌 HOW TO APPLY:
 1️⃣ Comment "APPLY" below and we will send you the direct application link in DM!
 2️⃣ Direct Job Link: {fb_job_url}
 3️⃣ Or click the Link in Bio: https://freshersbridge.in
 4️⃣ Tag a friend who is actively looking for off-campus opportunities!"""
-        cta_footer = "🔔 Follow @freshersbridge for daily verified fresher jobs, internships & off-campus updates."
-        tags = f"#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs"
+        cta_footer = "🔔 Follow @freshersbridge on Instagram for daily verified fresher jobs, internships & off-campus updates."
+        tags = f"#freshersjobs #offcampushiring #{company.lower().replace(' ', '')} #batch2026 #batch2025 #freshersbridge #softwareengineer #jobalerts #hiringfreshers #itjobs #campusplacement #techjobs #reels"
 
     caption = f"""🚨 OFF-CAMPUS HIRING ALERT: {company.upper()} is Hiring!
 
@@ -670,7 +678,7 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
 
         icon_cta_star = render_supersampled_icon("star", target_size=22, bg_color=(132, 204, 22), fg_color="#ffffff")
         header_img.paste(icon_cta_star, (cta_box_x + 35, cta_box_y + 184), icon_cta_star)
-        hdraw.text((cta_box_x + 68, cta_box_y + 182), "Save this Reel & Share with friends who need a job!", font=font_cta_sub, fill="#a3e635")
+        hdraw.text((cta_box_x + 68, cta_box_y + 182), "Follow @freshersbridge for Daily Verified Job Drives!", font=font_cta_sub, fill="#a3e635")
 
     # Composite static frame
     static_frame = base_bg.copy().convert("RGBA")
