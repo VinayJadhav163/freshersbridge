@@ -6,15 +6,31 @@ on:
     - cron: '47 2 * * *'  # 02:47 UTC = 08:17 AM IST (Morning Curated Digest)
     - cron: '47 7 * * *'  # 07:47 UTC = 01:17 PM IST (Midday Curated Digest)
     - cron: '37 13 * * *' # 13:37 UTC = 07:07 PM IST (Evening Curated Digest)
-  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Bypass 75-minute cooldown guard'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: freshersbridge-job-scraper
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   scrape-and-publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -38,7 +54,12 @@ jobs:
           WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID || '120363410671332403@g.us' }}
           GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
         run: |
-          python scraper/main.py
+          FORCE="${{ github.event.inputs.force || 'false' }}"
+          if [ "$FORCE" = "true" ]; then
+            python scraper/main.py --force
+          else
+            python scraper/main.py
+          fi
 
       - name: Upload Scraped Jobs Backup CSV
         uses: actions/upload-artifact@v4
@@ -46,4 +67,16 @@ jobs:
           name: freshersbridge-scraped-jobs-csv
           path: scraper/output/
           retention-days: 7
+
+      - name: Commit & Push Scraper State
+        run: |
+          git config --global user.name "FreshersBridge Scraper Bot"
+          git config --global user.email "scraper@freshersbridge.in"
+          git add data/last_scraper_run.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(scraper): update scraper run state [skip ci]"
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin main && git push origin main && break || sleep 5
+            done
+          fi
 

@@ -2,8 +2,12 @@ name: FreshersBridge Weekly SEO Keyword Miner
 
 on:
   schedule:
-    - cron: '0 2 * * 0' # Every Sunday at 02:00 UTC (~07:30 AM IST)
+    - cron: '14 2 * * 0' # Every Sunday at 02:14 UTC (~07:44 AM IST - Off-peak minute)
   workflow_dispatch:     # Allows manual 1-click execution from GitHub Actions tab
+
+concurrency:
+  group: seo-keyword-miner
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -11,6 +15,7 @@ permissions:
 jobs:
   mine-keywords:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
 

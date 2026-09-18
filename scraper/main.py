@@ -6,6 +6,7 @@ outputs standardized CSV, and optionally posts directly to FreshersBridge API.
 import os
 import sys
 import re
+import json
 import logging
 import datetime
 import time
@@ -217,8 +218,29 @@ def is_fresher_job(job: dict) -> bool:
 
     return True
 
-def run_pipeline(use_ai: bool = False):
+def run_pipeline(use_ai: bool = False, force: bool = False):
     logger.info("Starting FreshersBridge Multi-Source Job Scraper Pipeline...")
+
+    # Smart Deduplication Guard: Check if scraper already ran successfully in the last 75 minutes
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    state_file = os.path.join(project_root, "data", "last_scraper_run.json")
+    if not force and os.path.exists(state_file):
+        try:
+            with open(state_file, "r", encoding="utf-8") as f:
+                state_data = json.load(f)
+            last_run = state_data.get("last_completed_at")
+            if last_run:
+                last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
+                now_dt = datetime.datetime.now(datetime.timezone.utc)
+                diff_mins = (now_dt - last_dt).total_seconds() / 60.0
+                if diff_mins < 75:
+                    logger.info(f"⏸️ COOLDOWN ACTIVE: Scraper completed {diff_mins:.1f} minutes ago ({last_run}).")
+                    logger.info("   Skipping duplicate run to prevent duplicate WhatsApp/Telegram broadcasts & DB writes.")
+                    logger.info("   (Pass --force to override this cooldown).")
+                    return
+        except Exception as err:
+            logger.warning(f"Cooldown check error: {err}")
+
     if use_ai:
         if GEMINI_API_KEY:
             logger.info("🤖 Google Gemini 1.5 Flash AI Engine ENABLED for intelligent verification & extraction.")
@@ -443,11 +465,24 @@ def run_pipeline(use_ai: bool = False):
     except Exception as e:
         logger.error(f"⚠️ Broadcast formatting / Dispatch error: {e}")
 
+    # Record successful completion for smart cooldown guard
+    try:
+        os.makedirs(os.path.dirname(state_file), exist_ok=True)
+        with open(state_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "last_completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "jobs_count": len(clean_final_jobs) if 'clean_final_jobs' in locals() else len(final_jobs)
+            }, f, indent=2)
+        logger.info(f"💾 Updated scraper run state: {state_file}")
+    except Exception as state_err:
+        logger.warning(f"Could not write scraper state file: {state_err}")
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="FreshersBridge Master Job Scraper & AI Ingestion Pipeline")
     parser.add_argument("--ai", action="store_true", default=True, help="Enable Google Gemini 1.5 Flash AI verification & enrichment")
     parser.add_argument("--no-ai", action="store_false", dest="ai", help="Disable AI and use rule-based normalizer")
+    parser.add_argument("--force", action="store_true", default=False, help="Force run bypassing the 75-minute cooldown guard")
     args = parser.parse_args()
 
-    run_pipeline(use_ai=args.ai)
+    run_pipeline(use_ai=args.ai, force=args.force)

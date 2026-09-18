@@ -20,6 +20,15 @@ on:
           - public
           - unlisted
           - private
+      force:
+        description: 'Bypass 150-minute cooldown guard'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: daily-youtube-shorts
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -27,6 +36,7 @@ permissions:
 jobs:
   post-daily-short:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
@@ -43,7 +53,7 @@ jobs:
       - name: Install System Dependencies (FFmpeg & Fonts)
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg fonts-liberation fonts-dejavu-core fonts-noto-color-emoji
 
       - name: Install Python Dependencies
         run: |
@@ -68,7 +78,12 @@ jobs:
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
         run: |
           PRIVACY="${{ github.event.inputs.privacy || 'public' }}"
-          python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY"
+          FORCE="${{ github.event.inputs.force || 'false' }}"
+          if [ "$FORCE" = "true" ]; then
+            python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY" --force
+          else
+            python scraper/daily_shorts_autoposter.py --privacy "$PRIVACY"
+          fi
 
       - name: Commit & Push Updated Social Publishing History
         run: |
@@ -77,8 +92,9 @@ jobs:
           git add data/posted_youtube_shorts.json data/posted_meta_reels.json || true
           if ! git diff --cached --quiet; then
             git commit -m "chore(social): update YouTube Shorts and Meta Reels publishing history [skip ci]"
-            git pull --rebase origin main
-            git push origin main
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin main && git push origin main && break || sleep 5
+            done
           else
             echo "No changes to commit. Working tree clean."
           fi

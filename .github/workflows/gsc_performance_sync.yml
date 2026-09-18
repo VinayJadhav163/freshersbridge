@@ -2,8 +2,12 @@ name: Google Search Console Performance Sync
 
 on:
   schedule:
-    - cron: '0 4 * * 2' # Runs every Tuesday at 04:00 UTC
+    - cron: '22 4 * * 2' # Runs every Tuesday at 04:22 UTC (Off-peak minute prevents queue delays)
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+concurrency:
+  group: gsc-performance-sync
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -11,6 +15,7 @@ permissions:
 jobs:
   sync_gsc:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Repository

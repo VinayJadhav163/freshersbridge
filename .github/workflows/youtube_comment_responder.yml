@@ -1,8 +1,14 @@
 name: YouTube Shorts Comment Auto-Responder
 on:
   schedule:
-    # Runs every 30 minutes to scan and auto-reply to viewers
-    - cron: '*/30 * * * *'
+    # 4x Daily synchronized right after morning, midday, and evening Short releases:
+    # 1. 03:25 UTC = 08:55 AM IST (After Morning Short)
+    # 2. 08:25 UTC = 01:55 PM IST (After Midday Short)
+    # 3. 14:15 UTC = 07:45 PM IST (After Evening Short)
+    # 4. 17:30 UTC = 11:00 PM IST (Late night viewer catchup)
+    - cron: '25 3,8 * * *'
+    - cron: '15 14 * * *'
+    - cron: '30 17 * * *'
   workflow_dispatch:
     inputs:
       video_id:
@@ -10,12 +16,17 @@ on:
         required: false
         default: ''
 
+concurrency:
+  group: youtube-comment-responder
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
 jobs:
   auto-reply:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository

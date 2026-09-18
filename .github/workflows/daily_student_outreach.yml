@@ -2,8 +2,8 @@ name: Daily Student Email Outreach
 
 on:
   schedule:
-    # Runs once every morning at 04:00 UTC = 09:30 AM IST (Prime morning student browsing time)
-    - cron: '0 4 * * *'
+    # Runs once every morning at 04:18 UTC = 09:48 AM IST (Off-peak minute prevents GitHub queue contention)
+    - cron: '18 4 * * *'
   workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
     inputs:
       limit:
@@ -16,12 +16,17 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: daily-student-email-outreach
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
 jobs:
   daily-outreach:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository

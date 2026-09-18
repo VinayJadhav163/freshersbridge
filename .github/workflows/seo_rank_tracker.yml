@@ -2,8 +2,12 @@ name: FreshersBridge Weekly SEO Rank Tracker
 
 on:
   schedule:
-    - cron: '0 3 * * 1' # Every Monday at 03:00 UTC (~08:30 AM IST)
+    - cron: '24 3 * * 1' # Every Monday at 03:24 UTC (~08:54 AM IST - Off-peak minute)
   workflow_dispatch:     # Allows manual 1-click execution from GitHub Actions tab
+
+concurrency:
+  group: seo-rank-tracker
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -11,6 +15,7 @@ permissions:
 jobs:
   track-rankings:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
 

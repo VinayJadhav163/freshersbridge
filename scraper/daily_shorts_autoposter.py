@@ -87,17 +87,38 @@ def get_next_job_to_post(history):
     # Feature all diverse companies (Startups, Mid-tier IT, Product companies, Fintechs & MNCs)
     return unposted[0]
 
-def run_daily_autoposter(privacy_status="public"):
+def run_daily_autoposter(privacy_status="public", force=False):
     """
     Executes the full automated workflow: select job -> render video -> upload to YouTube.
+    Includes a 150-minute cooldown protection against duplicate runs.
     """
     print("=" * 60)
     print(f"🚀 FreshersBridge Daily YouTube Shorts Autoposter")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Target Privacy: {privacy_status}")
+    print(f"Force Mode: {force}")
     print("=" * 60)
 
     history = load_history()
+
+    # Smart Deduplication Guard: Check if a reel was already posted within the last 2.5 hours (150 mins)
+    if not force and history:
+        last_entry = history[-1]
+        last_posted = last_entry.get("posted_at")
+        if last_posted:
+            try:
+                last_dt = datetime.fromisoformat(last_posted.replace("Z", "+00:00"))
+                now_dt = datetime.now(timezone.utc)
+                diff_mins = (now_dt - last_dt).total_seconds() / 60.0
+                if diff_mins < 150:
+                    print(f"⏸️ COOLDOWN ACTIVE: Video #{last_entry.get('id')} ({last_entry.get('company')}) was already posted {diff_mins:.1f} minutes ago.")
+                    print(f"   Posted at: {last_posted}")
+                    print(f"   Skipping duplicate run to protect scheduled 3x daily pacing (morning, afternoon, evening).")
+                    print(f"   (Pass --force to override this cooldown if manual post is desired).")
+                    return True
+            except Exception as e:
+                print(f"⚠️ Warning during cooldown check: {e}")
+
     job = get_next_job_to_post(history)
 
     if not job:
@@ -200,8 +221,9 @@ def run_daily_autoposter(privacy_status="public"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="FreshersBridge Daily YouTube Shorts Autoposter")
     parser.add_argument("--privacy", type=str, default="public", choices=["public", "unlisted", "private"], help="Privacy status")
+    parser.add_argument("--force", action="store_true", default=False, help="Force upload bypassing the 150-minute cooldown guard")
     args = parser.parse_args()
 
-    success = run_daily_autoposter(privacy_status=args.privacy)
+    success = run_daily_autoposter(privacy_status=args.privacy, force=args.force)
     if not success:
         sys.exit(1)
