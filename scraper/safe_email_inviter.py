@@ -305,14 +305,23 @@ def run_safe_outreach(limit: int = 20, dry_run: bool = False):
         return
 
     sent_history = load_json_list(SENT_HISTORY_FILE)
-    sent_emails = {item["email"].lower().strip() for item in sent_history if "email" in item}
+    sent_emails = set()
+    sent_prefixes = []
+    for item in sent_history:
+        if isinstance(item, dict) and "email" in item:
+            em_val = item["email"].lower().strip()
+            if item.get("prefix_match"):
+                sent_prefixes.append(em_val)
+            else:
+                sent_emails.add(em_val)
+
     suppressed = set(s.lower().strip() for s in load_json_list(SUPPRESSION_FILE))
 
     # Filter uncontacted leads
     uncontacted = []
     for _, row in df.iterrows():
         em = str(row.get("email", "")).strip().lower()
-        if not em or em in sent_emails or em in suppressed:
+        if not em or em in sent_emails or em in suppressed or any(p in em for p in sent_prefixes):
             continue
         uncontacted.append({
             "name": str(row.get("name", "")).strip(),
@@ -320,7 +329,7 @@ def run_safe_outreach(limit: int = 20, dry_run: bool = False):
             "github_url": str(row.get("github_url", "")).strip()
         })
 
-    print(f"Total leads: {len(df)} | Already contacted: {len(sent_emails)} | Uncontacted: {len(uncontacted)}")
+    print(f"Total leads: {len(df)} | Already contacted: {len(sent_emails) + len(sent_prefixes)} | Uncontacted: {len(uncontacted)}")
 
     if not uncontacted:
         print("No new uncontacted leads available.")

@@ -30,6 +30,7 @@ import dns.resolver
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 OUTPUT_CSV = os.path.join(DATA_DIR, "scraped_students.csv")
+SENT_HISTORY_FILE = os.path.join(DATA_DIR, "sent_student_invites.json")
 SUPPRESSION_FILE = os.path.join(DATA_DIR, "unsubscribed_emails.json")
 
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -89,7 +90,7 @@ def verify_email(email: str) -> Tuple[bool, str]:
     return True, "Verified active"
 
 def load_existing_emails() -> set:
-    """Loads existing emails from CSV and suppression list to avoid duplicates."""
+    """Loads existing emails from CSV, sent history, and suppression list to avoid duplicates."""
     existing = set()
     if os.path.exists(OUTPUT_CSV):
         try:
@@ -97,6 +98,17 @@ def load_existing_emails() -> set:
             df = pd.read_csv(OUTPUT_CSV)
             if not df.empty and "email" in df.columns:
                 existing.update(df["email"].dropna().str.lower().str.strip().tolist())
+        except Exception:
+            pass
+
+    # Strictly check historical sent invites so NO student is ever harvested or emailed twice
+    if os.path.exists(SENT_HISTORY_FILE):
+        try:
+            with open(SENT_HISTORY_FILE, "r", encoding="utf-8") as f:
+                sent_history = json.load(f)
+                for item in sent_history:
+                    if isinstance(item, dict) and "email" in item:
+                        existing.add(item["email"].lower().strip())
         except Exception:
             pass
 
@@ -110,11 +122,11 @@ def load_existing_emails() -> set:
 
     return existing
 
-def search_github_students(query: str, max_users: int = 30) -> List[Dict[str, Any]]:
+def search_github_students(query: str, max_users: int = 30, page: int = 1) -> List[Dict[str, Any]]:
     """
     Queries public GitHub users based on location & student keywords.
     """
-    print(f"\n🔍 Searching GitHub for: '{query}' (Target: {max_users} users)...")
+    print(f"\n🔍 Searching GitHub for: '{query}' (Page {page}, Target: {max_users} users)...")
     headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "FreshersBridge-Student-Harvester"}
     
     # Check if a GITHUB_TOKEN is available in env for higher rate limits
@@ -123,7 +135,6 @@ def search_github_students(query: str, max_users: int = 30) -> List[Dict[str, An
         headers["Authorization"] = f"token {github_token}"
 
     users = []
-    page = 1
     per_page = min(max_users, 30)
 
     url = f"https://api.github.com/search/users?q={query}&per_page={per_page}&page={page}"
@@ -134,7 +145,7 @@ def search_github_students(query: str, max_users: int = 30) -> List[Dict[str, An
             return []
         data = resp.json()
         items = data.get("items", [])
-        print(f"Found {len(items)} public profiles.")
+        print(f"Found {len(items)} public profiles on page {page}.")
         return items[:max_users]
     except Exception as e:
         print(f"Error searching GitHub: {e}")
@@ -176,6 +187,7 @@ def harvest_students(target_count: int = 25) -> List[Dict[str, Any]]:
     existing_emails = load_existing_emails()
     print(f"Loaded {len(existing_emails)} previously collected / suppressed emails to prevent duplicates.")
 
+    import random
     # High-intent search queries for Indian tech students & freshers
     queries = [
         "location:India student btech",
@@ -185,7 +197,10 @@ def harvest_students(target_count: int = 25) -> List[Dict[str, Any]]:
         "location:Pune btech student",
         "location:Bangalore btech fresher",
         "location:Hyderabad btech student",
+        "location:Delhi btech fresher",
+        "location:Chennai btech student",
     ]
+    random.shuffle(queries)
 
     verified_leads = []
     headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "FreshersBridge-Student-Harvester"}
@@ -197,7 +212,8 @@ def harvest_students(target_count: int = 25) -> List[Dict[str, Any]]:
         if len(verified_leads) >= target_count:
             break
 
-        users = search_github_students(q, max_users=target_count * 2)
+        random_page = random.randint(1, 6)
+        users = search_github_students(q, max_users=target_count * 2, page=random_page)
         for u in users:
             if len(verified_leads) >= target_count:
                 break
