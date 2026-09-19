@@ -1,14 +1,7 @@
 name: Daily YouTube Shorts Autoposter
 
 on:
-  schedule:
-    # 3 Times Daily at peak Indian student browsing hours (Zero-Queue Contention):
-    # Synchronized to run ~20 mins after scraper publishes fresh morning/midday/evening jobs.
-    # 1. 03:07 UTC = 08:37 AM IST (Morning commute / wake-up peak)
-    # 2. 08:07 UTC = 01:37 PM IST (College lunch break browsing)
-    # 3. 13:57 UTC = 07:27 PM IST (Evening prime-time job hunting)
-    - cron: '7 3,8 * * *'
-    - cron: '57 13 * * *'
+  # Triggered 3x daily by external scheduler ~20 mins after job scraper (08:25 AM, 01:25 PM, 07:25 PM IST)
   workflow_dispatch:
     inputs:
       privacy:
