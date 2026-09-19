@@ -27,6 +27,7 @@ import JobViewTracker from '@/components/JobViewTracker';
 import { Job } from '@/types';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import { fetchWithCache } from '@/lib/dataCache';
+import { getCompanyLogo } from '@/lib/companiesData';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -392,6 +393,8 @@ export default async function JobDetailsPage({ params }: Props) {
 
   const isRemote = job.location?.toLowerCase().includes('remote') || job.location?.toLowerCase().includes('work from home');
 
+  const companyLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+
   const jobPostingJsonLd = {
     '@type': 'JobPosting',
     'title': `${job.title} (Freshers / Entry Level)`,
@@ -408,6 +411,7 @@ export default async function JobDetailsPage({ params }: Props) {
       '@type': 'Organization',
       'name': job.company,
       'sameAs': job.source_url || undefined,
+      ...(companyLogo ? { 'logo': companyLogo } : {}),
     },
     'jobLocation': {
       '@type': 'Place',
@@ -523,10 +527,24 @@ export default async function JobDetailsPage({ params }: Props) {
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                 {job.title}
               </h1>
-              <p className="mt-1.5 text-lg font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-                <Building2 className="h-5 w-5 inline" />
-                {job.company}
-              </p>
+              <div className="mt-2 flex items-center gap-2.5">
+                {companyLogo ? (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-white dark:bg-slate-900 p-1 shadow-2xs">
+                    <img
+                      src={companyLogo}
+                      alt={`${job.company} logo`}
+                      width={32}
+                      height={32}
+                      className="h-full w-full object-contain rounded"
+                    />
+                  </div>
+                ) : (
+                  <Building2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                )}
+                <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                  {job.company}
+                </span>
+              </div>
             </div>
 
             {/* Badges block */}

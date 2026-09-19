@@ -376,6 +376,73 @@ export function getAllCompanySlugs(): string[] {
   return COMPANIES_DATA.map((c) => c.slug);
 }
 
+// Clean company name to get clean domain slug
+export function getCompanyDomain(companyName: string): string {
+  if (!companyName) return '';
+  let clean = companyName.toLowerCase().trim();
+  const drops = [
+    'pvt', 'ltd', 'limited', 'technologies', 'technology', 'solutions',
+    'services', 'inc', 'corp', 'corporation', 'llc', 'india', 'private',
+    'careers', 'jobs', 'hiring', 'software'
+  ];
+  for (const drop of drops) {
+    clean = clean.replace(new RegExp(`\\b${drop}\\b`, 'gi'), '').trim();
+  }
+  const cleanSlug = clean.replace(/[^a-z0-9]/g, '');
+  if (!cleanSlug) return '';
+
+  const domainMap: Record<string, string> = {
+    tcs: 'tcs.com',
+    tataconsultancyservices: 'tcs.com',
+    infosys: 'infosys.com',
+    wipro: 'wipro.com',
+    cognizant: 'cognizant.com',
+    accenture: 'accenture.com',
+    capgemini: 'capgemini.com',
+    google: 'google.com',
+    microsoft: 'microsoft.com',
+    amazon: 'amazon.com',
+    deloitte: 'deloitte.com',
+    ibm: 'ibm.com',
+    oracle: 'oracle.com',
+    meta: 'meta.com',
+    apple: 'apple.com',
+    adobe: 'adobe.com',
+    joveo: 'joveo.com',
+    razorpay: 'razorpay.com',
+    phonepe: 'phonepe.com',
+    swiggy: 'swiggy.com',
+    zomato: 'zomato.com',
+    paytm: 'paytm.com',
+    uber: 'uber.com',
+    ola: 'olacabs.com',
+    flipkart: 'flipkart.com',
+    cisco: 'cisco.com',
+    intel: 'intel.com',
+    qualcomm: 'qualcomm.com',
+    nvidia: 'nvidia.com',
+    zoho: 'zoho.com',
+    freshworks: 'freshworks.com',
+    ey: 'ey.com',
+    pwc: 'pwc.com',
+    kpmg: 'kpmg.com',
+    hcl: 'hcltech.com',
+    hcltech: 'hcltech.com',
+    techmahindra: 'techmahindra.com',
+    lti: 'ltimindtree.com',
+    mindtree: 'ltimindtree.com',
+    ltimindtree: 'ltimindtree.com',
+    persistent: 'persistent.com',
+    cyient: 'cyient.com',
+    hexaware: 'hexaware.com',
+    mphasis: 'mphasis.com',
+    sap: 'sap.com',
+    salesforce: 'salesforce.com'
+  };
+
+  return domainMap[cleanSlug] || `${cleanSlug}.com`;
+}
+
 // Global helper to find company logo by name, keyword, or slug
 export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (!companyNameOrSlug) return null;
@@ -398,6 +465,12 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
   if (lower.includes('google')) return '/companies/google.svg';
   if (lower.includes('deloitte')) return '/companies/deloitte.svg';
+
+  // Dynamic brand logo resolver (same automated service used for Shorts & Reels)
+  const domain = getCompanyDomain(companyNameOrSlug);
+  if (domain) {
+    return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`;
+  }
 
   return null;
 }

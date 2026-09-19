@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { MapPin, Briefcase } from 'lucide-react';
 import { Job } from '@/types';
@@ -38,9 +39,11 @@ export default function JobCard({ job }: JobCardProps) {
     (job.source_url && job.source_url.toLowerCase().includes('/internship/')) ||
     (job.eligibility && job.eligibility.toLowerCase().includes('(internship)'));
 
+  const [imgError, setImgError] = useState(false);
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
   const packageText = getValidSalary(job.salary);
-  const resolvedLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  const rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  const resolvedLogo = imgError ? null : rawLogo;
 
   return (
     <div
@@ -84,6 +87,7 @@ export default function JobCard({ job }: JobCardProps) {
                 width={44}
                 height={44}
                 className="h-full w-full object-contain rounded-md"
+                onError={() => setImgError(true)}
               />
             </div>
           ) : (
