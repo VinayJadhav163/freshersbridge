@@ -52,6 +52,9 @@ export default function Navbar() {
                 <img
                   src="/logo.png"
                   alt="FreshersBridge - Off-Campus Tech Jobs & Internships for Freshers"
+                  width={192}
+                  height={48}
+                  fetchPriority="high"
                   className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform hover:scale-105"
                 />
               </Link>

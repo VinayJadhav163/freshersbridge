@@ -16,6 +16,10 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="FreshersBridge - Handpicked Off-Campus Jobs & Internships"
+                width={192}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="h-12 sm:h-14 md:h-16 w-auto object-contain"
               />
             </Link>
@@ -31,7 +35,15 @@ export default function Footer() {
                 className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
               >
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform overflow-hidden p-0.5">
-                  <img src="/whatsapp.png" alt="Join FreshersBridge WhatsApp Group for Off-Campus Drives" className="h-full w-full object-contain" />
+                  <img
+                    src="/whatsapp.png"
+                    alt="Join FreshersBridge WhatsApp Group for Off-Campus Drives"
+                    width={24}
+                    height={24}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-contain"
+                  />
                 </div>
                 <span>Join WhatsApp Group →</span>
               </a>

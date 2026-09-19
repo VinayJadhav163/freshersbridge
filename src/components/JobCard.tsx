@@ -81,6 +81,8 @@ export default function JobCard({ job }: JobCardProps) {
                 loading="lazy"
                 decoding="async"
                 referrerPolicy="no-referrer"
+                width={44}
+                height={44}
                 className="h-full w-full object-contain rounded-md"
               />
             </div>

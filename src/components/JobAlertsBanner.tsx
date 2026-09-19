@@ -44,6 +44,8 @@ export default function JobAlertsBanner({
             <img
               src="/whatsapp.png"
               alt="FreshersBridge WhatsApp Alerts"
+              width={24}
+              height={24}
               className="h-6 w-6 shrink-0 object-contain"
             />
             <span>Join WhatsApp</span>
