@@ -396,5 +396,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-19T07:57:32.517318+00:00"
+  },
+  {
+    "id": 19,
+    "company": "Micron Technology",
+    "title": "Intern",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Hyderabad, Telangana, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457499983",
+    "freshersbridge_url": "https://freshersbridge.in/internships/intern-micron-technology",
+    "youtube_video_id": "9mEc5rir8CU",
+    "shorts_url": "https://www.youtube.com/shorts/9mEc5rir8CU",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18165256741491005",
+        "comment_id": "17905385514481046",
+        "url": "https://www.instagram.com/p/18165256741491005/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1621773119383770",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1621773119383770"
+      },
+      "timestamp": "2026-09-19T12:28:27.506377+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-19T12:29:23.735798+00:00"
   }
 ]
