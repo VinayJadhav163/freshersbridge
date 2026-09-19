@@ -399,9 +399,9 @@ export function getCompanyColor(name: string): string {
   return AVATAR_COLOR_PALETTES[index];
 }
 
-// Clean company name and match ONLY verified corporate domains (no blind guessing)
-export function getCompanyDomain(companyName: string): string | null {
-  if (!companyName) return null;
+// Clean company name for brand matching
+function getCleanCompanySlug(companyName: string): string {
+  if (!companyName) return '';
   let clean = companyName.toLowerCase().trim();
   const drops = [
     'pvt', 'ltd', 'limited', 'technologies', 'technology', 'solutions',
@@ -411,154 +411,86 @@ export function getCompanyDomain(companyName: string): string | null {
   for (const drop of drops) {
     clean = clean.replace(new RegExp(`\\b${drop}\\b`, 'gi'), '').trim();
   }
-  const cleanSlug = clean.replace(/[^a-z0-9]/g, '');
-  if (!cleanSlug) return null;
-
-  const domainMap: Record<string, string> = {
-    // Tech Giants & Global MNCs
-    google: 'google.com',
-    microsoft: 'microsoft.com',
-    amazon: 'amazon.com',
-    apple: 'apple.com',
-    meta: 'meta.com',
-    netflix: 'netflix.com',
-    adobe: 'adobe.com',
-    salesforce: 'salesforce.com',
-    oracle: 'oracle.com',
-    ibm: 'ibm.com',
-    cisco: 'cisco.com',
-    intel: 'intel.com',
-    amd: 'amd.com',
-    nvidia: 'nvidia.com',
-    qualcomm: 'qualcomm.com',
-    servicenow: 'servicenow.com',
-    atlassian: 'atlassian.com',
-    intuit: 'intuit.com',
-    paypal: 'paypal.com',
-    uber: 'uber.com',
-    airbnb: 'airbnb.com',
-    linkedin: 'linkedin.com',
-    stripe: 'stripe.com',
-    zoom: 'zoom.us',
-    snowflake: 'snowflake.com',
-    palantir: 'palantir.com',
-    sap: 'sap.com',
-    dell: 'dell.com',
-    hp: 'hp.com',
-    lenovo: 'lenovo.com',
-    samsung: 'samsung.com',
-    siemens: 'siemens.com',
-    bosch: 'bosch.com',
-    philips: 'philips.com',
-    
-    // Indian IT Giants & Major Recruiters
-    tcs: 'tcs.com',
-    tataconsultancyservices: 'tcs.com',
-    infosys: 'infosys.com',
-    wipro: 'wipro.com',
-    cognizant: 'cognizant.com',
-    accenture: 'accenture.com',
-    capgemini: 'capgemini.com',
-    hcl: 'hcltech.com',
-    hcltech: 'hcltech.com',
-    techmahindra: 'techmahindra.com',
-    lti: 'ltimindtree.com',
-    mindtree: 'ltimindtree.com',
-    ltimindtree: 'ltimindtree.com',
-    persistent: 'persistent.com',
-    cyient: 'cyient.com',
-    hexaware: 'hexaware.com',
-    mphasis: 'mphasis.com',
-    birlasoft: 'birlasoft.com',
-    zensar: 'zensar.com',
-    kpit: 'kpit.com',
-    coforge: 'coforge.com',
-    tataelxsi: 'tataelxsi.com',
-    ust: 'ust.com',
-    virtusa: 'virtusa.com',
-
-    // High Growth Startups & Unicorns
-    joveo: 'joveo.com',
-    razorpay: 'razorpay.com',
-    phonepe: 'phonepe.com',
-    paytm: 'paytm.com',
-    cred: 'cred.club',
-    bharatpe: 'bharatpe.com',
-    groww: 'groww.in',
-    zerodha: 'zerodha.com',
-    swiggy: 'swiggy.com',
-    zomato: 'zomato.com',
-    blinkit: 'blinkit.com',
-    zepto: 'zeptonow.com',
-    meesho: 'meesho.com',
-    flipkart: 'flipkart.com',
-    myntra: 'myntra.com',
-    nykaa: 'nykaa.com',
-    bigbasket: 'bigbasket.com',
-    ola: 'olacabs.com',
-    makemytrip: 'makemytrip.com',
-    bookmyshow: 'bookmyshow.com',
-    urbancompany: 'urbancompany.com',
-    inmobi: 'inmobi.com',
-    freshworks: 'freshworks.com',
-    zoho: 'zoho.com',
-    postman: 'postman.com',
-    browserstack: 'browserstack.com',
-
-    // Banking, Consulting & Big 4
-    deloitte: 'deloitte.com',
-    pwc: 'pwc.com',
-    ey: 'ey.com',
-    ernstyoung: 'ey.com',
-    kpmg: 'kpmg.com',
-    mckinsey: 'mckinsey.com',
-    bcg: 'bcg.com',
-    bain: 'bain.com',
-    jpmorgan: 'jpmorgan.com',
-    goldmansachs: 'goldmansachs.com',
-    morganstanley: 'morganstanley.com',
-    barclays: 'barclays.com',
-    hsbc: 'hsbc.com',
-    deutschebank: 'db.com',
-    standardchartered: 'sc.com',
-    wellsfargo: 'wellsfargo.com',
-    citigroup: 'citigroup.com',
-    bankofamerica: 'bankofamerica.com',
-    americanexpress: 'americanexpress.com',
-    mastercard: 'mastercard.com',
-    visa: 'visa.com',
-
-    // Telecom, Retail & Auto
-    airtel: 'airtel.in',
-    jio: 'jio.com',
-    reliance: 'ril.com',
-    walmart: 'walmart.com',
-    target: 'target.com',
-    tatamotors: 'tatamotors.com',
-    mahindra: 'mahindra.com',
-    marutisuzuki: 'marutisuzuki.com',
-    larsentoubro: 'larsentoubro.com'
-  };
-
-  if (domainMap[cleanSlug]) return domainMap[cleanSlug];
-
-  // Partial match check for verified brands
-  for (const [key, domain] of Object.entries(domainMap)) {
-    if (cleanSlug.includes(key) || key.includes(cleanSlug)) {
-      return domain;
-    }
-  }
-
-  // Never guess arbitrary domains — returns null to trigger crisp initial badge
-  return null;
+  return clean.replace(/[^a-z0-9]/g, '');
 }
 
-// Global helper to find company logo by name, keyword, or slug
+// Verified high-resolution Vector SVG brands on SimpleIcons CDN
+const VERIFIED_VECTOR_BRANDS: Record<string, string> = {
+  // Semiconductor & Hardware
+  intel: 'intel',
+  amd: 'amd',
+  nvidia: 'nvidia',
+  qualcomm: 'qualcomm',
+  cisco: 'cisco',
+  samsung: 'samsung',
+  dell: 'dell',
+  hp: 'hp',
+  lenovo: 'lenovo',
+  siemens: 'siemens',
+  bosch: 'bosch',
+  philips: 'philips',
+
+  // Big Tech & US Product
+  apple: 'apple',
+  meta: 'meta',
+  netflix: 'netflix',
+  adobe: 'adobe',
+  servicenow: 'servicenow',
+  atlassian: 'atlassian',
+  intuit: 'intuit',
+  uber: 'uber',
+  paypal: 'paypal',
+  stripe: 'stripe',
+  zoom: 'zoom',
+  snowflake: 'snowflake',
+  palantir: 'palantir',
+  spotify: 'spotify',
+  airbnb: 'airbnb',
+  dropbox: 'dropbox',
+  twilio: 'twilio',
+  datadog: 'datadog',
+
+  // Indian Tech Unicorns & Top Recruiters
+  swiggy: 'swiggy',
+  zomato: 'zomato',
+  paytm: 'paytm',
+  phonepe: 'phonepe',
+  razorpay: 'razorpay',
+  zoho: 'zoho',
+  postman: 'postman',
+  zerodha: 'zerodha',
+  goldmansachs: 'goldmansachs',
+  barclays: 'barclays',
+  hsbc: 'hsbc',
+  deutschebank: 'deutschebank',
+  mastercard: 'mastercard',
+  visa: 'visa',
+  airtel: 'airtel',
+  jio: 'jio',
+  target: 'target',
+  mahindra: 'mahindra',
+};
+
+// Global helper to find authentic company logo
 export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (!companyNameOrSlug) return null;
   const lower = companyNameOrSlug.toLowerCase().trim();
+  const slug = getCleanCompanySlug(lower);
 
-  // Match in defined database
+  // 1. Curated local verified vector SVGs and PNGs in /public/companies/
+  if (lower.includes('tcs') || lower.includes('tata consultancy')) return '/companies/tcs.svg';
+  if (lower.includes('infosys')) return '/companies/infosys.svg';
+  if (lower.includes('wipro')) return '/companies/wipro.svg';
+  if (lower.includes('cognizant')) return '/companies/cognizant.svg';
+  if (lower.includes('accenture')) return '/companies/accenture.svg';
+  if (lower.includes('capgemini')) return '/companies/capgemini.svg';
+  if (lower.includes('ibm')) return '/companies/ibm.svg';
+  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
+  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
+  if (lower.includes('google')) return '/companies/google.svg';
+  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
+
+  // 2. Defined database match
   const matched = COMPANIES_DATA.find(
     (c) =>
       c.slug === lower ||
@@ -569,18 +501,18 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
   );
   if (matched) return matched.logo;
 
-  // Additional top brands
-  if (lower.includes('ibm')) return '/companies/ibm.svg';
-  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
-  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
-  if (lower.includes('google')) return '/companies/google.svg';
-  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
-
-  // Dynamic brand logo resolver ONLY for verified domains
-  const domain = getCompanyDomain(companyNameOrSlug);
-  if (domain) {
-    return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
+  // 3. Official Vector SVG from SimpleIcons (100% sharp, zero blur, official brand colors)
+  if (slug && VERIFIED_VECTOR_BRANDS[slug]) {
+    return `https://cdn.simpleicons.org/${VERIFIED_VECTOR_BRANDS[slug]}`;
   }
 
+  // Keyword check for multi-word company names matching vector brands
+  for (const [key, vectorSlug] of Object.entries(VERIFIED_VECTOR_BRANDS)) {
+    if (key.length >= 3 && slug.includes(key)) {
+      return `https://cdn.simpleicons.org/${vectorSlug}`;
+    }
+  }
+
+  // 4. Return null for all unverified / unknown entities to trigger crisp initial badge
   return null;
 }
