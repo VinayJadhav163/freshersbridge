@@ -753,7 +753,8 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     if audio_clip:
         clip = clip.with_audio(audio_clip)
 
-    # 6. Render MP4
+    # 6. Render MP4 with explicit BT.709 High-Definition color metadata
+    # Prevents "milky/faded blacks" in mobile Feed previews across Instagram, Facebook & YouTube
     print(f"Rendering {duration}s 9:16 Reel ({output_filename})...")
     clip.write_videofile(
         output_path,
@@ -761,6 +762,13 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
         codec="libx264",
         audio_codec="aac" if clip.audio else None,
         preset="fast",
+        ffmpeg_params=[
+            "-pix_fmt", "yuv420p",
+            "-colorspace", "bt709",
+            "-color_primaries", "bt709",
+            "-color_trc", "bt709",
+            "-color_range", "tv"
+        ],
         logger="bar"
     )
     print(f"Completed Video Reel: {output_path} ({duration}s)")
