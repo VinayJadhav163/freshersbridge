@@ -118,5 +118,89 @@
     "email": "info",
     "prefix_match": true,
     "sent_at": "2026-09-18 14:06:00"
+  },
+  {
+    "name": "Harshit Kumar",
+    "email": "glacef@gmail.com",
+    "github_url": "https://github.com/Harshit69kumar",
+    "sent_at": "2026-09-19 08:48:57"
+  },
+  {
+    "name": "Akanksha Biradar",
+    "email": "akankshabiradar61@gmail.com",
+    "github_url": "https://github.com/akankshabb",
+    "sent_at": "2026-09-19 08:49:09"
+  },
+  {
+    "name": "Mrudula Deshpande",
+    "email": "missmrudu@gmail.com",
+    "github_url": "https://github.com/missmrudu",
+    "sent_at": "2026-09-19 08:49:19"
+  },
+  {
+    "name": "Pranab Kumar Singh",
+    "email": "pranabsingh472@gmail.com",
+    "github_url": "https://github.com/pranabsingh4",
+    "sent_at": "2026-09-19 08:49:35"
+  },
+  {
+    "name": "Manav Padghan",
+    "email": "manavpadghan2622@gmail.com",
+    "github_url": "https://github.com/mnp2622-collab",
+    "sent_at": "2026-09-19 08:49:45"
+  },
+  {
+    "name": "Atharva",
+    "email": "atharvak1171@gmail.com",
+    "github_url": "https://github.com/atharva06-who",
+    "sent_at": "2026-09-19 08:49:59"
+  },
+  {
+    "name": "Laukik Namdhare",
+    "email": "laukiknamdhare@gmail.com",
+    "github_url": "https://github.com/Laukik-coder",
+    "sent_at": "2026-09-19 08:50:12"
+  },
+  {
+    "name": "Radhika Deshmukh",
+    "email": "radhikadeshmukh988@gmail.com",
+    "github_url": "https://github.com/radhikadeshmukh-jpg",
+    "sent_at": "2026-09-19 08:50:28"
+  },
+  {
+    "name": "Sangayan Uke",
+    "email": "sangayan123.uke@gmail.com",
+    "github_url": "https://github.com/Sangayan",
+    "sent_at": "2026-09-19 08:50:44"
+  },
+  {
+    "name": "MANUSHRI SINDKHEDKAR",
+    "email": "manushri.1251130373@vit.edu",
+    "github_url": "https://github.com/manushri-ys",
+    "sent_at": "2026-09-19 08:50:59"
+  },
+  {
+    "name": "Anisha Mishra",
+    "email": "anisha.mishra2005@gmail.com",
+    "github_url": "https://github.com/anicode77",
+    "sent_at": "2026-09-19 08:51:11"
+  },
+  {
+    "name": "Mohammad Zuheb",
+    "email": "zuhebshaikh.131@gmail.com",
+    "github_url": "https://github.com/zuheb-131",
+    "sent_at": "2026-09-19 08:51:26"
+  },
+  {
+    "name": "Suraj Shelke",
+    "email": "surajshelke794@gmail.com",
+    "github_url": "https://github.com/surajshelke2112",
+    "sent_at": "2026-09-19 08:51:37"
+  },
+  {
+    "name": "AMIT DADHEL",
+    "email": "dadhelamit1709@gmail.com",
+    "github_url": "https://github.com/amitdadhel179",
+    "sent_at": "2026-09-19 08:51:52"
   }
 ]
