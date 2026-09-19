@@ -55,7 +55,7 @@ export default function JobCard({ job }: JobCardProps) {
           <div className="space-y-0.5 min-w-0 flex-1">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h3 className="text-base sm:text-lg font-bold text-[#121224] dark:text-white tracking-tight leading-snug truncate group-hover:text-[#275df5] transition-colors pointer-events-auto">
-                <Link href={detailUrl}>
+                <Link href={detailUrl} className="inline-block py-0.5 min-h-[26px]">
                   {job.title}
                 </Link>
               </h3>
@@ -132,7 +132,7 @@ export default function JobCard({ job }: JobCardProps) {
 
         <Link
           href={detailUrl}
-          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-4 py-1 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20"
+          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-4 py-1.5 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20 min-h-[28px]"
         >
           Apply
         </Link>
