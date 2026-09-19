@@ -27,7 +27,7 @@ import JobViewTracker from '@/components/JobViewTracker';
 import { Job } from '@/types';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import { fetchWithCache } from '@/lib/dataCache';
-import { getCompanyLogo } from '@/lib/companiesData';
+import { getCompanyLogo, getCompanyColor } from '@/lib/companiesData';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -539,7 +539,9 @@ export default async function JobDetailsPage({ params }: Props) {
                     />
                   </div>
                 ) : (
-                  <Building2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border font-extrabold text-sm shadow-2xs ${getCompanyColor(job.company)}`}>
+                    {job.company.charAt(0).toUpperCase()}
+                  </div>
                 )}
                 <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
                   {job.company}

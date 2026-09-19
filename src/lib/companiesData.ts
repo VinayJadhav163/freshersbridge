@@ -377,8 +377,31 @@ export function getAllCompanySlugs(): string[] {
 }
 
 // Clean company name to get clean domain slug
-export function getCompanyDomain(companyName: string): string {
-  if (!companyName) return '';
+// Color palette generator for elegant, crisp initial avatars
+const AVATAR_COLOR_PALETTES = [
+  'bg-blue-50 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border-blue-200/80 dark:border-blue-800/60',
+  'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/60',
+  'bg-violet-50 text-violet-700 dark:bg-violet-950/70 dark:text-violet-300 border-violet-200/80 dark:border-violet-800/60',
+  'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60',
+  'bg-teal-50 text-teal-700 dark:bg-teal-950/70 dark:text-teal-300 border-teal-200/80 dark:border-teal-800/60',
+  'bg-cyan-50 text-cyan-700 dark:bg-cyan-950/70 dark:text-cyan-300 border-cyan-200/80 dark:border-cyan-800/60',
+  'bg-rose-50 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/60',
+  'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/60',
+];
+
+export function getCompanyColor(name: string): string {
+  if (!name) return AVATAR_COLOR_PALETTES[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % AVATAR_COLOR_PALETTES.length;
+  return AVATAR_COLOR_PALETTES[index];
+}
+
+// Clean company name and match ONLY verified corporate domains (no blind guessing)
+export function getCompanyDomain(companyName: string): string | null {
+  if (!companyName) return null;
   let clean = companyName.toLowerCase().trim();
   const drops = [
     'pvt', 'ltd', 'limited', 'technologies', 'technology', 'solutions',
@@ -389,9 +412,46 @@ export function getCompanyDomain(companyName: string): string {
     clean = clean.replace(new RegExp(`\\b${drop}\\b`, 'gi'), '').trim();
   }
   const cleanSlug = clean.replace(/[^a-z0-9]/g, '');
-  if (!cleanSlug) return '';
+  if (!cleanSlug) return null;
 
   const domainMap: Record<string, string> = {
+    // Tech Giants & Global MNCs
+    google: 'google.com',
+    microsoft: 'microsoft.com',
+    amazon: 'amazon.com',
+    apple: 'apple.com',
+    meta: 'meta.com',
+    netflix: 'netflix.com',
+    adobe: 'adobe.com',
+    salesforce: 'salesforce.com',
+    oracle: 'oracle.com',
+    ibm: 'ibm.com',
+    cisco: 'cisco.com',
+    intel: 'intel.com',
+    amd: 'amd.com',
+    nvidia: 'nvidia.com',
+    qualcomm: 'qualcomm.com',
+    servicenow: 'servicenow.com',
+    atlassian: 'atlassian.com',
+    intuit: 'intuit.com',
+    paypal: 'paypal.com',
+    uber: 'uber.com',
+    airbnb: 'airbnb.com',
+    linkedin: 'linkedin.com',
+    stripe: 'stripe.com',
+    zoom: 'zoom.us',
+    snowflake: 'snowflake.com',
+    palantir: 'palantir.com',
+    sap: 'sap.com',
+    dell: 'dell.com',
+    hp: 'hp.com',
+    lenovo: 'lenovo.com',
+    samsung: 'samsung.com',
+    siemens: 'siemens.com',
+    bosch: 'bosch.com',
+    philips: 'philips.com',
+    
+    // Indian IT Giants & Major Recruiters
     tcs: 'tcs.com',
     tataconsultancyservices: 'tcs.com',
     infosys: 'infosys.com',
@@ -399,33 +459,6 @@ export function getCompanyDomain(companyName: string): string {
     cognizant: 'cognizant.com',
     accenture: 'accenture.com',
     capgemini: 'capgemini.com',
-    google: 'google.com',
-    microsoft: 'microsoft.com',
-    amazon: 'amazon.com',
-    deloitte: 'deloitte.com',
-    ibm: 'ibm.com',
-    oracle: 'oracle.com',
-    meta: 'meta.com',
-    apple: 'apple.com',
-    adobe: 'adobe.com',
-    joveo: 'joveo.com',
-    razorpay: 'razorpay.com',
-    phonepe: 'phonepe.com',
-    swiggy: 'swiggy.com',
-    zomato: 'zomato.com',
-    paytm: 'paytm.com',
-    uber: 'uber.com',
-    ola: 'olacabs.com',
-    flipkart: 'flipkart.com',
-    cisco: 'cisco.com',
-    intel: 'intel.com',
-    qualcomm: 'qualcomm.com',
-    nvidia: 'nvidia.com',
-    zoho: 'zoho.com',
-    freshworks: 'freshworks.com',
-    ey: 'ey.com',
-    pwc: 'pwc.com',
-    kpmg: 'kpmg.com',
     hcl: 'hcltech.com',
     hcltech: 'hcltech.com',
     techmahindra: 'techmahindra.com',
@@ -436,11 +469,88 @@ export function getCompanyDomain(companyName: string): string {
     cyient: 'cyient.com',
     hexaware: 'hexaware.com',
     mphasis: 'mphasis.com',
-    sap: 'sap.com',
-    salesforce: 'salesforce.com'
+    birlasoft: 'birlasoft.com',
+    zensar: 'zensar.com',
+    kpit: 'kpit.com',
+    coforge: 'coforge.com',
+    tataelxsi: 'tataelxsi.com',
+    ust: 'ust.com',
+    virtusa: 'virtusa.com',
+
+    // High Growth Startups & Unicorns
+    joveo: 'joveo.com',
+    razorpay: 'razorpay.com',
+    phonepe: 'phonepe.com',
+    paytm: 'paytm.com',
+    cred: 'cred.club',
+    bharatpe: 'bharatpe.com',
+    groww: 'groww.in',
+    zerodha: 'zerodha.com',
+    swiggy: 'swiggy.com',
+    zomato: 'zomato.com',
+    blinkit: 'blinkit.com',
+    zepto: 'zeptonow.com',
+    meesho: 'meesho.com',
+    flipkart: 'flipkart.com',
+    myntra: 'myntra.com',
+    nykaa: 'nykaa.com',
+    bigbasket: 'bigbasket.com',
+    ola: 'olacabs.com',
+    makemytrip: 'makemytrip.com',
+    bookmyshow: 'bookmyshow.com',
+    urbancompany: 'urbancompany.com',
+    inmobi: 'inmobi.com',
+    freshworks: 'freshworks.com',
+    zoho: 'zoho.com',
+    postman: 'postman.com',
+    browserstack: 'browserstack.com',
+
+    // Banking, Consulting & Big 4
+    deloitte: 'deloitte.com',
+    pwc: 'pwc.com',
+    ey: 'ey.com',
+    ernstyoung: 'ey.com',
+    kpmg: 'kpmg.com',
+    mckinsey: 'mckinsey.com',
+    bcg: 'bcg.com',
+    bain: 'bain.com',
+    jpmorgan: 'jpmorgan.com',
+    goldmansachs: 'goldmansachs.com',
+    morganstanley: 'morganstanley.com',
+    barclays: 'barclays.com',
+    hsbc: 'hsbc.com',
+    deutschebank: 'db.com',
+    standardchartered: 'sc.com',
+    wellsfargo: 'wellsfargo.com',
+    citigroup: 'citigroup.com',
+    bankofamerica: 'bankofamerica.com',
+    americanexpress: 'americanexpress.com',
+    mastercard: 'mastercard.com',
+    visa: 'visa.com',
+
+    // Telecom, Retail & Auto
+    airtel: 'airtel.in',
+    jio: 'jio.com',
+    reliance: 'ril.com',
+    walmart: 'walmart.com',
+    target: 'target.com',
+    tatamotors: 'tatamotors.com',
+    mahindra: 'mahindra.com',
+    marutisuzuki: 'marutisuzuki.com',
+    larsentoubro: 'larsentoubro.com'
   };
 
-  return domainMap[cleanSlug] || `${cleanSlug}.com`;
+  if (domainMap[cleanSlug]) return domainMap[cleanSlug];
+
+  // Partial match check for verified brands
+  for (const [key, domain] of Object.entries(domainMap)) {
+    if (cleanSlug.includes(key) || key.includes(cleanSlug)) {
+      return domain;
+    }
+  }
+
+  // Never guess arbitrary domains — returns null to trigger crisp initial badge
+  return null;
 }
 
 // Global helper to find company logo by name, keyword, or slug
@@ -466,10 +576,10 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (lower.includes('google')) return '/companies/google.svg';
   if (lower.includes('deloitte')) return '/companies/deloitte.svg';
 
-  // Dynamic brand logo resolver (same automated service used for Shorts & Reels)
+  // Dynamic brand logo resolver ONLY for verified domains
   const domain = getCompanyDomain(companyNameOrSlug);
   if (domain) {
-    return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`;
+    return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
   }
 
   return null;

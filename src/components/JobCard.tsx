@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { MapPin, Briefcase } from 'lucide-react';
 import { Job } from '@/types';
 import { formatDate } from '@/lib/utils';
-import { getCompanyLogo } from '@/lib/companiesData';
+import { getCompanyLogo, getCompanyColor } from '@/lib/companiesData';
 
 interface JobCardProps {
   job: Job;
@@ -91,7 +91,7 @@ export default function JobCard({ job }: JobCardProps) {
               />
             </div>
           ) : (
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-[#e7e7f1] dark:border-slate-700 text-slate-700 dark:text-slate-200 font-extrabold text-base shadow-xs">
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border font-extrabold text-base shadow-xs ${getCompanyColor(job.company)}`}>
               {job.company.charAt(0).toUpperCase()}
             </div>
           )}
