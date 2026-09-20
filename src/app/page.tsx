@@ -229,15 +229,18 @@ export default async function Home() {
       </section>
 
       {/* 2. Categories Section: Strictly ordered with full non-truncated titles */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 w-full">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Find opportunities aligned with your technical interest area.</p>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-5 sm:mt-8 w-full">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
+          <Link
+            href="/jobs"
+            className="text-xs font-bold text-[#275df5] hover:underline"
+          >
+            View All
+          </Link>
         </div>
 
-        <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="mt-3 sm:mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
           {sortedCategories.length > 0 ? (
             sortedCategories.slice(0, 6).map((category) => (
               <Link
