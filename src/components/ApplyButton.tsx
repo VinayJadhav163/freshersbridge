@@ -48,16 +48,8 @@ export default function ApplyButton({
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
       setHasApplied(true);
-      // Attempt safe pop-up / window open once countdown finishes without blocking the user
-      if (typeof window !== 'undefined' && safeUrl !== '#') {
-        try {
-          window.open(safeUrl, '_blank', 'noopener,noreferrer');
-        } catch (e) {
-          console.warn('Popup blocked or direct tab open fallback:', e);
-        }
-      }
     }
-  }, [isOpen, countdown, safeUrl]);
+  }, [isOpen, countdown]);
 
   const defaultClasses =
     'w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-indigo-500 hover:shadow-indigo-600/25 active:scale-[0.99] cursor-pointer';
@@ -96,14 +88,23 @@ export default function ApplyButton({
 
             {/* Pulsing Animated Circular Timer */}
             <div className="mx-auto flex flex-col items-center justify-center pt-2">
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-950/80 border-4 border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
-                <span className="text-3xl font-black tabular-nums animate-pulse">
+              <div className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all duration-300 ${countdown === 0 ? 'bg-emerald-50 dark:bg-emerald-950/80 border-4 border-emerald-500/40 text-emerald-600 dark:text-emerald-400 scale-105 shadow-md shadow-emerald-500/10' : 'bg-indigo-50 dark:bg-indigo-950/80 border-4 border-indigo-500/30 text-indigo-600 dark:text-indigo-400'}`}>
+                <span className="text-3xl font-black tabular-nums">
                   {countdown > 0 ? countdown : '✓'}
                 </span>
               </div>
-              <p className="mt-2.5 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5" />
-                {countdown > 0 ? `Redirecting in ${countdown} seconds...` : 'Link Ready! Opening application...'}
+              <p className={`mt-2.5 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors ${countdown === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-indigo-600 dark:text-indigo-400'}`}>
+                {countdown > 0 ? (
+                  <>
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>Unlocking Link in {countdown}s...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Link Ready! Tap below to apply</span>
+                  </>
+                )}
               </p>
             </div>
 
