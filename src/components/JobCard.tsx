@@ -51,11 +51,6 @@ function formatSkillName(skill: string): string {
   if (lower === 'backend development') return 'Backend';
   if (lower === 'frontend development') return 'Frontend';
   if (lower === 'full stack development') return 'Full Stack';
-  if (lower === 'software development') return 'Software Dev';
-  if (lower === 'software engineering') return 'Software Eng';
-  if (lower === 'quality control') return 'Quality Control';
-  if (lower === 'quality analyst' || lower === 'quality assurance') return 'QA';
-  if (lower.includes('api testing') || lower.includes('postman')) return 'API Testing';
   if (lower === 'artificial intelligence (ai)' || lower === 'artificial intelligence') return 'AI';
   if (lower === 'machine learning (ml)' || lower === 'machine learning') return 'ML';
   if (lower === 'problem solving') return 'Problem Solving';
@@ -64,25 +59,6 @@ function formatSkillName(skill: string): string {
   if (lower === 'ui/ux design') return 'UI/UX';
   
   return s;
-}
-
-function getCleanSkills(skills: string[] | undefined | null, jobTitle: string): string[] {
-  if (!skills || skills.length === 0) return [];
-  const titleLower = (jobTitle || '').toLowerCase().trim();
-  
-  return skills.filter((sk) => {
-    const skLower = sk.toLowerCase().trim();
-    if (!skLower) return false;
-    // Filter out if skill is identical or duplicate of the job title
-    if (skLower === titleLower || skLower.startsWith(titleLower) || titleLower.startsWith(skLower)) {
-      return false;
-    }
-    // Filter out internship or contractor labels mistakenly stored as skills
-    if (skLower.endsWith('internship') || skLower.includes('contractor') || skLower.includes('contractual')) {
-      return false;
-    }
-    return true;
-  });
 }
 
 export default function JobCard({ job }: JobCardProps) {
@@ -99,8 +75,6 @@ export default function JobCard({ job }: JobCardProps) {
   const rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
   const resolvedLogo = imgError ? null : rawLogo;
   const cleanEligibility = formatEligibility(job.eligibility);
-  const cleanSkills = getCleanSkills(job.skills, job.title);
-  const displaySkills = cleanSkills.length > 0 ? cleanSkills : (job.skills || []);
 
   return (
     <div
@@ -166,20 +140,20 @@ export default function JobCard({ job }: JobCardProps) {
           </div>
         </div>
 
-        {/* Skills: Clean natural badges with flex-wrap (zero clipped text, no overflow slicing) */}
-        {displaySkills.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            {displaySkills.slice(0, 3).map((skill, idx) => (
+        {/* Skills: Clean single-row chips with normalized names and +N count */}
+        {job.skills && job.skills.length > 0 && (
+          <div className="flex items-center gap-1.5 pt-1 overflow-hidden flex-nowrap">
+            {job.skills.slice(0, 3).map((skill, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/60"
+                className="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/60 shrink-0 whitespace-nowrap"
               >
                 {formatSkillName(skill)}
               </span>
             ))}
-            {displaySkills.length > 3 && (
-              <span className="inline-flex items-center rounded-md bg-slate-50 dark:bg-slate-900/80 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800">
-                +{displaySkills.length - 3}
+            {job.skills.length > 3 && (
+              <span className="inline-flex items-center rounded-md bg-slate-50 dark:bg-slate-900/80 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800 shrink-0 whitespace-nowrap">
+                +{job.skills.length - 3}
               </span>
             )}
           </div>
