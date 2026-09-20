@@ -152,11 +152,11 @@ export default async function Home() {
       />
 
       {/* 1. Hero Section: Direct, clean, and optimized */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-4 sm:px-8 lg:px-12 pt-10 pb-12 sm:pt-16 sm:pb-18 text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-4 sm:px-8 lg:px-12 pt-8 pb-6 sm:pt-12 sm:pb-8 text-center">
         {/* Minimal soft ambient glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl space-y-4 sm:space-y-6">
+        <div className="relative mx-auto max-w-4xl space-y-4 sm:space-y-5">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-3.5 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs max-w-[95%] truncate">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
             <span className="truncate">Verified Off-Campus Drives &amp; Tech Hiring 2026</span>
@@ -175,11 +175,11 @@ export default async function Home() {
           </p>
 
           {/* Search Bar Container */}
-          <div className="pt-2 flex flex-col items-center gap-3 w-full">
+          <div className="pt-2 flex flex-col items-center gap-2.5 w-full">
             <SearchBar />
 
             {/* Quick Action Shortcuts as Modern Interactive Chips */}
-            <div className="w-full max-w-2xl mx-auto pt-1">
+            <div className="w-full max-w-2xl mx-auto pt-0.5">
               <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1 justify-start sm:justify-center text-xs">
                 <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-0.5">Popular:</span>
                 <Link
@@ -210,7 +210,7 @@ export default async function Home() {
             </div>
 
             {/* Sleek, ultra-compact single trust line (takes minimal vertical space) */}
-            <div className="pt-1.5 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 gap-2 sm:gap-3 flex-wrap">
+            <div className="pt-1 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 gap-2 sm:gap-3 flex-wrap">
               <span className="inline-flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
                 <span>100% Free</span>
@@ -231,7 +231,7 @@ export default async function Home() {
       </section>
 
       {/* 2. Categories Section: Strictly ordered with full non-truncated titles */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-12 w-full">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 w-full">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Explore Categories</h2>
@@ -239,7 +239,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {sortedCategories.length > 0 ? (
             sortedCategories.slice(0, 6).map((category) => (
               <Link
