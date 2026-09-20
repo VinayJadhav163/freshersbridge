@@ -152,78 +152,81 @@ export default async function Home() {
       />
 
       {/* 1. Hero Section: Direct, clean, and optimized */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-4 sm:px-8 lg:px-12 pt-10 pb-12 sm:pt-16 sm:pb-18 text-center">
         {/* Minimal soft ambient glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs">
+        <div className="relative mx-auto max-w-4xl space-y-4 sm:space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-3.5 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs max-w-[95%] truncate">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
-            <span>Verified Off-Campus Drives &amp; Tech Hiring 2026</span>
+            <span className="truncate">Verified Off-Campus Drives &amp; Tech Hiring 2026</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Your Bridge from College <br />
-            to your{' '}
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+            Your Bridge from College <span className="hidden sm:inline"><br /></span>to your{' '}
             <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
               First Tech Job
             </span>
           </h1>
 
-          <p className="mx-auto max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium">
+          <p className="mx-auto max-w-2xl text-xs sm:text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-2">
             Handpicked off-campus job drives, entry-level software roles, and developer internships for{' '}
-            <span className="text-[#275df5] font-bold">all freshers & college graduates</span>.
+            <span className="text-[#275df5] font-bold">all freshers &amp; college graduates</span>.
           </p>
 
           {/* Search Bar Container */}
-          <div className="pt-2 flex flex-col items-center gap-3">
+          <div className="pt-2 flex flex-col items-center gap-3 w-full">
             <SearchBar />
 
             {/* Quick Action Shortcuts as Modern Interactive Chips */}
-            <div className="flex items-center gap-2 pt-2 flex-wrap justify-center text-xs">
-              <span className="font-semibold text-slate-600 dark:text-slate-400 mr-0.5">Popular:</span>
-              <Link
-                href="/jobs"
-                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
-              >
-                Software Engineer
-              </Link>
-              <Link
-                href="/internships"
-                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
-              >
-                Tech Internships
-              </Link>
-              <Link
-                href="/companies"
-                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
-              >
-                TCS &amp; Infosys
-              </Link>
-              <Link
-                href="/career-tools"
-                className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs"
-              >
-                ATS Resume Checker
-              </Link>
+            <div className="w-full max-w-2xl mx-auto pt-1">
+              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1 justify-start sm:justify-center text-xs">
+                <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-0.5">Popular:</span>
+                <Link
+                  href="/jobs"
+                  className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0"
+                >
+                  Software Engineer
+                </Link>
+                <Link
+                  href="/internships"
+                  className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0"
+                >
+                  Tech Internships
+                </Link>
+                <Link
+                  href="/companies"
+                  className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0"
+                >
+                  TCS &amp; Infosys
+                </Link>
+                <Link
+                  href="/career-tools"
+                  className="rounded-full bg-white/90 dark:bg-slate-800/90 px-3 py-1 font-medium text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/90 hover:border-[#275df5] hover:text-[#275df5] dark:hover:border-[#275df5] dark:hover:text-[#275df5] transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0"
+                >
+                  ATS Resume Checker
+                </Link>
+              </div>
             </div>
 
-            {/* Subtle authentic trust line with crisp icons */}
-            <div className="flex items-center justify-center gap-4 sm:gap-6 pt-2 text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 flex-wrap">
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>100% Free Applications</span>
-              </span>
-              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Official Company Careers Links</span>
-              </span>
-              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Verified Daily Updates</span>
-              </span>
+            {/* Subtle authentic trust line with cleanly aligned checkmarks */}
+            <div className="pt-2 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-400">
+              <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 mx-auto bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 sm:border-0 sm:bg-transparent sm:dark:bg-transparent rounded-xl px-4 py-2.5 sm:p-0">
+                <span className="inline-flex items-center gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  <span>100% Free Applications</span>
+                </span>
+                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+                <span className="inline-flex items-center gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  <span>Official Company Careers Links</span>
+                </span>
+                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+                <span className="inline-flex items-center gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  <span>Verified Daily Updates</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>

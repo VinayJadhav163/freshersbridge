@@ -72,8 +72,8 @@ export default function SearchBar({
         />
       </div>
 
-      {/* Vertical Divider */}
-      <div className="hidden md:block w-px bg-border my-2" />
+      {/* Divider */}
+      <div className="h-px md:h-auto md:w-px bg-border/60 mx-2 md:mx-0 my-0.5 md:my-2 shrink-0" />
 
       {/* Location Input */}
       <div className="flex-1 flex items-center gap-2 px-3 py-1.5 min-w-0">
