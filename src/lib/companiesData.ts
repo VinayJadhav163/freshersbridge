@@ -414,82 +414,27 @@ function getCleanCompanySlug(companyName: string): string {
   return clean.replace(/[^a-z0-9]/g, '');
 }
 
-// Verified high-resolution Vector SVG brands on SimpleIcons CDN
-const VERIFIED_VECTOR_BRANDS: Record<string, string> = {
-  // Semiconductor & Hardware
-  intel: 'intel',
-  amd: 'amd',
-  nvidia: 'nvidia',
-  qualcomm: 'qualcomm',
-  cisco: 'cisco',
-  samsung: 'samsung',
-  dell: 'dell',
-  hp: 'hp',
-  lenovo: 'lenovo',
-  siemens: 'siemens',
-  bosch: 'bosch',
-  philips: 'philips',
-
-  // Big Tech & US Product
-  apple: 'apple',
-  meta: 'meta',
-  netflix: 'netflix',
-  adobe: 'adobe',
-  servicenow: 'servicenow',
-  atlassian: 'atlassian',
-  intuit: 'intuit',
-  uber: 'uber',
-  paypal: 'paypal',
-  stripe: 'stripe',
-  zoom: 'zoom',
-  snowflake: 'snowflake',
-  palantir: 'palantir',
-  spotify: 'spotify',
-  airbnb: 'airbnb',
-  dropbox: 'dropbox',
-  twilio: 'twilio',
-  datadog: 'datadog',
-
-  // Indian Tech Unicorns & Top Recruiters
-  swiggy: 'swiggy',
-  zomato: 'zomato',
-  paytm: 'paytm',
-  phonepe: 'phonepe',
-  razorpay: 'razorpay',
-  zoho: 'zoho',
-  postman: 'postman',
-  zerodha: 'zerodha',
-  goldmansachs: 'goldmansachs',
-  barclays: 'barclays',
-  hsbc: 'hsbc',
-  deutschebank: 'deutschebank',
-  mastercard: 'mastercard',
-  visa: 'visa',
-  airtel: 'airtel',
-  jio: 'jio',
-  target: 'target',
-  mahindra: 'mahindra',
-};
-
-// Local verified company logos in /public/companies/
-const LOCAL_COMPANY_LOGOS: Record<string, string> = {
+// Verified official brand logos: mapped to local high-res assets or official vector CDNs
+const VERIFIED_OFFICIAL_LOGOS: Record<string, string> = {
+  // IT Giants & Top Campus Recruiters (Local verified assets)
   tcs: '/companies/tcs.png',
-  tataconsultancy: '/companies/tcs.png',
+  'tata consultancy': '/companies/tcs.png',
+  'tata consultancy services': '/companies/tcs.png',
   infosys: '/companies/infosys.png',
   wipro: '/companies/wipro.png',
   cognizant: '/companies/cognizant.png',
   accenture: '/companies/accenture.png',
   capgemini: '/companies/capgemini.svg',
   ibm: '/companies/ibm.svg',
+  deloitte: '/companies/deloitte.svg',
+
+  // Tech Giants & Hardware
   microsoft: '/companies/microsoft.svg',
   amazon: '/companies/amazon.svg',
   google: '/companies/google.svg',
-  deloitte: '/companies/deloitte.svg',
   cisco: '/companies/cisco.svg',
   qualcomm: '/companies/qualcomm.svg',
   fujitsu: '/companies/fujitsu.svg',
-  goldmansachs: '/companies/goldmansachs.svg',
-  sap: '/companies/sap.svg',
   intel: '/companies/intel.svg',
   nvidia: '/companies/nvidia.svg',
   samsung: '/companies/samsung.svg',
@@ -497,80 +442,87 @@ const LOCAL_COMPANY_LOGOS: Record<string, string> = {
   hp: '/companies/hp.svg',
   siemens: '/companies/siemens.svg',
   bosch: '/companies/bosch.svg',
-  swiggy: '/companies/swiggy.svg',
-  zomato: '/companies/zomato.svg',
-  paytm: '/companies/paytm.svg',
-  phonepe: '/companies/phonepe.svg',
-  razorpay: '/companies/razorpay.svg',
-  zoho: '/companies/zoho.svg',
-  postman: '/companies/postman.svg',
-  zerodha: '/companies/zerodha.svg',
-  atlassian: '/companies/atlassian.svg',
-  uber: '/companies/uber.svg',
-  paypal: '/companies/paypal.svg',
-  stripe: '/companies/stripe.svg',
-  spotify: '/companies/spotify.svg',
+  sap: '/companies/sap.svg',
+  oracle: 'https://cdn.simpleicons.org/oracle',
+  adobe: 'https://cdn.simpleicons.org/adobe',
+  salesforce: 'https://cdn.simpleicons.org/salesforce',
+  servicenow: 'https://cdn.simpleicons.org/servicenow',
+  apple: 'https://cdn.simpleicons.org/apple',
+  meta: 'https://cdn.simpleicons.org/meta',
+  netflix: 'https://cdn.simpleicons.org/netflix',
+  honeywell: 'https://cdn.simpleicons.org/honeywell',
+  alstom: 'https://cdn.simpleicons.org/alstom',
+  hcl: 'https://cdn.simpleicons.org/hcl',
+  hcltech: 'https://cdn.simpleicons.org/hcl',
+
+  // Big 4 & Advisory
+  pwc: 'https://cdn.simpleicons.org/pwc',
+  ey: 'https://cdn.simpleicons.org/ernstandyoung',
+  kpmg: 'https://cdn.simpleicons.org/kpmg',
+
+  // Banking & Fintech
+  goldmansachs: '/companies/goldmansachs.svg',
+  'goldman sachs': '/companies/goldmansachs.svg',
   barclays: '/companies/barclays.svg',
   hsbc: '/companies/hsbc.svg',
   mastercard: '/companies/mastercard.svg',
   visa: '/companies/visa.svg',
-  joveo: '/companies/joveo.png',
-  huntingcube: '/companies/huntingcube.png',
-  birlasoft: '/companies/birlasoft.png',
-  medpace: '/companies/medpace.png',
-  ust: '/companies/ust.png',
-  bnpparibas: '/companies/bnpparibas.png',
-  cgi: '/companies/cgi.png',
-  dana: '/companies/dana.png',
-  cryptomize: '/companies/cryptomize.png',
+  paypal: '/companies/paypal.svg',
+  stripe: '/companies/stripe.svg',
+  paytm: '/companies/paytm.svg',
+  phonepe: '/companies/phonepe.svg',
+  razorpay: '/companies/razorpay.svg',
+  zerodha: '/companies/zerodha.svg',
+  citi: 'https://cdn.simpleicons.org/citi',
+  ubs: 'https://cdn.simpleicons.org/ubs',
+
+  // Unicorns & Product Leaders
+  swiggy: '/companies/swiggy.svg',
+  zomato: '/companies/zomato.svg',
+  zoho: '/companies/zoho.svg',
+  postman: '/companies/postman.svg',
+  atlassian: '/companies/atlassian.svg',
+  uber: '/companies/uber.svg',
+  spotify: '/companies/spotify.svg',
 };
 
-// Global helper to find authentic company logo
+// Global helper to find authentic company logo with strict zero-false-positive matching
 export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (!companyNameOrSlug) return null;
-  const lower = companyNameOrSlug.toLowerCase().trim();
-  const slug = getCleanCompanySlug(lower);
+  const raw = companyNameOrSlug.toLowerCase().trim();
+  const clean = raw.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const words = clean.split(' ').filter(Boolean);
+  const slug = getCleanCompanySlug(raw);
 
-  // 1. Defined curated company profile match (uses the exact official company logo)
+  // 1. Defined curated company profile match (exact official logo)
   const matched = COMPANIES_DATA.find(
     (c) =>
-      c.slug === lower ||
-      c.shortName.toLowerCase() === lower ||
-      c.name.toLowerCase() === lower ||
-      lower.includes(c.shortName.toLowerCase()) ||
-      lower.includes(c.name.toLowerCase())
+      c.slug === raw ||
+      c.slug === slug ||
+      c.shortName.toLowerCase() === raw ||
+      c.name.toLowerCase() === raw ||
+      raw.startsWith(c.shortName.toLowerCase() + ' ') ||
+      raw.startsWith(c.name.toLowerCase() + ' ')
   );
   if (matched) return matched.logo;
 
-  // 2. Direct local verified asset match in /public/companies/
-  if (slug && LOCAL_COMPANY_LOGOS[slug]) {
-    return LOCAL_COMPANY_LOGOS[slug];
+  // 2. Strict exact match on clean company name or slug
+  if (VERIFIED_OFFICIAL_LOGOS[clean]) return VERIFIED_OFFICIAL_LOGOS[clean];
+  if (slug && VERIFIED_OFFICIAL_LOGOS[slug]) return VERIFIED_OFFICIAL_LOGOS[slug];
+
+  // 3. Exact first-word brand match (e.g. "Cisco Systems", "Intel Technologies", "Honeywell India", "Siemens Healthineers")
+  const firstWord = words[0];
+  if (firstWord && firstWord.length >= 3 && VERIFIED_OFFICIAL_LOGOS[firstWord]) {
+    return VERIFIED_OFFICIAL_LOGOS[firstWord];
   }
 
-  // Keyword check for local verified files
-  for (const [key, path] of Object.entries(LOCAL_COMPANY_LOGOS)) {
-    if (key.length >= 3 && (slug.includes(key) || lower.includes(key))) {
-      return path;
-    }
+  // 4. Two-word brand match (e.g. "Goldman Sachs India", "Tata Consultancy Services")
+  if (words.length >= 2) {
+    const firstTwo = `${words[0]} ${words[1]}`;
+    if (VERIFIED_OFFICIAL_LOGOS[firstTwo]) return VERIFIED_OFFICIAL_LOGOS[firstTwo];
   }
 
-  // 3. Official Vector SVG from SimpleIcons (100% sharp, zero blur, official brand colors)
-  if (slug && VERIFIED_VECTOR_BRANDS[slug]) {
-    return `https://cdn.simpleicons.org/${VERIFIED_VECTOR_BRANDS[slug]}`;
-  }
-
-  // Keyword check for multi-word company names matching vector brands
-  for (const [key, vectorSlug] of Object.entries(VERIFIED_VECTOR_BRANDS)) {
-    if (key.length >= 3 && slug.includes(key)) {
-      return `https://cdn.simpleicons.org/${vectorSlug}`;
-    }
-  }
-
-  // 4. Automatic high-res domain brand fallback for startups & other companies
-  // If the company logo is not found, JobCard's onError seamlessly falls back to the initial badge
-  if (slug && slug.length >= 3 && !/^(foundation|technologies|private|solutions|services|society|association)$/.test(slug)) {
-    return `https://unavatar.io/${slug}.com?fallback=false`;
-  }
-
+  // If not a strictly verified brand, return null so JobCard safely renders the beautiful initial badge
   return null;
 }
+

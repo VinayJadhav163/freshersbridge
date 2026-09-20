@@ -45,20 +45,6 @@ VECTOR_LOGOS = {
     "visa": "https://cdn.simpleicons.org/visa",
 }
 
-# Domains for top Indian/Global startups in database
-STARTUP_DOMAINS = {
-    "joveo": "joveo.com",
-    "huntingcube": "huntingcube.com",
-    "birlasoft": "birlasoft.com",
-    "medpace": "medpace.com",
-    "ust": "ust.com",
-    "bnpparibas": "group.bnpparibas",
-    "cgi": "cgi.com",
-    "dana": "dana.com",
-    "cryptomize": "cryptomize.com",
-    "geoserve": "geoserve.com",
-}
-
 def download_file(url, dest_path):
     try:
         req = urllib.request.Request(url, headers={
@@ -67,7 +53,7 @@ def download_file(url, dest_path):
         with urllib.request.urlopen(req, timeout=10) as response:
             if response.status == 200:
                 content = response.read()
-                if len(content) > 100:  # avoid empty responses
+                if len(content) > 100:
                     with open(dest_path, 'wb') as f:
                         f.write(content)
                     print(f"[OK] Saved: {os.path.basename(dest_path)} ({len(content)} bytes)")
@@ -77,29 +63,17 @@ def download_file(url, dest_path):
     return False
 
 def main():
-    print(f"Downloading verified logos to: {OUTPUT_DIR}\n")
+    print(f"Downloading verified vector brand logos to: {OUTPUT_DIR}\n")
     
-    # 1. Download official SVG vector brand logos
+    # Download official SVG vector brand logos
     for slug, url in VECTOR_LOGOS.items():
         dest = os.path.join(OUTPUT_DIR, f"{slug}.svg")
         if not os.path.exists(dest):
             download_file(url, dest)
         else:
-            print(f"• Already exists: {slug}.svg")
+            print(f"- Already exists: {slug}.svg")
 
-    # 2. Download startup logos from unavatar or google favicon
-    for slug, domain in STARTUP_DOMAINS.items():
-        dest = os.path.join(OUTPUT_DIR, f"{slug}.png")
-        if not os.path.exists(dest):
-            # Try unavatar first
-            success = download_file(f"https://unavatar.io/{domain}?fallback=false", dest)
-            if not success:
-                # Fallback to Google S2 / gstatic
-                download_file(f"https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://{domain}&size=128", dest)
-        else:
-            print(f"• Already exists: {slug}.png")
-
-    print("\nLogo harvesting complete!")
+    print("\nVerified logo sync complete!")
 
 if __name__ == "__main__":
     main()
