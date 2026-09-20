@@ -42,7 +42,10 @@ export default function GuidesPage() {
 
         <div className="relative mx-auto max-w-4xl space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
             <span>100% Free Placement &amp; Technical Guides</span>
           </div>
 

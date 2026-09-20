@@ -158,7 +158,10 @@ export default async function Home() {
 
         <div className="relative mx-auto max-w-4xl space-y-4 sm:space-y-5">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-3.5 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs max-w-[95%] truncate">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
             <span className="truncate">Verified Off-Campus Drives &amp; Tech Hiring 2026</span>
           </div>
 
