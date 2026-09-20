@@ -140,22 +140,17 @@ export default function JobCard({ job }: JobCardProps) {
           </div>
         </div>
 
-        {/* Skills: Clean single-row chips with normalized names and +N count */}
+        {/* Skills: Clean badges that shift to the next line instead of cutting */}
         {job.skills && job.skills.length > 0 && (
-          <div className="flex items-center gap-1.5 pt-1 overflow-hidden flex-nowrap">
-            {job.skills.slice(0, 3).map((skill, idx) => (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {job.skills.slice(0, 4).map((skill, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/60 shrink-0 whitespace-nowrap"
+                className="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/60"
               >
                 {formatSkillName(skill)}
               </span>
             ))}
-            {job.skills.length > 3 && (
-              <span className="inline-flex items-center rounded-md bg-slate-50 dark:bg-slate-900/80 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800 shrink-0 whitespace-nowrap">
-                +{job.skills.length - 3}
-              </span>
-            )}
           </div>
         )}
       </div>
