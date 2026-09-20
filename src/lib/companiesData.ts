@@ -471,6 +471,60 @@ const VERIFIED_VECTOR_BRANDS: Record<string, string> = {
   mahindra: 'mahindra',
 };
 
+// Local verified company logos in /public/companies/
+const LOCAL_COMPANY_LOGOS: Record<string, string> = {
+  tcs: '/companies/tcs.png',
+  tataconsultancy: '/companies/tcs.png',
+  infosys: '/companies/infosys.png',
+  wipro: '/companies/wipro.png',
+  cognizant: '/companies/cognizant.png',
+  accenture: '/companies/accenture.png',
+  capgemini: '/companies/capgemini.svg',
+  ibm: '/companies/ibm.svg',
+  microsoft: '/companies/microsoft.svg',
+  amazon: '/companies/amazon.svg',
+  google: '/companies/google.svg',
+  deloitte: '/companies/deloitte.svg',
+  cisco: '/companies/cisco.svg',
+  qualcomm: '/companies/qualcomm.svg',
+  fujitsu: '/companies/fujitsu.svg',
+  goldmansachs: '/companies/goldmansachs.svg',
+  sap: '/companies/sap.svg',
+  intel: '/companies/intel.svg',
+  nvidia: '/companies/nvidia.svg',
+  samsung: '/companies/samsung.svg',
+  dell: '/companies/dell.svg',
+  hp: '/companies/hp.svg',
+  siemens: '/companies/siemens.svg',
+  bosch: '/companies/bosch.svg',
+  swiggy: '/companies/swiggy.svg',
+  zomato: '/companies/zomato.svg',
+  paytm: '/companies/paytm.svg',
+  phonepe: '/companies/phonepe.svg',
+  razorpay: '/companies/razorpay.svg',
+  zoho: '/companies/zoho.svg',
+  postman: '/companies/postman.svg',
+  zerodha: '/companies/zerodha.svg',
+  atlassian: '/companies/atlassian.svg',
+  uber: '/companies/uber.svg',
+  paypal: '/companies/paypal.svg',
+  stripe: '/companies/stripe.svg',
+  spotify: '/companies/spotify.svg',
+  barclays: '/companies/barclays.svg',
+  hsbc: '/companies/hsbc.svg',
+  mastercard: '/companies/mastercard.svg',
+  visa: '/companies/visa.svg',
+  joveo: '/companies/joveo.png',
+  huntingcube: '/companies/huntingcube.png',
+  birlasoft: '/companies/birlasoft.png',
+  medpace: '/companies/medpace.png',
+  ust: '/companies/ust.png',
+  bnpparibas: '/companies/bnpparibas.png',
+  cgi: '/companies/cgi.png',
+  dana: '/companies/dana.png',
+  cryptomize: '/companies/cryptomize.png',
+};
+
 // Global helper to find authentic company logo
 export function getCompanyLogo(companyNameOrSlug: string): string | null {
   if (!companyNameOrSlug) return null;
@@ -488,18 +542,17 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
   );
   if (matched) return matched.logo;
 
-  // 2. Curated local verified vector SVGs and PNGs in /public/companies/
-  if (lower.includes('tcs') || lower.includes('tata consultancy')) return '/companies/tcs.png';
-  if (lower.includes('infosys')) return '/companies/infosys.png';
-  if (lower.includes('wipro')) return '/companies/wipro.png';
-  if (lower.includes('cognizant')) return '/companies/cognizant.png';
-  if (lower.includes('accenture')) return '/companies/accenture.png';
-  if (lower.includes('capgemini')) return '/companies/capgemini.svg';
-  if (lower.includes('ibm')) return '/companies/ibm.svg';
-  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
-  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
-  if (lower.includes('google')) return '/companies/google.svg';
-  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
+  // 2. Direct local verified asset match in /public/companies/
+  if (slug && LOCAL_COMPANY_LOGOS[slug]) {
+    return LOCAL_COMPANY_LOGOS[slug];
+  }
+
+  // Keyword check for local verified files
+  for (const [key, path] of Object.entries(LOCAL_COMPANY_LOGOS)) {
+    if (key.length >= 3 && (slug.includes(key) || lower.includes(key))) {
+      return path;
+    }
+  }
 
   // 3. Official Vector SVG from SimpleIcons (100% sharp, zero blur, official brand colors)
   if (slug && VERIFIED_VECTOR_BRANDS[slug]) {
@@ -513,6 +566,11 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
     }
   }
 
-  // 4. Return null for all unverified / unknown entities to trigger crisp initial badge
+  // 4. Automatic high-res domain brand fallback for startups & other companies
+  // If the company logo is not found, JobCard's onError seamlessly falls back to the initial badge
+  if (slug && slug.length >= 3 && !/^(foundation|technologies|private|solutions|services|society|association)$/.test(slug)) {
+    return `https://unavatar.io/${slug}.com?fallback=false`;
+  }
+
   return null;
 }
