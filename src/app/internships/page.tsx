@@ -183,14 +183,14 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Filters Sidebar */}
-        <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start h-fit space-y-4">
+        <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 self-start h-fit space-y-4">
           <JobFilters categories={categories} />
         </aside>
 
         {/* Internships List Area */}
-        <main className="lg:col-span-3 space-y-4">
+        <main className="lg:col-span-8 xl:col-span-9 space-y-4">
           {internships.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

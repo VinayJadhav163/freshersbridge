@@ -93,8 +93,8 @@ export default function JobFilters({ categories }: JobFiltersProps) {
                     : 'text-foreground/90 hover:bg-secondary'
                 }`}
               >
-                <span className="leading-snug break-words">{category.name}</span>
-                {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                <span className="leading-snug whitespace-nowrap">{category.name}</span>
+                {isSelected && <Check className="h-4 w-4 shrink-0 text-indigo-600" />}
               </Link>
             );
           })}
@@ -106,7 +106,7 @@ export default function JobFilters({ categories }: JobFiltersProps) {
   return (
     <>
       {/* Desktop Inline Filters */}
-      <div className="hidden lg:block space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="hidden lg:block space-y-6 rounded-xl border border-border bg-card p-5 xl:p-6 shadow-sm">
         {renderFilterContent()}
       </div>
 
@@ -139,7 +139,7 @@ export default function JobFilters({ categories }: JobFiltersProps) {
           />
 
           {/* Drawer Sheet */}
-          <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-card p-6 shadow-2xl border-l border-border animate-in slide-in-from-right duration-300">
+          <div className="relative ml-auto flex h-full w-full max-w-xs sm:max-w-sm flex-col overflow-y-auto bg-card p-5 sm:p-6 shadow-2xl border-l border-border animate-in slide-in-from-right duration-300">
             {/* Drawer Close Trigger */}
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-bold text-foreground">Filters</h2>
