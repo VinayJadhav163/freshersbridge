@@ -7,5 +7,5 @@ export const COMMUNITY_LINKS = {
   telegram: 'https://t.me/freshersbridge',
   instagram: 'https://www.instagram.com/freshersbridge/',
   facebook: 'https://www.facebook.com/profile.php?id=61564858979140',
-  linkedin: 'https://www.linkedin.com/company/freshersbridge',
+  linkedin: 'https://www.linkedin.com/company/145207750/',
 } as const;

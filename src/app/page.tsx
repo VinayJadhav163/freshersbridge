@@ -136,7 +136,8 @@ export default async function Home() {
         'logo': 'https://freshersbridge.in/linkedin_logo_ultra_hd.png',
         'sameAs': [
           COMMUNITY_LINKS.telegram,
-          COMMUNITY_LINKS.whatsapp
+          COMMUNITY_LINKS.whatsapp,
+          COMMUNITY_LINKS.linkedin,
         ],
       },
     ],
