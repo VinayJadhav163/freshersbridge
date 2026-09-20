@@ -366,7 +366,7 @@ export default async function GuideArticlePage({ params }: Props) {
                     prefetch={true}
                     className="group block space-y-1 text-xs"
                   >
-                    <span className="font-bold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
+                    <span className="font-bold text-foreground group-hover:text-indigo-600 transition-colors leading-snug break-words block">
                       {rel.title}
                     </span>
                     <span className="text-muted-foreground text-[10px] block">

@@ -541,10 +541,10 @@ export default function HREmailTemplates() {
               </div>
 
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug break-words">
                   {item.title}
                 </h3>
-                <p className="text-[11px] text-muted-foreground font-medium mt-0.5 line-clamp-1">
+                <p className="text-[11px] text-muted-foreground font-medium mt-0.5 leading-snug break-words">
                   {item.timing}
                 </p>
               </div>
@@ -582,10 +582,10 @@ export default function HREmailTemplates() {
                       </span>
                     )}
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
+                  <h3 className="text-base sm:text-lg font-bold text-foreground leading-snug break-words">
                     {selectedTemplate.title}
                   </h3>
-                  <p className="text-xs text-muted-foreground font-medium truncate">
+                  <p className="text-xs text-muted-foreground font-medium leading-snug break-words">
                     {selectedTemplate.timing}
                   </p>
                 </div>

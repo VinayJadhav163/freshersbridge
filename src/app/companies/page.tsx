@@ -116,7 +116,7 @@ export default function CompaniesPage() {
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-[11px] font-medium">HQ Location</span>
-                  <span className="font-medium text-foreground flex items-center gap-1 mt-0.5 truncate">
+                  <span className="font-medium text-foreground flex items-center gap-1 mt-0.5">
                     <MapPin className="h-3.5 w-3.5 text-[#275df5] shrink-0" />
                     {company.headquarters.split(',')[0]}
                   </span>

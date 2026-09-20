@@ -109,7 +109,7 @@ export default function ApplyButton({
 
             {/* Target Job Title & Company */}
             <div className="space-y-1">
-              <h3 className="text-base sm:text-lg font-bold text-foreground line-clamp-1">
+              <h3 className="text-base sm:text-lg font-bold text-foreground leading-snug break-words">
                 {title}
               </h3>
               <p className="text-xs text-muted-foreground">

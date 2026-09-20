@@ -550,28 +550,28 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
 
             {/* Badges block */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-border text-sm w-full overflow-hidden">
-              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-border text-sm w-full">
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full">
                 <Briefcase className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
-                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-foreground truncate">Experience / Eligibility</p>
-                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.eligibility}>{job.eligibility}</p>
+                <div className="min-w-0 w-full space-y-0.5">
+                  <p className="text-xs font-bold text-foreground">Experience / Eligibility</p>
+                  <p className="text-xs text-muted-foreground font-medium block w-full break-words leading-relaxed">{job.eligibility}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full">
                 <IndianRupee className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
-                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-foreground truncate">Salary</p>
-                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.salary || 'Not Disclosed'}>{job.salary || 'Not Disclosed'}</p>
+                <div className="min-w-0 w-full space-y-0.5">
+                  <p className="text-xs font-bold text-foreground">Salary</p>
+                  <p className="text-xs text-muted-foreground font-medium block w-full break-words leading-relaxed">{job.salary || 'Not Disclosed / As per Industry Standards'}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full overflow-hidden">
+              <div className="flex items-start gap-2.5 text-muted-foreground min-w-0 w-full">
                 <MapPin className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
-                <div className="min-w-0 w-full overflow-hidden space-y-0.5">
-                  <p className="text-xs font-bold text-foreground truncate">Location</p>
-                  <p className="truncate text-xs text-muted-foreground font-medium block w-full" title={job.location}>{job.location}</p>
+                <div className="min-w-0 w-full space-y-0.5">
+                  <p className="text-xs font-bold text-foreground">Location</p>
+                  <p className="text-xs text-muted-foreground font-medium block w-full break-words leading-relaxed">{job.location}</p>
                 </div>
               </div>
             </div>
@@ -663,10 +663,10 @@ export default async function JobDetailsPage({ params }: Props) {
                     <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-full">
                       {guide.category}
                     </span>
-                    <h4 className="mt-2 text-sm font-bold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
+                    <h4 className="mt-2 text-sm font-bold text-foreground group-hover:text-indigo-600 transition-colors leading-snug break-words">
                       {guide.title}
                     </h4>
-                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed break-words">
                       {guide.description}
                     </p>
                   </Link>
@@ -692,9 +692,9 @@ export default async function JobDetailsPage({ params }: Props) {
                 </div>
                 <div className="min-w-0">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#275df5]">
-                    Official Hiring Blueprint
+                     Official Hiring Blueprint
                   </span>
-                  <h4 className="text-xs font-bold text-foreground truncate">
+                  <h4 className="text-xs font-bold text-foreground leading-snug break-words">
                     {matchedCompany.shortName} Placement Guide
                   </h4>
                 </div>

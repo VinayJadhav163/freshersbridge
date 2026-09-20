@@ -151,11 +151,11 @@ export default function GuidesPage() {
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-foreground group-hover:text-indigo-600 transition-colors leading-snug line-clamp-2">
+                  <h3 className="text-lg font-bold text-foreground group-hover:text-indigo-600 transition-colors leading-snug break-words">
                     {guide.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed break-words">
                     {guide.description}
                   </p>
                 </div>
