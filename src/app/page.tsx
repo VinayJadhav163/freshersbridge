@@ -285,20 +285,15 @@ export default async function Home() {
 
       {/* 3. Latest Full-Time Jobs Section */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5">
-              <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-[#275df5] shrink-0 translate-y-[1.5px]" />
-              <span>Featured & Latest Job Openings</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-              Discover fresh off-campus drives updated continuously.
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5">
+            <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-[#275df5] shrink-0 translate-y-[1.5px]" />
+            <span>Featured & Latest Job Openings</span>
+          </h2>
           <Link
             href="/jobs"
             prefetch={true}
-            className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-500 w-fit pt-0.5 sm:pt-0"
+            className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-500 w-fit"
           >
             <span>Browse All Full-Time Jobs</span>
             <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
@@ -332,7 +327,7 @@ export default async function Home() {
       {/* 4. Top Student Internships Section */}
       {displayInternships.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 w-full">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">
                 <GraduationCap className="h-3.5 w-3.5" />
@@ -341,9 +336,6 @@ export default async function Home() {
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground">
                 🎓 Developer & Tech Internships
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-                Explore summer/winter internships and apprenticeship roles.
-              </p>
             </div>
             <Link
               href="/internships"
