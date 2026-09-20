@@ -158,22 +158,19 @@ export default function JobCard({ job }: JobCardProps) {
         )}
       </div>
 
-      {/* Footer Row: Clean Date & Salary layout that never squishes on small screens */}
+      {/* Footer Row: Inline on desktop (sm:), clean stacked on mobile so it never squishes */}
       <div className="mt-3 pt-2.5 border-t border-[#f7f7f9] dark:border-slate-800/80 flex items-center justify-between gap-3 relative z-10">
-        <div className="flex flex-col justify-center min-w-0">
-          {packageText ? (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 text-xs font-semibold min-w-0">
+          <span className="text-[#979ec2] font-medium text-[11px] sm:text-xs whitespace-nowrap">
+            {formatDate(job.created_at)}
+          </span>
+          {packageText && (
             <>
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 leading-tight">
+              <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap text-xs">
                 {packageText}
               </span>
-              <span className="text-[11px] text-[#979ec2] font-medium leading-tight mt-0.5 whitespace-nowrap">
-                {formatDate(job.created_at)}
-              </span>
             </>
-          ) : (
-            <span className="text-xs text-[#979ec2] font-medium whitespace-nowrap">
-              {formatDate(job.created_at)}
-            </span>
           )}
         </div>
 
