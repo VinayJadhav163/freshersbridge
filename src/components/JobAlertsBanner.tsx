@@ -15,7 +15,7 @@ export default function JobAlertsBanner({
       {/* Subtle ambient radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[220px] bg-indigo-500/15 blur-[100px] pointer-events-none rounded-full" />
 
-      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-3 sm:space-y-3.5">
+      <div className="relative mx-auto max-w-4xl px-3 sm:px-6 lg:px-8 text-center space-y-3 sm:space-y-3.5">
         {/* Live Indicator Pill */}
         <div
           className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-950/80 px-3 py-0.5 text-[11px] sm:text-xs font-semibold shadow-inner"
@@ -30,7 +30,7 @@ export default function JobAlertsBanner({
 
         {/* Heading */}
         <h2
-          className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight !text-white"
+          className="text-[15px] min-[375px]:text-base sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight !text-white whitespace-nowrap"
           style={{ color: '#ffffff' }}
         >
           Get Instant Job Alerts on Your Phone
