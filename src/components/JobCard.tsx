@@ -75,7 +75,10 @@ export default function JobCard({ job }: JobCardProps) {
   const [imgError, setImgError] = useState(false);
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
   const packageText = getValidSalary(job.salary);
-  const rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  let rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  if (job.company?.toLowerCase().includes('infosys') || rawLogo?.includes('infosys.svg')) {
+    rawLogo = '/companies/infosys.png';
+  }
   const resolvedLogo = imgError ? null : rawLogo;
   const cleanEligibility = formatEligibility(job.eligibility);
 

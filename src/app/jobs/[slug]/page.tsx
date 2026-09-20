@@ -428,7 +428,10 @@ export default async function JobDetailsPage({ params }: Props) {
 
   const isRemote = job.location?.toLowerCase().includes('remote') || job.location?.toLowerCase().includes('work from home');
 
-  const companyLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  let companyLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
+  if (job.company?.toLowerCase().includes('infosys') || companyLogo?.includes('infosys.svg')) {
+    companyLogo = '/companies/infosys.png';
+  }
 
   const jobPostingJsonLd = {
     '@type': 'JobPosting',

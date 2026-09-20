@@ -477,20 +477,7 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
   const lower = companyNameOrSlug.toLowerCase().trim();
   const slug = getCleanCompanySlug(lower);
 
-  // 1. Curated local verified vector SVGs and PNGs in /public/companies/
-  if (lower.includes('tcs') || lower.includes('tata consultancy')) return '/companies/tcs.svg';
-  if (lower.includes('infosys')) return '/companies/infosys.svg';
-  if (lower.includes('wipro')) return '/companies/wipro.svg';
-  if (lower.includes('cognizant')) return '/companies/cognizant.svg';
-  if (lower.includes('accenture')) return '/companies/accenture.svg';
-  if (lower.includes('capgemini')) return '/companies/capgemini.svg';
-  if (lower.includes('ibm')) return '/companies/ibm.svg';
-  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
-  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
-  if (lower.includes('google')) return '/companies/google.svg';
-  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
-
-  // 2. Defined database match
+  // 1. Defined curated company profile match (uses the exact official company logo)
   const matched = COMPANIES_DATA.find(
     (c) =>
       c.slug === lower ||
@@ -500,6 +487,19 @@ export function getCompanyLogo(companyNameOrSlug: string): string | null {
       lower.includes(c.name.toLowerCase())
   );
   if (matched) return matched.logo;
+
+  // 2. Curated local verified vector SVGs and PNGs in /public/companies/
+  if (lower.includes('tcs') || lower.includes('tata consultancy')) return '/companies/tcs.png';
+  if (lower.includes('infosys')) return '/companies/infosys.png';
+  if (lower.includes('wipro')) return '/companies/wipro.png';
+  if (lower.includes('cognizant')) return '/companies/cognizant.png';
+  if (lower.includes('accenture')) return '/companies/accenture.png';
+  if (lower.includes('capgemini')) return '/companies/capgemini.svg';
+  if (lower.includes('ibm')) return '/companies/ibm.svg';
+  if (lower.includes('microsoft')) return '/companies/microsoft.svg';
+  if (lower.includes('amazon') || lower.includes('aws')) return '/companies/amazon.svg';
+  if (lower.includes('google')) return '/companies/google.svg';
+  if (lower.includes('deloitte')) return '/companies/deloitte.svg';
 
   // 3. Official Vector SVG from SimpleIcons (100% sharp, zero blur, official brand colors)
   if (slug && VERIFIED_VECTOR_BRANDS[slug]) {
