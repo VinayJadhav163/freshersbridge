@@ -11,14 +11,14 @@ export default function JobAlertsBanner({
   telegramUrl = COMMUNITY_LINKS.telegram,
 }: JobAlertsBannerProps) {
   return (
-    <section className="w-full bg-gradient-to-b from-[#0c1430] via-[#080d22] to-[#040816] text-white py-12 sm:py-16 lg:py-20 border-t border-slate-800/80 relative overflow-hidden">
+    <section className="w-full bg-gradient-to-b from-[#0c1430] via-[#080d22] to-[#040816] text-white py-7 sm:py-9 md:py-10 border-t border-slate-800/80 relative overflow-hidden">
       {/* Subtle ambient radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[300px] bg-indigo-500/15 blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[220px] bg-indigo-500/15 blur-[100px] pointer-events-none rounded-full" />
 
-      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-6">
+      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-3 sm:space-y-3.5">
         {/* Live Indicator Pill */}
         <div
-          className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-950/80 px-3.5 py-1 text-[11px] sm:text-xs font-semibold shadow-inner"
+          className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-950/80 px-3 py-0.5 text-[11px] sm:text-xs font-semibold shadow-inner"
           style={{ color: '#c7d2fe' }}
         >
           <span className="relative flex h-2 w-2">
@@ -30,7 +30,7 @@ export default function JobAlertsBanner({
 
         {/* Heading */}
         <h2
-          className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight !text-white"
+          className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight !text-white"
           style={{ color: '#ffffff' }}
         >
           Get Instant Job Alerts on Your Phone
@@ -38,20 +38,20 @@ export default function JobAlertsBanner({
 
         {/* Subtitle */}
         <p
-          className="text-xs sm:text-base md:text-lg font-medium max-w-2xl mx-auto leading-relaxed !text-slate-200"
+          className="text-xs sm:text-sm md:text-base font-medium max-w-2xl mx-auto leading-relaxed !text-slate-200"
           style={{ color: '#e2e8f0' }}
         >
           Join freshers getting daily off-campus drives, direct apply links &amp; remote internship updates.
         </p>
 
         {/* Action Buttons */}
-        <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto w-full">
+        <div className="pt-1.5 sm:pt-2.5 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 max-w-md sm:max-w-none mx-auto w-full">
           {/* WhatsApp Button */}
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-extrabold text-slate-950 shadow-lg shadow-emerald-950/40 transition-all hover:bg-[#20bd5a] hover:scale-105 active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 sm:px-7 py-2.5 sm:py-3 text-xs sm:text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-950/40 transition-all hover:bg-[#20bd5a] hover:scale-105 active:scale-95"
           >
             <img
               src="/whatsapp.png"
