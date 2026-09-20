@@ -322,9 +322,25 @@ export default async function JobDetailsPage({ params }: Props) {
     ? new Date(job.application_deadline).toISOString()
     : new Date(new Date(job.created_at).getTime() + 60 * 24 * 60 * 60 * 1000).toISOString();
 
-  // 2. Adaptive related jobs count: show 5 jobs if JD is long (> 1200 chars), 3 if short
+  // 2. Multi-tier adaptive related jobs count based on JD length to keep columns balanced:
+  // - Short JDs (<= 1,200 chars): 3 jobs
+  // - Medium JDs (1,201 - 2,200 chars): 5 jobs
+  // - Long JDs (2,201 - 3,500 chars): 6 jobs
+  // - Very Long JDs (3,501 - 4,800 chars): 7 jobs
+  // - Ultra Long JDs (> 4,800 chars): 8 jobs
   const jdLength = (job.description || '').length;
-  const adaptiveLimit = jdLength > 1200 ? 5 : 3;
+  let adaptiveLimit = 3;
+  if (jdLength > 4800) {
+    adaptiveLimit = 8;
+  } else if (jdLength > 3500) {
+    adaptiveLimit = 7;
+  } else if (jdLength > 2200) {
+    adaptiveLimit = 6;
+  } else if (jdLength > 1200) {
+    adaptiveLimit = 5;
+  } else {
+    adaptiveLimit = 3;
+  }
   const relatedJobs = await getRelatedJobs(job.category_id, job.id, adaptiveLimit);
 
   // 3. High-precision contextual guide matching for internal topic clusters
