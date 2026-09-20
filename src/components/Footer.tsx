@@ -27,54 +27,50 @@ export default function Footer() {
               Connecting freshers and recent college graduates with handpicked off-campus opportunities, internships, and entry-level jobs.
             </p>
 
-            <div className="pt-2 flex flex-col gap-2.5">
+            <div className="pt-2 flex items-center gap-3">
               <a 
                 href={COMMUNITY_LINKS.whatsapp} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800/60 hover:scale-110 active:scale-95 transition-all p-1.5 shadow-xs cursor-pointer"
+                title="Join FreshersBridge WhatsApp Group"
+                aria-label="FreshersBridge WhatsApp Community"
               >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform overflow-hidden p-0.5">
-                  <img
-                    src="/whatsapp.png"
-                    alt="Join FreshersBridge WhatsApp Group for Off-Campus Drives"
-                    width={24}
-                    height={24}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <span>Join WhatsApp Group →</span>
+                <img
+                  src="/whatsapp.png"
+                  alt="WhatsApp"
+                  width={20}
+                  height={20}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain"
+                />
               </a>
 
               <a 
                 href="https://t.me/freshersbridge" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-sky-600 dark:text-sky-400 hover:text-sky-500 text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/60 dark:hover:bg-sky-900/60 border border-sky-200 dark:border-sky-800/60 hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer text-sky-500"
+                title="Join FreshersBridge Telegram Channel"
+                aria-label="FreshersBridge Telegram Channel"
               >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/60 group-hover:scale-110 transition-transform">
-                  <svg className="h-3.5 w-3.5 shrink-0 fill-current text-sky-500" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
-                  </svg>
-                </div>
-                <span>Join Telegram Channel →</span>
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                </svg>
               </a>
 
               <a 
                 href={COMMUNITY_LINKS.linkedin} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-[#0a66c2] dark:text-[#38bdf8] hover:text-[#004182] text-xs sm:text-[13px] font-bold hover:underline transition-all inline-flex items-center gap-2 group cursor-pointer whitespace-nowrap"
-                aria-label="Follow FreshersBridge on LinkedIn"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0a66c2]/10 hover:bg-[#0a66c2]/20 dark:bg-[#0a66c2]/20 dark:hover:bg-[#0a66c2]/30 border border-[#0a66c2]/30 dark:border-[#0a66c2]/40 hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer text-[#0a66c2] dark:text-[#38bdf8]"
+                title="Follow FreshersBridge on LinkedIn"
+                aria-label="FreshersBridge LinkedIn Page"
               >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#0a66c2]/10 dark:bg-[#0a66c2]/20 border border-[#0a66c2]/30 dark:border-[#0a66c2]/40 group-hover:scale-110 transition-transform">
-                  <svg className="h-3.5 w-3.5 shrink-0 fill-current text-[#0a66c2] dark:text-[#38bdf8]" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </div>
-                <span>Follow on LinkedIn →</span>
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
               </a>
             </div>
           </div>
