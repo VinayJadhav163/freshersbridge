@@ -69,6 +69,9 @@ export default function JobCard({ job }: JobCardProps) {
     (job.source_url && job.source_url.toLowerCase().includes('/internship/')) ||
     (job.eligibility && job.eligibility.toLowerCase().includes('(internship)'));
 
+  const titleMentionsIntern = /\b(intern|internship|interns|apprentice|apprenticeship|fellowship)\b/i.test(job.title || '');
+  const showInternshipPill = isInternship && !titleMentionsIntern;
+
   const [imgError, setImgError] = useState(false);
   const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
   const packageText = getValidSalary(job.salary);
@@ -94,10 +97,10 @@ export default function JobCard({ job }: JobCardProps) {
               </Link>
             </h3>
 
-            {/* Company Line with fixed, consistent Internship Pill */}
+            {/* Company Line with Internship Pill only if title does not already say intern */}
             <div className="flex items-center gap-2 text-xs text-[#474d6a] dark:text-slate-400 flex-wrap">
               <span className="font-bold text-[#121224] dark:text-white">{job.company}</span>
-              {isInternship && (
+              {showInternshipPill && (
                 <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shrink-0">
                   Internship
                 </span>
@@ -155,25 +158,28 @@ export default function JobCard({ job }: JobCardProps) {
         )}
       </div>
 
-      {/* Footer Row: Date, Package (if present) & Apply Button */}
-      <div className="mt-3 pt-2.5 border-t border-[#f7f7f9] dark:border-slate-800/80 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-2 text-xs font-semibold">
-          <span className="text-[#979ec2] font-medium">
-            {formatDate(job.created_at)}
-          </span>
-          {packageText && (
+      {/* Footer Row: Clean Date & Salary layout that never squishes on small screens */}
+      <div className="mt-3 pt-2.5 border-t border-[#f7f7f9] dark:border-slate-800/80 flex items-center justify-between gap-3 relative z-10">
+        <div className="flex flex-col justify-center min-w-0">
+          {packageText ? (
             <>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 leading-tight">
                 {packageText}
               </span>
+              <span className="text-[11px] text-[#979ec2] font-medium leading-tight mt-0.5 whitespace-nowrap">
+                {formatDate(job.created_at)}
+              </span>
             </>
+          ) : (
+            <span className="text-xs text-[#979ec2] font-medium whitespace-nowrap">
+              {formatDate(job.created_at)}
+            </span>
           )}
         </div>
 
         <Link
           href={detailUrl}
-          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-4 py-1.5 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20 min-h-[28px]"
+          className="inline-flex items-center justify-center rounded-full bg-[#edf4ff] dark:bg-blue-950/60 px-4 py-1.5 text-xs font-bold text-[#275df5] dark:text-blue-400 hover:bg-[#275df5] hover:text-white transition-all relative z-20 min-h-[28px] shrink-0"
         >
           Apply
         </Link>
