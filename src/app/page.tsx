@@ -133,7 +133,7 @@ export default async function Home() {
         '@id': 'https://freshersbridge.in/#organization',
         'name': 'FreshersBridge',
         'url': 'https://freshersbridge.in',
-        'logo': 'https://freshersbridge.in/icon.png',
+        'logo': 'https://freshersbridge.in/linkedin_logo_ultra_hd.png',
         'sameAs': [
           COMMUNITY_LINKS.telegram,
           COMMUNITY_LINKS.whatsapp

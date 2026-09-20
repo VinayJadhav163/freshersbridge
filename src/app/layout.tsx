@@ -42,9 +42,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://freshersbridge.in/icon.png',
+        url: 'https://freshersbridge.in/linkedin_logo_ultra_hd.png',
         width: 1200,
-        height: 630,
+        height: 1200,
         alt: 'FreshersBridge - Handpicked Off-Campus Tech Jobs & Internships for Freshers',
       },
     ],
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FreshersBridge | Handpicked Jobs for Freshers',
     description: 'Find your first tech job. Handpicked jobs and internships for college graduates.',
-    images: ['https://freshersbridge.in/icon.png'],
+    images: ['https://freshersbridge.in/linkedin_logo_ultra_hd.png'],
   },
   icons: {
     icon: [
