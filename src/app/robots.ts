@@ -31,6 +31,8 @@ export default function robots(): MetadataRoute.Robots {
           '/',
           '/jobs',
           '/jobs/*',
+          '/internships',
+          '/internships/*',
           '/companies',
           '/companies/*',
           '/guides',

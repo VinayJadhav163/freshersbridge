@@ -104,24 +104,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const { data: jobs } = await supabase
       .from('jobs')
-      .select('slug, created_at, category')
-      .order('created_at', { ascending: false });
+      .select('slug, created_at, apply_url, title')
+      .order('created_at', { ascending: false })
+      .range(0, 4999);
 
     if (jobs && jobs.length > 0) {
       const dynamicJobRoutes: MetadataRoute.Sitemap = jobs.map((job) => ({
         url: `${baseUrl}/jobs/${job.slug}`,
         lastModified: new Date(job.created_at),
         changeFrequency: 'weekly',
-        priority: 0.7,
+        priority: 0.8,
       }));
 
       const dynamicInternshipRoutes: MetadataRoute.Sitemap = jobs
-        .filter((job) => job.category?.toLowerCase() === 'internship')
+        .filter((job) => {
+          const u = (job.apply_url || '').toLowerCase();
+          const t = (job.title || '').toLowerCase();
+          return u.includes('/internship/') || /intern|internship|trainee|apprentice|fellowship/.test(t);
+        })
         .map((job) => ({
           url: `${baseUrl}/internships/${job.slug}`,
           lastModified: new Date(job.created_at),
           changeFrequency: 'weekly',
-          priority: 0.7,
+          priority: 0.8,
         }));
 
       return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicJobRoutes, ...dynamicInternshipRoutes];
