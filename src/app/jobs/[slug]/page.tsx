@@ -63,23 +63,40 @@ const getJob = cache(async (slug: string) => {
   }, 180);
 });
 
-// Fast cached related jobs query
-const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: string) => {
-  return fetchWithCache(`related:${categoryId}:${currentJobId}`, async () => {
+// Fast cached related jobs query with adaptive count support
+const getRelatedJobs = cache(async (categoryId: string | null, currentJobId: string, limitCount: number = 3) => {
+  return fetchWithCache(`related:${categoryId}:${currentJobId}:${limitCount}`, async () => {
     try {
       let query = supabase
         .from('jobs')
         .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
         .neq('id', currentJobId)
         .order('created_at', { ascending: false })
-        .limit(3);
+        .limit(limitCount);
 
       if (categoryId) {
         query = query.eq('category_id', categoryId);
       }
 
       const { data } = await query;
-      return (data || []) as unknown as Job[];
+      const categoryJobs = (data || []) as unknown as Job[];
+
+      // Fallback: If category has fewer than limitCount jobs, backfill with newest fresh opportunities
+      if (categoryJobs.length < limitCount) {
+        const existingIds = [currentJobId, ...categoryJobs.map((j) => j.id)];
+        const { data: fallbackData } = await supabase
+          .from('jobs')
+          .select('id, title, slug, company, location, salary, eligibility, skills, created_at, category_id, featured_job, categories(id, name, slug)')
+          .not('id', 'in', `(${existingIds.join(',')})`)
+          .order('created_at', { ascending: false })
+          .limit(limitCount - categoryJobs.length);
+
+        if (fallbackData && fallbackData.length > 0) {
+          return [...categoryJobs, ...(fallbackData as unknown as Job[])];
+        }
+      }
+
+      return categoryJobs;
     } catch {
       return [] as Job[];
     }
@@ -305,8 +322,10 @@ export default async function JobDetailsPage({ params }: Props) {
     ? new Date(job.application_deadline).toISOString()
     : new Date(new Date(job.created_at).getTime() + 60 * 24 * 60 * 60 * 1000).toISOString();
 
-  // 2. Fast parallel related jobs query
-  const relatedJobs = await getRelatedJobs(job.category_id, job.id);
+  // 2. Adaptive related jobs count: show 5 jobs if JD is long (> 1200 chars), 3 if short
+  const jdLength = (job.description || '').length;
+  const adaptiveLimit = jdLength > 1200 ? 5 : 3;
+  const relatedJobs = await getRelatedJobs(job.category_id, job.id, adaptiveLimit);
 
   // 3. High-precision contextual guide matching for internal topic clusters
   const jobText = `${job.title} ${job.company} ${(job.skills || []).join(' ')} ${job.eligibility || ''}`.toLowerCase();
@@ -756,7 +775,7 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
           </div>
 
-          {/* 3 Related Jobs from Same Category */}
+          {/* Adaptive Related Jobs (5 for long JDs, 3 for short JDs) */}
           {relatedJobs.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-2 px-1">
