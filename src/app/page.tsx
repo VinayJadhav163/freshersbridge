@@ -209,18 +209,16 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Sleek, ultra-compact single trust line (takes minimal vertical space) */}
-            <div className="pt-1 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 gap-2 sm:gap-3 flex-wrap">
+            {/* Sleek, ultra-compact single trust line (clean spacing, no redundant bullets) */}
+            <div className="pt-1 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 gap-3.5 sm:gap-6 flex-wrap">
               <span className="inline-flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
                 <span>100% Free</span>
               </span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
               <span className="inline-flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
                 <span>Official Careers Links</span>
               </span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
               <span className="inline-flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
                 <span>Verified Daily</span>
