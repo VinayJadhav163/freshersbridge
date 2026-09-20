@@ -170,7 +170,7 @@ export default async function InternshipsPage({ searchParams }: InternshipsPageP
           Browse Developer & Tech Internships
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Showing {totalCount} verified software, web dev, and data internships for freshers.
+          Showing {totalCount} verified internships for freshers.
         </p>
         <div className="w-full flex justify-start pt-1">
           <SearchBar 
