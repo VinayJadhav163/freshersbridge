@@ -20,8 +20,9 @@ CATEGORY_MAPPING = {
         'graduate software engineer', 'application developer', 'junior application', 'backend developer', 
         'junior backend', 'java developer', 'junior java', 'python developer', 'junior python', 'c++', 
         'junior c++', 'c#', 'junior c#', '.net', 'asp.net', 'golang', 'rust', 'api developer', 'mobile developer', 
-        'android developer', 'junior android', 'ios developer', 'junior ios', 'flutter developer', 'junior flutter', 
-        'react native', 'game developer', 'junior game'
+        'android developer', 'junior android', 'android intern', 'ios developer', 'junior ios', 'ios intern', 
+        'flutter developer', 'junior flutter', 'flutter intern', 'flutter', 'react native', 'mobile app', 
+        'mobile intern', 'game developer', 'junior game'
     ],
     'data-analytics': [
         'data analyst', 'junior data analyst', 'business intelligence analyst', 'bi analyst', 'business analyst', 
@@ -270,16 +271,18 @@ STATE_MAP = {
 }
 
 def classify_category(title: str, description: str = "") -> str:
-    """Classifies job into one of the standard FreshersBridge categories."""
+    """Classifies job into one of the standard FreshersBridge categories using regex word boundaries."""
     title_lower = title.lower()
     for cat_slug, keywords in CATEGORY_MAPPING.items():
-        if any(kw in title_lower for kw in keywords):
-            return cat_slug
+        for kw in keywords:
+            if re.search(r'\b' + re.escape(kw) + r'\b', title_lower):
+                return cat_slug
             
     text = (title + " " + description).lower()
     for cat_slug, keywords in CATEGORY_MAPPING.items():
-        if any(kw in text for kw in keywords):
-            return cat_slug
+        for kw in keywords:
+            if re.search(r'\b' + re.escape(kw) + r'\b', text):
+                return cat_slug
             
     return 'software-development'
 
