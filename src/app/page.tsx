@@ -12,7 +12,6 @@ import {
   BarChart4, 
   Briefcase, 
   Rocket,
-  GraduationCap,
   Calendar,
   Check
 } from 'lucide-react';
@@ -327,20 +326,14 @@ export default async function Home() {
       {/* 4. Top Student Internships Section */}
       {displayInternships.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 w-full">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">
-                <GraduationCap className="h-3.5 w-3.5" />
-                Student & Fresh Graduate Opportunities
-              </div>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground">
-                🎓 Developer & Tech Internships
-              </h2>
-            </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground">
+              🎓 Developer & Tech Internships
+            </h2>
             <Link
               href="/internships"
               prefetch={true}
-              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 w-fit pt-0.5 sm:pt-0"
+              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 w-fit"
             >
               <span>Browse All Internships</span>
               <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
