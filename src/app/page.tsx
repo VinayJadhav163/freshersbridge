@@ -165,7 +165,7 @@ export default async function Home() {
             <span className="truncate">Verified Off-Campus Drives &amp; Tech Hiring 2026</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+          <h1 className="text-[27px] min-[390px]:text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.2] sm:leading-tight">
             Your Bridge from College <br />
             to your{' '}
             <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent inline-block sm:inline whitespace-nowrap">
