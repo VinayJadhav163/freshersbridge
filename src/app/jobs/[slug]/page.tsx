@@ -593,11 +593,12 @@ export default async function JobDetailsPage({ params }: Props) {
           </div>
 
           {/* Value-Add Section: Why this opening is relevant for freshers */}
-          <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-950/20 p-6 shadow-xs space-y-4">
+          <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-950/20 p-4 sm:p-6 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              <h2 className="text-base font-bold text-foreground">
-                Fresher Suitability & Application Blueprint
+              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <h2 className="text-sm sm:text-base font-bold text-foreground">
+                <span className="hidden sm:inline">Fresher Suitability & Application Blueprint</span>
+                <span className="sm:hidden">Fresher Suitability & Blueprint</span>
               </h2>
             </div>
 
@@ -630,22 +631,24 @@ export default async function JobDetailsPage({ params }: Props) {
           </div>
 
           {/* Job Description Card */}
-          <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-foreground border-b border-border pb-2 flex items-center justify-between">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-sm space-y-4">
+            <h2 className="text-base sm:text-lg font-bold text-foreground border-b border-border pb-2 flex items-center justify-between">
               <span>Job Description</span>
-              <span className="text-xs font-semibold text-muted-foreground">Detailed Role Overview</span>
+              <span className="text-xs font-semibold text-muted-foreground hidden sm:inline">Detailed Role Overview</span>
             </h2>
             <FormattedJobDescription content={job.description} />
           </div>
 
           {/* Internal Topic Cluster: Career Preparation Guides */}
           {relevantGuides.length > 0 && (
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-indigo-600" /> Recommended Preparation Guides
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between gap-2 border-b border-border pb-2">
+                <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2 min-w-0">
+                  <BookOpen className="h-4 w-4 text-indigo-600 shrink-0" />
+                  <span className="hidden sm:inline">Recommended Preparation Guides</span>
+                  <span className="sm:hidden">Preparation Guides</span>
                 </h3>
-                <Link href="/guides" className="text-xs font-semibold text-indigo-600 hover:underline">
+                <Link href="/guides" className="text-xs font-semibold text-indigo-600 hover:underline shrink-0 whitespace-nowrap">
                   All Guides
                 </Link>
               </div>
@@ -756,11 +759,16 @@ export default async function JobDetailsPage({ params }: Props) {
           {/* 3 Related Jobs from Same Category */}
           {relatedJobs.length > 0 && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between px-1">
-                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
-                  Similar {job.categories?.name ? `${job.categories.name}` : ''} Jobs
+              <div className="flex items-center justify-between gap-2 px-1">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider min-w-0">
+                  <span className="hidden sm:inline">Similar {job.categories?.name ? `${job.categories.name} ` : ''}Jobs</span>
+                  <span className="sm:hidden">Similar Jobs</span>
                 </h3>
-                <Link href="/jobs" prefetch={true} className="text-xs font-semibold text-indigo-600 hover:underline">
+                <Link
+                  href={isInternship ? "/internships" : "/jobs"}
+                  prefetch={true}
+                  className="text-xs font-semibold text-indigo-600 hover:underline shrink-0 whitespace-nowrap"
+                >
                   View all
                 </Link>
               </div>
