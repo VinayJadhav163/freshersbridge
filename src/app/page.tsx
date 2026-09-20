@@ -166,8 +166,9 @@ export default async function Home() {
           </div>
 
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            Your Bridge from College <span className="hidden sm:inline"><br /></span>to your{' '}
-            <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
+            Your Bridge from College <br />
+            to your{' '}
+            <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent inline-block sm:inline whitespace-nowrap">
               First Tech Job
             </span>
           </h1>
