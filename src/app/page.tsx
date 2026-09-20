@@ -209,24 +209,22 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Subtle authentic trust line with cleanly aligned checkmarks */}
-            <div className="pt-2 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-400">
-              <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 mx-auto bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 sm:border-0 sm:bg-transparent sm:dark:bg-transparent rounded-xl px-4 py-2.5 sm:p-0">
-                <span className="inline-flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                  <span>100% Free Applications</span>
-                </span>
-                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-                <span className="inline-flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                  <span>Official Company Careers Links</span>
-                </span>
-                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-                <span className="inline-flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                  <span>Verified Daily Updates</span>
-                </span>
-              </div>
+            {/* Sleek, ultra-compact single trust line (takes minimal vertical space) */}
+            <div className="pt-1.5 flex items-center justify-center text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 gap-2 sm:gap-3 flex-wrap">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
+                <span>100% Free</span>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
+                <span>Official Careers Links</span>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 stroke-[2.5]" />
+                <span>Verified Daily</span>
+              </span>
             </div>
           </div>
         </div>

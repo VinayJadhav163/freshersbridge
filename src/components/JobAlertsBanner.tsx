@@ -18,21 +18,27 @@ export default function JobAlertsBanner({
 
         <div className="relative space-y-3.5 sm:space-y-5">
           {/* Live Indicator Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-950/70 px-3 py-1 text-[11px] sm:text-xs font-semibold text-indigo-200 shadow-inner">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-950/80 px-3.5 py-1 text-[11px] sm:text-xs font-semibold shadow-inner" style={{ color: '#c7d2fe' }}>
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>Daily Off-Campus Hiring Broadcasts</span>
+            <span style={{ color: '#c7d2fe' }}>Daily Off-Campus Hiring Broadcasts</span>
           </div>
 
-          {/* Heading */}
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+          {/* Heading - Force bright white text to override any global :where styles */}
+          <h2
+            className="text-2xl sm:text-4xl font-black tracking-tight leading-tight !text-white"
+            style={{ color: '#ffffff' }}
+          >
             Get Instant Job Alerts on Your Phone
           </h2>
 
           {/* Subtitle */}
-          <p className="text-xs sm:text-base text-slate-300 font-medium max-w-xl mx-auto leading-relaxed">
+          <p
+            className="text-xs sm:text-base font-medium max-w-xl mx-auto leading-relaxed !text-slate-200"
+            style={{ color: '#e2e8f0' }}
+          >
             Join freshers getting daily off-campus drives, direct apply links &amp; remote internship updates.
           </p>
 
