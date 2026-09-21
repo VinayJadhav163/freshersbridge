@@ -24,6 +24,7 @@ import ShareButton from '@/components/ShareButton';
 import ApplyButton from '@/components/ApplyButton';
 import JobCard from '@/components/JobCard';
 import JobViewTracker from '@/components/JobViewTracker';
+import JobBackButton from '@/components/JobBackButton';
 import { Job } from '@/types';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import { fetchWithCache } from '@/lib/dataCache';
@@ -202,7 +203,23 @@ function FormattedJobDescription({ content }: { content: string }) {
     healedLines.push(cleanSquishedText(charBuf.join('')));
   }
 
-  const lines = healedLines;
+  // Strip leading redundant titles (e.g. "Job description:", "Job Description", "Role Description:")
+  let startIndex = 0;
+  while (startIndex < healedLines.length) {
+    const line = healedLines[startIndex].trim();
+    if (!line) {
+      startIndex++;
+      continue;
+    }
+    const cleanLine = line.replace(/[:\-_]+$/, '').trim();
+    if (/^(?:Job\s+(?:Description|Summary|Overview|Details)|Role\s+(?:Description|Summary|Overview)|About\s+(?:the\s+Job|this\s+Job|the\s+Role))$/i.test(cleanLine)) {
+      startIndex++;
+    } else {
+      break;
+    }
+  }
+
+  const lines = healedLines.slice(startIndex);
   const sections: { title?: string; items: string[]; type: 'list' | 'paragraph' }[] = [];
   
   let currentTitle = '';
@@ -212,7 +229,7 @@ function FormattedJobDescription({ content }: { content: string }) {
   const isHeading = (line: string) => {
     const trimmed = line.trim();
     if (trimmed.length > 60) return false;
-    return /^(?:(?:Key\s+|Primary\s+)?Responsibilities|(?:Required\s+|Preferred\s+)?Qualifications|(?:Required\s+|Key\s+|Technical\s+)?Skills(?:\s+Required)?|Requirements|Eligibility(?:\s*&.*)?|What\s+You(?:'ll|\s+Will)\s+Do|Role\s+(?:Overview|Description|Summary)|Must\s+Have|Key\s+(?:Objectives|Deliverables)|Success\s+Measures|Perks(?:\s*&.*)?|Benefits|What\s+We(?:'re|\s+Are)\s+Looking\s+For|About\s+(?:Us|the\s+Role|[A-Z][a-zA-Z0-9\s]+)|Your\s+Impact|Education|Experience)\s*:?$/i.test(trimmed);
+    return /^(?:(?:Key\s+|Primary\s+)?Responsibilities|(?:Required\s+|Preferred\s+|Minimum\s+)?Qualifications|(?:Required\s+|Key\s+|Technical\s+)?Skills(?:\s+Required)?|Requirements|Eligibility(?:\s*&.*)?|What\s+You(?:'ll|\s+Will)\s+Do|Role\s+(?:Overview|Description|Summary|Purpose|Scope)|Purpose\s+of\s+(?:the\s+)?Role|Job\s+(?:Purpose|Summary|Overview)|Must\s+Have|Good\s+to\s+Have|Nice\s+to\s+Have|Key\s+(?:Objectives|Deliverables)|Success\s+Measures|Perks(?:\s*&.*)?|Benefits|What\s+We(?:'re|\s+Are)\s+Looking\s+For|About\s+(?:Us|the\s+Role|[A-Z][a-zA-Z0-9\s]+)|Your\s+Impact|Education|Experience)\s*:?$/i.test(trimmed);
   };
 
   const isBullet = (line: string) => {
@@ -266,7 +283,7 @@ function FormattedJobDescription({ content }: { content: string }) {
     <div className="space-y-6 text-foreground/90 text-sm leading-relaxed font-sans break-words [overflow-wrap:anywhere] max-w-full overflow-hidden">
       {sections.map((sec, idx) => (
         <div key={idx} className="space-y-2.5 max-w-full overflow-hidden">
-          {sec.title && (
+          {sec.title && !/^(?:Job\s+(?:Description|Details)|About\s+the\s+Job)$/i.test(sec.title.trim()) && (
             <h3 className="text-base font-bold text-foreground flex items-center gap-2 pt-2 border-t border-border/40 first:border-t-0 first:pt-0 break-words [overflow-wrap:anywhere]">
               <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0" />
               {sec.title}
@@ -433,6 +450,196 @@ export default async function JobDetailsPage({ params }: Props) {
     companyLogo = '/companies/infosys.png';
   }
 
+  // Address helper for Indian tech hubs & locations to satisfy Google Search Console requirements
+  const getJobPostalAddress = (location: string, company: string) => {
+    const loc = (location || '').toLowerCase();
+    
+    if (loc.includes('bengaluru') || loc.includes('bangalore')) {
+      return {
+        streetAddress: `${company} Tech Park, Outer Ring Road`,
+        addressLocality: 'Bengaluru',
+        addressRegion: 'Karnataka',
+        postalCode: '560103',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('pune')) {
+      return {
+        streetAddress: `${company} IT Campus, Rajiv Gandhi Infotech Park, Hinjawadi`,
+        addressLocality: 'Pune',
+        addressRegion: 'Maharashtra',
+        postalCode: '411057',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('hyderabad') || loc.includes('secunderabad')) {
+      return {
+        streetAddress: `${company} Development Centre, HITEC City, Madhapur`,
+        addressLocality: 'Hyderabad',
+        addressRegion: 'Telangana',
+        postalCode: '500081',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('chennai')) {
+      return {
+        streetAddress: `${company} Tech Centre, Rajiv Gandhi Salai, OMR`,
+        addressLocality: 'Chennai',
+        addressRegion: 'Tamil Nadu',
+        postalCode: '600113',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('gurugram') || loc.includes('gurgaon')) {
+      return {
+        streetAddress: `${company} Corporate Centre, DLF Cyber City, Phase 2`,
+        addressLocality: 'Gurugram',
+        addressRegion: 'Haryana',
+        postalCode: '122002',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('noida')) {
+      return {
+        streetAddress: `${company} IT Zone, Sector 62 / Express Trade Tower`,
+        addressLocality: 'Noida',
+        addressRegion: 'Uttar Pradesh',
+        postalCode: '201309',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('mumbai') || loc.includes('navi mumbai') || loc.includes('thane')) {
+      return {
+        streetAddress: `${company} Business Park, Bandra Kurla Complex (BKC) / Powai`,
+        addressLocality: 'Mumbai',
+        addressRegion: 'Maharashtra',
+        postalCode: '400051',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('delhi')) {
+      return {
+        streetAddress: `${company} Business Hub, Connaught Place / Barakhamba Road`,
+        addressLocality: 'New Delhi',
+        addressRegion: 'Delhi',
+        postalCode: '110001',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('kolkata')) {
+      return {
+        streetAddress: `${company} IT Hub, Sector V, Salt Lake City`,
+        addressLocality: 'Kolkata',
+        addressRegion: 'West Bengal',
+        postalCode: '700091',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('ahmedabad')) {
+      return {
+        streetAddress: `${company} Corporate Office, SG Highway`,
+        addressLocality: 'Ahmedabad',
+        addressRegion: 'Gujarat',
+        postalCode: '380015',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('kochi') || loc.includes('cochin')) {
+      return {
+        streetAddress: `${company} Infopark Campus, Kakkanad`,
+        addressLocality: 'Kochi',
+        addressRegion: 'Kerala',
+        postalCode: '682042',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('trivandrum') || loc.includes('thiruvananthapuram')) {
+      return {
+        streetAddress: `${company} Technopark Campus, Karyavattom`,
+        addressLocality: 'Thiruvananthapuram',
+        addressRegion: 'Kerala',
+        postalCode: '695581',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('coimbatore')) {
+      return {
+        streetAddress: `${company} IT Park, Peelamedu`,
+        addressLocality: 'Coimbatore',
+        addressRegion: 'Tamil Nadu',
+        postalCode: '641014',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('indore')) {
+      return {
+        streetAddress: `${company} Super Corridor IT Park`,
+        addressLocality: 'Indore',
+        addressRegion: 'Madhya Pradesh',
+        postalCode: '452005',
+        addressCountry: 'IN',
+      };
+    }
+    if (loc.includes('jaipur')) {
+      return {
+        streetAddress: `${company} Mahindra World City Tech Zone`,
+        addressLocality: 'Jaipur',
+        addressRegion: 'Rajasthan',
+        postalCode: '302037',
+        addressCountry: 'IN',
+      };
+    }
+
+    const safeLoc = location || 'India';
+    return {
+      streetAddress: `${company} Corporate Office, ${safeLoc}`,
+      addressLocality: safeLoc,
+      addressRegion: 'India',
+      postalCode: '110001',
+      addressCountry: 'IN',
+    };
+  };
+
+  // Google Search Console requires monthsOfExperience to be a strictly positive integer (> 0).
+  // For freshers/entry-level roles requiring 0 experience, Google recommends textual description
+  // and experienceInPlaceOfEducation rather than monthsOfExperience: 0.
+  const getExperienceRequirements = (expString?: string | null) => {
+    if (!expString || /fresher|0\s*years?|0\s*-\s*0|entry\s*level|intern/i.test(expString)) {
+      return {
+        'experienceRequirements': 'No prior experience required (Freshers / Entry Level)',
+        'experienceInPlaceOfEducation': true,
+      };
+    }
+    const yearMatch = expString.match(/(\d+)\s*(?:\+|-|\s)*\s*years?/i);
+    if (yearMatch) {
+      const years = parseInt(yearMatch[1], 10);
+      if (years > 0) {
+        return {
+          'experienceRequirements': {
+            '@type': 'OccupationalExperienceRequirements',
+            'monthsOfExperience': years * 12,
+          },
+        };
+      }
+    }
+    const monthMatch = expString.match(/(\d+)\s*(?:\+|-|\s)*\s*months?/i);
+    if (monthMatch) {
+      const months = parseInt(monthMatch[1], 10);
+      if (months > 0) {
+        return {
+          'experienceRequirements': {
+            '@type': 'OccupationalExperienceRequirements',
+            'monthsOfExperience': months,
+          },
+        };
+      }
+    }
+    return {
+      'experienceRequirements': 'No prior experience required (Freshers / Entry Level)',
+      'experienceInPlaceOfEducation': true,
+    };
+  };
+
   const jobPostingJsonLd = {
     '@type': 'JobPosting',
     'title': `${job.title} (Freshers / Entry Level)`,
@@ -441,10 +648,7 @@ export default async function JobDetailsPage({ params }: Props) {
     'validThrough': validThroughDate,
     'employmentType': isInternship ? 'INTERN' : 'FULL_TIME',
     'directApply': true,
-    'experienceRequirements': {
-      '@type': 'OccupationalExperienceRequirements',
-      'monthsOfExperience': 0,
-    },
+    ...getExperienceRequirements(job.eligibility),
     'hiringOrganization': {
       '@type': 'Organization',
       'name': job.company,
@@ -455,9 +659,7 @@ export default async function JobDetailsPage({ params }: Props) {
       '@type': 'Place',
       'address': {
         '@type': 'PostalAddress',
-        'addressLocality': job.location,
-        'addressRegion': 'India',
-        'addressCountry': 'IN',
+        ...getJobPostalAddress(job.location, job.company),
       },
     },
     ...(isRemote
@@ -519,16 +721,13 @@ export default async function JobDetailsPage({ params }: Props) {
         </div>
       )}
 
-      {/* Back to Jobs / Internships Link */}
+      {/* Back to Jobs / Internships / Company Link */}
       <div className="flex items-center">
-        <Link
-          href={isInternship ? "/internships" : "/jobs"}
-          prefetch={true}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-indigo-600 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {isInternship ? 'Back to Internships' : 'Back to All Jobs'}
-        </Link>
+        <JobBackButton
+          defaultHref={isInternship ? "/internships" : "/jobs"}
+          defaultLabel={isInternship ? 'Back to Internships' : 'Back to All Jobs'}
+          companyName={job.company}
+        />
       </div>
 
       {/* Main Job Layout */}

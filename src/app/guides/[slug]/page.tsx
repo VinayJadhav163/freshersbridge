@@ -13,7 +13,8 @@ import {
   Sparkles,
   ArrowRight,
   Tag,
-  HelpCircle
+  HelpCircle,
+  Flame
 } from 'lucide-react';
 import ShareButton from '@/components/ShareButton';
 import GuideContentRenderer from '@/components/GuideContentRenderer';
@@ -276,8 +277,9 @@ export default async function GuideArticlePage({ params }: Props) {
 
           {/* Active Job Openings CTA */}
           <div className="rounded-2xl border border-border bg-card p-6 space-y-4 shadow-xs">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
-              🔥 Active Tech Job Drives
+            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Flame className="h-4 w-4 text-amber-500 fill-amber-500 shrink-0" />
+              <span>Active Tech Job Drives</span>
             </h3>
             <p className="text-xs text-muted-foreground">
               Explore 200+ verified off-campus drives posted in the last 1–3 days.

@@ -9,10 +9,13 @@ export default function PageNavigationLoader() {
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start smooth progress
   const startLoading = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+    if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
+
     setVisible(true);
     setProgress(25);
 
@@ -25,11 +28,18 @@ export default function PageNavigationLoader() {
         return prev + 12;
       });
     }, 150);
+
+    // Safety timeout: automatically finish and dismiss loading bar after 3.5s
+    // so it never gets stuck if navigation is cancelled, slow, or handled client-side
+    safetyTimeoutRef.current = setTimeout(() => {
+      finishLoading();
+    }, 3500);
   };
 
   // Complete and hide progress
   const finishLoading = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+    if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
     setProgress(100);
     const timer = setTimeout(() => {
       setVisible(false);
@@ -69,6 +79,8 @@ export default function PageNavigationLoader() {
   // Global click interceptor to start loading in 0ms on any internal navigation
   useEffect(() => {
     const handleDocumentClick = (e: MouseEvent) => {
+      if (e.defaultPrevented) return;
+
       // Find closest anchor tag
       const target = (e.target as HTMLElement)?.closest('a');
       if (!target) return;
@@ -110,9 +122,12 @@ export default function PageNavigationLoader() {
     };
 
     document.addEventListener('click', handleDocumentClick);
+    window.addEventListener('popstate', finishLoading);
     return () => {
       document.removeEventListener('click', handleDocumentClick);
+      window.removeEventListener('popstate', finishLoading);
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
     };
   }, []);
 
