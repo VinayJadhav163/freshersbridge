@@ -536,5 +536,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-20T13:57:25.665763+00:00"
+  },
+  {
+    "id": 24,
+    "company": "Amber",
+    "title": "QA - Intern",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459146075",
+    "freshersbridge_url": "https://freshersbridge.in/internships/qa-intern-amber",
+    "youtube_video_id": "si9z7FMUzsY",
+    "shorts_url": "https://www.youtube.com/shorts/si9z7FMUzsY",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17869246104644913",
+        "comment_id": "17903423313577966",
+        "url": "https://www.instagram.com/p/17869246104644913/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1952510022375158",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1952510022375158"
+      },
+      "timestamp": "2026-09-21T02:56:37.556138+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-21T02:57:31.503970+00:00"
   }
 ]
