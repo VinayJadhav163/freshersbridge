@@ -1,12 +1,12 @@
 {
   "site_url": "https://www.freshersbridge.in/",
-  "period": "2026-08-16 to 2026-09-13",
-  "generated_at": "2026-09-15 09:03:40 UTC",
-  "total_queries_tracked": 79,
+  "period": "2026-08-23 to 2026-09-20",
+  "generated_at": "2026-09-22 09:20:44 UTC",
+  "total_queries_tracked": 130,
   "total_clicks": 0,
-  "total_impressions": 161,
+  "total_impressions": 247,
   "avg_ctr_percent": 0.0,
-  "avg_position": 38.2,
+  "avg_position": 27.8,
   "top_queries_by_clicks": [
     {
       "query": "1 yes",
@@ -16,11 +16,46 @@
       "position": 2
     },
     {
+      "query": "2 nd round",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "query": "aase",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "query": "accenture",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "query": "accenture 2026 questions",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
       "query": "accenture aptitude syllabus",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
       "position": 49
+    },
+    {
+      "query": "accenture assessment test pattern",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 56
     },
     {
       "query": "accenture coding questions",
@@ -37,11 +72,46 @@
       "position": 44.3
     },
     {
+      "query": "accenture coding round",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "query": "accenture cutoff",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 13
+    },
+    {
       "query": "accenture eligibility criteria for freshers",
       "clicks": 0,
       "impressions": 2,
       "ctr": 0,
       "position": 70
+    },
+    {
+      "query": "accenture eligibility criteria for freshers 2022",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 89
+    },
+    {
+      "query": "accenture exam pattern",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 38
+    },
+    {
+      "query": "accenture nqt",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
     },
     {
       "query": "accenture placement process",
@@ -51,135 +121,72 @@
       "position": 47
     },
     {
-      "query": "accenture technical assessment questions 2026",
+      "query": "accenture rounds",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
-      "position": 3
+      "position": 5
     },
     {
-      "query": "after:2025-12-31 \"java\" technical reference exception -wikipedia -britannica -quizlet -linkedin -facebook",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 85
-    },
-    {
-      "query": "application support engineer",
+      "query": "accenture syllabus",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
       "position": 8
     },
     {
-      "query": "associate software engineer",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 3
-    },
-    {
-      "query": "ate accenture",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 1
-    },
-    {
-      "query": "ats friendly resume for freshers",
+      "query": "accenture technical assessment questions 2026",
       "clicks": 0,
       "impressions": 2,
       "ctr": 0,
-      "position": 89.5
+      "position": 2
     },
     {
-      "query": "ats resume",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0,
-      "position": 70.4
-    },
-    {
-      "query": "ats resume for freshers",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 90.5
-    },
-    {
-      "query": "cognizant careers for freshers",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0,
-      "position": 27.8
-    },
-    {
-      "query": "cognizant careers for freshers genc",
+      "query": "according to new syllabus",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
-      "position": 63
-    },
-    {
-      "query": "cognizant drive for freshers",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 32
-    },
-    {
-      "query": "cognizant fresher hiring",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 28.5
-    },
-    {
-      "query": "cognizant freshers",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 20.5
-    },
-    {
-      "query": "cognizant freshers careers",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 29
+      "position": 4
     }
   ],
   "striking_distance_opportunities": [
     {
       "query": "infosys sp dse package",
       "clicks": 0,
-      "impressions": 11,
+      "impressions": 16,
       "ctr": 0,
-      "position": 8.7,
+      "position": 8.6,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     }
   ],
   "top_pages": [
     {
       "url": "https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers",
-      "clicks": 8,
-      "impressions": 375,
-      "ctr": 2.13,
-      "position": 6.3
+      "clicks": 23,
+      "impressions": 1499,
+      "ctr": 1.53,
+      "position": 5.3
     },
     {
       "url": "https://www.freshersbridge.in/",
-      "clicks": 3,
-      "impressions": 11,
-      "ctr": 27.27,
-      "position": 6
+      "clicks": 4,
+      "impressions": 20,
+      "ctr": 20.0,
+      "position": 6.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/guides/infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide",
+      "clicks": 1,
+      "impressions": 189,
+      "ctr": 0.53,
+      "position": 10.6
     },
     {
       "url": "https://www.freshersbridge.in/about",
       "clicks": 0,
-      "impressions": 5,
+      "impressions": 6,
       "ctr": 0,
-      "position": 2.8
+      "position": 3.7
     },
     {
       "url": "https://www.freshersbridge.in/affiliate-disclosure",
@@ -191,37 +198,37 @@
     {
       "url": "https://www.freshersbridge.in/career-tools",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 7,
       "ctr": 0,
-      "position": 7.5
+      "position": 7.6
     },
     {
       "url": "https://www.freshersbridge.in/companies",
       "clicks": 0,
-      "impressions": 2,
+      "impressions": 4,
       "ctr": 0,
-      "position": 5
+      "position": 8
     },
     {
       "url": "https://www.freshersbridge.in/companies/cognizant",
       "clicks": 0,
-      "impressions": 32,
+      "impressions": 34,
       "ctr": 0,
-      "position": 24.8
+      "position": 24.7
     },
     {
       "url": "https://www.freshersbridge.in/companies/infosys",
       "clicks": 0,
-      "impressions": 11,
+      "impressions": 21,
       "ctr": 0,
-      "position": 34.1
+      "position": 34.0
     },
     {
       "url": "https://www.freshersbridge.in/contact",
       "clicks": 0,
-      "impressions": 2,
+      "impressions": 3,
       "ctr": 0,
-      "position": 3
+      "position": 3.7
     },
     {
       "url": "https://www.freshersbridge.in/disclaimer",
@@ -233,23 +240,23 @@
     {
       "url": "https://www.freshersbridge.in/guides",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 7,
       "ctr": 0,
-      "position": 7.7
+      "position": 8
     },
     {
       "url": "https://www.freshersbridge.in/guides/ats-friendly-resume-guide-tech-freshers-with-examples",
       "clicks": 0,
-      "impressions": 14,
+      "impressions": 26,
       "ctr": 0,
-      "position": 61.8
+      "position": 44.9
     },
     {
       "url": "https://www.freshersbridge.in/guides/cognizant-genc-elevate-2026-exam-pattern-interview-blueprint",
       "clicks": 0,
-      "impressions": 5,
+      "impressions": 13,
       "ctr": 0,
-      "position": 22.2
+      "position": 14.3
     },
     {
       "url": "https://www.freshersbridge.in/guides/full-stack-web-development-roadmap-college-students",
@@ -257,13 +264,6 @@
       "impressions": 4,
       "ctr": 0,
       "position": 44
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides/hr-interview-questions-answers-for-freshers-with-best-responses",
-      "clicks": 0,
-      "impressions": 17,
-      "ctr": 0,
-      "position": 63.8
     }
   ]
 }
