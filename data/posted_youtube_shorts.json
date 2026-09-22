@@ -648,5 +648,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-22T02:57:18.257928+00:00"
+  },
+  {
+    "id": 28,
+    "company": "Talentmatics",
+    "title": "SDE-1 — Junior Software Development Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458385200",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/sde-1-junior-software-development-engineer-talentmatics",
+    "youtube_video_id": "QrmZyFsSiD4",
+    "shorts_url": "https://www.youtube.com/shorts/QrmZyFsSiD4",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17991771947846850",
+        "comment_id": "18136041283712149",
+        "url": "https://www.instagram.com/p/17991771947846850/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1582311826928034",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1582311826928034"
+      },
+      "timestamp": "2026-09-22T07:56:21.240253+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-22T07:57:20.656273+00:00"
   }
 ]
