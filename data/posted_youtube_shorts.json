@@ -760,5 +760,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-23T07:57:11.599530+00:00"
+  },
+  {
+    "id": 32,
+    "company": "IBM",
+    "title": "Application developer Intern- IBM cloud full stack",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456902007",
+    "freshersbridge_url": "https://freshersbridge.in/internships/application-developer-intern-ibm-cloud-full-stack-ibm",
+    "youtube_video_id": "YWzExBS7mjU",
+    "shorts_url": "https://www.youtube.com/shorts/YWzExBS7mjU",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18095869139396290",
+        "comment_id": "18117706075744360",
+        "url": "https://www.instagram.com/p/18095869139396290/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2211326616098033",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2211326616098033"
+      },
+      "timestamp": "2026-09-23T13:56:22.459182+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-23T13:57:24.380336+00:00"
   }
 ]
