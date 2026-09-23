@@ -704,5 +704,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-22T13:58:07.627667+00:00"
+  },
+  {
+    "id": 30,
+    "company": "Smowcode",
+    "title": "Embedded Systems Intern",
+    "salary": "₹15,000",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456987892",
+    "freshersbridge_url": "https://freshersbridge.in/internships/embedded-systems-intern-smowcode",
+    "youtube_video_id": "VPX1RCgBRzE",
+    "shorts_url": "https://www.youtube.com/shorts/VPX1RCgBRzE",
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18493554019099344",
+        "comment_id": "18069433181495816",
+        "url": "https://www.instagram.com/p/18493554019099344/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "38655945267382963",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=38655945267382963"
+      },
+      "timestamp": "2026-09-23T02:56:32.110096+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-23T02:57:28.333428+00:00"
   }
 ]
