@@ -19,13 +19,20 @@ export default function JobBackButton({
   companySlug,
 }: JobBackButtonProps) {
   const router = useRouter();
+
+  // If this job belongs to a registered company profile, default to that company's jobs page
+  const initialHref = companySlug ? `/companies/${companySlug}` : defaultHref;
+  const initialLabel = companySlug
+    ? `Back to ${companyName || 'Company'} Jobs`
+    : defaultLabel;
+
   const [backTarget, setBackTarget] = useState<{
     href: string;
     label: string;
     isHistoryBack?: boolean;
   }>({
-    href: defaultHref,
-    label: defaultLabel,
+    href: initialHref,
+    label: initialLabel,
     isHistoryBack: false,
   });
 
@@ -33,12 +40,49 @@ export default function JobBackButton({
     try {
       if (typeof window === 'undefined') return;
 
+      // 1. Check URL query params: e.g. /jobs/xyz?from=/companies/tcs
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+      if (fromParam && fromParam.startsWith('/companies')) {
+        const isSpecific = fromParam.split('/').filter(Boolean).length >= 2;
+        const label = isSpecific && companyName
+          ? `Back to ${companyName}`
+          : 'Back to Company';
+        setBackTarget({
+          href: fromParam,
+          label,
+          isHistoryBack: true,
+        });
+        return;
+      }
+
+      // 2. Check session storage for recently browsed company page
+      const stored = sessionStorage.getItem('last_company_page');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed?.href && parsed.href.startsWith('/companies')) {
+            // Match if user previously visited this specific company or came from any company page
+            if (!companySlug || parsed.href.includes(companySlug) || parsed.name === companyName) {
+              setBackTarget({
+                href: parsed.href,
+                label: `Back to ${parsed.name || companyName || 'Company'}`,
+                isHistoryBack: true,
+              });
+              return;
+            }
+          }
+        } catch {
+          // Ignore parsing error
+        }
+      }
+
+      // 3. Fallback to document.referrer if available
       const referrer = document.referrer;
       if (referrer && referrer.startsWith(window.location.origin)) {
         const referrerUrl = new URL(referrer);
         const path = referrerUrl.pathname;
 
-        // If the user arrived from a company page (e.g. /companies/infosys or /companies)
         if (path.startsWith('/companies')) {
           const pathSegments = path.split('/').filter(Boolean);
           const isSpecificCompany = pathSegments.length >= 2;
@@ -51,15 +95,25 @@ export default function JobBackButton({
             label,
             isHistoryBack: true,
           });
+          return;
         }
       }
+
+      // 4. If this job belongs to a registered company (e.g. TCS, Infosys, etc.)
+      if (companySlug) {
+        setBackTarget({
+          href: `/companies/${companySlug}`,
+          label: `Back to ${companyName || 'Company'} Jobs`,
+          isHistoryBack: window.history.length > 1,
+        });
+      }
     } catch {
-      // Fallback to defaultHref
+      // Fallback
     }
-  }, [defaultHref, defaultLabel, companyName]);
+  }, [defaultHref, defaultLabel, companyName, companySlug]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (backTarget.isHistoryBack && window.history.length > 1) {
+    if (backTarget.isHistoryBack && typeof window !== 'undefined' && window.history.length > 1) {
       e.preventDefault();
       router.back();
     }

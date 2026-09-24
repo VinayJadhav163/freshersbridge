@@ -1,13 +1,48 @@
 {
   "site_url": "https://www.freshersbridge.in/",
-  "period": "2026-08-23 to 2026-09-20",
-  "generated_at": "2026-09-22 09:20:44 UTC",
-  "total_queries_tracked": 130,
-  "total_clicks": 0,
-  "total_impressions": 247,
-  "avg_ctr_percent": 0.0,
-  "avg_position": 27.8,
+  "period": "2026-08-25 to 2026-09-22",
+  "generated_at": "2026-09-24 22:02:13 UTC",
+  "total_queries_tracked": 277,
+  "total_clicks": 5,
+  "total_impressions": 562,
+  "avg_ctr_percent": 0.89,
+  "avg_position": 16.5,
   "top_queries_by_clicks": [
+    {
+      "query": "erp entry level jobs",
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 25.0,
+      "position": 3.2
+    },
+    {
+      "query": "hedron robots",
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 100,
+      "position": 8
+    },
+    {
+      "query": "medtronic hyderabad careers",
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 100,
+      "position": 1
+    },
+    {
+      "query": "software engineer jobs internship",
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 3
+    },
+    {
+      "query": "software testing internship for freshers",
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 8
+    },
     {
       "query": "1 yes",
       "clicks": 0,
@@ -21,6 +56,20 @@
       "impressions": 1,
       "ctr": 0,
       "position": 1
+    },
+    {
+      "query": "2025 batch hiring",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 2.5
+    },
+    {
+      "query": "2026 internship",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
     },
     {
       "query": "aase",
@@ -60,9 +109,9 @@
     {
       "query": "accenture coding questions",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
-      "position": 31
+      "position": 16.5
     },
     {
       "query": "accenture coding questions 2023",
@@ -98,172 +147,147 @@
       "impressions": 1,
       "ctr": 0,
       "position": 89
-    },
-    {
-      "query": "accenture exam pattern",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 38
-    },
-    {
-      "query": "accenture nqt",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
-    },
-    {
-      "query": "accenture placement process",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 47
-    },
-    {
-      "query": "accenture rounds",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 5
-    },
-    {
-      "query": "accenture syllabus",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 8
-    },
-    {
-      "query": "accenture technical assessment questions 2026",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 2
-    },
-    {
-      "query": "according to new syllabus",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 4
     }
   ],
   "striking_distance_opportunities": [
     {
+      "query": "internships for college students",
+      "clicks": 0,
+      "impressions": 37,
+      "ctr": 0,
+      "position": 6.5,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "internship for college students",
+      "clicks": 0,
+      "impressions": 33,
+      "ctr": 0,
+      "position": 6.2,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
       "query": "infosys sp dse package",
       "clicks": 0,
-      "impressions": 16,
+      "impressions": 17,
       "ctr": 0,
       "position": 8.6,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "off campus drive 2026 for freshers",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 4.8,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     }
   ],
   "top_pages": [
     {
       "url": "https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers",
-      "clicks": 23,
-      "impressions": 1499,
-      "ctr": 1.53,
-      "position": 5.3
+      "clicks": 30,
+      "impressions": 1757,
+      "ctr": 1.71,
+      "position": 5.2
     },
     {
       "url": "https://www.freshersbridge.in/",
       "clicks": 4,
-      "impressions": 20,
-      "ctr": 20.0,
+      "impressions": 26,
+      "ctr": 15.38,
       "position": 6.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/erpfunctional-support-mars-cosmetics",
+      "clicks": 2,
+      "impressions": 25,
+      "ctr": 8.0,
+      "position": 5.2
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/software-engineer-internship-jobluxe",
+      "clicks": 2,
+      "impressions": 48,
+      "ctr": 4.17,
+      "position": 8.1
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/software-testing-internship-webaxis-software-services",
+      "clicks": 2,
+      "impressions": 51,
+      "ctr": 3.92,
+      "position": 4.2
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/ai-agent-development-internship-manifest-hospitality",
+      "clicks": 2,
+      "impressions": 33,
+      "ctr": 6.06,
+      "position": 5.6
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/corporate-banking-capital-strats-deutsche-bank",
+      "clicks": 2,
+      "impressions": 34,
+      "ctr": 5.88,
+      "position": 4.9
     },
     {
       "url": "https://www.freshersbridge.in/guides/infosys-sp-dse-2026-recruitment-process-syllabus-coding-guide",
       "clicks": 1,
-      "impressions": 189,
-      "ctr": 0.53,
-      "position": 10.6
+      "impressions": 213,
+      "ctr": 0.47,
+      "position": 10.3
     },
     {
-      "url": "https://www.freshersbridge.in/about",
-      "clicks": 0,
+      "url": "https://www.freshersbridge.in/internships/market-research-analyst-lbd-robotics-private-limited",
+      "clicks": 1,
+      "impressions": 20,
+      "ctr": 5.0,
+      "position": 6.8
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/nodejs-development-internship-snva-ventures",
+      "clicks": 1,
+      "impressions": 154,
+      "ctr": 0.65,
+      "position": 5.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/robotics-engineering-intern-ros2-sensor-integration-simulation-hedron-robots-a-brand-of-hedron-brands-and-consulting-pvt-limited",
+      "clicks": 1,
       "impressions": 6,
-      "ctr": 0,
-      "position": 3.7
+      "ctr": 16.67,
+      "position": 7.3
     },
     {
-      "url": "https://www.freshersbridge.in/affiliate-disclosure",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
+      "url": "https://www.freshersbridge.in/internships/software-engineering-intern-flam?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic",
+      "clicks": 1,
+      "impressions": 5,
+      "ctr": 20.0,
+      "position": 2
     },
     {
-      "url": "https://www.freshersbridge.in/career-tools",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0,
-      "position": 7.6
+      "url": "https://www.freshersbridge.in/internships/software-testing-crazy-for-success-foundation",
+      "clicks": 1,
+      "impressions": 5,
+      "ctr": 20.0,
+      "position": 7.8
     },
     {
-      "url": "https://www.freshersbridge.in/companies",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0,
-      "position": 8
+      "url": "https://www.freshersbridge.in/jobs/it-developer-llm-engineer-medtronic",
+      "clicks": 1,
+      "impressions": 43,
+      "ctr": 2.33,
+      "position": 11.3
     },
     {
-      "url": "https://www.freshersbridge.in/companies/cognizant",
-      "clicks": 0,
-      "impressions": 34,
-      "ctr": 0,
-      "position": 24.7
-    },
-    {
-      "url": "https://www.freshersbridge.in/companies/infosys",
-      "clicks": 0,
-      "impressions": 21,
-      "ctr": 0,
-      "position": 34.0
-    },
-    {
-      "url": "https://www.freshersbridge.in/contact",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0,
-      "position": 3.7
-    },
-    {
-      "url": "https://www.freshersbridge.in/disclaimer",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 9
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0,
-      "position": 8
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides/ats-friendly-resume-guide-tech-freshers-with-examples",
-      "clicks": 0,
-      "impressions": 26,
-      "ctr": 0,
-      "position": 44.9
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides/cognizant-genc-elevate-2026-exam-pattern-interview-blueprint",
-      "clicks": 0,
-      "impressions": 13,
-      "ctr": 0,
-      "position": 14.3
-    },
-    {
-      "url": "https://www.freshersbridge.in/guides/full-stack-web-development-roadmap-college-students",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0,
-      "position": 44
+      "url": "https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services",
+      "clicks": 1,
+      "impressions": 18,
+      "ctr": 5.56,
+      "position": 6.4
     }
   ]
 }

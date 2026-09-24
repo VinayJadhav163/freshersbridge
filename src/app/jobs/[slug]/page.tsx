@@ -726,7 +726,8 @@ export default async function JobDetailsPage({ params }: Props) {
         <JobBackButton
           defaultHref={isInternship ? "/internships" : "/jobs"}
           defaultLabel={isInternship ? 'Back to Internships' : 'Back to All Jobs'}
-          companyName={job.company}
+          companyName={matchedCompany?.name || job.company}
+          companySlug={matchedCompany?.slug}
         />
       </div>
 

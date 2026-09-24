@@ -9,6 +9,10 @@ import { getCompanyLogo, getCompanyColor } from '@/lib/companiesData';
 
 interface JobCardProps {
   job: Job;
+  fromCompany?: {
+    slug: string;
+    name?: string;
+  };
 }
 
 function getValidSalary(salary?: string | null): string | null {
@@ -61,7 +65,7 @@ function formatSkillName(skill: string): string {
   return s;
 }
 
-export default function JobCard({ job }: JobCardProps) {
+export default function JobCard({ job, fromCompany }: JobCardProps) {
   const isInternship =
     job.job_type === 'internship' ||
     /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title) ||
@@ -73,7 +77,8 @@ export default function JobCard({ job }: JobCardProps) {
   const showInternshipPill = isInternship && !titleMentionsIntern;
 
   const [imgError, setImgError] = useState(false);
-  const detailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
+  const baseDetailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
+  const detailUrl = fromCompany ? `${baseDetailUrl}?from=/companies/${fromCompany.slug}` : baseDetailUrl;
   const packageText = getValidSalary(job.salary);
   let rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);
   if (job.company?.toLowerCase().includes('infosys') || rawLogo?.includes('infosys.svg')) {

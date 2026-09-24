@@ -270,10 +270,21 @@ export default async function CompanyDetailPage({ params }: Props) {
               </span>
             </div>
 
+            {/* Track company context in session for back navigation */}
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `try{sessionStorage.setItem('last_company_page',JSON.stringify({href:'/companies/${company.slug}',name:${JSON.stringify(company.shortName || company.name)}}))}catch(e){}`,
+              }}
+            />
+
             {jobs.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {jobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    fromCompany={{ slug: company.slug, name: company.shortName || company.name }}
+                  />
                 ))}
               </div>
             ) : (
