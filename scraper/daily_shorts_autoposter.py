@@ -152,22 +152,34 @@ def run_daily_autoposter(privacy_status="public", force=False):
 
     # 3. Upload to YouTube Shorts
     print(f"\n[3/3] Uploading to YouTube Shorts...")
-    upload_res = upload_short(
-        video_path=video_path,
-        title=short_title,
-        description=caption_content,
-        privacy_status=privacy_status
-    )
+    upload_res = None
+    try:
+        upload_res = upload_short(
+            video_path=video_path,
+            title=short_title,
+            description=caption_content,
+            privacy_status=privacy_status
+        )
 
-    # 4. Automatically Post Official First Comment with Direct Apply Link
+        # 4. Automatically Post Official First Comment with Direct Apply Link
+        fb_url = get_freshersbridge_job_url(job)
+        first_comment_text = (
+            f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
+            f"🔗 {fb_url}\n\n"
+            f"🌐 Verified Off-Campus Opportunities: https://freshersbridge.in 🚀\n"
+            f"📌 Tip: Save & share with friends looking for a job!"
+        )
+        if upload_res and upload_res.get("video_id"):
+            post_first_comment(upload_res.get("video_id"), first_comment_text)
+    except Exception as yt_err:
+        print(f"\n❌ [YouTube Shorts Upload Failed]: {yt_err}")
+        print("⚠️ If this is due to 'invalid_grant' (token expired/revoked):")
+        print("   1. Switch Google Cloud OAuth Consent Screen from 'Testing' to 'In Production'.")
+        print("   2. Run `python scraper/reauth_youtube.py` on your computer to generate a new long-lived token.")
+        print("   3. Update GitHub Secret `YOUTUBE_TOKEN_JSON` with the new token string.\n")
+        upload_res = {"video_id": None, "short_url": None, "error": str(yt_err)}
+
     fb_url = get_freshersbridge_job_url(job)
-    first_comment_text = (
-        f"👇 DIRECT APPLY LINK FOR {company.upper()}:\n"
-        f"🔗 {fb_url}\n\n"
-        f"🌐 Verified Off-Campus Opportunities: https://freshersbridge.in 🚀\n"
-        f"📌 Tip: Save & share with friends looking for a job!"
-    )
-    post_first_comment(upload_res.get("video_id"), first_comment_text)
 
     # 5. Cross-Post to Instagram Reels & Facebook Page Reels
     print(f"\n[4/4] Cross-Publishing to Instagram & Facebook Reels...")
