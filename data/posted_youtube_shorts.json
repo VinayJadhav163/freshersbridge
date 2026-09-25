@@ -788,5 +788,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-23T13:57:24.380336+00:00"
+  },
+  {
+    "id": 33,
+    "company": "Caresoft Systems Private Limited",
+    "title": "PHP Development Internship in Mira Bhayandar",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459632310",
+    "freshersbridge_url": "https://freshersbridge.in/internships/php-development-internship-in-mira-bhayandar-caresoft-systems-private-limited",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18033114395667573",
+        "comment_id": "18100484756568825",
+        "url": "https://www.instagram.com/p/18033114395667573/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1104428781945870",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1104428781945870"
+      },
+      "timestamp": "2026-09-25T02:56:23.706118+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-25T02:57:16.635991+00:00"
   }
 ]
