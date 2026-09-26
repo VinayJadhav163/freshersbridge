@@ -69,9 +69,7 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   other: {
-    ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
-      ? { 'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID }
-      : {}),
+    'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-6073401170733565',
   },
 };
 
@@ -80,7 +78,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-6073401170733565';
 
   return (
     <html
