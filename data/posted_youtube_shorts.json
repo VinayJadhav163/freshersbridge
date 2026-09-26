@@ -900,5 +900,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-26T02:57:05.740713+00:00"
+  },
+  {
+    "id": 37,
+    "company": "NatWest Group",
+    "title": "Java Microservices Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://in.indeed.com/viewjob?jk=8659d7c453c8d6a1",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/java-microservices-developer-natwest-group",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18225784003336380",
+        "comment_id": "18113259095022018",
+        "url": "https://www.instagram.com/p/18225784003336380/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1462922882354666",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1462922882354666"
+      },
+      "timestamp": "2026-09-26T07:56:19.206105+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-26T07:57:15.115991+00:00"
   }
 ]
