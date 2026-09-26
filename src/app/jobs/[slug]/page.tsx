@@ -600,15 +600,13 @@ export default async function JobDetailsPage({ params }: Props) {
     };
   };
 
-  // Google Search Console requires monthsOfExperience to be a strictly positive integer (> 0).
-  // For freshers/entry-level roles requiring 0 experience, Google recommends textual description
-  // and experienceInPlaceOfEducation rather than monthsOfExperience: 0.
+  // Google Search Console requires experienceRequirements to be an OccupationalExperienceRequirements object
+  // with a positive number for monthsOfExperience (> 0).
+  // For freshers, entry-level roles, or internships requiring 0 experience, Google recommends omitting
+  // experienceRequirements entirely (as it is optional) to avoid "Invalid enum value" warnings.
   const getExperienceRequirements = (expString?: string | null) => {
     if (!expString || /fresher|0\s*years?|0\s*-\s*0|entry\s*level|intern/i.test(expString)) {
-      return {
-        'experienceRequirements': 'No prior experience required (Freshers / Entry Level)',
-        'experienceInPlaceOfEducation': true,
-      };
+      return {};
     }
     const yearMatch = expString.match(/(\d+)\s*(?:\+|-|\s)*\s*years?/i);
     if (yearMatch) {
@@ -634,10 +632,7 @@ export default async function JobDetailsPage({ params }: Props) {
         };
       }
     }
-    return {
-      'experienceRequirements': 'No prior experience required (Freshers / Entry Level)',
-      'experienceInPlaceOfEducation': true,
-    };
+    return {};
   };
 
   const jobPostingJsonLd = {
