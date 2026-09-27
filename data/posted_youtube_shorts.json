@@ -1012,5 +1012,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-27T07:57:20.756723+00:00"
+  },
+  {
+    "id": 41,
+    "company": "Infosys",
+    "title": "Python Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Hyderabad, Telangana, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457672035",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/python-developer-infosys",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18084099239308665",
+        "comment_id": "18009649517967306",
+        "url": "https://www.instagram.com/p/18084099239308665/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1556790309465179",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1556790309465179"
+      },
+      "timestamp": "2026-09-27T13:56:21.171635+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-27T13:57:15.498185+00:00"
   }
 ]
