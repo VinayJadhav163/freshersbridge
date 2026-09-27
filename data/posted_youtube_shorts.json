@@ -956,5 +956,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-26T13:57:10.410210+00:00"
+  },
+  {
+    "id": 39,
+    "company": "IDBS",
+    "title": "Software Engineer I",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456962453",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/software-engineer-i-idbs",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18142225513577924",
+        "comment_id": "18409252144094937",
+        "url": "https://www.instagram.com/p/18142225513577924/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1586765839598999",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1586765839598999"
+      },
+      "timestamp": "2026-09-27T02:56:29.039045+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-27T02:57:33.100128+00:00"
   }
 ]
