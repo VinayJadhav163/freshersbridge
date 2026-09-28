@@ -1096,5 +1096,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-28T07:57:13.887031+00:00"
+  },
+  {
+    "id": 44,
+    "company": "Giesecke+Devrient",
+    "title": "Junior Full Stack Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457459160",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/junior-full-stack-developer-gieseckedevrient",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18126870764499495",
+        "comment_id": "17864493660677933",
+        "url": "https://www.instagram.com/p/18126870764499495/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1502991964996134",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1502991964996134"
+      },
+      "timestamp": "2026-09-28T13:57:02.370423+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-28T13:58:00.616085+00:00"
   }
 ]
