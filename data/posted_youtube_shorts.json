@@ -1040,5 +1040,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-27T13:57:15.498185+00:00"
+  },
+  {
+    "id": 42,
+    "company": "Qualcomm",
+    "title": "Engineer - Linux Audio device drivers",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Hyderabad, Telangana, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457478782",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/engineer-linux-audio-device-drivers-qualcomm",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17964530018983252",
+        "comment_id": "18177006859442197",
+        "url": "https://www.instagram.com/p/17964530018983252/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1362726572599583",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1362726572599583"
+      },
+      "timestamp": "2026-09-28T02:56:27.351613+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-28T02:57:21.129091+00:00"
   }
 ]

@@ -568,5 +568,24 @@
       },
       "timestamp": "2026-09-27T13:56:21.171635+00:00"
     }
+  },
+  {
+    "id": 31,
+    "video_file": "qualcomm_20260928_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17964530018983252",
+        "comment_id": "18177006859442197",
+        "url": "https://www.instagram.com/p/17964530018983252/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1362726572599583",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1362726572599583"
+      },
+      "timestamp": "2026-09-28T02:56:27.351613+00:00"
+    }
   }
 ]
