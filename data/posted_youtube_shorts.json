@@ -1068,5 +1068,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-28T02:57:21.129091+00:00"
+  },
+  {
+    "id": 43,
+    "company": "ASTIKA SOFTWARE TECHNOLOGIES PRIVATE LIMITED",
+    "title": "Jr.Java Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Hyderabad, Telangana, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457743390",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/jrjava-developer-astika-software-technologies-private-limited",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18129005359771885",
+        "comment_id": "18094517930124572",
+        "url": "https://www.instagram.com/p/18129005359771885/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1613999626893752",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1613999626893752"
+      },
+      "timestamp": "2026-09-28T07:56:27.940343+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-28T07:57:13.887031+00:00"
   }
 ]
