@@ -644,5 +644,24 @@
       },
       "timestamp": "2026-09-29T02:56:30.938576+00:00"
     }
+  },
+  {
+    "id": 35,
+    "video_file": "loghubag_20260929_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18119286200318149",
+        "comment_id": "18138035392527172",
+        "url": "https://www.instagram.com/p/18119286200318149/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1282476050671842",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1282476050671842"
+      },
+      "timestamp": "2026-09-29T07:56:17.134081+00:00"
+    }
   }
 ]
