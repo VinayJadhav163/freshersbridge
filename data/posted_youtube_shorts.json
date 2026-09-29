@@ -1124,5 +1124,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-28T13:58:00.616085+00:00"
+  },
+  {
+    "id": 45,
+    "company": "Light & Wonder",
+    "title": "Associate Back-End Software Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459682517",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/associate-back-end-software-engineer-light-wonder",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17957269983253174",
+        "comment_id": "18116288720060401",
+        "url": "https://www.instagram.com/p/17957269983253174/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "4092919727677590",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=4092919727677590"
+      },
+      "timestamp": "2026-09-29T02:56:30.938576+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-29T02:57:30.344889+00:00"
   }
 ]
