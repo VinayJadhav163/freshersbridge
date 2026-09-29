@@ -1180,5 +1180,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-29T07:57:17.097553+00:00"
+  },
+  {
+    "id": 47,
+    "company": "Bqarlson Software Technologies Private Limited",
+    "title": "React Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457274745",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/react-developer-bqarlson-software-technologies-private-limited",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18346682899270291",
+        "comment_id": "18195806548384665",
+        "url": "https://www.instagram.com/p/18346682899270291/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1669101844817862",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1669101844817862"
+      },
+      "timestamp": "2026-09-29T13:56:39.289969+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-29T13:57:35.627275+00:00"
   }
 ]
