@@ -1264,5 +1264,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-30T07:57:48.744657+00:00"
+  },
+  {
+    "id": 50,
+    "company": "ACL Digital",
+    "title": "C++ Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458373314",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/c-developer-acl-digital",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17960091902999271",
+        "comment_id": "18105804814970729",
+        "url": "https://www.instagram.com/p/17960091902999271/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1811666666633297",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1811666666633297"
+      },
+      "timestamp": "2026-09-30T13:56:37.651983+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-30T13:57:37.742135+00:00"
   }
 ]
