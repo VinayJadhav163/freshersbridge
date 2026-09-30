@@ -1208,5 +1208,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-29T13:57:35.627275+00:00"
+  },
+  {
+    "id": 48,
+    "company": "Siemens",
+    "title": "Software Developer - Train IT",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4448531530",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/software-developer-train-it-siemens",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18102822848574665",
+        "comment_id": "18059271395539317",
+        "url": "https://www.instagram.com/p/18102822848574665/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1118629527787744",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1118629527787744"
+      },
+      "timestamp": "2026-09-30T02:56:23.693098+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-09-30T02:57:27.964137+00:00"
   }
 ]
