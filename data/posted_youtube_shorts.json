@@ -1320,5 +1320,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-01T02:57:36.766428+00:00"
+  },
+  {
+    "id": 52,
+    "company": "Microland",
+    "title": "Administrator - Field Services",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://in.indeed.com/viewjob?jk=5b31b3087fab55e7",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/administrator-field-services-microland",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18129516889691710",
+        "comment_id": "17862790347696974",
+        "url": "https://www.instagram.com/p/18129516889691710/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1450342280537610",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1450342280537610"
+      },
+      "timestamp": "2026-10-01T07:56:39.050058+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-01T07:57:33.429027+00:00"
   }
 ]
