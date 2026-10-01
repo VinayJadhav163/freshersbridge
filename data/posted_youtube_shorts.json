@@ -1292,5 +1292,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-09-30T13:57:37.742135+00:00"
+  },
+  {
+    "id": 51,
+    "company": "Microland",
+    "title": "Engineer - Field Services",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://in.indeed.com/viewjob?jk=ba5ccc53a2f69b0b",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/engineer-field-services-microland",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18218942095354554",
+        "comment_id": "18436045426182550",
+        "url": "https://www.instagram.com/p/18218942095354554/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "934207346435770",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=934207346435770"
+      },
+      "timestamp": "2026-10-01T02:56:33.961890+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-01T02:57:36.766428+00:00"
   }
 ]
