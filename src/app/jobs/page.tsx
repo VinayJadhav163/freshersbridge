@@ -41,11 +41,11 @@ export async function generateMetadata({ searchParams }: JobsPageProps): Promise
   const activeCat = resolveCategory(categories, categorySlug);
 
   const baseTitle = activeCat
-    ? `${activeCat.name} Jobs for Freshers 2026 | FreshersBridge`
-    : 'Browse Latest Off-Campus Tech Jobs for Freshers 2026 | FreshersBridge';
+    ? `${activeCat.name} Jobs for Freshers (2026 Batch) | Apply Online - FreshersBridge`
+    : 'Browse Latest Off-Campus Tech Jobs for Freshers 2026 | Apply Online - FreshersBridge';
   const baseDesc = activeCat
-    ? `Explore verified ${activeCat.name} entry-level job openings, graduate drives, and fresher engineering roles across India on FreshersBridge.`
-    : 'Explore verified entry-level software developer jobs, IT openings, and off-campus drives for college freshers across top tech companies in India.';
+    ? `Explore verified ${activeCat.name} entry-level job openings, graduate drives, and fresher engineering roles across India on FreshersBridge (2024, 2025, 2026 Batch). Apply online.`
+    : 'Explore verified entry-level software developer jobs, IT openings, and off-campus drives for college freshers across top tech companies in India (2026 Batch). Apply online.';
 
   return {
     title: baseTitle,

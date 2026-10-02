@@ -1948,6 +1948,167 @@ Best regards,
 \`\`\`
     `,
   },
+  {
+    id: '16',
+    slug: 'cognizant-genc-next-2026-recruitment-process-syllabus-coding-guide',
+    title: 'Cognizant GenC, GenC Next & Elevate 2026: Complete Recruitment Process, Syllabus & Coding Guide',
+    subtitle: 'A master preparation roadmap to crack Cognizant GenC (₹4.0 LPA), GenC Next (₹6.75 LPA), and GenC Elevate (₹9.0 LPA) hiring drives for 2024, 2025, and 2026 batch freshers.',
+    description: 'Detailed Cognizant GenC & GenC Next 2026 recruitment roadmap for freshers. Includes AMCAT / Superset assessment breakdown, Quantitative & Logical syllabus, Automata Fix debugging patterns, high-frequency coding questions, Java/SQL technical interview questions, and HR round tips.',
+    category: 'Company Patterns',
+    readTime: '14 min read',
+    publishedAt: '2026-10-02',
+    updatedAt: '2026-10-02',
+    author: {
+      name: 'FreshersBridge Career Team',
+      role: 'Career Tech Lead at FreshersBridge',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    },
+    tags: ['Cognizant GenC', 'GenC Next', 'Cognizant Elevate', 'Superset', 'AMCAT', 'Freshers 2026', 'Interview Prep'],
+    tableOfContents: [
+      { id: 'hiring-tracks', title: '1. Cognizant Freshers Hiring Roles & CTC Breakdown' },
+      { id: 'selection-rounds', title: '2. Four-Stage Selection Process (Superset / AMCAT Platform)' },
+      { id: 'syllabus-pattern', title: '3. Section-Wise Detailed Syllabus (Aptitude & Technical)' },
+      { id: 'automata-fix', title: '4. Automata Fix (Debugging) & Coding Section Masterclass' },
+      { id: 'technical-interview', title: '5. High-Frequency Technical Interview Questions (OOPs, Java, SQL)' },
+      { id: 'hr-interview', title: '6. HR & Behavioral Interview Preparation Tips' },
+    ],
+    directAnswerSummary: 'The Cognizant 2026 campus and off-campus recruitment drive consists of 4 main rounds: Cognitive & Technical Assessment on Superset/AMCAT (Numerical, Logical, English, and Automata Fix debugging), Advanced Coding Round (for GenC Next/Elevate tracks), Communication Test, and a Virtual Technical + HR Interview. CTC packages range from ₹4.0 LPA (GenC) to ₹6.75 LPA (GenC Next) and ₹9.0 LPA (GenC Elevate).',
+    faqs: [
+      {
+        question: 'What is the difference between Cognizant GenC, GenC Next, and GenC Elevate?',
+        answer: 'GenC offers ₹4.0 LPA for baseline software engineering and support. GenC Next offers ₹6.75 LPA for candidates who excel in advanced algorithmic coding and full-stack development. GenC Elevate offers ₹9.0 LPA to candidates with proven expertise in cloud architecture, AI/ML, and advanced problem-solving.'
+      },
+      {
+        question: 'What is the Automata Fix round in Cognizant GenC assessment?',
+        answer: 'Automata Fix evaluates code debugging skills. Candidates are given 7 buggy code snippets in C, C++, or Java and must identify and fix syntax, logical, or boundary errors within 20 minutes without altering the overall logic.'
+      },
+      {
+        question: 'What is the minimum eligibility criteria for Cognizant 2026 freshers drives?',
+        answer: 'B.E./B.Tech/M.E./M.Tech/MCA/M.Sc (CS/IT) graduates with a minimum of 60% or 6.0 CGPA throughout 10th, 12th, and graduation, with no active backlogs at the time of onboarding.'
+      },
+      {
+        question: 'Does Cognizant allow Python in the coding assessment round?',
+        answer: 'Yes, candidates can write solutions in Python 3, Java, C++, or C on the online compiler during both GenC and GenC Next coding assessments.'
+      }
+    ],
+    content: `
+### 1. Cognizant Freshers Hiring Roles & CTC Breakdown
+Cognizant is one of India's largest technology employers, hiring thousands of fresh graduates annually across three distinct talent streams based on online assessment scores:
+
+1. **Cognizant GenC (General Candidate):**
+   - **Salary Package:** ₹4.00 LPA to ₹4.25 LPA
+   - **Role Profile:** Programmer Analyst Trainee (PAT) engaged in software development, cloud infrastructure maintenance, testing, and modern application support.
+2. **Cognizant GenC Next (Advanced Engineering Track):**
+   - **Salary Package:** ₹6.75 LPA
+   - **Role Profile:** Digital Specialist Engineer working on Microservices, Spring Boot, React, Next.js, Cloud Native architectures, and DevOps pipelines.
+3. **Cognizant GenC Elevate (Elite Track):**
+   - **Salary Package:** ₹9.00 LPA
+   - **Role Profile:** High-performance software engineering, Generative AI integration, Data Engineering, and Distributed Systems.
+
+---
+
+### 2. Four-Stage Selection Process (Superset / AMCAT Platform)
+The hiring assessment is conducted through the **Superset portal** powered by the **SHL / AMCAT platform**:
+
+| Stage | Format & Duration | Elimination? | Focus Areas |
+| :--- | :--- | :---: | :--- |
+| **Stage 1: Cognitive Assessment** | 45 Questions / 50 Mins | **Yes** | Quantitative Aptitude, Logical Reasoning, and English Verbal Ability |
+| **Stage 2: Automata Fix / Technical** | 7 Code Debugging Snippets / 20 Mins | **Yes** | Syntax errors, off-by-one errors, infinite loops, and boundary edge cases in C/C++/Java |
+| **Stage 3: Advanced Coding Round** | 2 Algorithmic Problems / 60 Mins | **Track Booster** | Unlocked for GenC Next & Elevate shortlisting (Arrays, Hashing, Two Pointers, Dynamic Programming) |
+| **Stage 4: Technical + HR Interview** | Virtual on MS Teams (25–35 Mins) | **Final Gate** | Academic project deep-dive, Core Java/Python/SQL, Database Normalization, and Cultural Fit |
+
+> **Pro Tip:** In the AMCAT test engine, questions are adaptive. You cannot go back to change answers for previous questions once submitted. Manage your time prudently!
+
+---
+
+### 3. Section-Wise Detailed Syllabus (Aptitude & Technical)
+
+#### 1. Quantitative Aptitude (16 Questions / 20 Mins)
+- **High-Yield Topics:** Number Systems & Divisibility, Logarithms, HCF/LCM, Percentages, Profit and Loss, Simple & Compound Interest, Speed-Time-Distance, Work & Time, and Permutations & Combinations.
+- **Top Formula:** Work Done = Efficiency $\\times$ Time. For relative speed: when moving in opposite directions, relative speed $= S_1 + S_2$; in same direction $= |S_1 - S_2|$.
+
+#### 2. Logical Reasoning (14 Questions / 15 Mins)
+- **Core Topics:** Blood Relations (Coded family trees), Direction Sense with coordinate geometry, Syllogisms, Coding-Decoding (Alphabet shifts and pattern substitutions), Seating Arrangements (Linear and circular facing center), and Data Sufficiency.
+
+#### 3. Verbal Ability (15 Questions / 15 Mins)
+- **Core Topics:** Reading Comprehension, Sentence Completion, Error Spotting (Subject-Verb agreement, Preposition misuse), Antonyms/Synonyms, and Para Jumbles.
+
+---
+
+### 4. Automata Fix (Debugging) & Coding Section Masterclass
+
+#### What is Automata Fix?
+In the Automata Fix round, you are presented with pre-written code that either:
+1. Does not compile due to subtle syntax/type errors.
+2. Fails edge cases (e.g. integer overflow, empty array, single element).
+3. Produces incorrect output due to swapped variable logic or off-by-one loop boundaries.
+
+#### Common Automata Fix Bug Patterns:
+\`\`\`java
+// Buggy Code Example: Off-by-one array traversal causing ArrayIndexOutOfBoundsException
+public class ArraySum {
+    public static int calculateSum(int[] arr) {
+        int sum = 0;
+        // BUG: Loop condition 'i <= arr.length' goes out of bounds
+        // FIX: Change to 'i < arr.length'
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+        }
+        return sum;
+    }
+}
+\`\`\`
+
+#### Top Recurring GenC & GenC Next Coding Problems:
+1. **Find Subarray with Given Sum ($O(N)$ with Sliding Window):**
+\`\`\`python
+def find_subarray_sum(arr: list[int], target: int) -> list[int]:
+    curr_sum = 0
+    start = 0
+    for end in range(len(arr)):
+        curr_sum += arr[end]
+        while curr_sum > target and start < end:
+            curr_sum -= arr[start]
+            start += 1
+        if curr_sum == target:
+            return [start, end]
+    return [-1]
+\`\`\`
+
+2. **Longest Consecutive Sequence:** Finding the length of the longest consecutive sequence in an unsorted array using a Hash Set in $O(N)$ time.
+3. **Matrix Transpose & 90-Degree In-Place Rotation:** Standard 2D matrix transformation.
+
+---
+
+### 5. High-Frequency Technical Interview Questions (OOPs, Java, SQL)
+
+The Cognizant Technical Interview lasts approximately 25 to 30 minutes on Microsoft Teams.
+
+#### Top Technical Questions:
+1. **OOPs Principles:** "Explain Polymorphism with a real-world scenario. How does Dynamic Method Dispatch work in Java?"
+2. **Database & SQL:** "Write an SQL query to find the second highest salary using \`DENSE_RANK()\`."
+   \`\`\`sql
+   SELECT emp_name, salary 
+   FROM (
+       SELECT emp_name, salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rnk 
+       FROM Employees
+   ) sub 
+   WHERE rnk = 2;
+   \`\`\`
+3. **Java Memory & Collections:** "What is the difference between \`ArrayList\` and \`LinkedList\`? When should you use \`HashSet\` vs \`TreeSet\`?"
+4. **Project Architecture:** Be ready to explain your final-year college project: What technologies did you choose and why? How did you handle user authentication and database queries?
+
+---
+
+### 6. HR & Behavioral Interview Preparation Tips
+
+The HR round evaluates your communication skills, willingness to relocate, and alignment with Cognizant values:
+
+- **"Why Cognizant?"** — Mention Cognizant's digital transformation initiatives, strong learning culture, client portfolio in healthcare and banking, and their structured fresher onboarding roadmap.
+- **Relocation & Shifts:** Cognizant has delivery centers across Bangalore, Chennai, Hyderabad, Pune, Kolkata, Coimbatore, and Gurgaon. Be flexible and express readiness for 24/7 client delivery support.
+- **Handling Team Conflict:** Use the STAR method (Situation, Task, Action, Result) to explain how you navigated differing opinions during academic group projects.
+    `,
+  },
 ];
 
 export function getGuideBySlug(slug: string): GuideArticle | undefined {
@@ -2026,6 +2187,27 @@ export function getGuideFaqs(guide: GuideArticle): { question: string; answer: s
       {
         question: 'What is the minimum eligibility criteria for Infosys off-campus drives?',
         answer: 'B.E./B.Tech/M.E./M.Tech/MCA graduates with a minimum of 65% or 6.5 CGPA throughout 10th, 12th, and degree, with no active backlogs.',
+      },
+    ];
+  }
+
+  if (slug.includes('cognizant')) {
+    return [
+      {
+        question: 'What is the selection process for Cognizant GenC 2026 hiring?',
+        answer: 'Cognizant conducts a 4-round process: 1) Cognitive Assessment (Numerical, Logical, English), 2) Automata Fix (code debugging), 3) Advanced Coding test, and 4) Technical & HR virtual interview on Microsoft Teams.',
+      },
+      {
+        question: 'What is the salary package for Cognizant GenC, GenC Next, and Elevate?',
+        answer: 'Cognizant offers ₹4.0 LPA for GenC (PAT), ₹6.75 LPA for GenC Next (Digital Specialist Engineer), and ₹9.0 LPA for GenC Elevate.',
+      },
+      {
+        question: 'What is Automata Fix in Cognizant online test?',
+        answer: 'Automata Fix evaluates code debugging skills. Candidates must identify and fix syntax, logical, or boundary bugs in 7 pre-written code snippets within 20 minutes.',
+      },
+      {
+        question: 'Can 2024, 2025, and 2026 batch freshers apply for Cognizant off-campus drives?',
+        answer: 'Yes, B.E./B.Tech/MCA/M.Sc (CS/IT) graduates with a minimum of 60% aggregate and no active backlogs are eligible for Cognizant national recruitment drives.',
       },
     ];
   }

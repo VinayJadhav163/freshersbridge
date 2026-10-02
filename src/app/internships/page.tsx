@@ -41,11 +41,11 @@ export async function generateMetadata({ searchParams }: InternshipsPageProps): 
   const activeCat = resolveCategory(categories, categorySlug);
 
   const baseTitle = activeCat
-    ? `${activeCat.name} Internships for Students & Freshers 2026 | FreshersBridge`
-    : 'Browse Latest Tech & Software Internships for Freshers 2026 | FreshersBridge';
+    ? `${activeCat.name} Internships for Students & Freshers (2026 Batch) | Apply Online - FreshersBridge`
+    : 'Browse Latest Tech & Software Internships for College Students 2026 | Apply Online - FreshersBridge';
   const baseDesc = activeCat
-    ? `Find verified ${activeCat.name} internship opportunities, summer training roles, and student internships across India on FreshersBridge.`
-    : 'Apply for verified software engineering internships, developer roles, and tech trainee programs for college students & 2026 graduates.';
+    ? `Find verified ${activeCat.name} internship opportunities, summer training roles, and student internships across India on FreshersBridge (2024, 2025, 2026 Batch). Apply online.`
+    : 'Apply for verified software engineering internships, developer roles, and tech trainee programs for college students & 2026 batch graduates. Apply online on FreshersBridge.';
 
   return {
     title: baseTitle,

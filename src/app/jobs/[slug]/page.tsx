@@ -122,10 +122,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : false;
 
   const isInternship = job.job_type === 'internship' || /\b(intern|internship|interns)\b/i.test(job.title);
-  const roleType = isInternship ? 'Internship' : 'Freshers Job';
+  const roleType = isInternship ? 'Internship' : 'Job';
   const titlePrefix = isExpired ? '[Closed] ' : '';
-  const title = `${titlePrefix}${job.title} at ${job.company} - ${roleType} (2026 Batch) | FreshersBridge`;
-  const description = `Apply for ${job.title} at ${job.company} in ${job.location}. Verified entry-level ${roleType.toLowerCase()} opportunity. Eligibility: ${
+  const title = `${titlePrefix}${job.title} at ${job.company} | ${roleType} (2026 Batch) - Apply Online | FreshersBridge`;
+  const description = `Apply online for ${job.title} at ${job.company} in ${job.location}. Verified entry-level ${roleType.toLowerCase()} for freshers (2024, 2025, 2026 Batch). Eligibility: ${
     job.eligibility
   }. Required skills: ${job.skills.join(', ')}. Apply on FreshersBridge.in.`;
   const ogImageUrl = `https://freshersbridge.in/api/og/job?slug=${job.slug}`;
