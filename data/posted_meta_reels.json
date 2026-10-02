@@ -834,5 +834,24 @@
       },
       "timestamp": "2026-10-02T07:56:36.214181+00:00"
     }
+  },
+  {
+    "id": 45,
+    "video_file": "samsdigital_20261002_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18431550883197887",
+        "comment_id": "18128254207693345",
+        "url": "https://www.instagram.com/p/18431550883197887/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1122450546797978",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1122450546797978"
+      },
+      "timestamp": "2026-10-02T13:56:50.978319+00:00"
+    }
   }
 ]

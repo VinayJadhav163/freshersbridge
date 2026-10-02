@@ -1432,5 +1432,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-02T07:57:30.423081+00:00"
+  },
+  {
+    "id": 56,
+    "company": "SAMS DIGITAL",
+    "title": "React Native Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457735570",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/react-native-developer-sams-digital",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18431550883197887",
+        "comment_id": "18128254207693345",
+        "url": "https://www.instagram.com/p/18431550883197887/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1122450546797978",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1122450546797978"
+      },
+      "timestamp": "2026-10-02T13:56:50.978319+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-02T13:57:47.506984+00:00"
   }
 ]
