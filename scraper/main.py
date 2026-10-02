@@ -411,30 +411,52 @@ def run_pipeline(use_ai: bool = False, force: bool = False):
     
     if admin_key:
         logger.info(f"🚀 Auto-Publishing {len(clean_final_jobs)} verified non-duplicate jobs directly to: {api_url}")
-        try:
-            resp = requests.post(
-                api_url,
-                json={'jobs': clean_final_jobs, 'admin_key': admin_key},
-                headers={'Content-Type': 'application/json', 'x-admin-key': admin_key},
-                timeout=60
-            )
-            if resp.status_code == 200:
-                logger.info(f"🎉 Direct Auto-Publish succeeded! Response: {resp.json().get('message', 'OK')}")
+        
+        # Ingest in chunks of 40 to prevent Vercel / serverless function execution timeouts
+        api_chunk_size = 40
+        total_ingested = 0
+        all_published_success = True
+        
+        for chunk_idx in range(0, len(clean_final_jobs), api_chunk_size):
+            job_chunk = clean_final_jobs[chunk_idx:chunk_idx + api_chunk_size]
+            batch_num = (chunk_idx // api_chunk_size) + 1
+            total_batches = (len(clean_final_jobs) + api_chunk_size - 1) // api_chunk_size
+            
+            try:
+                logger.info(f"  [API Batch {batch_num}/{total_batches}] Uploading {len(job_chunk)} jobs...")
+                resp = requests.post(
+                    api_url,
+                    json={'jobs': job_chunk, 'admin_key': admin_key},
+                    headers={'Content-Type': 'application/json', 'x-admin-key': admin_key},
+                    timeout=45
+                )
+                if resp.status_code == 200:
+                    resp_data = resp.json()
+                    inserted = resp_data.get('insertedCount', len(job_chunk))
+                    total_ingested += inserted
+                    logger.info(f"  ✓ Batch {batch_num} uploaded successfully ({inserted} inserted).")
+                else:
+                    logger.error(f"  ❌ Batch {batch_num} failed with status {resp.status_code}: {resp.text}")
+                    all_published_success = False
+            except Exception as e:
+                logger.error(f"  ❌ Batch {batch_num} request error: {e}")
+                all_published_success = False
+                
+            if chunk_idx + api_chunk_size < len(clean_final_jobs):
+                time.sleep(1.0)
+                
+        logger.info(f"🎉 Direct Auto-Publish completed: {total_ingested} total new jobs ingested.")
 
-                # Step 6.5: Automated Instant Googlebot Crawl Notification (Google Indexing API)
-                try:
-                    from google_indexing_api import batch_notify_urls
-                    published_slugs = [j.get('slug') for j in clean_final_jobs if j.get('slug')]
-                    if published_slugs:
-                        indexing_urls = [f"https://freshersbridge.in/jobs/{s}" for s in published_slugs[:50]]
-                        logger.info(f"⚡ Notifying Google Indexing API for {len(indexing_urls)} fresh job listings...")
-                        batch_notify_urls(indexing_urls, notification_type="URL_UPDATED", dry_run=False)
-                except Exception as index_err:
-                    logger.warning(f"Google Indexing API auto-notification skipped: {index_err}")
-            else:
-                logger.error(f"❌ Direct Auto-Publish failed with status code {resp.status_code}: {resp.text}")
-        except Exception as e:
-            logger.error(f"❌ Direct Auto-Publish request error: {e}")
+        # Step 6.5: Automated Instant Googlebot Crawl Notification (Google Indexing API)
+        try:
+            from google_indexing_api import batch_notify_urls
+            published_slugs = [j.get('slug') for j in clean_final_jobs if j.get('slug')]
+            if published_slugs:
+                indexing_urls = [f"https://freshersbridge.in/jobs/{s}" for s in published_slugs[:50]]
+                logger.info(f"⚡ Notifying Google Indexing API for {len(indexing_urls)} fresh job listings...")
+                batch_notify_urls(indexing_urls, notification_type="URL_UPDATED", dry_run=False)
+        except Exception as index_err:
+            logger.warning(f"Google Indexing API auto-notification skipped: {index_err}")
     else:
         logger.warning("⚠️ ADMIN_ACCESS_KEY not found in environment. Direct DB auto-publish skipped. CSV saved locally.")
 

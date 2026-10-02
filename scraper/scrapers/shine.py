@@ -5,7 +5,7 @@ Targets Indian fresher & tech job postings from Shine.com via Next.js state payl
 import logging
 import re
 import json
-import tls_client
+import requests
 from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,21 @@ logger = logging.getLogger(__name__)
 def fetch_shine_jobs(search_terms: List[str], locations: List[str], results_wanted: int = 10) -> List[Dict[str, Any]]:
     """Fetches job listings from Shine.com."""
     jobs_list = []
-    session = tls_client.Session(client_identifier="chrome_120")
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
+    
+    use_tls = False
+    tls_session = None
+    try:
+        import tls_client
+        tls_session = tls_client.Session(client_identifier="chrome_120")
+        use_tls = True
+    except Exception:
+        use_tls = False
     
     for term in search_terms:
         for loc in locations:
@@ -23,7 +37,10 @@ def fetch_shine_jobs(search_terms: List[str], locations: List[str], results_want
                 url = f"https://www.shine.com/job-search/{term_slug}-jobs-in-{loc_slug}?sort=date"
                 logger.info(f"[Shine] Searching '{term}' in '{loc}'...")
                 
-                resp = session.get(url, timeout_seconds=10)
+                if use_tls and tls_session:
+                    resp = tls_session.get(url, timeout_seconds=10)
+                else:
+                    resp = requests.get(url, headers=headers, timeout=10)
                 if resp.status_code == 200:
                     match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', resp.text)
                     if match:

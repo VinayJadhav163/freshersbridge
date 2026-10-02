@@ -10,3 +10,4 @@ moviepy>=2.1.2
 google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.2.0
 dnspython>=2.4.0
+tls-client>=1.0.1

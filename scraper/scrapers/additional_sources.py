@@ -5,15 +5,29 @@ Covers: Cutshort, Hiring.cafe, TimesJobs, WayUp, Simplify
 import logging
 import re
 import json
-import tls_client
+import requests
 from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+}
+
 def fetch_cutshort_jobs(search_terms: List[str], results_wanted: int = 10) -> List[Dict[str, Any]]:
     """Fetches tech job listings from Cutshort.io."""
     jobs_list = []
-    session = tls_client.Session(client_identifier="chrome_120")
+    
+    use_tls = False
+    tls_session = None
+    try:
+        import tls_client
+        tls_session = tls_client.Session(client_identifier="chrome_120")
+        use_tls = True
+    except Exception:
+        use_tls = False
     
     for term in search_terms:
         try:
@@ -21,7 +35,10 @@ def fetch_cutshort_jobs(search_terms: List[str], results_wanted: int = 10) -> Li
             url = f"https://cutshort.io/jobs/{term_slug}-jobs"
             logger.info(f"[Cutshort] Querying '{term}'...")
             
-            resp = session.get(url, timeout_seconds=10)
+            if use_tls and tls_session:
+                resp = tls_session.get(url, timeout_seconds=10)
+            else:
+                resp = requests.get(url, headers=HEADERS, timeout=10)
             if resp.status_code == 200:
                 match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', resp.text)
                 if match:
@@ -59,13 +76,24 @@ def fetch_cutshort_jobs(search_terms: List[str], results_wanted: int = 10) -> Li
 def fetch_hiring_cafe_jobs(search_terms: List[str], results_wanted: int = 10) -> List[Dict[str, Any]]:
     """Fetches developer and remote tech jobs from Hiring.cafe."""
     jobs_list = []
-    session = tls_client.Session(client_identifier="chrome_120")
+    
+    use_tls = False
+    tls_session = None
+    try:
+        import tls_client
+        tls_session = tls_client.Session(client_identifier="chrome_120")
+        use_tls = True
+    except Exception:
+        use_tls = False
     
     for term in search_terms:
         try:
             url = f"https://hiring.cafe/api/search?q={term}&limit={results_wanted}"
             logger.info(f"[Hiring.cafe] Querying '{term}'...")
-            resp = session.get(url, timeout_seconds=10)
+            if use_tls and tls_session:
+                resp = tls_session.get(url, timeout_seconds=10)
+            else:
+                resp = requests.get(url, headers=HEADERS, timeout=10)
             if resp.status_code == 200:
                 try:
                     data = resp.json()
