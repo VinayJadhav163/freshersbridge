@@ -1376,5 +1376,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-01T13:57:24.905706+00:00"
+  },
+  {
+    "id": 54,
+    "company": "Ajanta Pharma Ltd",
+    "title": "Applied AI - Full Stack Web Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456597547",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/applied-ai-full-stack-web-developer-ajanta-pharma-ltd",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17960535773998726",
+        "comment_id": "18093842024218628",
+        "url": "https://www.instagram.com/p/17960535773998726/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1692087738914020",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1692087738914020"
+      },
+      "timestamp": "2026-10-02T02:56:25.262852+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-02T02:57:36.263937+00:00"
   }
 ]
