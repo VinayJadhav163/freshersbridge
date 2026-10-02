@@ -1404,5 +1404,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-02T02:57:36.263937+00:00"
+  },
+  {
+    "id": 55,
+    "company": "Accenture in India",
+    "title": "Web Developer Associate",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4448336987",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/web-developer-associate-accenture-in-india",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18075939833735346",
+        "comment_id": "17910196947509278",
+        "url": "https://www.instagram.com/p/18075939833735346/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2018738358840491",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2018738358840491"
+      },
+      "timestamp": "2026-10-02T07:56:36.214181+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-02T07:57:30.423081+00:00"
   }
 ]
