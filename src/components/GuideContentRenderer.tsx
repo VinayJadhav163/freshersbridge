@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, Copy, AlertCircle, Code2, Terminal, CheckCircle2 } from 'lucide-react';
+import { Check, Copy, AlertCircle, Code2, CheckCircle2, ChevronRight, MoveHorizontal } from 'lucide-react';
 
 interface GuideContentRendererProps {
   content: string;
@@ -18,16 +18,16 @@ function CodeBlock({ language, code }: { language: string; code: string }) {
   };
 
   return (
-    <div className="my-6 overflow-hidden rounded-xl border border-slate-800 bg-[#0f172a] shadow-lg">
+    <div className="my-5 sm:my-6 overflow-hidden rounded-xl border border-slate-800 bg-[#0b0f19] shadow-md">
       {/* Code Header Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800 bg-[#1e293b]/80 px-4 py-2 text-xs">
+      <div className="flex items-center justify-between border-b border-slate-800/80 bg-[#131b2e] px-3.5 py-2 text-xs">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
             <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
           </div>
-          <span className="ml-2 font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+          <span className="ml-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
             <Code2 className="h-3.5 w-3.5 text-indigo-400" />
             {language || 'code'}
           </span>
@@ -36,25 +36,26 @@ function CodeBlock({ language, code }: { language: string; code: string }) {
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1 rounded-md bg-slate-800/80 px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1 rounded-md bg-slate-800/90 px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer active:scale-95"
+          aria-label="Copy code to clipboard"
         >
           {copied ? (
             <>
               <Check className="h-3.5 w-3.5 text-emerald-400" />
-              <span className="text-emerald-400">Copied!</span>
+              <span className="text-emerald-400 font-bold">Copied!</span>
             </>
           ) : (
             <>
               <Copy className="h-3.5 w-3.5 text-slate-400" />
-              <span>Copy Code</span>
+              <span>Copy</span>
             </>
           )}
         </button>
       </div>
 
       {/* Code Body */}
-      <div className="overflow-x-auto p-4 font-mono text-xs sm:text-sm text-slate-200 leading-relaxed">
-        <pre className="m-0">
+      <div className="overflow-x-auto p-3.5 sm:p-4 font-mono text-xs sm:text-sm text-slate-200 leading-relaxed scrollbar-thin scrollbar-thumb-slate-700">
+        <pre className="m-0 font-mono">
           <code>{code}</code>
         </pre>
       </div>
@@ -65,18 +66,18 @@ function CodeBlock({ language, code }: { language: string; code: string }) {
 function formatInlineMarkdown(text: string): string {
   if (!text) return '';
   return text
-    // 1. Escape angle brackets so tags like `<header>`, `<nav>`, `<T>` are visible in the browser
+    // 1. Escape angle brackets
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     // 2. Bold text: **text**
     .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>')
-    // 3. Inline code: `code` (decode escaped entities inside code blocks so they render cleanly)
-    .replace(/`([^`]+)`/g, '<code class="bg-secondary text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded text-xs font-mono">$1</code>')
+    // 3. Inline code: `code`
+    .replace(/`([^`]+)`/g, '<code class="bg-secondary text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded text-xs font-mono break-words font-semibold">$1</code>')
     // 4. Clean quotes
     .replace(/\*["“](.*?)["”]\*/g, '"$1"')
     .replace(/\*['‘](.*?)['’]\*/g, "'$1'")
     .replace(/\*([^\*]+)\*/g, '<em class="italic text-foreground/90">$1</em>')
-    // 5. Checklist boxes: [x] only (case-sensitive lowercase with space)
+    // 5. Checklist boxes: [x] only
     .replace(/(?:^|\s)\[x\]\s+/g, ' <span class="inline-flex items-center justify-center h-4 w-4 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold mr-1.5 text-xs">✓</span> ')
     .replace(/(?:^|\s)\[ \]\s+/g, ' <span class="inline-flex items-center justify-center h-4 w-4 rounded border border-muted-foreground/40 mr-1.5 text-xs"></span> ')
     // 6. Markdown Links: [Text](URL)
@@ -86,9 +87,7 @@ function formatInlineMarkdown(text: string): string {
 export default function GuideContentRenderer({ content, tableOfContents = [] }: GuideContentRendererProps) {
   if (!content) return null;
 
-  // Helper to map heading text to TOC ID with 100% precision
   const getHeadingId = (headingText: string): string => {
-    // 1. Match by numeric prefix (e.g. "1. Overview", "2. Detailed Exam Pattern")
     const numMatch = headingText.match(/^(\d+)[\.\)]\s*(.*)/);
     if (numMatch) {
       const idx = parseInt(numMatch[1], 10) - 1;
@@ -97,7 +96,6 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
       }
     }
 
-    // 2. Fuzzy match against TOC titles
     const cleanHeading = headingText.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
     for (const item of tableOfContents) {
       const cleanItem = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
@@ -109,11 +107,10 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
     return headingText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
-  // Split content into major blocks
   const sections = content.split(/\n(?=###?\s)/g);
 
   return (
-    <div className="space-y-8 text-foreground/90 leading-relaxed text-sm sm:text-base">
+    <div className="space-y-6 sm:space-y-8 text-foreground/90 leading-relaxed text-sm sm:text-base break-words font-sans">
       {sections.map((section, index) => {
         const lines = section.split('\n');
         const elements: React.ReactNode[] = [];
@@ -131,7 +128,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
           // Horizontal Divider: `---`
           if (trimmed === '---') {
             elements.push(
-              <hr key={`hr-${index}-${i}`} className="my-8 border-border/80" />
+              <hr key={`hr-${index}-${i}`} className="my-6 sm:my-8 border-border/80" />
             );
             i++;
             continue;
@@ -145,7 +142,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
               <h2
                 key={`h2-${index}-${i}`}
                 id={id}
-                className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight scroll-mt-24 pt-6 pb-2 border-b border-border/60"
+                className="text-lg sm:text-2xl font-extrabold text-foreground tracking-tight scroll-mt-24 pt-5 pb-2 border-b border-border/60 leading-snug"
               >
                 {headingText}
               </h2>
@@ -162,10 +159,10 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
               <h3
                 key={`h3-${index}-${i}`}
                 id={id}
-                className="text-lg sm:text-xl font-bold text-foreground tracking-tight scroll-mt-24 pt-5 pb-1 flex items-center gap-2"
+                className="text-base sm:text-xl font-bold text-foreground tracking-tight scroll-mt-24 pt-4 sm:pt-5 pb-1 flex items-center gap-2 leading-snug"
               >
                 <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0" />
-                {headingText}
+                <span>{headingText}</span>
               </h3>
             );
             i++;
@@ -178,7 +175,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
             elements.push(
               <h4
                 key={`h4-${index}-${i}`}
-                className="text-sm sm:text-base font-bold text-foreground/90 pt-3 pb-1"
+                className="text-sm sm:text-base font-bold text-foreground pt-3 pb-1"
               >
                 {headingText}
               </h4>
@@ -198,7 +195,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
               i++;
             }
             if (i < lines.length && lines[i].trim().startsWith('```')) {
-              i++; // consume closing ```
+              i++;
             }
             elements.push(
               <CodeBlock key={`code-${index}-${i}`} code={codeLines.join('\n')} language={language} />
@@ -219,19 +216,19 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
             elements.push(
               <div
                 key={`quote-${index}-${i}`}
-                className={`my-5 rounded-xl border p-4 sm:p-5 flex items-start gap-3 shadow-2xs ${
+                className={`my-4 sm:my-5 rounded-xl border p-3.5 sm:p-5 flex items-start gap-3 shadow-2xs ${
                   isModelAnswer
                     ? 'border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-200'
                     : 'border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200'
                 }`}
               >
                 {isModelAnswer ? (
-                  <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 )}
                 <div
-                  className="text-xs sm:text-sm font-medium leading-relaxed space-y-1 italic"
+                  className="text-xs sm:text-sm font-medium leading-relaxed space-y-1 italic break-words"
                   dangerouslySetInnerHTML={{
                     __html: formatInlineMarkdown(fullQuote),
                   }}
@@ -257,55 +254,59 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
                   .map((cell) => cell.trim());
 
               const headerCells = parseRow(tableLines[0]);
-              // skip divider line if present (e.g. |---|---|)
               const bodyRows = tableLines
                 .slice(1)
                 .filter((r) => !r.includes('---'))
                 .map((r) => parseRow(r));
 
               elements.push(
-                <div
-                  key={`table-${index}-${i}`}
-                  className="my-6 overflow-x-auto rounded-xl border border-border bg-card shadow-2xs"
-                >
-                  <table className="w-full text-left text-xs sm:text-sm">
-                    <thead className="bg-secondary/80 border-b border-border text-foreground font-bold">
-                      <tr>
-                        {headerCells.map((cell, cIdx) => (
-                          <th
-                            key={cIdx}
-                            className="px-4 py-3 font-extrabold tracking-wide uppercase text-xs text-muted-foreground"
-                            dangerouslySetInnerHTML={{
-                              __html: formatInlineMarkdown(cell),
-                            }}
-                          />
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/60">
-                      {bodyRows.map((row, rIdx) => {
-                        const isEven = rIdx % 2 === 0;
-                        return (
-                          <tr
-                            key={rIdx}
-                            className={`transition-colors hover:bg-secondary/40 ${
-                              isEven ? 'bg-transparent' : 'bg-secondary/20'
-                            }`}
-                          >
-                            {row.map((cell, cIdx) => (
-                              <td
-                                key={cIdx}
-                                className="px-4 py-3 text-foreground/90 font-medium whitespace-pre-line"
-                                dangerouslySetInnerHTML={{
-                                  __html: formatInlineMarkdown(cell),
-                                }}
-                              />
-                            ))}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                <div key={`table-wrapper-${index}-${i}`} className="my-5 sm:my-6 space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] text-muted-foreground sm:hidden px-1">
+                    <span className="inline-flex items-center gap-1 font-semibold">
+                      <MoveHorizontal className="h-3 w-3 text-indigo-500" />
+                      Scroll table sideways
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-2xs scrollbar-thin">
+                    <table className="w-full text-left text-xs sm:text-sm min-w-[480px]">
+                      <thead className="bg-secondary/90 border-b border-border text-foreground font-bold">
+                        <tr>
+                          {headerCells.map((cell, cIdx) => (
+                            <th
+                              key={cIdx}
+                              className="px-3.5 py-2.5 sm:px-4 sm:py-3 font-extrabold tracking-wide uppercase text-[11px] sm:text-xs text-muted-foreground whitespace-normal"
+                              dangerouslySetInnerHTML={{
+                                __html: formatInlineMarkdown(cell),
+                              }}
+                            />
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/60">
+                        {bodyRows.map((row, rIdx) => {
+                          const isEven = rIdx % 2 === 0;
+                          return (
+                            <tr
+                              key={rIdx}
+                              className={`transition-colors hover:bg-secondary/40 ${
+                                isEven ? 'bg-transparent' : 'bg-secondary/20'
+                              }`}
+                            >
+                              {row.map((cell, cIdx) => (
+                                <td
+                                  key={cIdx}
+                                  className="px-3.5 py-2.5 sm:px-4 sm:py-3 text-foreground/90 font-medium whitespace-normal break-words leading-snug"
+                                  dangerouslySetInnerHTML={{
+                                    __html: formatInlineMarkdown(cell),
+                                  }}
+                                />
+                              ))}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               );
               continue;
@@ -327,7 +328,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
 
             if (isOrdered) {
               elements.push(
-                <ol key={`list-${index}-${i}`} className="list-decimal list-outside ml-6 space-y-2 my-4 text-foreground/90 leading-relaxed marker:font-bold marker:text-foreground">
+                <ol key={`list-${index}-${i}`} className="list-decimal list-outside ml-5 sm:ml-6 space-y-2 my-3.5 sm:my-4 text-foreground/90 leading-relaxed marker:font-bold marker:text-foreground">
                   {listItems.map((item, itemIdx) => (
                     <li
                       key={itemIdx}
@@ -341,7 +342,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
               );
             } else {
               elements.push(
-                <ul key={`list-${index}-${i}`} className="list-disc list-outside ml-6 space-y-2 my-4 text-foreground/90 leading-relaxed marker:text-foreground">
+                <ul key={`list-${index}-${i}`} className="list-disc list-outside ml-5 sm:ml-6 space-y-2 my-3.5 sm:my-4 text-foreground/90 leading-relaxed marker:text-foreground">
                   {listItems.map((item, itemIdx) => (
                     <li
                       key={itemIdx}
@@ -370,7 +371,7 @@ export default function GuideContentRenderer({ content, tableOfContents = [] }: 
           i++;
         }
 
-        return <div key={index} className="space-y-4">{elements}</div>;
+        return <div key={index} className="space-y-3.5 sm:space-y-4">{elements}</div>;
       })}
     </div>
   );

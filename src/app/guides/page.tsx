@@ -36,12 +36,12 @@ export default function GuidesPage() {
   return (
     <div className="flex flex-col w-full pb-16">
       {/* 1. Hero Section with Minimal Modern Gradient */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-white dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-950 border-b border-slate-200/70 dark:border-slate-800 px-6 pt-12 pb-14 sm:pt-16 sm:pb-18 text-center sm:px-8 lg:px-12">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-indigo-50/25 to-background dark:from-slate-900/80 dark:via-background dark:to-background border-b border-border px-4 pt-10 pb-12 sm:px-8 sm:pt-14 sm:pb-16 text-center lg:px-12">
         {/* Minimal soft ambient glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[340px] bg-[radial-gradient(ellipse_at_center,rgba(39,93,245,0.09),transparent_70%)] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs">
+        <div className="relative mx-auto max-w-4xl space-y-5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 dark:border-indigo-900/60 bg-card px-3.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -49,29 +49,29 @@ export default function GuidesPage() {
             <span>100% Free Placement &amp; Technical Guides</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
             Off-Campus Drive Syllabus <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-[#275df5] via-[#4338ca] to-[#2563eb] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-indigo-700 to-sky-600 dark:from-indigo-400 dark:via-sky-400 dark:to-indigo-300 bg-clip-text text-transparent">
               & Tech Interview Masterclasses
             </span>
           </h1>
 
-          <p className="mx-auto max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium">
+          <p className="mx-auto max-w-2xl text-xs sm:text-base text-muted-foreground font-medium leading-relaxed">
             In-depth exam blueprints, coding patterns, and placement strategies curated by industry tech leads to help college freshers crack top IT roles.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 shadow-2xs">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              Company Exam Blueprints (TCS, Accenture, CTS)
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 text-xs font-semibold text-muted-foreground">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card/80 border border-border px-3 py-1.5 shadow-2xs">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span>Company Exam Blueprints (TCS, Accenture, CTS)</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 shadow-2xs">
-              <Code className="h-4 w-4 text-[#275df5]" />
-              Java, Python & SQL Interview Questions
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card/80 border border-border px-3 py-1.5 shadow-2xs">
+              <Code className="h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <span>Java, Python & SQL Interview Questions</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 shadow-2xs">
-              <GraduationCap className="h-4 w-4 text-[#4338ca]" />
-              ATS Resume & Placement Blueprints
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card/80 border border-border px-3 py-1.5 shadow-2xs">
+              <GraduationCap className="h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <span>ATS Resume & Placement Blueprints</span>
             </div>
           </div>
         </div>

@@ -193,18 +193,18 @@ export default async function GuideArticlePage({ params }: Props) {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black text-foreground tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight leading-snug sm:leading-tight">
               {guide.title}
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground font-medium leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground font-medium leading-relaxed">
               {guide.subtitle}
             </p>
 
             {/* Author Byline */}
-            <div className="flex items-center justify-between pt-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-sky-500 flex items-center justify-center text-white font-black text-xs shadow-xs tracking-wider">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-sky-500 flex items-center justify-center text-white font-extrabold text-xs shadow-xs tracking-wider shrink-0">
                   FB
                 </div>
                 <div>
@@ -213,7 +213,7 @@ export default async function GuideArticlePage({ params }: Props) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 self-start sm:self-auto">
                 <ShareButton
                   title={guide.title}
                   company="FreshersBridge Guides"
@@ -227,12 +227,12 @@ export default async function GuideArticlePage({ params }: Props) {
 
           {/* AEO / AI Overview Quick Direct Answer Card (GEO & Featured Snippet Booster) */}
           {guide.directAnswerSummary && (
-            <div className="relative overflow-hidden rounded-2xl border border-indigo-200/90 dark:border-indigo-900/70 bg-gradient-to-br from-indigo-50/80 via-white to-sky-50/70 dark:from-indigo-950/40 dark:via-slate-900/60 dark:to-slate-900/80 p-5 sm:p-6 shadow-xs">
+            <div className="relative overflow-hidden rounded-2xl border border-indigo-200/90 dark:border-indigo-900/70 bg-gradient-to-br from-indigo-50/80 via-card to-sky-50/70 dark:from-indigo-950/40 dark:via-card dark:to-card p-4 sm:p-6 shadow-xs">
               <div className="flex items-center gap-2 mb-2 text-indigo-700 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-4 w-4 shrink-0" />
                 <span>Key Takeaways & Quick Answer (AI Overview)</span>
               </div>
-              <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+              <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
                 {guide.directAnswerSummary}
               </p>
             </div>

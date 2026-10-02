@@ -24,9 +24,9 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/50 bg-indigo-50/40 dark:bg-indigo-950/30 p-6 space-y-3">
+    <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/50 bg-indigo-50/40 dark:bg-indigo-950/30 p-4 sm:p-6 space-y-2.5 sm:space-y-3">
       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-        <BookOpen className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+        <BookOpen className="h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
         <span>Table of Contents</span>
       </h3>
       <ul className="space-y-2 text-xs sm:text-sm font-medium text-muted-foreground">
