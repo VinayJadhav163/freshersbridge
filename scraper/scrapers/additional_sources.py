@@ -42,18 +42,23 @@ def fetch_cutshort_jobs(search_terms: List[str], results_wanted: int = 10) -> Li
             if resp.status_code == 200:
                 match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', resp.text)
                 if match:
-                    data = json.loads(match.group(1))
-                    ds = data.get('props', {}).get('pageProps', {}).get('dehydratedState', {})
-                    queries = ds.get('queries', [])
+                    page_props = (data.get('props') or {}).get('pageProps') or {}
+                    ds = page_props.get('dehydratedState') or {}
+                    queries = ds.get('queries', []) if isinstance(ds, dict) else []
                     
                     for q in queries:
-                        q_data = q.get('state', {}).get('data', {})
+                        if not isinstance(q, dict):
+                            continue
+                        state = q.get('state') or {}
+                        q_data = state.get('data') or {}
                         if isinstance(q_data, dict):
                             items = q_data.get('jobs', []) or q_data.get('posts', []) or q_data.get('data', [])
                             if isinstance(items, list):
                                 for item in items[:results_wanted]:
+                                    if not isinstance(item, dict):
+                                        continue
                                     title = item.get('title') or item.get('role') or ''
-                                    company = item.get('companyName') or item.get('company', {}).get('name') or 'Cutshort Startup'
+                                    company = item.get('companyName') or (item.get('company') or {}).get('name') or 'Cutshort Startup'
                                     slug = item.get('slug') or item.get('publicUrl') or ''
                                     job_url = f"https://cutshort.io/job/{slug}" if slug and not slug.startswith('http') else url
                                     
