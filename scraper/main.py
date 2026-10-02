@@ -189,16 +189,17 @@ def is_fresher_job(job: dict) -> bool:
 
     # 3. STRICT EXPERIENCE REJECTIONS (Unicode dashes, plus signs, word variations)
     high_exp_regexes = [
-        # Explicit ranges like 4-6, 3-5, 2-4, 4 to 6, 2-3 years / yrs
-        r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
-        # 2+, 3+, 4+, 5+ years / yrs
-        r'\b(?:[2-9]|1[0-9])\s*(?:\+|\bplus\b)\s*(?:years?|yrs?|yr)\b',
-        # "2 years minimum", "2 yrs min", "3 years required"
+        # "X or more years", "X+ years", "X plus years", "X yrs" for X >= 3 (e.g. "7 or more years")
+        r'\b(?:[3-9]|1[0-9])\s*(?:or more|\+)?\s*(?:years?|yrs?|yr)\b',
+        # Spelled out: "three or more years", "five years of experience", "seven years"
+        r'\b(three|four|five|six|seven|eight|nine|ten|twelve|fifteen)\s*(?:or more|\+)?\s*(?:years?|yrs?|yr)\b',
+        # Explicit ranges like 2-4, 3-5, 4-6, 5-8, 6-9, 7-10, 8-12 years
+        r'\b(?:[2-9]|1[0-9])\s*(?:[\-\–\—\~/]|\bto\b)\s*(?:[3-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
+        # "2 years minimum", "2 yrs min", "3 years required", "minimum 3 years"
         r'\b(?:[2-9]|1[0-9])\s*(?:years?|yrs?|yr)\s*(?:minimum|min|mandatory|required|desired|needed)',
-        # "minimum 2 years", "at least 3 yrs", "min of 2 years"
         r'\b(?:minimum|min|at least|require[s]?|mandat(?:e|ory)|with|having)\s*(?:of\s+)?([2-9]|1[0-9])\s*(?:years?|yrs?|yr)\b',
-        # "2 years of experience / development / hands-on"
-        r'\b([2-9]|1[0-9])\s*(?:years?|yrs?|yr)\s+(?:of\s+)?(?:hands-on\s+|relevant\s+|professional\s+|work\s+|industry\s+|software\s+|coding\s+|development\s+|technical\s+|application\s+)?(?:experience|exp|development|coding)\b',
+        # "X years of experience / development / hands-on" (where X >= 2)
+        r'\b([2-9]|1[0-9])\s*(?:or more\s+)?(?:years?|yrs?|yr)\s+(?:of\s+)?(?:hands-on\s+|relevant\s+|professional\s+|work\s+|industry\s+|software\s+|coding\s+|development\s+|technical\s+|application\s+)?(?:experience|exp|development|coding)\b',
         r'\bexperience\s*(?:required|needed|must have|of)?\s*[:\-]?\s*([2-9]|1[0-9])\s*(?:[\+\-\–\—\~/]|\bto\b)\s*[0-9]*\s*(?:years?|yrs?)\b',
         r'\b([2-9]|1[0-9])\s*(?:years?|yrs?)\s+post[- ](?:qualification|graduation)\s+experience\b'
     ]
@@ -207,8 +208,8 @@ def is_fresher_job(job: dict) -> bool:
         match = re.search(regex, full_text, re.I)
         if match:
             matched_str = match.group(0).lower()
-            # Safety check: do not trigger on '0-2 years' or '0 - 1 years' or '0 to 2 years'
-            if re.search(r'\b0\s*[\-\–\—to]\s*[12]\s*(?:years?|yrs?)', matched_str):
+            # Safety check: do not trigger on '0-2 years' or '0 - 1 years' or '0 to 2 years' or '1-2 years'
+            if re.search(r'\b0\s*[\-\–\—to]\s*[12]\s*(?:years?|yrs?)', matched_str) or re.search(r'\b1\s*[\-\–\—to]\s*2\s*(?:years?|yrs?)', matched_str):
                 continue
             return False
 
