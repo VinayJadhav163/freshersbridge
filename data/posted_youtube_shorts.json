@@ -1516,5 +1516,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-03T07:57:21.588737+00:00"
+  },
+  {
+    "id": 59,
+    "company": "GE HealthCare",
+    "title": "Graduate Engineer Trainee",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459160129",
+    "freshersbridge_url": "https://freshersbridge.in/internships/graduate-engineer-trainee-ge-healthcare",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17921634513221884",
+        "comment_id": "18144997348619920",
+        "url": "https://www.instagram.com/p/17921634513221884/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1604754487755301",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1604754487755301"
+      },
+      "timestamp": "2026-10-03T13:56:21.879737+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-03T13:57:17.849230+00:00"
   }
 ]

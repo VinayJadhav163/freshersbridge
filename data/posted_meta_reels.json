@@ -891,5 +891,24 @@
       },
       "timestamp": "2026-10-03T07:56:27.154895+00:00"
     }
+  },
+  {
+    "id": 48,
+    "video_file": "gehealthcare_20261003_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17921634513221884",
+        "comment_id": "18144997348619920",
+        "url": "https://www.instagram.com/p/17921634513221884/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1604754487755301",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1604754487755301"
+      },
+      "timestamp": "2026-10-03T13:56:21.879737+00:00"
+    }
   }
 ]
