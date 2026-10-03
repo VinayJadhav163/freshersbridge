@@ -1488,5 +1488,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-03T02:57:28.127926+00:00"
+  },
+  {
+    "id": 58,
+    "company": "Johnson Controls",
+    "title": "Graduate Engineer Trainee",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://in.indeed.com/viewjob?jk=c6605382da3a784f",
+    "freshersbridge_url": "https://freshersbridge.in/internships/graduate-engineer-trainee-johnson-controls",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17991996117049762",
+        "comment_id": "17926753752421545",
+        "url": "https://www.instagram.com/p/17991996117049762/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "28379304838429038",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=28379304838429038"
+      },
+      "timestamp": "2026-10-03T07:56:27.154895+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-03T07:57:21.588737+00:00"
   }
 ]
