@@ -948,5 +948,24 @@
       },
       "timestamp": "2026-10-04T07:56:47.591573+00:00"
     }
+  },
+  {
+    "id": 51,
+    "video_file": "armstrongfluidtechnology_20261004_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18132682627741959",
+        "comment_id": "18627950113028480",
+        "url": "https://www.instagram.com/p/18132682627741959/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1100944692522821",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1100944692522821"
+      },
+      "timestamp": "2026-10-04T13:56:19.284117+00:00"
+    }
   }
 ]
