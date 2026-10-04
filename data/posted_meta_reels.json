@@ -929,5 +929,24 @@
       },
       "timestamp": "2026-10-04T02:56:21.525916+00:00"
     }
+  },
+  {
+    "id": 50,
+    "video_file": "target_20261004_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17964366854979774",
+        "comment_id": "17977530563924399",
+        "url": "https://www.instagram.com/p/17964366854979774/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2105132366750128",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2105132366750128"
+      },
+      "timestamp": "2026-10-04T07:56:47.591573+00:00"
+    }
   }
 ]

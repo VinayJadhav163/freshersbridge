@@ -1572,5 +1572,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-04T02:57:13.703467+00:00"
+  },
+  {
+    "id": 61,
+    "company": "Target",
+    "title": "Apprentice - Retail Ops",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459112814",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/apprentice-retail-ops-target",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17964366854979774",
+        "comment_id": "17977530563924399",
+        "url": "https://www.instagram.com/p/17964366854979774/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2105132366750128",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2105132366750128"
+      },
+      "timestamp": "2026-10-04T07:56:47.591573+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-04T07:57:44.990702+00:00"
   }
 ]
