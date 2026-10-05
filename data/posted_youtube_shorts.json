@@ -1656,5 +1656,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-05T02:57:04.621335+00:00"
+  },
+  {
+    "id": 64,
+    "company": "American Express",
+    "title": "Apprentice-Enterprise Technology Services",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457163439",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/apprentice-enterprise-technology-services-american-express",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18428973985147835",
+        "comment_id": "18126781042889777",
+        "url": "https://www.instagram.com/p/18428973985147835/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1433197762099142",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1433197762099142"
+      },
+      "timestamp": "2026-10-05T07:56:53.563263+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-05T07:57:54.075187+00:00"
   }
 ]

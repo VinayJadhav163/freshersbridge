@@ -986,5 +986,24 @@
       },
       "timestamp": "2026-10-05T02:56:14.141833+00:00"
     }
+  },
+  {
+    "id": 53,
+    "video_file": "americanexpress_20261005_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18428973985147835",
+        "comment_id": "18126781042889777",
+        "url": "https://www.instagram.com/p/18428973985147835/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1433197762099142",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1433197762099142"
+      },
+      "timestamp": "2026-10-05T07:56:53.563263+00:00"
+    }
   }
 ]
