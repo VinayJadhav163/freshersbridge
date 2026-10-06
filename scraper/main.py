@@ -219,28 +219,69 @@ def is_fresher_job(job: dict) -> bool:
 
     return True
 
+def get_current_ist_slot():
+    """Calculates IST time and returns (slot_id, slot_name, is_within_window)."""
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
+    ist_now = utc_now + datetime.timedelta(hours=5, minutes=30)
+    hour = ist_now.hour
+    minute = ist_now.minute
+    total_minutes = hour * 60 + minute
+    date_str = ist_now.strftime("%Y-%m-%d")
+
+    # Morning window: 07:30 AM to 11:00 AM IST (450 to 660 mins)
+    if 450 <= total_minutes <= 660:
+        return f"{date_str}_morning", "Morning Slot (08:05 AM IST)", True, ist_now
+    # Afternoon window: 12:30 PM to 04:00 PM IST (750 to 960 mins)
+    elif 750 <= total_minutes <= 960:
+        return f"{date_str}_afternoon", "Afternoon Slot (01:05 PM IST)", True, ist_now
+    # Evening window: 06:30 PM to 10:30 PM IST (1110 to 1350 mins)
+    elif 1110 <= total_minutes <= 1350:
+        return f"{date_str}_evening", "Evening Slot (07:05 PM IST)", True, ist_now
+    else:
+        return f"{date_str}_offhours", "Off-Hours Window", False, ist_now
+
 def run_pipeline(use_ai: bool = False, force: bool = False):
     logger.info("Starting FreshersBridge Multi-Source Job Scraper Pipeline...")
 
-    # Smart Deduplication Guard: Check if scraper already ran successfully in the last 75 minutes
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     state_file = os.path.join(project_root, "data", "last_scraper_run.json")
-    if not force and os.path.exists(state_file):
-        try:
-            with open(state_file, "r", encoding="utf-8") as f:
-                state_data = json.load(f)
-            last_run = state_data.get("last_completed_at")
-            if last_run:
-                last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
-                now_dt = datetime.datetime.now(datetime.timezone.utc)
-                diff_mins = (now_dt - last_dt).total_seconds() / 60.0
-                if diff_mins < 75:
-                    logger.info(f"⏸️ COOLDOWN ACTIVE: Scraper completed {diff_mins:.1f} minutes ago ({last_run}).")
-                    logger.info("   Skipping duplicate run to prevent duplicate WhatsApp/Telegram broadcasts & DB writes.")
-                    logger.info("   (Pass --force to override this cooldown).")
+
+    slot_id, slot_name, is_within_window, ist_now = get_current_ist_slot()
+    ist_display = ist_now.strftime("%Y-%m-%d %I:%M:%S %p IST")
+
+    if not force:
+        # Guard 1: Block any unintended midnight / off-hours execution
+        if not is_within_window:
+            logger.info(f"⛔ OFF-HOURS SHIELD: Current time {ist_display} is outside the 3 student drop windows (08:05 AM, 01:05 PM, 07:05 PM IST).")
+            logger.info("   Skipping unneeded run to prevent unnecessary API queries and midnight broadcasts.")
+            logger.info("   (Pass --force or trigger workflow_dispatch with force=true to override).")
+            return
+
+        # Guard 2: Strict 1-run-per-slot limit (Prevents running more than 3x per day)
+        if os.path.exists(state_file):
+            try:
+                with open(state_file, "r", encoding="utf-8") as f:
+                    state_data = json.load(f)
+
+                last_slot = state_data.get("last_slot")
+                if last_slot == slot_id:
+                    logger.info(f"⏸️ SLOT ALREADY COMPLETED: {slot_name} for today has already been scraped and published ({last_slot}).")
+                    logger.info("   Skipping execution to strictly enforce the 3x daily limit.")
                     return
-        except Exception as err:
-            logger.warning(f"Cooldown check error: {err}")
+
+                last_run = state_data.get("last_completed_at")
+                if last_run:
+                    last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
+                    now_dt = datetime.datetime.now(datetime.timezone.utc)
+                    diff_mins = (now_dt - last_dt).total_seconds() / 60.0
+                    if diff_mins < 90:
+                        logger.info(f"⏸️ COOLDOWN ACTIVE: Scraper completed {diff_mins:.1f} minutes ago ({last_run}).")
+                        logger.info("   Skipping duplicate run to prevent duplicate WhatsApp/Telegram broadcasts & DB writes.")
+                        return
+            except Exception as err:
+                logger.warning(f"Cooldown / slot check error: {err}")
+
+    logger.info(f"🚀 Execution Authorized for {slot_name} [{ist_display}].")
 
     if use_ai:
         if GEMINI_API_KEY:
@@ -494,9 +535,11 @@ def run_pipeline(use_ai: bool = False, force: bool = False):
         with open(state_file, "w", encoding="utf-8") as f:
             json.dump({
                 "last_completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "last_completed_ist": ist_now.strftime("%Y-%m-%d %I:%M:%S %p IST"),
+                "last_slot": slot_id,
                 "jobs_count": len(clean_final_jobs) if 'clean_final_jobs' in locals() else len(final_jobs)
             }, f, indent=2)
-        logger.info(f"💾 Updated scraper run state: {state_file}")
+        logger.info(f"💾 Updated scraper run state: {state_file} (Slot: {slot_id})")
     except Exception as state_err:
         logger.warning(f"Could not write scraper state file: {state_err}")
 

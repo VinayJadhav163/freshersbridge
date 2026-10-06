@@ -3,13 +3,11 @@ name: FreshersBridge 3x Daily Job Scraper & Broadcast Automation
 on:
   # Automated 3x daily at peak Indian student hours (08:05 AM, 01:05 PM, 07:05 PM IST)
   schedule:
-    - cron: '35 2 * * *'   # 08:05 AM IST (02:35 UTC)
-    - cron: '35 7 * * *'   # 01:05 PM IST (07:35 UTC)
-    - cron: '35 13 * * *'  # 07:05 PM IST (13:35 UTC)
+    - cron: '35 2,7,13 * * *'  # 02:35 UTC (08:05 AM IST), 07:35 UTC (01:05 PM IST), 13:35 UTC (07:05 PM IST)
   workflow_dispatch:
     inputs:
       force:
-        description: 'Bypass 75-minute cooldown guard'
+        description: 'Bypass slot lock and cooldown guard'
         required: false
         default: false
         type: boolean
