@@ -55,6 +55,8 @@ export default function Navbar() {
                   width={192}
                   height={48}
                   fetchPriority="high"
+                  decoding="async"
+                  style={{ aspectRatio: '192 / 48' }}
                   className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform hover:scale-105"
                 />
               </Link>

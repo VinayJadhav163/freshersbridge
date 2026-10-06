@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
+import Script from 'next/script';
 import { Suspense } from 'react';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -13,6 +14,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-plus-jakarta',
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'sans-serif'],
 });
 
 
@@ -87,15 +90,21 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Preconnect & DNS-Prefetch for high-speed AdSense resource loading */}
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <script
           dangerouslySetInnerHTML={{
             __html: `if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);`,
           }}
         />
         {adsenseId && (
-          <script
-            async
+          <Script
+            id="google-adsense-script"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+            strategy="afterInteractive"
             crossOrigin="anonymous"
           />
         )}
