@@ -1100,5 +1100,24 @@
       },
       "timestamp": "2026-10-07T02:56:26.907870+00:00"
     }
+  },
+  {
+    "id": 59,
+    "video_file": "microntechnology_20261007_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18109387157070626",
+        "comment_id": "18408773629089603",
+        "url": "https://www.instagram.com/p/18109387157070626/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1646929750546313",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1646929750546313"
+      },
+      "timestamp": "2026-10-07T07:56:32.138592+00:00"
+    }
   }
 ]

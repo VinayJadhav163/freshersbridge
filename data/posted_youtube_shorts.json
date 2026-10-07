@@ -1824,5 +1824,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-07T02:57:23.834851+00:00"
+  },
+  {
+    "id": 70,
+    "company": "Micron Technology",
+    "title": "Associate Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Hyderabad, Telangana, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457614854",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/associate-engineer-micron-technology",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18109387157070626",
+        "comment_id": "18408773629089603",
+        "url": "https://www.instagram.com/p/18109387157070626/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1646929750546313",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1646929750546313"
+      },
+      "timestamp": "2026-10-07T07:56:32.138592+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-07T07:57:34.235730+00:00"
   }
 ]
