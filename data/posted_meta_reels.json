@@ -1081,5 +1081,24 @@
       },
       "timestamp": "2026-10-06T13:56:17.328585+00:00"
     }
+  },
+  {
+    "id": 58,
+    "video_file": "sreeguruprecisionmanugacturingsolutionsopcpvtltdsgmps_20261007_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18066130328685278",
+        "comment_id": "18191330629363482",
+        "url": "https://www.instagram.com/p/18066130328685278/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1965163338191945",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1965163338191945"
+      },
+      "timestamp": "2026-10-07T02:56:26.907870+00:00"
+    }
   }
 ]
