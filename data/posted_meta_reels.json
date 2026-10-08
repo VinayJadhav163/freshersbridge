@@ -1157,5 +1157,24 @@
       },
       "timestamp": "2026-10-08T02:56:11.910451+00:00"
     }
+  },
+  {
+    "id": 62,
+    "video_file": "lplfinancialglobalcapabilitycenter_20261008_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18411029986080276",
+        "comment_id": "18076535672721740",
+        "url": "https://www.instagram.com/p/18411029986080276/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "935943549596209",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=935943549596209"
+      },
+      "timestamp": "2026-10-08T07:56:22.549305+00:00"
+    }
   }
 ]
