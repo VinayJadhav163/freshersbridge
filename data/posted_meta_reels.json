@@ -1214,5 +1214,24 @@
       },
       "timestamp": "2026-10-09T02:56:28.741756+00:00"
     }
+  },
+  {
+    "id": 65,
+    "video_file": "konecranes_20261009_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17941707741096598",
+        "comment_id": "18022302695864847",
+        "url": "https://www.instagram.com/p/17941707741096598/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1389391473362139",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1389391473362139"
+      },
+      "timestamp": "2026-10-09T07:56:30.301481+00:00"
+    }
   }
 ]
