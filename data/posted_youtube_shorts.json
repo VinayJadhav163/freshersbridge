@@ -1964,5 +1964,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-08T13:57:26.270874+00:00"
+  },
+  {
+    "id": 75,
+    "company": "Piramal Pharma Ltd",
+    "title": "Apprentice",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457235035",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/apprentice-piramal-pharma-ltd",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17997039308830876",
+        "comment_id": "17992700874027379",
+        "url": "https://www.instagram.com/p/17997039308830876/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1443615427969198",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1443615427969198"
+      },
+      "timestamp": "2026-10-09T02:56:28.741756+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-09T02:57:13.502520+00:00"
   }
 ]
