@@ -2020,5 +2020,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-09T07:57:20.582499+00:00"
+  },
+  {
+    "id": 77,
+    "company": "Deutsche Bank",
+    "title": "Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4459013322",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/engineer-deutsche-bank",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18140843074721637",
+        "comment_id": "18215827444357438",
+        "url": "https://www.instagram.com/p/18140843074721637/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1454959306508450",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1454959306508450"
+      },
+      "timestamp": "2026-10-09T13:56:15.759005+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-09T13:57:09.804789+00:00"
   }
 ]
