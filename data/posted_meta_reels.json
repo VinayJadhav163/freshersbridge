@@ -1271,5 +1271,24 @@
       },
       "timestamp": "2026-10-10T02:56:20.911034+00:00"
     }
+  },
+  {
+    "id": 68,
+    "video_file": "cyient_20261010_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18117736331292412",
+        "comment_id": "18115155413044111",
+        "url": "https://www.instagram.com/p/18117736331292412/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1664664525269786",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1664664525269786"
+      },
+      "timestamp": "2026-10-10T07:56:15.272043+00:00"
+    }
   }
 ]
