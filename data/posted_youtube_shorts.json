@@ -2048,5 +2048,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-09T13:57:09.804789+00:00"
+  },
+  {
+    "id": 78,
+    "company": "Eaton",
+    "title": "Engineer- Flow & Thermal",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4456923367",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/engineer-flow-thermal-eaton",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18086736698700547",
+        "comment_id": "17930343177409864",
+        "url": "https://www.instagram.com/p/18086736698700547/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "3181132855417972",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=3181132855417972"
+      },
+      "timestamp": "2026-10-10T02:56:20.911034+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-10T02:57:12.630413+00:00"
   }
 ]
