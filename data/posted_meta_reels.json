@@ -1290,5 +1290,24 @@
       },
       "timestamp": "2026-10-10T07:56:15.272043+00:00"
     }
+  },
+  {
+    "id": 69,
+    "video_file": "honeywelltechnologies_20261010_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17960946800998115",
+        "comment_id": "18370436422210158",
+        "url": "https://www.instagram.com/p/17960946800998115/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1093010890199715",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1093010890199715"
+      },
+      "timestamp": "2026-10-10T13:56:19.931758+00:00"
+    }
   }
 ]
