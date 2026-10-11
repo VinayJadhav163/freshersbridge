@@ -1347,5 +1347,24 @@
       },
       "timestamp": "2026-10-11T07:56:28.819146+00:00"
     }
+  },
+  {
+    "id": 72,
+    "video_file": "flex_20261011_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18110125148151822",
+        "comment_id": "18114252920034203",
+        "url": "https://www.instagram.com/p/18110125148151822/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1665683211855480",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1665683211855480"
+      },
+      "timestamp": "2026-10-11T13:56:47.572536+00:00"
+    }
   }
 ]
