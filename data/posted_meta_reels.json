@@ -1309,5 +1309,24 @@
       },
       "timestamp": "2026-10-10T13:56:19.931758+00:00"
     }
+  },
+  {
+    "id": 70,
+    "video_file": "vertiv_20261011_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18101421416259991",
+        "comment_id": "17874180801594731",
+        "url": "https://www.instagram.com/p/18101421416259991/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2095207234432399",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2095207234432399"
+      },
+      "timestamp": "2026-10-11T02:56:23.700760+00:00"
+    }
   }
 ]
