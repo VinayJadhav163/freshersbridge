@@ -1385,5 +1385,24 @@
       },
       "timestamp": "2026-10-12T02:56:13.333401+00:00"
     }
+  },
+  {
+    "id": 74,
+    "video_file": "xscadindiapvtltd_20261012_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18634532197028606",
+        "comment_id": "17988181596066076",
+        "url": "https://www.instagram.com/p/18634532197028606/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1672806537801418",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1672806537801418"
+      },
+      "timestamp": "2026-10-12T07:56:25.779809+00:00"
+    }
   }
 ]
