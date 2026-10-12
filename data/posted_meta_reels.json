@@ -1366,5 +1366,24 @@
       },
       "timestamp": "2026-10-11T13:56:47.572536+00:00"
     }
+  },
+  {
+    "id": 73,
+    "video_file": "jabil_20261012_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18317270011303750",
+        "comment_id": "18094562657661735",
+        "url": "https://www.instagram.com/p/18317270011303750/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1767823884370288",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1767823884370288"
+      },
+      "timestamp": "2026-10-12T02:56:13.333401+00:00"
+    }
   }
 ]
