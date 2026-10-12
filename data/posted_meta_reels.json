@@ -1404,5 +1404,24 @@
       },
       "timestamp": "2026-10-12T07:56:25.779809+00:00"
     }
+  },
+  {
+    "id": 75,
+    "video_file": "jacobs_20261012_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17960955927246805",
+        "comment_id": "17946487332389088",
+        "url": "https://www.instagram.com/p/17960955927246805/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1804550877260540",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1804550877260540"
+      },
+      "timestamp": "2026-10-12T13:56:23.858468+00:00"
+    }
   }
 ]
