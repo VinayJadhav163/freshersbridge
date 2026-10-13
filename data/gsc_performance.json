@@ -1,26 +1,47 @@
 {
   "site_url": "https://www.freshersbridge.in/",
-  "period": "2026-09-06 to 2026-10-04",
-  "generated_at": "2026-10-06 11:19:45 UTC",
+  "period": "2026-09-13 to 2026-10-11",
+  "generated_at": "2026-10-13 21:30:18 UTC",
   "total_queries_tracked": 500,
-  "total_clicks": 196,
-  "total_impressions": 2486,
-  "avg_ctr_percent": 7.88,
-  "avg_position": 8.3,
+  "total_clicks": 364,
+  "total_impressions": 3394,
+  "avg_ctr_percent": 10.72,
+  "avg_position": 5.9,
   "top_queries_by_clicks": [
     {
       "query": "internship",
       "clicks": 7,
-      "impressions": 58,
-      "ctr": 12.07,
-      "position": 6.6
+      "impressions": 86,
+      "ctr": 8.14,
+      "position": 6.3
+    },
+    {
+      "query": "fresher jobs near me",
+      "clicks": 4,
+      "impressions": 15,
+      "ctr": 26.67,
+      "position": 8.1
     },
     {
       "query": "internship for freshers",
       "clicks": 4,
-      "impressions": 143,
-      "ctr": 2.8,
-      "position": 3.9
+      "impressions": 175,
+      "ctr": 2.29,
+      "position": 4.0
+    },
+    {
+      "query": "more",
+      "clicks": 4,
+      "impressions": 7,
+      "ctr": 57.14,
+      "position": 4.6
+    },
+    {
+      "query": "python internship in chennai",
+      "clicks": 4,
+      "impressions": 7,
+      "ctr": 57.14,
+      "position": 2.4
     },
     {
       "query": "software fresher jobs",
@@ -30,11 +51,18 @@
       "position": 4.1
     },
     {
+      "query": "wordpress developer jobs in jaipur",
+      "clicks": 4,
+      "impressions": 13,
+      "ctr": 30.77,
+      "position": 8.4
+    },
+    {
       "query": "data science internship",
       "clicks": 3,
-      "impressions": 53,
-      "ctr": 5.66,
-      "position": 4.6
+      "impressions": 54,
+      "ctr": 5.56,
+      "position": 4.9
     },
     {
       "query": "entry level software engineer jobs",
@@ -44,118 +72,90 @@
       "position": 2.5
     },
     {
+      "query": "frontend developer jobs in pune fresher",
+      "clicks": 3,
+      "impressions": 12,
+      "ctr": 25.0,
+      "position": 2.2
+    },
+    {
       "query": "it internship for freshers",
       "clicks": 3,
-      "impressions": 21,
-      "ctr": 14.29,
-      "position": 2.7
+      "impressions": 24,
+      "ctr": 12.5,
+      "position": 2.6
+    },
+    {
+      "query": "java developer fresher jobs",
+      "clicks": 3,
+      "impressions": 16,
+      "ctr": 18.75,
+      "position": 2.5
+    },
+    {
+      "query": "java developer fresher jobs in pune",
+      "clicks": 3,
+      "impressions": 14,
+      "ctr": 21.43,
+      "position": 9.6
     },
     {
       "query": "jobs for freshers in hyderabad 2026",
       "clicks": 3,
-      "impressions": 22,
-      "ctr": 13.64,
-      "position": 3.5
+      "impressions": 28,
+      "ctr": 10.71,
+      "position": 3.8
+    },
+    {
+      "query": "jobs near me for freshers",
+      "clicks": 3,
+      "impressions": 34,
+      "ctr": 8.82,
+      "position": 9.5
     },
     {
       "query": "tech internships",
       "clicks": 3,
-      "impressions": 14,
-      "ctr": 21.43,
-      "position": 5.2
+      "impressions": 15,
+      "ctr": 20.0,
+      "position": 4.9
     },
     {
       "query": "active internships 2026",
       "clicks": 2,
-      "impressions": 7,
-      "ctr": 28.57,
-      "position": 3.1
+      "impressions": 8,
+      "ctr": 25.0,
+      "position": 3.4
     },
     {
       "query": "associate software engineer",
       "clicks": 2,
-      "impressions": 136,
-      "ctr": 1.47,
+      "impressions": 137,
+      "ctr": 1.46,
       "position": 4.8
     },
     {
-      "query": "erp entry level jobs",
+      "query": "bhubaneswar job vacancy 2026 for freshers",
       "clicks": 2,
-      "impressions": 10,
-      "ctr": 20.0,
-      "position": 3.4
+      "impressions": 6,
+      "ctr": 33.33,
+      "position": 8
     },
     {
-      "query": "fresher job near me",
+      "query": "entry level devops jobs",
       "clicks": 2,
-      "impressions": 8,
-      "ctr": 25.0,
-      "position": 7.5
-    },
-    {
-      "query": "fresher software engineer",
-      "clicks": 2,
-      "impressions": 4,
-      "ctr": 50.0,
+      "impressions": 6,
+      "ctr": 33.33,
       "position": 1.5
-    },
-    {
-      "query": "fresher tech jobs",
-      "clicks": 2,
-      "impressions": 7,
-      "ctr": 28.57,
-      "position": 3.9
-    },
-    {
-      "query": "graduate fresher jobs",
-      "clicks": 2,
-      "impressions": 5,
-      "ctr": 40.0,
-      "position": 6.6
-    },
-    {
-      "query": "graduate work from home jobs",
-      "clicks": 2,
-      "impressions": 8,
-      "ctr": 25.0,
-      "position": 4.6
-    },
-    {
-      "query": "it jobs for freshers in hyderabad 2026",
-      "clicks": 2,
-      "impressions": 9,
-      "ctr": 22.22,
-      "position": 2.7
-    },
-    {
-      "query": "java developer fresher jobs",
-      "clicks": 2,
-      "impressions": 5,
-      "ctr": 40.0,
-      "position": 1.4
-    },
-    {
-      "query": "jobs near me for freshers",
-      "clicks": 2,
-      "impressions": 21,
-      "ctr": 9.52,
-      "position": 9.5
-    },
-    {
-      "query": "node js internship",
-      "clicks": 2,
-      "impressions": 22,
-      "ctr": 9.09,
-      "position": 7.3
     }
   ],
   "striking_distance_opportunities": [
     {
       "query": "internships for college students",
       "clicks": 1,
-      "impressions": 224,
-      "ctr": 0.45,
-      "position": 6.4,
+      "impressions": 232,
+      "ctr": 0.43,
+      "position": 6.5,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
@@ -167,71 +167,135 @@
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
+      "query": "internship for freshers",
+      "clicks": 4,
+      "impressions": 175,
+      "ctr": 2.29,
+      "position": 4.0,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "internships for freshers",
+      "clicks": 1,
+      "impressions": 149,
+      "ctr": 0.67,
+      "position": 4.3,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
       "query": "associate software engineer",
       "clicks": 2,
-      "impressions": 136,
-      "ctr": 1.47,
+      "impressions": 137,
+      "ctr": 1.46,
       "position": 4.8,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "internship",
       "clicks": 7,
-      "impressions": 58,
-      "ctr": 12.07,
-      "position": 6.6,
+      "impressions": 86,
+      "ctr": 8.14,
+      "position": 6.3,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "rickshesh manchanda",
+      "clicks": 2,
+      "impressions": 86,
+      "ctr": 2.33,
+      "position": 8.6,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "bca internship",
+      "clicks": 1,
+      "impressions": 60,
+      "ctr": 1.67,
+      "position": 5.6,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "data science internship",
       "clicks": 3,
-      "impressions": 53,
-      "ctr": 5.66,
-      "position": 4.6,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "bca internship",
-      "clicks": 0,
-      "impressions": 41,
-      "ctr": 0,
-      "position": 5.7,
+      "impressions": 54,
+      "ctr": 5.56,
+      "position": 4.9,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "cloud back internship",
       "clicks": 1,
-      "impressions": 35,
-      "ctr": 2.86,
-      "position": 8.1,
+      "impressions": 46,
+      "ctr": 2.17,
+      "position": 8.2,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "ai training jobs",
-      "clicks": 0,
-      "impressions": 28,
-      "ctr": 0,
-      "position": 10.8,
+      "clicks": 1,
+      "impressions": 45,
+      "ctr": 2.22,
+      "position": 10.7,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "data science internship in india jobs in the last week",
-      "clicks": 0,
-      "impressions": 27,
-      "ctr": 0,
-      "position": 9.3,
+      "query": "jobs near me for freshers",
+      "clicks": 3,
+      "impressions": 34,
+      "ctr": 8.82,
+      "position": 9.5,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "vortizo ai internship",
+      "clicks": 1,
+      "impressions": 34,
+      "ctr": 2.94,
+      "position": 7.3,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "off campus internship",
+      "clicks": 1,
+      "impressions": 30,
+      "ctr": 3.33,
+      "position": 5.1,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "lavoro group of technologies",
       "clicks": 1,
-      "impressions": 24,
-      "ctr": 4.17,
-      "position": 8.3,
+      "impressions": 27,
+      "ctr": 3.7,
+      "position": 8.6,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "internship for freshers work from home",
+      "clicks": 2,
+      "impressions": 26,
+      "ctr": 7.69,
+      "position": 6,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "node js internship",
+      "clicks": 2,
+      "impressions": 25,
+      "ctr": 8.0,
+      "position": 7.9,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "freshers hiring 2026 batch",
+      "clicks": 1,
+      "impressions": 24,
+      "ctr": 4.17,
+      "position": 5.0,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "entry level software jobs in bangalore for freshers",
       "clicks": 2,
       "impressions": 22,
       "ctr": 9.09,
@@ -239,11 +303,35 @@
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "jobs near me for freshers",
+      "query": "suas enterprises",
       "clicks": 2,
+      "impressions": 22,
+      "ctr": 9.09,
+      "position": 7.2,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "fin maverick internship",
+      "clicks": 1,
+      "impressions": 22,
+      "ctr": 4.55,
+      "position": 9.1,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "aks tech internship",
+      "clicks": 0,
       "impressions": 21,
-      "ctr": 9.52,
-      "position": 9.5,
+      "ctr": 0,
+      "position": 8.7,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "off campus placement for freshers",
+      "clicks": 1,
+      "impressions": 19,
+      "ctr": 5.26,
+      "position": 4.3,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
@@ -255,207 +343,119 @@
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "internship for freshers work from home",
-      "clicks": 1,
-      "impressions": 16,
-      "ctr": 6.25,
-      "position": 5.1,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "suas enterprises",
-      "clicks": 1,
-      "impressions": 15,
-      "ctr": 6.67,
-      "position": 7.3,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "tech internships",
-      "clicks": 3,
-      "impressions": 14,
-      "ctr": 21.43,
-      "position": 5.2,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "entry level software jobs in bangalore for freshers",
-      "clicks": 1,
-      "impressions": 14,
-      "ctr": 7.14,
-      "position": 7.3,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "full stack developer internship",
-      "clicks": 1,
-      "impressions": 14,
-      "ctr": 7.14,
-      "position": 4.1,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "internship for students work from home",
-      "clicks": 1,
-      "impressions": 14,
-      "ctr": 7.14,
-      "position": 6.9,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "it jobs for freshers",
-      "clicks": 1,
-      "impressions": 14,
-      "ctr": 7.14,
-      "position": 7.2,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "work from home jobs 2026",
-      "clicks": 1,
-      "impressions": 14,
-      "ctr": 7.14,
-      "position": 5.9,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "software engineer internship",
-      "clicks": 1,
-      "impressions": 13,
-      "ctr": 7.69,
-      "position": 13.2,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "job near me for fresher",
-      "clicks": 1,
-      "impressions": 12,
-      "ctr": 8.33,
-      "position": 10.5,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "oblytech internship",
-      "clicks": 1,
-      "impressions": 12,
-      "ctr": 8.33,
-      "position": 7.8,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
       "query": "fresher software engineer jobs",
-      "clicks": 1,
-      "impressions": 11,
-      "ctr": 9.09,
-      "position": 7.5,
+      "clicks": 2,
+      "impressions": 16,
+      "ctr": 12.5,
+      "position": 8.4,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     }
   ],
   "top_pages": [
     {
+      "url": "https://www.freshersbridge.in/jobs/junior-java-developer-dglide",
+      "clicks": 84,
+      "impressions": 536,
+      "ctr": 15.67,
+      "position": 6.3
+    },
+    {
       "url": "https://www.freshersbridge.in/internships/software-testing-internship-webaxis-software-services",
-      "clicks": 57,
-      "impressions": 731,
-      "ctr": 7.8,
-      "position": 5.6
+      "clicks": 65,
+      "impressions": 819,
+      "ctr": 7.94,
+      "position": 5.8
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs",
+      "clicks": 53,
+      "impressions": 555,
+      "ctr": 9.55,
+      "position": 5.0
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/software-engineer-iris-business-services-limited",
+      "clicks": 47,
+      "impressions": 386,
+      "ctr": 12.18,
+      "position": 6.2
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa",
+      "clicks": 45,
+      "impressions": 1189,
+      "ctr": 3.78,
+      "position": 6.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services",
+      "clicks": 40,
+      "impressions": 444,
+      "ctr": 9.01,
+      "position": 6.0
     },
     {
       "url": "https://www.freshersbridge.in/guides/accenture-recruitment-process-syllabus-coding-questions-freshers",
-      "clicks": 42,
-      "impressions": 2535,
-      "ctr": 1.66,
-      "position": 4.9
+      "clicks": 37,
+      "impressions": 2556,
+      "ctr": 1.45,
+      "position": 4.8
     },
     {
       "url": "https://www.freshersbridge.in/jobs/associate-software-developer-anuj-gope",
       "clicks": 37,
-      "impressions": 537,
-      "ctr": 6.89,
+      "impressions": 548,
+      "ctr": 6.75,
       "position": 5.1
     },
     {
-      "url": "https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa",
-      "clicks": 35,
-      "impressions": 946,
-      "ctr": 3.7,
-      "position": 6.6
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/software-engineer-iris-business-services-limited",
-      "clicks": 35,
-      "impressions": 310,
-      "ctr": 11.29,
-      "position": 5.8
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services",
-      "clicks": 26,
-      "impressions": 281,
-      "ctr": 9.25,
-      "position": 5.6
-    },
-    {
       "url": "https://www.freshersbridge.in/jobs/software-development-engineer-remote-wikasta-business-and-technical-solutions-pvt-ltd",
-      "clicks": 23,
-      "impressions": 331,
-      "ctr": 6.95,
-      "position": 5.4
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/nodejs-developer-intern-ve3",
-      "clicks": 21,
-      "impressions": 347,
-      "ctr": 6.05,
-      "position": 6.5
-    },
-    {
-      "url": "https://www.freshersbridge.in/internships/data-science-internship-toxsl-technologies-private-limited",
-      "clicks": 20,
-      "impressions": 310,
-      "ctr": 6.45,
-      "position": 5.6
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/junior-java-developer-dglide",
-      "clicks": 19,
-      "impressions": 95,
-      "ctr": 20.0,
-      "position": 6.5
+      "clicks": 37,
+      "impressions": 718,
+      "ctr": 5.15,
+      "position": 5.9
     },
     {
       "url": "https://www.freshersbridge.in/internships/software-testing-crazy-for-success-foundation",
-      "clicks": 16,
-      "impressions": 194,
-      "ctr": 8.25,
-      "position": 8.1
+      "clicks": 31,
+      "impressions": 411,
+      "ctr": 7.54,
+      "position": 7.7
     },
     {
-      "url": "https://www.freshersbridge.in/internships/software-engineer-internship-jobluxe",
-      "clicks": 15,
-      "impressions": 415,
-      "ctr": 3.61,
-      "position": 7.8
+      "url": "https://www.freshersbridge.in/jobs/software-engineer-full-stack-natwest-group",
+      "clicks": 31,
+      "impressions": 378,
+      "ctr": 8.2,
+      "position": 7.5
     },
     {
-      "url": "https://www.freshersbridge.in/jobs/software-engineer-1-java-freshers-only-20262027-batch-maketop-technologies",
-      "clicks": 14,
-      "impressions": 192,
-      "ctr": 7.29,
-      "position": 5.2
+      "url": "https://www.freshersbridge.in/jobs/nodejs-developer-intern-ve3",
+      "clicks": 26,
+      "impressions": 380,
+      "ctr": 6.84,
+      "position": 6.5
     },
     {
       "url": "https://www.freshersbridge.in/internships/machine-learning-with-python-internship-gradtwin-services-opc-private-limited",
-      "clicks": 12,
-      "impressions": 223,
-      "ctr": 5.38,
-      "position": 7.3
+      "clicks": 25,
+      "impressions": 443,
+      "ctr": 5.64,
+      "position": 7.0
     },
     {
-      "url": "https://www.freshersbridge.in/internships/full-stack-development-avyoma-systems-private-limited",
-      "clicks": 11,
-      "impressions": 218,
-      "ctr": 5.05,
-      "position": 6.7
+      "url": "https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick",
+      "clicks": 25,
+      "impressions": 451,
+      "ctr": 5.54,
+      "position": 5.9
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/junior-data-scientist-internship-gradtwin-services-opc-private-limited",
+      "clicks": 21,
+      "impressions": 539,
+      "ctr": 3.9,
+      "position": 6.4
     }
   ]
 }

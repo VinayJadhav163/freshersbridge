@@ -16,16 +16,19 @@ jobs:
   sync_gsc:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install Dependencies
         run: |
@@ -40,12 +43,14 @@ jobs:
 
       - name: Commit and Push Updated GSC Performance
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "FreshersBridge SEO Bot"
+          git config --global user.email "seo@freshersbridge.in"
           git add data/gsc_performance.json data/gsc_insights.md || true
-          if git diff --staged --quiet; then
-            echo "No changes in Search Console performance."
-          else
+          if ! git diff --cached --quiet; then
             git commit -m "chore(seo): auto-sync Google Search Console performance [skip ci]"
-            git push
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin main && git push origin main && break || sleep 5
+            done
+          else
+            echo "No changes in Search Console performance."
           fi
