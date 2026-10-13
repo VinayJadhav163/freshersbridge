@@ -77,7 +77,7 @@ export default function JobCard({ job, fromCompany }: JobCardProps) {
   const showInternshipPill = isInternship && !titleMentionsIntern;
 
   const [imgError, setImgError] = useState(false);
-  const baseDetailUrl = isInternship ? `/internships/${job.slug}` : `/jobs/${job.slug}`;
+  const baseDetailUrl = `/jobs/${job.slug}`;
   const detailUrl = fromCompany ? `${baseDetailUrl}?from=/companies/${fromCompany.slug}` : baseDetailUrl;
   const packageText = getValidSalary(job.salary);
   let rawLogo = (job.company_logo && job.company_logo.trim()) || getCompanyLogo(job.company);

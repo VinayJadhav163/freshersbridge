@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: 'Free ATS Resume Builder, Salary Calculator & Career Tools | FreshersBridge',
   description:
     '100% free interactive career tools for tech freshers: ATS resume builder & score checker, Indian fresher in-hand CTC calculator, and 12 copy-ready HR email templates.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/career-tools',
+  },
   openGraph: {
     title: 'Free ATS Resume Builder & Career Tools for Freshers | FreshersBridge',
     description:

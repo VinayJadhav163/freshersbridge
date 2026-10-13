@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import SearchBar from '@/components/SearchBar';
@@ -19,6 +20,15 @@ import { Job, Category } from '@/types';
 import { sortCategories } from '@/lib/categoryResolver';
 import { fetchWithCache } from '@/lib/dataCache';
 import { COMMUNITY_LINKS } from '@/lib/community';
+
+export const metadata: Metadata = {
+  title: 'FreshersBridge | Handpicked Off-Campus Jobs & Internships for Freshers',
+  description:
+    'Find your first tech job. FreshersBridge lists handpicked entry-level off-campus jobs, software developer internships, and fresher roles for college graduates in India.',
+  alternates: {
+    canonical: 'https://freshersbridge.in',
+  },
+};
 
 // High-performance edge caching (revalidates every 10 minutes, sub-20ms TTFB globally)
 export const revalidate = 600;

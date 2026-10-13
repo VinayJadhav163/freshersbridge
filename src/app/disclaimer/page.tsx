@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Disclaimer | FreshersBridge',
   description:
     'Disclaimer for FreshersBridge - Read our informational disclosure, external links policy, job listing verification notice, and affiliate policy.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/disclaimer',
+  },
 };
 
 export default function DisclaimerPage() {

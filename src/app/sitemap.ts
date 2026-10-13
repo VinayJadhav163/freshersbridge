@@ -116,20 +116,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
 
-      const dynamicInternshipRoutes: MetadataRoute.Sitemap = jobs
-        .filter((job) => {
-          const u = (job.apply_url || '').toLowerCase();
-          const t = (job.title || '').toLowerCase();
-          return u.includes('/internship/') || /intern|internship|trainee|apprentice|fellowship/.test(t);
-        })
-        .map((job) => ({
-          url: `${baseUrl}/internships/${job.slug}`,
-          lastModified: new Date(job.created_at),
-          changeFrequency: 'weekly',
-          priority: 0.8,
-        }));
-
-      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicJobRoutes, ...dynamicInternshipRoutes];
+      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicJobRoutes];
     }
   } catch (err) {
     console.error('Failed to generate sitemap dynamic routes:', err);

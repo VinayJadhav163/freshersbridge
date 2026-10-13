@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Terms and Conditions | FreshersBridge',
   description:
     'Terms and Conditions for FreshersBridge - Read the rules, guidelines, and terms governing your use of our platform and job listings.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/terms',
+  },
 };
 
 export default function TermsPage() {

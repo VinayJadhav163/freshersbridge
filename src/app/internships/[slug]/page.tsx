@@ -1,4 +1,10 @@
-import JobDetailsPage, { generateMetadata } from '@/app/jobs/[slug]/page';
+import { permanentRedirect } from 'next/navigation';
 
-export { generateMetadata };
-export default JobDetailsPage;
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function InternshipRedirectPage({ params }: Props) {
+  const { slug } = await params;
+  permanentRedirect(`/jobs/${slug}`);
+}

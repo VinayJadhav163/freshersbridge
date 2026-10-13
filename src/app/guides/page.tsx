@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: 'IT Fresher Career Guides, Syllabus & Interview Prep | FreshersBridge',
   description:
     'Comprehensive preparation guides for TCS NQT, Accenture, Cognizant, Core Java, Python, SQL, and ATS resume strategies for 2026 batch freshers and graduates.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/guides',
+  },
   openGraph: {
     title: 'IT Fresher Career Guides & Interview Prep | FreshersBridge',
     description:

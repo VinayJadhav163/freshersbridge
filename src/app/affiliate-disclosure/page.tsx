@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Affiliate Disclosure | FreshersBridge',
   description:
     'Affiliate Disclosure for FreshersBridge - Transparency regarding third-party affiliate partnerships, commissions, and content integrity.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/affiliate-disclosure',
+  },
 };
 
 export default function AffiliateDisclosurePage() {

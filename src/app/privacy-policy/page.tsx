@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Privacy Policy | FreshersBridge',
   description:
     'Privacy Policy for FreshersBridge - Learn how we collect, protect, and use your data, including Google Analytics, cookies, and email subscriptions.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/privacy-policy',
+  },
 };
 
 export default function PrivacyPolicyPage() {

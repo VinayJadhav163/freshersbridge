@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'About Us | FreshersBridge',
   description:
     'Learn about FreshersBridge - empowering freshers and college graduates with handpicked off-campus jobs, internships, free course coupons, and career resources.',
+  alternates: {
+    canonical: 'https://freshersbridge.in/about',
+  },
 };
 
 export default function AboutPage() {
