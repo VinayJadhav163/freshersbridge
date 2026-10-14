@@ -2440,5 +2440,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-14T07:57:28.751244+00:00"
+  },
+  {
+    "id": 92,
+    "company": "Semsons Tech",
+    "title": "Service Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4457282640",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/service-engineer-semsons-tech",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18121287667993100",
+        "comment_id": "18373217839210091",
+        "url": "https://www.instagram.com/p/18121287667993100/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "29943147311940500",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=29943147311940500"
+      },
+      "timestamp": "2026-10-14T13:56:29.304016+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-14T13:57:20.511957+00:00"
   }
 ]
