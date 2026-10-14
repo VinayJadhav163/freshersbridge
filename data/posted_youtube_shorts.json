@@ -2384,5 +2384,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-13T13:57:23.577381+00:00"
+  },
+  {
+    "id": 90,
+    "company": "Jacobs",
+    "title": "Apprentice Engineer - Mechanical",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458236718",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/apprentice-engineer-mechanical-jacobs",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18105633815205898",
+        "comment_id": "18637408186019195",
+        "url": "https://www.instagram.com/p/18105633815205898/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1449259503755213",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1449259503755213"
+      },
+      "timestamp": "2026-10-14T02:56:29.203331+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-14T02:57:23.122932+00:00"
   }
 ]
