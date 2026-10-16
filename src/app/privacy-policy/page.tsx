@@ -88,28 +88,83 @@ export default function PrivacyPolicyPage() {
 
         <hr className="border-border" />
 
-        {/* 3. Google Analytics */}
+        {/* 3. Google Analytics & Analytics Cookies */}
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-foreground">3. Google Analytics</h2>
+          <h2 className="text-lg font-bold text-foreground">3. Google Analytics &amp; Web Analytics</h2>
           <p>
-            We use Google Analytics, a web analytics service provided by Google, to understand how users interact with our website. Google Analytics may collect information such as IP address, device information, and browsing behavior through cookies and similar technologies.
+            We use Google Analytics, a web analysis service provided by Google LLC (&quot;Google&quot;), to understand how visitors engage with our website. Google Analytics uses cookies and similar identifiers to collect information including your masked IP address, browser type, operating system, pages visited, and time spent on pages.
           </p>
           <p>
-            This information helps us improve our services. You can learn more about how Google uses data by visiting Google’s Privacy Policy.
+            This data is used solely to evaluate website traffic, diagnose operational bottlenecks, and enhance user experience. You can learn more about how Google collects and processes data by reviewing{' '}
+            <a
+              href="https://www.google.com/policies/privacy/partners/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-500"
+            >
+              How Google uses information from sites or apps that use our services
+            </a>.
           </p>
         </section>
 
         <hr className="border-border" />
 
-        {/* 4. Google AdSense */}
-        <section className="space-y-2">
-          <h2 className="text-lg font-bold text-foreground">4. Google AdSense</h2>
+        {/* 4. Google AdSense & Third-Party Advertising */}
+        <section className="space-y-3">
+          <h2 className="text-lg font-bold text-foreground">4. Google AdSense &amp; Third-Party Advertising</h2>
           <p>
-            We may use Google AdSense to display advertisements. Google, as a third-party vendor, may use cookies (including the DoubleClick cookie) to serve ads based on a user&apos;s prior visits to this website or other websites.
+            We use Google AdSense and third-party advertising partners to serve advertisements when you visit our website. These third-party vendors, including Google, use cookies (such as the DoubleClick cookie) and web beacons to serve personalized advertisements based on a user&apos;s prior visits to this website or other websites across the Internet.
           </p>
           <p>
-            Users may opt out of personalized advertising by visiting Google Ads Settings.
+            Google&apos;s use of advertising cookies enables it and its partners to serve ads to users based on their visits to FreshersBridge and other sites on the Internet.
           </p>
+          <div className="rounded-xl border border-border/80 bg-slate-50 dark:bg-slate-900/60 p-4 space-y-2 text-xs sm:text-sm">
+            <p className="font-bold text-foreground">Your Advertising Choices &amp; Cookie Controls:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                <strong>Opt Out of Personalized Ads:</strong> You can opt out of personalized advertising by visiting{' '}
+                <a
+                  href="https://adssettings.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-500"
+                >
+                  Google Ads Settings
+                </a>.
+              </li>
+              <li>
+                <strong>Third-Party Vendor Opt-Out:</strong> Alternatively, you can opt out of third-party vendors&apos; use of cookies for personalized advertising by visiting{' '}
+                <a
+                  href="https://www.aboutads.info/choices/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-500"
+                >
+                  www.aboutads.info/choices
+                </a>{' '}
+                or the{' '}
+                <a
+                  href="https://www.networkadvertising.org/choices/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-500"
+                >
+                  Network Advertising Initiative Opt-Out Page
+                </a>.
+              </li>
+              <li>
+                <strong>Partner Policy Disclosure:</strong> For complete details regarding Google&apos;s data practices when serving ads on partner websites, please consult{' '}
+                <a
+                  href="https://www.google.com/policies/privacy/partners/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-500"
+                >
+                  Google Partner Policy: How Google uses data when you use our partners&apos; sites or apps
+                </a>.
+              </li>
+            </ul>
+          </div>
         </section>
 
         <hr className="border-border" />

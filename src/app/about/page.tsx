@@ -117,24 +117,62 @@ export default function AboutPage() {
             How We Operate
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-medium">
-            <strong className="text-foreground">FreshersBridge</strong> is an independent informational platform. We are not directly affiliated with the companies whose job listings appear on our website unless explicitly stated.
+            <strong className="text-foreground">FreshersBridge</strong> is an independent informational career platform. We curate verified off-campus drives, internships, and hiring patterns for entry-level tech talent across India. We are not directly affiliated with the companies whose job listings appear on our website unless explicitly stated.
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-medium">
-            Some links on our website may be affiliate links. This means we may earn a small commission if users choose to apply or register through certain third-party platforms. This does not result in any additional cost to the user. Our goal is always to provide genuine and valuable opportunities.
+            Some links on our website may be affiliate links. This means we may earn a small referral commission if users choose to register through certain third-party learning platforms, at zero extra cost to the user. Our goal is always to provide genuine, high-utility resources.
           </p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-3">
           <div className="flex items-center gap-2 text-lg font-bold text-foreground">
             <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-            Transparency & Trust
+            Transparency &amp; Trust
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-medium">
-            We do not charge job seekers for accessing job listings or applying to opportunities shared on our platform. Users are encouraged to verify details directly from official sources before applying.
+            We do not charge job seekers any fees for accessing job listings, using career tools, or applying to opportunities shared on our platform. All applications redirect directly to official company career portals.
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-medium">
             We also offer an optional notification service where users can join our WhatsApp updates or check job alerts. You can choose to leave or unsubscribe at any time.
           </p>
+        </div>
+      </div>
+
+      {/* Editorial Standards & Anti-Scam Verification (E-E-A-T Quality Commitment) */}
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-10 shadow-sm space-y-6">
+        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+          <ShieldCheck className="h-3.5 w-3.5" /> Editorial Integrity &amp; Quality Commitment
+        </div>
+        <h2 className="text-2xl font-black text-foreground tracking-tight">
+          How We Verify Opportunities &amp; Create Content
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm">
+          <div className="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-border/60 space-y-2">
+            <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Multi-Step Verification
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Every job listing on FreshersBridge is audited against official company career boards (Workday, Greenhouse, Lever, SmartRecruiters) before publication. We never republish unverified third-party consultancy claims.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-border/60 space-y-2">
+            <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" /> Strict Anti-Fraud Policy
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              We enforce a strict zero-tolerance policy against scams, security-deposit requests, and paid interview tests. If an employer or recruiter ever asks for money, we permanently blacklist the domain and warn candidates.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-border/60 space-y-2">
+            <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-emerald-600" /> Original Career Guidance
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Our placement blueprints, exam patterns (TCS NQT, Accenture, Cognizant), and interview guides are created with detailed syllabus research, verified cutoffs, and practical coding solutions for freshers.
+            </p>
+          </div>
         </div>
       </div>
 

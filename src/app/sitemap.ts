@@ -84,43 +84,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Company profile routes
-  const companyRoutes: MetadataRoute.Sitemap = COMPANIES_DATA.map((company) => ({
-    url: `${baseUrl}/companies/${company.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily',
-    priority: 0.85,
-  }));
-
-  // Career guide static routes from editorial data
+  // Career guide static routes from editorial data (High-priority authoritative content for AdSense & GEO)
   const guideRoutes: MetadataRoute.Sitemap = GUIDE_ARTICLES.map((guide) => ({
     url: `${baseUrl}/guides/${guide.slug}`,
     lastModified: new Date(guide.updatedAt),
     changeFrequency: 'weekly',
+    priority: 0.9,
+  }));
+
+  // Company profile routes
+  const companyRoutes: MetadataRoute.Sitemap = COMPANIES_DATA.map((company) => ({
+    url: `${baseUrl}/companies/${company.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
     priority: 0.85,
   }));
 
-  // Dynamic job details & internship routes fetched from the database
+  // Dynamic job details & internship routes fetched from the database (Curated active listings only)
   try {
     const { data: jobs } = await supabase
       .from('jobs')
-      .select('slug, created_at, apply_url, title')
+      .select('slug, created_at, apply_url, title, application_deadline')
       .order('created_at', { ascending: false })
-      .range(0, 4999);
+      .limit(300);
 
     if (jobs && jobs.length > 0) {
-      const dynamicJobRoutes: MetadataRoute.Sitemap = jobs.map((job) => ({
+      const nowTime = Date.now();
+      // Filter out expired jobs so Googlebot never encounters thin/closed listings during quality audits
+      const activeJobs = jobs.filter((job) => {
+        if (!job.application_deadline) return true;
+        return new Date(job.application_deadline).getTime() >= nowTime;
+      });
+
+      const dynamicJobRoutes: MetadataRoute.Sitemap = activeJobs.map((job) => ({
         url: `${baseUrl}/jobs/${job.slug}`,
         lastModified: new Date(job.created_at),
         changeFrequency: 'weekly',
-        priority: 0.8,
+        priority: 0.75,
       }));
 
-      return [...staticRoutes, ...companyRoutes, ...guideRoutes, ...dynamicJobRoutes];
+      return [...staticRoutes, ...guideRoutes, ...companyRoutes, ...dynamicJobRoutes];
     }
   } catch (err) {
     console.error('Failed to generate sitemap dynamic routes:', err);
   }
 
-  return [...staticRoutes, ...companyRoutes, ...guideRoutes];
+  return [...staticRoutes, ...guideRoutes, ...companyRoutes];
 }

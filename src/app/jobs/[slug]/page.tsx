@@ -136,6 +136,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://freshersbridge.in/jobs/${job.slug}`,
     },
+    robots: isExpired
+      ? {
+          index: false,
+          follow: true,
+          nocache: true,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
     openGraph: {
       title,
       description,
