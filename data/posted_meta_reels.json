@@ -1613,5 +1613,24 @@
       },
       "timestamp": "2026-10-16T02:56:23.851261+00:00"
     }
+  },
+  {
+    "id": 86,
+    "video_file": "oxlera_20261016_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18108111953242832",
+        "comment_id": "18001821957001473",
+        "url": "https://www.instagram.com/p/18108111953242832/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1656514249398199",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1656514249398199"
+      },
+      "timestamp": "2026-10-16T07:56:24.733079+00:00"
+    }
   }
 ]

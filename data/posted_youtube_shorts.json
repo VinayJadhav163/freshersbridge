@@ -2580,5 +2580,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-16T02:57:22.442232+00:00"
+  },
+  {
+    "id": 97,
+    "company": "Oxlera",
+    "title": "Software Engineer Intern",
+    "salary": "₹3,000 / month",
+    "location": "Bangalore, India (Remote)",
+    "apply_url": "https://www.linkedin.com/jobs/view/4458615906",
+    "freshersbridge_url": "https://freshersbridge.in/internships/software-engineer-intern-oxlera",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18108111953242832",
+        "comment_id": "18001821957001473",
+        "url": "https://www.instagram.com/p/18108111953242832/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1656514249398199",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1656514249398199"
+      },
+      "timestamp": "2026-10-16T07:56:24.733079+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-16T07:57:22.645408+00:00"
   }
 ]
