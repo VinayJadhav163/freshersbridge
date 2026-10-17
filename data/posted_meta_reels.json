@@ -1651,5 +1651,24 @@
       },
       "timestamp": "2026-10-16T13:56:15.295147+00:00"
     }
+  },
+  {
+    "id": 88,
+    "video_file": "p99soft_20261017_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17871672822646793",
+        "comment_id": "17866108314678789",
+        "url": "https://www.instagram.com/p/17871672822646793/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1432700752157047",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1432700752157047"
+      },
+      "timestamp": "2026-10-17T02:56:12.045710+00:00"
+    }
   }
 ]
