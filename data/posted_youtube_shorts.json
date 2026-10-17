@@ -2692,5 +2692,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-17T07:57:21.331728+00:00"
+  },
+  {
+    "id": 101,
+    "company": "nan",
+    "title": "Full Stack Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Pune, Maharashtra, India",
+    "apply_url": "https://in.indeed.com/viewjob?jk=b8fb01977a25cc99",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/full-stack-developer-nan",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17902690929373875",
+        "comment_id": "18165496267489203",
+        "url": "https://www.instagram.com/p/17902690929373875/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1092920416856914",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1092920416856914"
+      },
+      "timestamp": "2026-10-17T13:56:22.933226+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-17T13:57:15.940695+00:00"
   }
 ]
