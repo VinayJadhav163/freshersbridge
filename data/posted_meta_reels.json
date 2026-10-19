@@ -1765,5 +1765,24 @@
       },
       "timestamp": "2026-10-18T13:56:45.004179+00:00"
     }
+  },
+  {
+    "id": 94,
+    "video_file": "capco_20261019_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17999015048823310",
+        "comment_id": "18127749106857872",
+        "url": "https://www.instagram.com/p/17999015048823310/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1681783133578919",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1681783133578919"
+      },
+      "timestamp": "2026-10-19T02:56:18.718235+00:00"
+    }
   }
 ]
