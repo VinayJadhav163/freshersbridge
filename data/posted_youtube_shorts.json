@@ -2888,5 +2888,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-19T13:57:27.090740+00:00"
+  },
+  {
+    "id": 108,
+    "company": "WSP in India",
+    "title": "Full-Stack Developer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Mumbai, Maharashtra, India",
+    "apply_url": "https://www.linkedin.com/jobs/view/4446222401",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/full-stack-developer-wsp-in-india",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18131055877829187",
+        "comment_id": "18079474955391952",
+        "url": "https://www.instagram.com/p/18131055877829187/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "2011744726182244",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=2011744726182244"
+      },
+      "timestamp": "2026-10-20T02:56:19.551304+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-20T02:57:14.936201+00:00"
   }
 ]
