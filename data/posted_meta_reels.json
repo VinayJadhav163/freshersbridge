@@ -2012,5 +2012,24 @@
       },
       "timestamp": "2026-10-23T02:56:09.239485+00:00"
     }
+  },
+  {
+    "id": 107,
+    "video_file": "nablonai_20261023_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "failed",
+        "media_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1592255668732067",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1592255668732067"
+      },
+      "timestamp": "2026-10-23T07:56:18.447307+00:00"
+    }
   }
 ]
