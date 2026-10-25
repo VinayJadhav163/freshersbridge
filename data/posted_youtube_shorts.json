@@ -3308,5 +3308,33 @@
     },
     "privacy": "public",
     "posted_at": "2026-10-25T02:57:25.216456+00:00"
+  },
+  {
+    "id": 123,
+    "company": "Shortlist Design",
+    "title": "SDK Engineer",
+    "salary": "Not Disclosed / As per Industry Standards",
+    "location": "Bangalore, Karnataka, India",
+    "apply_url": "https://www.instahyre.com/job-438671-sdk-engineer-at-shortlist-design-bangalore",
+    "freshersbridge_url": "https://freshersbridge.in/jobs/sdk-engineer-shortlist-design",
+    "youtube_video_id": null,
+    "shorts_url": null,
+    "meta_results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18118947014011400",
+        "comment_id": "18110987144128651",
+        "url": "https://www.instagram.com/p/18118947014011400/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "1111247367961890",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=1111247367961890"
+      },
+      "timestamp": "2026-10-25T07:56:37.735106+00:00"
+    },
+    "privacy": "public",
+    "posted_at": "2026-10-25T07:57:38.303074+00:00"
   }
 ]
