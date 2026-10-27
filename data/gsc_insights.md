@@ -1,14 +1,14 @@
 # Google Search Console Automated Performance Report
 
 **Property**: `https://www.freshersbridge.in/`  
-**Period**: 2026-09-20 to 2026-10-18  
-**Updated At**: 2026-10-20 09:28:39 UTC  
+**Period**: 2026-09-27 to 2026-10-25  
+**Updated At**: 2026-10-27 09:51:43 UTC  
 
 ### 📊 Overall Performance
-- **Total Clicks**: **504**
-- **Total Impressions**: **4,243**
-- **Average CTR**: **11.88%**
-- **Average Position**: **5.2**
+- **Total Clicks**: **606**
+- **Total Impressions**: **4,610**
+- **Average CTR**: **13.15%**
+- **Average Position**: **5.1**
 - **Total Ranking Queries**: **500**
 
 ### 🚀 High-Impact 'Striking Distance' Keywords (Positions 4 – 20)
@@ -16,48 +16,48 @@ These queries are already ranking on Page 1 or 2 with high impressions. Optimizi
 
 | Query | Impressions | Clicks | CTR | Position | Action |
 |---|---|---|---|---|---|
-| **internships for college students** | 235 | 1 | 0.43% | #6.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **ewb edu tech private limited** | 219 | 1 | 0.46% | #8.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **internships for freshers** | 191 | 1 | 0.52% | #4.4 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **associate software engineer** | 140 | 2 | 1.43% | #4.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **rickshesh manchanda** | 98 | 2 | 2.04% | #8.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **internship** | 92 | 7 | 7.61% | #6.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **bca internship** | 79 | 1 | 1.27% | #5.6 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **startups in bangalore hiring freshers 2026** | 55 | 1 | 1.82% | #4.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **data science internship** | 54 | 3 | 5.56% | #4.9 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **cloud back internship** | 54 | 1 | 1.85% | #8.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **startups in bangalore hiring freshers 2026** | 155 | 5 | 3.23% | #4.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship for freshers** | 130 | 4 | 3.08% | #4.1 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **associate software engineer** | 128 | 1 | 0.78% | #4.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **rickshesh manchanda** | 102 | 2 | 1.96% | #8.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **bca internship** | 87 | 1 | 1.15% | #5.3 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **harmonic associate software engineer** | 84 | 2 | 2.38% | #4.3 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship** | 82 | 5 | 6.1% | #6.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **finflock systems private limited internship** | 67 | 1 | 1.49% | #7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **women first india foundation internship** | 59 | 1 | 1.69% | #6.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **vortizo ai internship** | 56 | 1 | 1.79% | #7.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **evonexis internship** | 53 | 2 | 3.77% | #7.9 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **cloud back internship** | 49 | 1 | 2.04% | #8.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship for students** | 46 | 1 | 2.17% | #5.6 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
 | **ai training jobs** | 45 | 1 | 2.22% | #10.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **jobs near me for freshers** | 39 | 3 | 7.69% | #9.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **vortizo ai internship** | 38 | 1 | 2.63% | #7.4 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **internship for students** | 35 | 1 | 2.86% | #4.6 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **harmonic associate software engineer** | 33 | 1 | 3.03% | #5.0 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **off campus placement for freshers** | 45 | 1 | 2.22% | #5.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
 
 ### 🏆 Top 10 Search Queries by Clicks
 
 | Query | Clicks | Impressions | CTR | Position |
 |---|---|---|---|---|
-| internship | **7** | 92 | 7.61% | #6.5 |
-| harman associate software engineer | **6** | 50 | 12.0% | #2.5 |
-| fresher jobs near me | **4** | 16 | 25.0% | #8.6 |
-| internship for freshers | **4** | 186 | 2.15% | #4.0 |
-| java developer fresher jobs in pune | **4** | 22 | 18.18% | #8.9 |
-| java developer jobs for freshers | **4** | 14 | 28.57% | #7.2 |
-| more | **4** | 7 | 57.14% | #4.6 |
-| python internship in chennai | **4** | 8 | 50.0% | #2.8 |
-| software fresher jobs | **4** | 17 | 23.53% | #4.1 |
-| wordpress developer jobs in jaipur | **4** | 15 | 26.67% | #7.9 |
+| internships for freshers | **9** | 297 | 3.03% | #4.0 |
+| harman associate software engineer | **7** | 83 | 8.43% | #2.6 |
+| frontend developer jobs in pune fresher | **6** | 21 | 28.57% | #2.2 |
+| java developer fresher jobs in pune | **6** | 36 | 16.67% | #9.7 |
+| internship | **5** | 82 | 6.1% | #6.7 |
+| startups in bangalore hiring freshers 2026 | **5** | 155 | 3.23% | #4.8 |
+| fresher jobs near me | **4** | 19 | 21.05% | #10.2 |
+| fresher tech jobs | **4** | 21 | 19.05% | #4 |
+| internship for freshers | **4** | 130 | 3.08% | #4.1 |
+| internship for freshers work from home | **4** | 32 | 12.5% | #5.8 |
 
 ### 📄 Top 10 Landing Pages
 
 | Page URL | Clicks | Impressions | CTR |
 |---|---|---|---|
-| `https://www.freshersbridge.in/jobs/junior-java-developer-dglide` | **99** | 652 | 15.18% |
-| `https://www.freshersbridge.in/internships/software-testing-internship-webaxis-software-services` | **70** | 889 | 7.87% |
-| `https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa` | **67** | 1392 | 4.81% |
-| `https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs` | **53** | 556 | 9.53% |
-| `https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick` | **51** | 734 | 6.95% |
-| `https://www.freshersbridge.in/internships/java-developer-immediate-joiner-mahir` | **49** | 429 | 11.42% |
-| `https://www.freshersbridge.in/jobs/software-engineer-iris-business-services-limited` | **47** | 388 | 12.11% |
-| `https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services` | **44** | 498 | 8.84% |
-| `https://www.freshersbridge.in/jobs/software-development-engineer-remote-wikasta-business-and-technical-solutions-pvt-ltd` | **43** | 790 | 5.44% |
-| `https://www.freshersbridge.in/jobs/associate-software-developer-anuj-gope` | **37** | 552 | 6.7% |
+| `https://www.freshersbridge.in/internships/java-developer-immediate-joiner-mahir` | **116** | 908 | 12.78% |
+| `https://www.freshersbridge.in/jobs/junior-java-developer-dglide` | **99** | 658 | 15.05% |
+| `https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick` | **90** | 1035 | 8.7% |
+| `https://www.freshersbridge.in/jobs/associate-sw-development-engineer-harmonic` | **64** | 776 | 8.25% |
+| `https://www.freshersbridge.in/jobs/software-development-engineer-1-mern-stack-zenvior` | **58** | 531 | 10.92% |
+| `https://www.freshersbridge.in/jobs/associate-engineer-embedded-software-engineering-harman` | **55** | 439 | 12.53% |
+| `https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs` | **53** | 562 | 9.43% |
+| `https://www.freshersbridge.in/internships/software-testing-qa-remote-aivoa` | **47** | 396 | 11.87% |
+| `https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services` | **47** | 471 | 9.98% |
+| `https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa` | **43** | 678 | 6.34% |
