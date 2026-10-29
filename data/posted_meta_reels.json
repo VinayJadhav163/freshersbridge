@@ -2335,5 +2335,24 @@
       },
       "timestamp": "2026-10-29T02:56:15.241425+00:00"
     }
+  },
+  {
+    "id": 124,
+    "video_file": "nworx_20261029_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "17973537297184191",
+        "comment_id": "18136202365729890",
+        "url": "https://www.instagram.com/p/17973537297184191/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "39507847055525203",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=39507847055525203"
+      },
+      "timestamp": "2026-10-29T07:56:08.142972+00:00"
+    }
   }
 ]
