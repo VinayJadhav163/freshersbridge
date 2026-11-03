@@ -1,14 +1,14 @@
 # Google Search Console Automated Performance Report
 
 **Property**: `https://www.freshersbridge.in/`  
-**Period**: 2026-09-27 to 2026-10-25  
-**Updated At**: 2026-10-27 09:51:43 UTC  
+**Period**: 2026-10-04 to 2026-11-01  
+**Updated At**: 2026-11-03 11:59:18 UTC  
 
 ### 📊 Overall Performance
-- **Total Clicks**: **606**
-- **Total Impressions**: **4,610**
-- **Average CTR**: **13.15%**
-- **Average Position**: **5.1**
+- **Total Clicks**: **652**
+- **Total Impressions**: **4,522**
+- **Average CTR**: **14.42%**
+- **Average Position**: **4.9**
 - **Total Ranking Queries**: **500**
 
 ### 🚀 High-Impact 'Striking Distance' Keywords (Positions 4 – 20)
@@ -16,48 +16,48 @@ These queries are already ranking on Page 1 or 2 with high impressions. Optimizi
 
 | Query | Impressions | Clicks | CTR | Position | Action |
 |---|---|---|---|---|---|
-| **startups in bangalore hiring freshers 2026** | 155 | 5 | 3.23% | #4.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **internship for freshers** | 130 | 4 | 3.08% | #4.1 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **associate software engineer** | 128 | 1 | 0.78% | #4.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **rickshesh manchanda** | 102 | 2 | 1.96% | #8.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **bca internship** | 87 | 1 | 1.15% | #5.3 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **harmonic associate software engineer** | 84 | 2 | 2.38% | #4.3 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **internship** | 82 | 5 | 6.1% | #6.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **finflock systems private limited internship** | 67 | 1 | 1.49% | #7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **women first india foundation internship** | 59 | 1 | 1.69% | #6.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **vortizo ai internship** | 56 | 1 | 1.79% | #7.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **evonexis internship** | 53 | 2 | 3.77% | #7.9 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **cloud back internship** | 49 | 1 | 2.04% | #8.5 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internships for freshers** | 248 | 11 | 4.44% | #4.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **startups in bangalore hiring freshers 2026** | 210 | 6 | 2.86% | #4.9 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internships for college students** | 140 | 2 | 1.43% | #5.0 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **rickshesh manchanda** | 119 | 2 | 1.68% | #8.0 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **bca internship** | 76 | 2 | 2.63% | #5.3 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship for freshers** | 70 | 2 | 2.86% | #5.0 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **evonexis internship** | 69 | 2 | 2.9% | #8.1 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **finflock systems private limited internship** | 60 | 1 | 1.67% | #6.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **vortizo ai internship** | 56 | 1 | 1.79% | #7.9 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship** | 51 | 2 | 3.92% | #7.0 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
 | **internship for students** | 46 | 1 | 2.17% | #5.6 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **ai training jobs** | 45 | 1 | 2.22% | #10.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
-| **off campus placement for freshers** | 45 | 1 | 2.22% | #5.2 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **internship for college students** | 44 | 2 | 4.55% | #5.8 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **freshers hiring 2026 batch** | 44 | 1 | 2.27% | #4.7 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **java developer fresher jobs in pune** | 39 | 6 | 15.38% | #10.1 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
+| **pledge india foundation internship is real or fake** | 36 | 1 | 2.78% | #9.4 | Target in H2/H3 heading + Title tag booster to push into Top 3 |
 
 ### 🏆 Top 10 Search Queries by Clicks
 
 | Query | Clicks | Impressions | CTR | Position |
 |---|---|---|---|---|
-| internships for freshers | **9** | 297 | 3.03% | #4.0 |
-| harman associate software engineer | **7** | 83 | 8.43% | #2.6 |
-| frontend developer jobs in pune fresher | **6** | 21 | 28.57% | #2.2 |
-| java developer fresher jobs in pune | **6** | 36 | 16.67% | #9.7 |
-| internship | **5** | 82 | 6.1% | #6.7 |
-| startups in bangalore hiring freshers 2026 | **5** | 155 | 3.23% | #4.8 |
-| fresher jobs near me | **4** | 19 | 21.05% | #10.2 |
-| fresher tech jobs | **4** | 21 | 19.05% | #4 |
-| internship for freshers | **4** | 130 | 3.08% | #4.1 |
-| internship for freshers work from home | **4** | 32 | 12.5% | #5.8 |
+| harmonic associate software engineer | **13** | 244 | 5.33% | #3.9 |
+| internships for freshers | **11** | 248 | 4.44% | #4.2 |
+| harman associate software engineer | **9** | 97 | 9.28% | #2.6 |
+| frontend developer jobs in pune fresher | **7** | 30 | 23.33% | #2.4 |
+| java developer fresher jobs in pune | **6** | 39 | 15.38% | #10.1 |
+| startups in bangalore hiring freshers 2026 | **6** | 210 | 2.86% | #4.9 |
+| entry level software jobs in bangalore for freshers | **5** | 27 | 18.52% | #5.1 |
+| java developer jobs for freshers | **5** | 11 | 45.45% | #6.8 |
+| data engineer fresher jobs | **4** | 33 | 12.12% | #4.2 |
+| fresher jobs near me | **4** | 14 | 28.57% | #9.4 |
 
 ### 📄 Top 10 Landing Pages
 
 | Page URL | Clicks | Impressions | CTR |
 |---|---|---|---|
-| `https://www.freshersbridge.in/internships/java-developer-immediate-joiner-mahir` | **116** | 908 | 12.78% |
-| `https://www.freshersbridge.in/jobs/junior-java-developer-dglide` | **99** | 658 | 15.05% |
-| `https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick` | **90** | 1035 | 8.7% |
-| `https://www.freshersbridge.in/jobs/associate-sw-development-engineer-harmonic` | **64** | 776 | 8.25% |
-| `https://www.freshersbridge.in/jobs/software-development-engineer-1-mern-stack-zenvior` | **58** | 531 | 10.92% |
-| `https://www.freshersbridge.in/jobs/associate-engineer-embedded-software-engineering-harman` | **55** | 439 | 12.53% |
-| `https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs` | **53** | 562 | 9.43% |
-| `https://www.freshersbridge.in/internships/software-testing-qa-remote-aivoa` | **47** | 396 | 11.87% |
-| `https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services` | **47** | 471 | 9.98% |
-| `https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa` | **43** | 678 | 6.34% |
+| `https://www.freshersbridge.in/internships/java-developer-immediate-joiner-mahir` | **122** | 933 | 13.08% |
+| `https://www.freshersbridge.in/jobs/associate-sw-development-engineer-harmonic` | **115** | 1263 | 9.11% |
+| `https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick` | **105** | 1134 | 9.26% |
+| `https://www.freshersbridge.in/jobs/junior-java-developer-dglide` | **80** | 566 | 14.13% |
+| `https://www.freshersbridge.in/jobs/associate-engineer-embedded-software-engineering-harman` | **72** | 586 | 12.29% |
+| `https://www.freshersbridge.in/jobs/software-development-engineer-1-mern-stack-zenvior` | **59** | 562 | 10.5% |
+| `https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs` | **49** | 516 | 9.5% |
+| `https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services` | **43** | 427 | 10.07% |
+| `https://www.freshersbridge.in/jobs/hiring-freshers-ai-embedded-engineers-btechmtech-ece-immediate-ami-technologies` | **42** | 630 | 6.67% |
+| `https://www.freshersbridge.in/jobs/software-engineer-full-stack-natwest-group` | **39** | 500 | 7.8% |

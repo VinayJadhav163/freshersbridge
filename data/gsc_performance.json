@@ -1,82 +1,89 @@
 {
   "site_url": "https://www.freshersbridge.in/",
-  "period": "2026-09-27 to 2026-10-25",
-  "generated_at": "2026-10-27 09:51:43 UTC",
+  "period": "2026-10-04 to 2026-11-01",
+  "generated_at": "2026-11-03 11:59:18 UTC",
   "total_queries_tracked": 500,
-  "total_clicks": 606,
-  "total_impressions": 4610,
-  "avg_ctr_percent": 13.15,
-  "avg_position": 5.1,
+  "total_clicks": 652,
+  "total_impressions": 4522,
+  "avg_ctr_percent": 14.42,
+  "avg_position": 4.9,
   "top_queries_by_clicks": [
     {
+      "query": "harmonic associate software engineer",
+      "clicks": 13,
+      "impressions": 244,
+      "ctr": 5.33,
+      "position": 3.9
+    },
+    {
       "query": "internships for freshers",
-      "clicks": 9,
-      "impressions": 297,
-      "ctr": 3.03,
-      "position": 4.0
+      "clicks": 11,
+      "impressions": 248,
+      "ctr": 4.44,
+      "position": 4.2
     },
     {
       "query": "harman associate software engineer",
-      "clicks": 7,
-      "impressions": 83,
-      "ctr": 8.43,
+      "clicks": 9,
+      "impressions": 97,
+      "ctr": 9.28,
       "position": 2.6
     },
     {
       "query": "frontend developer jobs in pune fresher",
-      "clicks": 6,
-      "impressions": 21,
-      "ctr": 28.57,
-      "position": 2.2
+      "clicks": 7,
+      "impressions": 30,
+      "ctr": 23.33,
+      "position": 2.4
     },
     {
       "query": "java developer fresher jobs in pune",
       "clicks": 6,
-      "impressions": 36,
-      "ctr": 16.67,
-      "position": 9.7
-    },
-    {
-      "query": "internship",
-      "clicks": 5,
-      "impressions": 82,
-      "ctr": 6.1,
-      "position": 6.7
+      "impressions": 39,
+      "ctr": 15.38,
+      "position": 10.1
     },
     {
       "query": "startups in bangalore hiring freshers 2026",
+      "clicks": 6,
+      "impressions": 210,
+      "ctr": 2.86,
+      "position": 4.9
+    },
+    {
+      "query": "entry level software jobs in bangalore for freshers",
       "clicks": 5,
-      "impressions": 155,
-      "ctr": 3.23,
-      "position": 4.8
+      "impressions": 27,
+      "ctr": 18.52,
+      "position": 5.1
+    },
+    {
+      "query": "java developer jobs for freshers",
+      "clicks": 5,
+      "impressions": 11,
+      "ctr": 45.45,
+      "position": 6.8
+    },
+    {
+      "query": "data engineer fresher jobs",
+      "clicks": 4,
+      "impressions": 33,
+      "ctr": 12.12,
+      "position": 4.2
     },
     {
       "query": "fresher jobs near me",
       "clicks": 4,
-      "impressions": 19,
-      "ctr": 21.05,
-      "position": 10.2
+      "impressions": 14,
+      "ctr": 28.57,
+      "position": 9.4
     },
     {
       "query": "fresher tech jobs",
       "clicks": 4,
       "impressions": 21,
       "ctr": 19.05,
-      "position": 4
-    },
-    {
-      "query": "internship for freshers",
-      "clicks": 4,
-      "impressions": 130,
-      "ctr": 3.08,
-      "position": 4.1
-    },
-    {
-      "query": "internship for freshers work from home",
-      "clicks": 4,
-      "impressions": 32,
-      "ctr": 12.5,
-      "position": 5.8
+      "position": 3.5
     },
     {
       "query": "it companies hiring freshers",
@@ -86,32 +93,32 @@
       "position": 1
     },
     {
-      "query": "java developer jobs for freshers",
-      "clicks": 4,
-      "impressions": 12,
-      "ctr": 33.33,
-      "position": 7.6
-    },
-    {
-      "query": "more",
-      "clicks": 4,
-      "impressions": 8,
-      "ctr": 50.0,
-      "position": 4.2
-    },
-    {
       "query": "python internship in chennai",
       "clicks": 4,
-      "impressions": 13,
-      "ctr": 30.77,
-      "position": 5.5
+      "impressions": 14,
+      "ctr": 28.57,
+      "position": 5.4
     },
     {
       "query": "wordpress developer jobs in jaipur",
       "clicks": 4,
       "impressions": 20,
       "ctr": 20.0,
-      "position": 7.8
+      "position": 6.8
+    },
+    {
+      "query": "ai entry level jobs",
+      "clicks": 3,
+      "impressions": 13,
+      "ctr": 23.08,
+      "position": 3
+    },
+    {
+      "query": "bangalore startups hiring freshers",
+      "clicks": 3,
+      "impressions": 15,
+      "ctr": 20.0,
+      "position": 1.1
     },
     {
       "query": "biomedical engineering internship",
@@ -121,105 +128,90 @@
       "position": 4.7
     },
     {
-      "query": "entry level software jobs in bangalore for freshers",
+      "query": "data science fresher jobs in chennai",
       "clicks": 3,
-      "impressions": 34,
-      "ctr": 8.82,
-      "position": 6.6
+      "impressions": 10,
+      "ctr": 30.0,
+      "position": 2.3
     },
     {
-      "query": "full stack developer jobs in pune fresher",
+      "query": "ece jobs for freshers",
       "clicks": 3,
-      "impressions": 15,
-      "ctr": 20.0,
-      "position": 7.3
+      "impressions": 14,
+      "ctr": 21.43,
+      "position": 2.9
     },
     {
-      "query": "graduate work from home jobs",
+      "query": "embedded jobs in pune for freshers",
       "clicks": 3,
-      "impressions": 7,
-      "ctr": 42.86,
-      "position": 2.4
-    },
-    {
-      "query": "java developer fresher jobs",
-      "clicks": 3,
-      "impressions": 31,
-      "ctr": 9.68,
-      "position": 3.7
+      "impressions": 6,
+      "ctr": 50.0,
+      "position": 5.3
     }
   ],
   "striking_distance_opportunities": [
     {
+      "query": "internships for freshers",
+      "clicks": 11,
+      "impressions": 248,
+      "ctr": 4.44,
+      "position": 4.2,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
       "query": "startups in bangalore hiring freshers 2026",
-      "clicks": 5,
-      "impressions": 155,
-      "ctr": 3.23,
-      "position": 4.8,
+      "clicks": 6,
+      "impressions": 210,
+      "ctr": 2.86,
+      "position": 4.9,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "internship for freshers",
-      "clicks": 4,
-      "impressions": 130,
-      "ctr": 3.08,
-      "position": 4.1,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "associate software engineer",
-      "clicks": 1,
-      "impressions": 128,
-      "ctr": 0.78,
-      "position": 4.7,
+      "query": "internships for college students",
+      "clicks": 2,
+      "impressions": 140,
+      "ctr": 1.43,
+      "position": 5.0,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "rickshesh manchanda",
       "clicks": 2,
-      "impressions": 102,
-      "ctr": 1.96,
-      "position": 8.8,
+      "impressions": 119,
+      "ctr": 1.68,
+      "position": 8.0,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "bca internship",
-      "clicks": 1,
-      "impressions": 87,
-      "ctr": 1.15,
+      "clicks": 2,
+      "impressions": 76,
+      "ctr": 2.63,
       "position": 5.3,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "harmonic associate software engineer",
+      "query": "internship for freshers",
       "clicks": 2,
-      "impressions": 84,
-      "ctr": 2.38,
-      "position": 4.3,
+      "impressions": 70,
+      "ctr": 2.86,
+      "position": 5.0,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "internship",
-      "clicks": 5,
-      "impressions": 82,
-      "ctr": 6.1,
-      "position": 6.7,
+      "query": "evonexis internship",
+      "clicks": 2,
+      "impressions": 69,
+      "ctr": 2.9,
+      "position": 8.1,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "finflock systems private limited internship",
       "clicks": 1,
-      "impressions": 67,
-      "ctr": 1.49,
-      "position": 7,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "women first india foundation internship",
-      "clicks": 1,
-      "impressions": 59,
-      "ctr": 1.69,
-      "position": 6.2,
+      "impressions": 60,
+      "ctr": 1.67,
+      "position": 6.8,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
@@ -227,23 +219,15 @@
       "clicks": 1,
       "impressions": 56,
       "ctr": 1.79,
-      "position": 7.7,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "evonexis internship",
-      "clicks": 2,
-      "impressions": 53,
-      "ctr": 3.77,
       "position": 7.9,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "cloud back internship",
-      "clicks": 1,
-      "impressions": 49,
-      "ctr": 2.04,
-      "position": 8.5,
+      "query": "internship",
+      "clicks": 2,
+      "impressions": 51,
+      "ctr": 3.92,
+      "position": 7.0,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
@@ -255,207 +239,223 @@
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "ai training jobs",
-      "clicks": 1,
-      "impressions": 45,
-      "ctr": 2.22,
-      "position": 10.7,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "off campus placement for freshers",
-      "clicks": 1,
-      "impressions": 45,
-      "ctr": 2.22,
-      "position": 5.2,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "java developer fresher jobs in pune",
-      "clicks": 6,
-      "impressions": 36,
-      "ctr": 16.67,
-      "position": 9.7,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "entry level software jobs in bangalore for freshers",
-      "clicks": 3,
-      "impressions": 34,
-      "ctr": 8.82,
-      "position": 6.6,
+      "query": "internship for college students",
+      "clicks": 2,
+      "impressions": 44,
+      "ctr": 4.55,
+      "position": 5.8,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "freshers hiring 2026 batch",
       "clicks": 1,
-      "impressions": 33,
-      "ctr": 3.03,
-      "position": 4.8,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "internship for freshers work from home",
-      "clicks": 4,
-      "impressions": 32,
-      "ctr": 12.5,
-      "position": 5.8,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "jobs near me for freshers",
-      "clicks": 2,
-      "impressions": 32,
-      "ctr": 6.25,
-      "position": 9.5,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "jobs for freshers in hyderabad 2026",
-      "clicks": 3,
-      "impressions": 29,
-      "ctr": 10.34,
-      "position": 4.2,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "assistant professor cse vacancy",
-      "clicks": 1,
-      "impressions": 27,
-      "ctr": 3.7,
-      "position": 11,
-      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
-    },
-    {
-      "query": "off campus internship",
-      "clicks": 1,
-      "impressions": 27,
-      "ctr": 3.7,
+      "impressions": 44,
+      "ctr": 2.27,
       "position": 4.7,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "java developer fresher jobs in pune",
+      "clicks": 6,
+      "impressions": 39,
+      "ctr": 15.38,
+      "position": 10.1,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "pledge india foundation internship is real or fake",
+      "clicks": 1,
+      "impressions": 36,
+      "ctr": 2.78,
+      "position": 9.4,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "java developer fresher jobs",
+      "clicks": 2,
+      "impressions": 34,
+      "ctr": 5.88,
+      "position": 4.0,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "data engineer fresher jobs",
+      "clicks": 4,
+      "impressions": 33,
+      "ctr": 12.12,
+      "position": 4.2,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
       "query": "python developer fresher jobs in chennai",
       "clicks": 3,
-      "impressions": 26,
-      "ctr": 11.54,
-      "position": 9.3,
+      "impressions": 30,
+      "ctr": 10.0,
+      "position": 9,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     },
     {
-      "query": "node js internship",
+      "query": "assistant professor cse vacancy",
       "clicks": 2,
-      "impressions": 25,
-      "ctr": 8.0,
-      "position": 13.1,
+      "impressions": 30,
+      "ctr": 6.67,
+      "position": 10.5,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "entry level software jobs in bangalore for freshers",
+      "clicks": 5,
+      "impressions": 27,
+      "ctr": 18.52,
+      "position": 5.1,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "hope behind tails foundation internship",
+      "clicks": 1,
+      "impressions": 26,
+      "ctr": 3.85,
+      "position": 7.7,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "internship for freshers work from home",
+      "clicks": 3,
+      "impressions": 22,
+      "ctr": 13.64,
+      "position": 7.6,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "software developer jobs for freshers",
+      "clicks": 2,
+      "impressions": 22,
+      "ctr": 9.09,
+      "position": 4.5,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "software engineer fresher jobs",
+      "clicks": 2,
+      "impressions": 22,
+      "ctr": 9.09,
+      "position": 5.3,
+      "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
+    },
+    {
+      "query": "b tech internship 2026",
+      "clicks": 1,
+      "impressions": 22,
+      "ctr": 4.55,
+      "position": 4.6,
       "optimization_action": "Target in H2/H3 heading + Title tag booster to push into Top 3"
     }
   ],
   "top_pages": [
     {
       "url": "https://www.freshersbridge.in/internships/java-developer-immediate-joiner-mahir",
-      "clicks": 116,
-      "impressions": 908,
-      "ctr": 12.78,
-      "position": 6.0
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/junior-java-developer-dglide",
-      "clicks": 99,
-      "impressions": 658,
-      "ctr": 15.05,
-      "position": 6.1
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick",
-      "clicks": 90,
-      "impressions": 1035,
-      "ctr": 8.7,
-      "position": 5.8
+      "clicks": 122,
+      "impressions": 933,
+      "ctr": 13.08,
+      "position": 6.2
     },
     {
       "url": "https://www.freshersbridge.in/jobs/associate-sw-development-engineer-harmonic",
-      "clicks": 64,
-      "impressions": 776,
-      "ctr": 8.25,
-      "position": 4.4
+      "clicks": 115,
+      "impressions": 1263,
+      "ctr": 9.11,
+      "position": 4.3
     },
     {
-      "url": "https://www.freshersbridge.in/jobs/software-development-engineer-1-mern-stack-zenvior",
-      "clicks": 58,
-      "impressions": 531,
-      "ctr": 10.92,
-      "position": 5.1
+      "url": "https://www.freshersbridge.in/jobs/fresher-frontend-developer-in-pune-cosmoquick",
+      "clicks": 105,
+      "impressions": 1134,
+      "ctr": 9.26,
+      "position": 5.8
     },
     {
-      "url": "https://www.freshersbridge.in/jobs/associate-engineer-embedded-software-engineering-harman",
-      "clicks": 55,
-      "impressions": 439,
-      "ctr": 12.53,
-      "position": 4.7
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs",
-      "clicks": 53,
-      "impressions": 562,
-      "ctr": 9.43,
-      "position": 5.1
-    },
-    {
-      "url": "https://www.freshersbridge.in/internships/software-testing-qa-remote-aivoa",
-      "clicks": 47,
-      "impressions": 396,
-      "ctr": 11.87,
-      "position": 7.2
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services",
-      "clicks": 47,
-      "impressions": 471,
-      "ctr": 9.98,
+      "url": "https://www.freshersbridge.in/jobs/junior-java-developer-dglide",
+      "clicks": 80,
+      "impressions": 566,
+      "ctr": 14.13,
       "position": 6.0
     },
     {
-      "url": "https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa",
+      "url": "https://www.freshersbridge.in/jobs/associate-engineer-embedded-software-engineering-harman",
+      "clicks": 72,
+      "impressions": 586,
+      "ctr": 12.29,
+      "position": 4.7
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/software-development-engineer-1-mern-stack-zenvior",
+      "clicks": 59,
+      "impressions": 562,
+      "ctr": 10.5,
+      "position": 5.2
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/full-stack-developer-qa-tester-devops-engineer-catalyst-ai-labs",
+      "clicks": 49,
+      "impressions": 516,
+      "ctr": 9.5,
+      "position": 5.0
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/java-developer-webaxis-software-services",
       "clicks": 43,
-      "impressions": 678,
-      "ctr": 6.34,
-      "position": 7.0
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/software-development-engineer-remote-wikasta-business-and-technical-solutions-pvt-ltd",
-      "clicks": 43,
-      "impressions": 802,
-      "ctr": 5.36,
-      "position": 5.9
-    },
-    {
-      "url": "https://www.freshersbridge.in/jobs/software-engineer-full-stack-natwest-group",
-      "clicks": 38,
-      "impressions": 517,
-      "ctr": 7.35,
-      "position": 7.3
-    },
-    {
-      "url": "https://www.freshersbridge.in/internships/machine-learning-with-python-internship-gradtwin-services-opc-private-limited",
-      "clicks": 37,
-      "impressions": 627,
-      "ctr": 5.9,
-      "position": 6.5
+      "impressions": 427,
+      "ctr": 10.07,
+      "position": 6.2
     },
     {
       "url": "https://www.freshersbridge.in/jobs/hiring-freshers-ai-embedded-engineers-btechmtech-ece-immediate-ami-technologies",
-      "clicks": 37,
-      "impressions": 515,
-      "ctr": 7.18,
+      "clicks": 42,
+      "impressions": 630,
+      "ctr": 6.67,
       "position": 4.6
     },
     {
-      "url": "https://www.freshersbridge.in/jobs/associate-software-developer-anuj-gope",
-      "clicks": 30,
-      "impressions": 513,
-      "ctr": 5.85,
-      "position": 5.2
+      "url": "https://www.freshersbridge.in/jobs/software-engineer-full-stack-natwest-group",
+      "clicks": 39,
+      "impressions": 500,
+      "ctr": 7.8,
+      "position": 7.0
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/software-testing-qa-remote-aivoa",
+      "clicks": 38,
+      "impressions": 370,
+      "ctr": 10.27,
+      "position": 7.2
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/junior-ai-developer-internship-deep-learning-smaranaiin",
+      "clicks": 38,
+      "impressions": 706,
+      "ctr": 5.38,
+      "position": 7.3
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/junior-software-engineer-php-hanatech-solutions-pvt-ltd",
+      "clicks": 36,
+      "impressions": 729,
+      "ctr": 4.94,
+      "position": 7.0
+    },
+    {
+      "url": "https://www.freshersbridge.in/internships/full-stack-ai-developer-internship-autobotwa",
+      "clicks": 32,
+      "impressions": 446,
+      "ctr": 7.17,
+      "position": 6.8
+    },
+    {
+      "url": "https://www.freshersbridge.in/jobs/software-development-engineering-web-internship-cookiesensei-labs-private-limited",
+      "clicks": 29,
+      "impressions": 447,
+      "ctr": 6.49,
+      "position": 6.1
     }
   ]
 }
