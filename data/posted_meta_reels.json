@@ -2696,5 +2696,24 @@
       },
       "timestamp": "2026-11-04T07:56:23.065256+00:00"
     }
+  },
+  {
+    "id": 143,
+    "video_file": "nworx_20261104_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "success",
+        "media_id": "18128297899931011",
+        "comment_id": "18110835452618303",
+        "url": "https://www.instagram.com/p/18128297899931011/"
+      },
+      "facebook": {
+        "status": "success",
+        "video_id": "28923988697263793",
+        "comment_id": null,
+        "url": "https://www.facebook.com/watch/?v=28923988697263793"
+      },
+      "timestamp": "2026-11-04T13:56:25.125994+00:00"
+    }
   }
 ]
