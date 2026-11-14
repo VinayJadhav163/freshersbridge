@@ -3247,5 +3247,24 @@
       },
       "timestamp": "2026-11-14T07:56:23.426205+00:00"
     }
+  },
+  {
+    "id": 172,
+    "video_file": "nworx_20261114_meta_reel.mp4",
+    "results": {
+      "instagram": {
+        "status": "failed",
+        "media_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "facebook": {
+        "status": "failed",
+        "video_id": null,
+        "comment_id": null,
+        "url": null
+      },
+      "timestamp": "2026-11-14T13:56:19.428187+00:00"
+    }
   }
 ]
