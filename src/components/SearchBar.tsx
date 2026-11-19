@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useTransition, useEffect, useRef } from 'react';
+import { useState, useTransition, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 
-interface SearchBarProps {
+export interface SearchBarProps {
   initialQuery?: string;
   initialLocation?: string;
   buttonText?: string;
@@ -12,7 +12,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({
+function SearchBarInner({
   initialQuery = '',
   initialLocation = '',
   buttonText = 'Search Jobs',
@@ -28,8 +28,10 @@ export default function SearchBar({
 
   // Sync state if search params change
   useEffect(() => {
-    setQuery(searchParams.get('q') || initialQuery);
-    setLocation(searchParams.get('location') || initialLocation);
+    if (searchParams) {
+      setQuery(searchParams.get('q') || initialQuery);
+      setLocation(searchParams.get('location') || initialLocation);
+    }
   }, [searchParams, initialQuery, initialLocation]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -110,5 +112,53 @@ export default function SearchBar({
         )}
       </button>
     </form>
+  );
+}
+
+function SearchBarFallback({
+  buttonText = 'Search Jobs',
+  placeholder = 'Job title, skills, or company...',
+  initialQuery = '',
+  initialLocation = '',
+}: SearchBarProps) {
+  return (
+    <div className="w-full max-w-full overflow-hidden rounded-xl border border-border bg-card shadow-md p-2 flex flex-col md:flex-row gap-2">
+      <div className="flex-1 flex items-center gap-2 px-3 py-1.5 min-w-0">
+        <Search className="h-5 w-5 text-[#275df5] shrink-0" />
+        <input
+          type="text"
+          placeholder={placeholder}
+          defaultValue={initialQuery}
+          readOnly
+          className="w-full bg-transparent border-0 outline-none text-foreground placeholder:text-muted-foreground/75 text-sm font-medium"
+        />
+      </div>
+      <div className="h-px md:h-auto md:w-px bg-border/60 mx-2 md:mx-0 my-0.5 md:my-2 shrink-0" />
+      <div className="flex-1 flex items-center gap-2 px-3 py-1.5 min-w-0">
+        <MapPin className="h-5 w-5 text-[#275df5] shrink-0" />
+        <input
+          type="text"
+          placeholder="City or 'Remote'..."
+          defaultValue={initialLocation}
+          readOnly
+          className="w-full bg-transparent border-0 outline-none text-foreground placeholder:text-muted-foreground/75 text-sm font-medium"
+        />
+      </div>
+      <button
+        type="button"
+        className="rounded-lg px-6 py-2.5 text-sm font-semibold text-white bg-[#275df5] flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+      >
+        <Search className="h-4.5 w-4.5" />
+        <span>{buttonText}</span>
+      </button>
+    </div>
+  );
+}
+
+export default function SearchBar(props: SearchBarProps) {
+  return (
+    <Suspense fallback={<SearchBarFallback {...props} />}>
+      <SearchBarInner {...props} />
+    </Suspense>
   );
 }

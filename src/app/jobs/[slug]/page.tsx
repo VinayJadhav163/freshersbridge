@@ -25,6 +25,7 @@ import ApplyButton from '@/components/ApplyButton';
 import JobCard from '@/components/JobCard';
 import JobViewTracker from '@/components/JobViewTracker';
 import JobBackButton from '@/components/JobBackButton';
+import JobFresherIntelligence from '@/components/JobFresherIntelligence';
 import { Job } from '@/types';
 import { GUIDE_ARTICLES } from '@/lib/guidesData';
 import { fetchWithCache } from '@/lib/dataCache';
@@ -117,9 +118,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // Stale jobs older than 60 days without an explicit deadline are automatically soft-expired
   const isExpired = job.application_deadline
     ? new Date(job.application_deadline).getTime() < Date.now()
-    : false;
+    : Date.now() - new Date(job.created_at).getTime() > 60 * 24 * 60 * 60 * 1000;
 
   const isInternship = job.job_type === 'internship' || /\b(intern|internship|interns)\b/i.test(job.title);
   const roleType = isInternship ? 'Internship' : 'Job';
@@ -331,18 +333,20 @@ export default async function JobDetailsPage({ params }: Props) {
     notFound();
   }
 
-  const isInternship =
+  const isInternship = Boolean(
     job.job_type === 'internship' ||
     /\b(intern|internship|interns|apprentice|fellowship)\b/i.test(job.title) ||
     (job.apply_url && job.apply_url.toLowerCase().includes('/internship/')) ||
     (job.source_url && job.source_url.toLowerCase().includes('/internship/')) ||
     (job.eligibility && (job.eligibility.toLowerCase().includes('(internship)') || job.eligibility.toLowerCase().includes('intern'))) ||
-    (job.salary && (job.salary.toLowerCase().includes('/ month') || job.salary.toLowerCase().includes('/month') || job.salary.toLowerCase().includes('stipend')));
+    (job.salary && (job.salary.toLowerCase().includes('/ month') || job.salary.toLowerCase().includes('/month') || job.salary.toLowerCase().includes('stipend')))
+  );
 
   // Expiration calculation
+  // Stale jobs older than 60 days without an explicit deadline are automatically soft-expired
   const isExpired = job.application_deadline
     ? new Date(job.application_deadline).getTime() < Date.now()
-    : false;
+    : Date.now() - new Date(job.created_at).getTime() > 60 * 24 * 60 * 60 * 1000;
 
   // Compliant schema validThrough date (falls back to 60 days post-creation if no deadline)
   const validThroughDate = job.application_deadline
@@ -835,43 +839,8 @@ export default async function JobDetailsPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Value-Add Section: Why this opening is relevant for freshers */}
-          <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-950/20 p-4 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-              <h2 className="text-sm sm:text-base font-bold text-foreground">
-                <span className="hidden sm:inline">Fresher Suitability & Application Blueprint</span>
-                <span className="sm:hidden">Fresher Suitability & Blueprint</span>
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
-              <div className="space-y-1.5 p-3.5 rounded-lg bg-card/80 border border-border/60">
-                <p className="font-bold text-foreground flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Suitable For
-                </p>
-                <p className="text-muted-foreground">
-                  College graduates, entry-level candidates, and students matching: <strong className="text-foreground">{job.eligibility}</strong>.
-                </p>
-              </div>
-
-              <div className="space-y-1.5 p-3.5 rounded-lg bg-card/80 border border-border/60">
-                <p className="font-bold text-foreground flex items-center gap-1.5">
-                  <BookOpen className="h-4 w-4 text-indigo-500" /> Key Skills to Prepare
-                </p>
-                <p className="text-muted-foreground">
-                  Focus on {job.skills.slice(0, 4).join(', ') || 'core computer science fundamentals and problem solving'}.
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-indigo-100 dark:border-indigo-900/40 flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-              <span>
-                <strong>Verified Opportunity:</strong> FreshersBridge directs you to the verified official employer application portal. We never charge applicants.
-              </span>
-            </div>
-          </div>
+          {/* Comprehensive Fresher Intelligence & Preparation Blueprint */}
+          <JobFresherIntelligence job={job} isInternship={isInternship} />
 
           {/* Job Description Card */}
           <div className="rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-sm space-y-4">

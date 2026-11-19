@@ -37,6 +37,58 @@ def is_tech_fresher_title(title: str) -> bool:
             return False
     return True
 
+def get_domain_responsibilities(title: str) -> List[str]:
+    t = title.lower()
+    if any(k in t for k in ['react', 'frontend', 'front-end', 'ui', 'vue', 'angular', 'web developer']):
+        return [
+            "Develop, test, and maintain responsive web user interfaces and reusable UI components.",
+            "Collaborate with product designers and backend developers to integrate RESTful endpoints.",
+            "Optimize frontend bundle performance, cross-browser compatibility, and state management.",
+            "Write clean, modular JavaScript/TypeScript and CSS adhering to modern web best practices."
+        ]
+    elif any(k in t for k in ['python', 'django', 'flask', 'fastapi']):
+        return [
+            "Build and maintain backend services, API endpoints, and business logic using Python frameworks.",
+            "Integrate databases (SQL/NoSQL) and write performant data queries.",
+            "Develop automation scripts, data transformation routines, or service integrations.",
+            "Participate in code reviews, automated unit testing, and pipeline debugging."
+        ]
+    elif any(k in t for k in ['data', 'analytics', 'bi', 'machine learning', 'ml', 'ai']):
+        return [
+            "Assist in collecting, cleaning, and preprocessing structured and unstructured data sets.",
+            "Build analytical dashboards and SQL queries to uncover actionable operational metrics.",
+            "Implement baseline statistical or machine learning models under senior mentorship.",
+            "Collaborate with engineering teams to document data schemas and validate pipeline outputs."
+        ]
+    elif any(k in t for k in ['qa', 'test', 'tester', 'automation', 'selenium']):
+        return [
+            "Design test scenarios, test cases, and test suites based on functional specifications.",
+            "Execute manual and automated test suites for web, mobile, and API endpoints.",
+            "Identify, log, and verify software defects and regression issues across releases.",
+            "Ensure cross-browser compatibility, test coverage, and documentation of test runs."
+        ]
+    elif any(k in t for k in ['android', 'ios', 'flutter', 'react native', 'mobile']):
+        return [
+            "Design and implement responsive mobile screens and interactive UI features.",
+            "Integrate device APIs, RESTful services, and local caching/storage mechanisms.",
+            "Perform mobile performance profiling, memory optimization, and bug fixes.",
+            "Follow platform-specific design patterns (Material/Cupertino) and agile release cycles."
+        ]
+    elif any(k in t for k in ['java', 'spring', 'springboot', 'backend']):
+        return [
+            "Develop robust backend microservices, REST APIs, and database layers.",
+            "Implement enterprise business workflows, authentication, and data integrity safeguards.",
+            "Write comprehensive unit and integration tests using standard frameworks.",
+            "Debug latency bottlenecks, optimize queries, and support continuous delivery pipelines."
+        ]
+    else:
+        return [
+            f"Contribute to active software engineering tasks, feature implementations, and bug fixes for {title}.",
+            "Collaborate closely with senior engineering mentors on code reviews and architecture discussions.",
+            "Build solid practical exposure to Git version control, collaborative workflows, and sprint cycles.",
+            "Write well-documented, testable code adhering to software development standards."
+        ]
+
 def fetch_internshala_jobs(max_items_per_category: int = 15) -> List[Dict[str, Any]]:
     """Fetches high-quality fresher jobs and internships from Internshala."""
     jobs_list = []
@@ -87,13 +139,14 @@ def fetch_internshala_jobs(max_items_per_category: int = 15) -> List[Dict[str, A
                 is_remote = 'work from home' in location.lower() or 'remote' in location.lower()
                 clean_location = "Remote / Work From Home" if is_remote else location.replace('(Hybrid)', '').strip()
 
+                resps = get_domain_responsibilities(title)
+                resps_formatted = "\n".join([f"- {r}" for r in resps])
+
                 desc_body = f"""### About {company}
 {company} is offering a verified opportunity for the position of **{title}**.
 
 ### Role Overview & Responsibilities
-- Work on active software and development tasks as a **{title}**.
-- Collaborate with engineering mentors on real-world projects, features, and code reviews.
-- Gain hands-on exposure to modern developer workflows and frameworks.
+{resps_formatted}
 
 ### Stipend & Eligibility
 - **Stipend / CTC:** {stipend if stipend else 'Competitive'}

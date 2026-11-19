@@ -29,8 +29,8 @@ def is_strictly_non_fresher(job):
     elig = str(job.get('eligibility') or '').strip()
     full_text = f"{title}\n{elig}\n{desc}"
     
-    # 1. Title Rejections
-    title_lower = title.lower()
+    # 1. Title Rejections (normalize underscores and separators)
+    title_lower = title.replace('_', ' ').replace('-', ' ').lower()
     senior_title_patterns = [
         r'\b(senior|sr\.?|principal|staff|lead|leader|architect|manager|director|vp|vice president|avp|head of|head)\b',
         r'\b(consultant|specialist|expert|strategist)\b',

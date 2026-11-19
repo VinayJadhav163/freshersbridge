@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function PageNavigationLoader() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -48,13 +47,13 @@ export default function PageNavigationLoader() {
     return () => clearTimeout(timer);
   };
 
-  // When pathname or searchParams change, finish the loading bar and ensure scroll to top
+  // When pathname changes, finish the loading bar and ensure scroll to top
   useEffect(() => {
     finishLoading();
     if (typeof window !== 'undefined' && !window.location.hash) {
       window.scrollTo(0, 0);
     }
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   // Ensure refresh always loads page from top
   useEffect(() => {

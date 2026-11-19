@@ -110,10 +110,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (jobs && jobs.length > 0) {
       const nowTime = Date.now();
-      // Filter out expired jobs so Googlebot never encounters thin/closed listings during quality audits
+      const sixtyDaysAgo = nowTime - 60 * 24 * 60 * 60 * 1000;
+      // Filter out expired jobs so Googlebot only encounters active, verified listings during quality audits
       const activeJobs = jobs.filter((job) => {
-        if (!job.application_deadline) return true;
-        return new Date(job.application_deadline).getTime() >= nowTime;
+        if (job.application_deadline) {
+          return new Date(job.application_deadline).getTime() >= nowTime;
+        }
+        return new Date(job.created_at).getTime() >= sixtyDaysAgo;
       });
 
       const dynamicJobRoutes: MetadataRoute.Sitemap = activeJobs.map((job) => ({
