@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   CheckCircle2, 
-  Sparkles, 
+  Briefcase, 
   ShieldCheck, 
   FileCheck, 
   IndianRupee, 
@@ -416,9 +416,9 @@ export default function JobFresherIntelligence({ job, isInternship }: JobFresher
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-indigo-100 dark:border-indigo-900/40 pb-4">
         <div className="min-w-0 flex-1 space-y-1.5">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-600/10 border border-indigo-600/20 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">
-            <Sparkles className="h-3.5 w-3.5 shrink-0" />
-            <span>Fresher Intelligence &amp; Preparation Blueprint</span>
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/60 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300">
+            <Briefcase className="h-3.5 w-3.5 shrink-0 text-indigo-600 dark:text-indigo-400" />
+            <span>Candidate Preparation Blueprint</span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold text-foreground tracking-tight break-words">
             How to Crack the {job.title} Role at {job.company}
@@ -439,9 +439,16 @@ export default function JobFresherIntelligence({ job, isInternship }: JobFresher
         
         {/* Card 1: ATS Resume Keyword Optimization */}
         <div className="rounded-xl border border-border/70 bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
-          <div className="flex items-center gap-2 text-foreground font-bold text-sm">
-            <FileCheck className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Target ATS Keywords for Your Resume</span>
+          <div className="flex items-start gap-2.5 text-foreground">
+            <FileCheck className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-bold text-foreground leading-snug">
+                Target ATS Resume Keywords
+              </h3>
+              <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                Core Competencies &amp; Skills
+              </p>
+            </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
             Applicant Tracking Systems (ATS) score your application against these core competencies. Ensure they are highlighted in your resume:
@@ -473,21 +480,28 @@ export default function JobFresherIntelligence({ job, isInternship }: JobFresher
 
         {/* Card 2: Typical Selection & Interview Rounds */}
         <div className="rounded-xl border border-border/70 bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
-          <div className="flex items-center gap-2 text-foreground font-bold text-sm">
-            <BookOpen className="h-4.5 w-4.5 text-[#275df5]" />
-            <span>Expected Hiring Rounds ({blueprint.domain})</span>
+          <div className="flex items-start gap-2.5 text-foreground">
+            <BookOpen className="h-4.5 w-4.5 text-[#275df5] shrink-0 mt-0.5" />
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-bold text-foreground leading-snug">
+                Expected Hiring Rounds
+              </h3>
+              <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-0.5">
+                {blueprint.domain}
+              </p>
+            </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
             Standard selection pattern for entry-level candidates applying for this profile:
           </p>
 
-          <ul className="space-y-2 text-xs text-foreground/90 font-medium">
+          <ul className="space-y-2.5 text-xs text-foreground/90 font-medium">
             {blueprint.rounds.map((round, idx) => (
-              <li key={idx} className="flex items-start gap-2">
+              <li key={idx} className="flex items-start gap-2.5">
                 <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold text-[10px] mt-0.5">
                   {idx + 1}
                 </span>
-                <span className="leading-tight">{round}</span>
+                <span className="leading-snug">{round}</span>
               </li>
             ))}
           </ul>
@@ -508,9 +522,16 @@ export default function JobFresherIntelligence({ job, isInternship }: JobFresher
 
       {/* Top 3 Technical Interview Questions Likely to be Asked */}
       <div className="rounded-xl border border-border/70 bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
-        <div className="flex items-center gap-2 text-foreground font-bold text-sm">
-          <HelpCircle className="h-4.5 w-4.5 text-amber-500" />
-          <span>Top Technical Interview Questions for this Role</span>
+        <div className="flex items-start gap-2.5 text-foreground">
+          <HelpCircle className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-bold text-foreground leading-snug">
+              Top Technical Interview Questions for this Role
+            </h3>
+            <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
+              Domain-Specific Conceptual &amp; Practical Questions
+            </p>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground">
           Prepare these essential conceptual and problem-solving questions before your technical discussion:
