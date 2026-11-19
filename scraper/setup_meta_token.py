@@ -130,7 +130,44 @@ def setup_meta(app_id: str, app_secret: str, user_access_token: str):
     print("=" * 60)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: python setup_meta_token.py <app_id> <app_secret> <user_token>")
+    env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env.local")
+    app_id = None
+    app_secret = None
+    user_token = None
+
+    # Try loading default app_id and app_secret from .env.local
+    if os.path.exists(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("META_APP_ID="):
+                    app_id = line.split("=", 1)[1].strip()
+                elif line.startswith("META_APP_SECRET="):
+                    app_secret = line.split("=", 1)[1].strip()
+
+    if len(sys.argv) == 4:
+        app_id = sys.argv[1]
+        app_secret = sys.argv[2]
+        user_token = sys.argv[3]
+    elif len(sys.argv) == 2:
+        user_token = sys.argv[1]
+    else:
+        print("=" * 60)
+        print("FreshersBridge Meta (Instagram & Facebook) Setup Tool")
+        print("=" * 60)
+        if not app_id:
+            app_id = input("Enter your Meta App ID: ").strip()
+        else:
+            print(f"Loaded Meta App ID from .env.local: {app_id}")
+
+        if not app_secret:
+            app_secret = input("Enter your Meta App Secret: ").strip()
+        else:
+            print(f"Loaded Meta App Secret from .env.local: {app_secret[:4]}***")
+
+        user_token = input("\nPaste your new User Access Token from Graph API Explorer: ").strip()
+
+    if not app_id or not app_secret or not user_token:
+        print("❌ Error: App ID, App Secret, and User Access Token are all required.")
         sys.exit(1)
-    setup_meta(sys.argv[1], sys.argv[2], sys.argv[3])
+
+    setup_meta(app_id, app_secret, user_token)

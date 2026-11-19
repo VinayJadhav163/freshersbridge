@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 7, // 7 days
   },
+  async redirects() {
+    return [
+      {
+        source: '/guides/data-analyst-interview-questions-answers-freshers',
+        destination: '/guides/data-analyst-roadmap-fresher-jobs-salary-interview-guide-2026',
+        permanent: true,
+      },
+      {
+        source: '/guides/full-stack-developer-roadmap-freshers-guide',
+        destination: '/guides/full-stack-web-development-roadmap-college-students',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

@@ -388,6 +388,12 @@ export default async function JobDetailsPage({ params }: Props) {
     }
 
     // Role-specific match
+    if (/\b(electronic|electronics|embedded|hardware|vlsi|iot|circuit|pcb|semiconductor|microcontroller)\b/i.test(jobText) && gSlug.includes('electronics-embedded')) {
+      score += 90;
+    }
+    if (/\b(qa\b|test|testing|quality assurance|sdet|automation|selenium)\b/i.test(jobText) && gSlug.includes('software-testing')) {
+      score += 90;
+    }
     if (/\b(data analyst|analytics|business intelligence|bi|sql)\b/i.test(jobText) && gSlug.includes('data-analyst')) {
       score += 85;
     }
@@ -827,14 +833,28 @@ export default async function JobDetailsPage({ params }: Props) {
             <div className="space-y-2.5">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Required Skills</h3>
               <div className="flex flex-wrap gap-2">
-                {job.skills.map((skill: string, index: number) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/80 px-3.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {(() => {
+                  const cleaned = (job.skills || [])
+                    .flatMap((s: string) => s.split(/[,/]/).map((p) => p.trim()))
+                    .filter((skill: string) => {
+                      if (!skill || skill.length < 2) return false;
+                      const sLower = skill.toLowerCase();
+                      const tLower = job.title.toLowerCase();
+                      if (sLower === tLower) return false;
+                      if (tLower.includes(sLower) && (sLower.includes('internship') || sLower.includes('developer') || sLower.includes('engineer'))) return false;
+                      if (sLower.endsWith('internship') || sLower.startsWith('hiring')) return false;
+                      return true;
+                    });
+                  const displaySkills = cleaned.length > 0 ? cleaned : ['Problem Solving', 'Communication', 'Technical Aptitude'];
+                  return displaySkills.map((skill: string, index: number) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/80 px-3.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs"
+                    >
+                      {skill}
+                    </span>
+                  ));
+                })()}
               </div>
             </div>
           </div>
