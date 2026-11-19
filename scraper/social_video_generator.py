@@ -50,9 +50,7 @@ def get_freshersbridge_job_url(job: dict) -> str:
     if not slug:
         slug = slugify(f"{title}-{company}")
     
-    is_internship = job.get("job_type") == "internship" or any(k in title.lower() for k in ["intern", "internship", "trainee"])
-    section = "internships" if is_internship else "jobs"
-    return f"https://freshersbridge.in/{section}/{slug}"
+    return f"https://freshersbridge.in/jobs/{slug}"
 
 # Video Dimensions & Settings
 WIDTH = 1080
@@ -534,16 +532,22 @@ def create_video_reel(job_data, audio_path=None, output_filename="sample_fresher
     audio_clip = None
     if not audio_path or not os.path.exists(audio_path):
         platform_audio_dir = os.path.join(AUDIO_DIR, platform.lower())
-        search_dirs = [platform_audio_dir, os.path.join(AUDIO_DIR, "youtube"), AUDIO_DIR]
+        search_dirs = [platform_audio_dir, os.path.join(AUDIO_DIR, "youtube"), os.path.join(AUDIO_DIR, "instagram"), AUDIO_DIR]
         audio_files = []
         for sdir in search_dirs:
             if os.path.exists(sdir):
-                found = glob.glob(os.path.join(sdir, "*.wav")) + glob.glob(os.path.join(sdir, "*.mp3")) + glob.glob(os.path.join(sdir, "*.m4a")) + glob.glob(os.path.join(sdir, "*.aac"))
+                # Pool authentic upbeat studio MP3s/M4As and exclude synthetic beep test waves
+                found = [
+                    f for f in (
+                        glob.glob(os.path.join(sdir, "*.mp3")) +
+                        glob.glob(os.path.join(sdir, "*.m4a")) +
+                        glob.glob(os.path.join(sdir, "*.aac"))
+                    ) if not os.path.basename(f).startswith("trending_beat_")
+                ]
                 if found:
-                    audio_files = found
-                    break
+                    audio_files.extend(found)
         if audio_files:
-            audio_path = random.choice(audio_files)
+            audio_path = random.choice(list(set(audio_files)))
             print(f"Selected [{platform.upper()}] audio track: {os.path.basename(audio_path)}")
 
     if audio_path and os.path.exists(audio_path):

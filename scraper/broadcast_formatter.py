@@ -103,9 +103,7 @@ def format_single_job_block(job: Dict[str, Any], platform: str = 'whatsapp') -> 
     if not slug:
         slug = slugify(f"{raw_title}-{raw_company}")
         
-    is_internship = job.get('job_type') == 'internship' or any(k in raw_title.lower() for k in ['intern', 'internship', 'trainee'])
-    section = 'internships' if is_internship else 'jobs'
-    apply_link = f"https://freshersbridge.in/{section}/{slug}"
+    apply_link = f"https://freshersbridge.in/jobs/{slug}"
 
     if is_telegram:
         company = html.escape(raw_company)

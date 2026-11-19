@@ -113,6 +113,15 @@ export default function PageNavigationLoader() {
 
           if (currentFullUrl !== targetFullUrl) {
             startLoading();
+            // Instantly reset scroll to top before page transition so the loading skeleton
+            // displays at the top of the viewport instead of jumping to the bottom banner/footer
+            try {
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              if (document.documentElement) document.documentElement.scrollTop = 0;
+              if (document.body) document.body.scrollTop = 0;
+            } catch {
+              window.scrollTo(0, 0);
+            }
           }
         }
       } catch {

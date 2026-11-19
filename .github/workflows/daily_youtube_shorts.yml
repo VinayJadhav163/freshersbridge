@@ -1,7 +1,8 @@
 name: Daily YouTube Shorts Autoposter
 
 on:
-  # Triggered 3x daily by external scheduler ~20 mins after job scraper (08:25 AM, 01:25 PM, 07:25 PM IST)
+  schedule:
+    - cron: '0 3,8,14 * * *'  # 03:00 UTC (08:30 AM IST), 08:00 UTC (01:30 PM IST), 14:00 UTC (07:30 PM IST)
   workflow_dispatch:
     inputs:
       privacy:
@@ -64,6 +65,8 @@ jobs:
 
       - name: Generate & Publish Daily YouTube Short & Social Reels
         env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           YOUTUBE_CLIENT_SECRET_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}

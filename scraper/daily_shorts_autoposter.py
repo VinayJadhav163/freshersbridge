@@ -13,13 +13,19 @@ import sys
 import json
 import argparse
 from datetime import datetime, timezone
+import requests
 import pandas as pd
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 OUTPUT_DIR = os.path.join(BASE_DIR, "scraper", "output")
 HISTORY_FILE = os.path.join(DATA_DIR, "posted_youtube_shorts.json")
 JOBS_CSV = os.path.join(OUTPUT_DIR, "latest_freshersbridge_jobs.csv")
+
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, ".env.local"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -46,46 +52,74 @@ def save_history(history):
         json.dump(history, f, indent=2, ensure_ascii=False)
     print(f"Updated posting history: {HISTORY_FILE} ({len(history)} total posted)")
 
+def fetch_live_jobs_from_supabase(limit=100):
+    """Fetches the latest verified live jobs directly from Supabase REST API."""
+    supabase_url = os.getenv("NEXT_PUBLIC_SUPABASE_URL") or os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY") or os.getenv("SUPABASE_KEY")
+    if not supabase_url or not supabase_key:
+        print("Notice: Supabase credentials not found in env, falling back to local files.")
+        return []
+
+    try:
+        url = f"{supabase_url}/rest/v1/jobs?select=id,title,slug,company,location,salary,eligibility,skills,apply_url,source_url,created_at&order=created_at.desc&limit={limit}"
+        headers = {
+            "apikey": supabase_key,
+            "Authorization": f"Bearer {supabase_key}",
+            "Content-Type": "application/json"
+        }
+        resp = requests.get(url, headers=headers, timeout=15)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            print(f"Supabase jobs fetch returned HTTP {resp.status_code}: {resp.text[:200]}")
+    except Exception as e:
+        print(f"Supabase fetch exception: {e}")
+    return []
+
 def get_next_job_to_post(history):
     """
     Selects the next top unposted job opening.
-    Prioritizes top recognizable tech companies and high-paying roles.
+    Prioritizes real, active listings directly from Supabase database so slugs and URLs never 404.
     """
-    if not os.path.exists(JOBS_CSV):
-        print(f"Warning: Jobs CSV not found at {JOBS_CSV}")
-        return None
-
-    try:
-        df = pd.read_csv(JOBS_CSV)
-    except Exception as e:
-        print(f"Error reading CSV: {e}")
-        return None
-
-    if df.empty:
-        print("Jobs CSV is empty.")
-        return None
-
-    # Track already posted apply_urls and title+company combos
+    posted_slugs = {h.get("slug") for h in history if h.get("slug")}
     posted_urls = {h.get("apply_url") for h in history if h.get("apply_url")}
     posted_combos = {f"{h.get('company')}_{h.get('title')}".lower() for h in history}
 
-    # Filter out already posted jobs
-    unposted = []
-    for _, row in df.iterrows():
-        job_dict = row.to_dict()
-        combo = f"{job_dict.get('company')}_{job_dict.get('title')}".lower()
-        url = str(job_dict.get("apply_url", ""))
-        
-        if url in posted_urls or combo in posted_combos:
-            continue
-        unposted.append(job_dict)
+    # 1. Primary: Try fetching fresh live jobs from Supabase
+    live_jobs = fetch_live_jobs_from_supabase(limit=100)
+    if live_jobs:
+        for job in live_jobs:
+            combo = f"{job.get('company')}_{job.get('title')}".lower()
+            url = str(job.get("apply_url", ""))
+            slug = str(job.get("slug", ""))
 
-    if not unposted:
-        print("All jobs in current CSV have already been posted! Re-cycling top job.")
-        return df.iloc[0].to_dict()
+            if (slug and slug in posted_slugs) or (url and url in posted_urls) or combo in posted_combos:
+                continue
+            print(f"Selected fresh verified live job from Supabase: {job.get('company')} - {job.get('title')} ({slug})")
+            return job
 
-    # Feature all diverse companies (Startups, Mid-tier IT, Product companies, Fintechs & MNCs)
-    return unposted[0]
+    # 2. Fallback: Check local CSV if Supabase had no unposted jobs
+    if os.path.exists(JOBS_CSV):
+        try:
+            df = pd.read_csv(JOBS_CSV)
+            if not df.empty:
+                for _, row in df.iterrows():
+                    job_dict = row.to_dict()
+                    combo = f"{job_dict.get('company')}_{job_dict.get('title')}".lower()
+                    url = str(job_dict.get("apply_url", ""))
+                    slug = str(job_dict.get("slug", ""))
+                    if (slug and slug in posted_slugs) or (url and url in posted_urls) or combo in posted_combos:
+                        continue
+                    return job_dict
+        except Exception as e:
+            print(f"Error reading CSV fallback: {e}")
+
+    # 3. If everything was posted, pick the freshest listing from Supabase
+    if live_jobs:
+        print("All recent jobs have been posted. Selecting freshest live job from Supabase.")
+        return live_jobs[0]
+
+    return None
 
 def run_daily_autoposter(privacy_status="public", force=False):
     """
@@ -207,6 +241,7 @@ def run_daily_autoposter(privacy_status="public", force=False):
         "id": len(history) + 1,
         "company": company,
         "title": title,
+        "slug": job.get("slug"),
         "salary": salary,
         "location": location,
         "apply_url": apply_url,
