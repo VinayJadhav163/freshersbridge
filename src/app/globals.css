@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* Hide Netlify injected badge & Netlify feedback drawer */
+[data-netlify-drawer],
+#netlify-drawer,
+.netlify-badge,
+iframe[title*="Netlify"],
+iframe[id*="netlify"],
+div[class*="netlify-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Lock dark mode variant to class-based toggles instead of auto preferences */
 @custom-variant dark (&:where(.dark, .dark *));
 
